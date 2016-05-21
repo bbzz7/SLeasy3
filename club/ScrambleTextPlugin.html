@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SplitText</title>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script src="http://115.29.102.189/lab/GSAP/1.16.1/src/minified/TweenMax.min.js"></script>
+<!--<script src="ScrambleTextPlugin.min.js"></script>-->
+<script src="ClubPlugins.min.js"></script>
+<style>
+.myLine{color:red}
+</style>
+</head>
+
+<body>
+<div id="myText">
+Works with arrays and selectors - a single SplitText instance can manage multiple elements
+</div>
+
+<script>
+$(document).ready(function(e) {
+    //use the defaults
+	TweenMax.to($("#myText"), 1, {scrambleText:"THIS IS NEW TEXT"}); 
+ 
+	//or customize things:
+	//TweenMax.to($("#myText"), 5, {scrambleText:{text:"THIS IS NEW TEXT", revealDelay:0, speed:0.5, newClass:"myClass"}}); 
+});
+</script>
+</body>
+</html>

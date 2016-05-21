@@ -1,0 +1,46 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=321,user-scalable=no">
+<title>Cache</title>
+<script src="../lib/jquery.min.js" charset="utf-8"></script>
+<script src="../lib/jquery.cookie.js" charset="utf-8"></script>
+<script src="../lib/store.js" charset="utf-8"></script>
+<script src="../src/cache.js" charset="utf-8"></script>
+<style type="text/css">
+body {
+	background-color: #fff;
+}
+a{display:block; margin:20 0}
+</style>
+</head>
+
+<body>
+<a href="javascript:;" id="aa">set cache</a>
+<a href="javascript:;" id="bb">get cache</a>
+<a href="javascript:;" id="cc">get all cache</a>
+<a href="javascript:;" id="dd">delete all cache</a>
+<script>
+$(document).ready(function(e) {
+    $("#aa").click(function(e) {
+        //SLeasy.cache('id','test')
+		$.cookie('id','test');
+    });
+	
+	$("#bb").click(function(e) {
+        console.log(SLeasy.cache('id'));
+		//console.log($.cookie('id'));
+    });
+	
+	$("#cc").click(function(e) {
+        console.log(SLeasy.cache());
+    });
+	
+	$("#dd").click(function(e) {
+        console.log(SLeasy.noCache());
+    });
+});
+</script>
+</body>
+</html>

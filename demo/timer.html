@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>time</title>
+<style>
+@font-face{
+	font-family:'DS Digital';
+	src:url(images/font/DS-DIGII.TTF);
+	font-weight:normal;
+	font-style:normal	
+}
+body {
+	background-color: #000000;
+}
+</style>
+<script src="../lib/jquery.min.js" charset="utf-8"></script>
+<script src="../lib/GSAP-club.js" charset="utf-8"></script>
+<script src="../plugin/Timer.js" charset="utf-8"></script>
+</head>
+
+<body>
+<div id="time" style="width:160px; height:45px; background-image:url(images/bg-time.png); background-repeat:no-repeat; background-size:100% auto; color:#fff; font-family:'DS Digital'; font-size:36px; line-height:45px; padding-left:57px">
+00: 30: 00
+</div>
+<script>
+$(document).ready(function(e) {
+    Timer.countDown($("#time"),70,': ');
+});
+</script>
+</body>
+</html>

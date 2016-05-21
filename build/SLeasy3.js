@@ -1,0 +1,3140 @@
+/*!
+SLeasy 3.3.0 by 宇文互动 庄宇 2016-04-17 email：30755405@qq.com
+
+3.3.0(2016-04-17):backfaceVisiblity bug修复,添加阈值高度(threshold)适配模式,优化gulpfile自动化构建;
+3.2.7(2015-12-23):SLeasy.cache方法bug修复，添加更多fixProps;
+3.2.6(2015-08-20):修正幻灯切换效果索引不为0时，详情页默认切换效果获取不正确的bug; loading结构优化;
+3.2.5(2015-08-18):调整模块分布目录，使构架更清晰，增加mask涂抹遮罩插件，修正幻灯切换状态锁定，优化gulpfile自动化构建
+3.2.0(2015-07-22):路由功能优化加强，动画模块解耦重构，增加打开淘宝天猫客户端跳转功能
+3.1.0(2015-06-28):全新路由功能，支持所有切换及详情页开关状态
+3.0.0:全新构架，重大升级
+2.8.7:微信背景音乐自动播放及视频行内播放兼容
+2.8.5:增加子动画to配置参数（同一元素连动功能）
+2.8：大幅升级，内部初始化重构，
+		增加预加载模块包括：可配置的内置loading式样，2种加载模式（多线程异步乱序加载，和单线程顺序加载），
+		增加固定浮动元素功能，
+		添加加载回调及幻灯切换回调，
+		其他显示体验提升			
+ * https://github.com/bbzz7/SLeasy
+ * Licensed under the MIT license 
+ */
+/*!
+ * VERSION: 0.1.3
+ * DATE: 2014-11-15
+ * UPDATES AND DOCS AT: http://www.greensock.com
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * Physics2DPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){"use strict";var t=Math.PI/180,e=function(t,e,i,r,s){this.p=e,this.f="function"==typeof t[e],this.start=this.value=this.f?t[e.indexOf("set")||"function"!=typeof t["get"+e.substr(3)]?e:"get"+e.substr(3)]():parseFloat(t[e]),this.velocity=i||0,this.v=this.velocity/s,r||0===r?(this.acceleration=r,this.a=this.acceleration/(s*s)):this.acceleration=this.a=0},i=Math.random(),r=_gsScope._gsDefine.globals,s=r.com.greensock.core.Animation._rootFramesTimeline,n=_gsScope._gsDefine.plugin({propName:"physics2D",version:"0.1.3",API:2,init:function(i,r,n){this._target=i,this._tween=n,this._runBackwards=n.vars.runBackwards===!0,this._step=0;for(var a,o=n._timeline,l=Number(r.angle)||0,h=Number(r.velocity)||0,u=Number(r.acceleration)||0,f=r.xProp||"x",p=r.yProp||"y",c=r.accelerationAngle||0===r.accelerationAngle?Number(r.accelerationAngle):l;o._timeline;)o=o._timeline;return this._stepsPerTimeUnit=a=o===s?1:30,r.gravity&&(u=Number(r.gravity),c=90),l*=t,c*=t,this._friction=1-Number(r.friction||0),this._overwriteProps.push(f),this._overwriteProps.push(p),this._x=new e(i,f,Math.cos(l)*h,Math.cos(c)*u,a),this._y=new e(i,p,Math.sin(l)*h,Math.sin(c)*u,a),this._skipX=this._skipY=!1,!0},set:function(){var t,e,i,r,s,n,a=this._tween._time,o=this._x,l=this._y;if(this._runBackwards===!0&&(a=this._tween._duration-a),1===this._friction)i=.5*a*a,t=o.start+(o.velocity*a+o.acceleration*i),e=l.start+(l.velocity*a+l.acceleration*i);else{if(a*=this._stepsPerTimeUnit,r=n=(0|a)-this._step,s=a%1,n>=0)for(;--n>-1;)o.v+=o.a,l.v+=l.a,o.v*=this._friction,l.v*=this._friction,o.value+=o.v,l.value+=l.v;else for(n=-n;--n>-1;)o.value-=o.v,l.value-=l.v,o.v/=this._friction,l.v/=this._friction,o.v-=o.a,l.v-=l.a;t=o.value+o.v*s,e=l.value+l.v*s,this._step+=r}this._skipX||(o.r&&(t=0|t+(0>t?-.5:.5)),o.f?this._target[o.p](t):this._target[o.p]=t),this._skipY||(l.r&&(e=0|e+(0>e?-.5:.5)),l.f?this._target[l.p](e):this._target[l.p]=e)}}),a=n.prototype;a._kill=function(t){return null!=t[this._x.p]&&(this._skipX=!0),null!=t[this._y.p]&&(this._skipY=!0),this._super._kill(t)},a._roundProps=function(t,e){(t.physics2D||t[this._x.p])&&(this._x.r=e),(t.physics2D||t[this._y.p])&&(this._y.r=e)},n._autoCSS=!0,n._cssRegister=function(){var t=r.CSSPlugin;if(t){var e=t._internals,s=e._parseToProxy,a=e._setPluginRatio,o=e.CSSPropTween;e._registerComplexSpecialProp("physics2D",{parser:function(t,e,r,l,h,u){u=new n;var f,p=e.xProp||"x",c=e.yProp||"y",_={};return _[p]=_[c]=i++,f=s(t,_,l,h,u),h=new o(t,"physics2D",0,0,f.pt,2),h.data=f,h.plugin=u,h.setRatio=a,u._onInitTween(f.proxy,e,l._tween),h}})}}}),_gsScope._gsDefine&&_gsScope._gsQueue.pop()();
+
+
+
+
+
+/*!
+ * VERSION: 0.1.3
+ * DATE: 2014-11-15
+ * UPDATES AND DOCS AT: http://www.greensock.com
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * PhysicsPropsPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){"use strict";var t=function(t,e,i,r,s,n){this.p=e,this.f="function"==typeof t[e],this.start=this.value=this.f?t[e.indexOf("set")||"function"!=typeof t["get"+e.substr(3)]?e:"get"+e.substr(3)]():parseFloat(t[e]),this.velocity=i||0,this.v=this.velocity/n,r||0==r?(this.acceleration=r,this.a=this.acceleration/(n*n)):this.acceleration=this.a=0,this.friction=1-(s||0)},e=Math.random(),i=_gsScope._gsDefine.globals,r=i.com.greensock.core.Animation._rootFramesTimeline,s=_gsScope._gsDefine.plugin({propName:"physicsProps",version:"0.1.3",API:2,init:function(e,i,s){this._target=e,this._tween=s,this._runBackwards=s.vars.runBackwards===!0,this._step=0;for(var n,a,o=s._timeline,l=0;o._timeline;)o=o._timeline;this._stepsPerTimeUnit=o===r?1:30,this._props=[];for(n in i)a=i[n],(a.velocity||a.acceleration)&&(this._props[l++]=new t(e,n,a.velocity,a.acceleration,a.friction,this._stepsPerTimeUnit),this._overwriteProps[l]=n,a.friction&&(this._hasFriction=!0));return!0},set:function(){var t,e,i,r,s,n,a=this._props.length,o=this._tween._time,l=this._target;if(this._runBackwards&&(o=this._tween._duration-o),this._hasFriction){if(o*=this._stepsPerTimeUnit,i=(0|o)-this._step,r=o%1,i>=0)for(;--a>-1;){for(t=this._props[a],s=i;--s>-1;)t.v+=t.a,t.v*=t.friction,t.value+=t.v;e=t.value+t.v*r,t.r&&(e=Math.round(e)),t.f?l[t.p](e):l[t.p]=e}else for(;--a>-1;){for(t=this._props[a],s=-i;--s>-1;)t.value-=t.v,t.v/=t.friction,t.v-=t.a;e=t.value+t.v*r,t.r&&(e=0|e+(0>e?-.5:.5)),t.f?l[t.p](e):l[t.p]=e}this._step+=i}else for(n=.5*o*o;--a>-1;)t=this._props[a],e=t.start+(t.velocity*o+t.acceleration*n),t.r&&(e=Math.round(e)),t.f?l[t.p](e):l[t.p]=e}}),n=s.prototype;n._kill=function(t){for(var e=this._props.length;--e>-1;)this._props[e].p in t&&this._props.splice(e,1);return this._super._kill(t)},n._roundProps=function(t,e){for(var i=this._props.length;--i>-1;)("physicsProps"in t||this._props[i].p in t)&&(this._props[i].r=e)},s._autoCSS=!0,s._cssRegister=function(){var t=i.CSSPlugin;if(t){var r=t._internals,n=r._parseToProxy,a=r._setPluginRatio,o=r.CSSPropTween;r._registerComplexSpecialProp("physicsProps",{parser:function(t,i,r,l,h,u){u=new s;var f,p,c={};i.scale&&(i.scaleX=i.scaleY=i.scale,delete i.scale);for(f in i)c[f]=e++;return p=n(t,c,l,h,u),h=new o(t,"physicsProps",0,0,p.pt,2),h.data=p,h.plugin=u,h.setRatio=a,u._onInitTween(p.proxy,i,l._tween),h}})}}}),_gsScope._gsDefine&&_gsScope._gsQueue.pop()();
+
+
+
+
+/*!
+ * VERSION: 0.2.2
+ * DATE: 2014-12-31
+ * UPDATES AND DOCS AT: http://www.greensock.com
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * ScrambleTextPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ *
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){"use strict";var t=function(e){var i=e.nodeType,r="";if(1===i||9===i||11===i){if("string"==typeof e.textContent)return e.textContent;for(e=e.firstChild;e;e=e.nextSibling)r+=t(e)}else if(3===i||4===i)return e.nodeValue;return r},e=function(t,e){for(var i=e.length,r="";--t>-1;)r+=e[0|Math.random()*i];return r},i=function(t){this.chars=t.split(""),this.sets=[],this.length=50;var i;for(i=0;20>i;i++)this.sets[i]=e(80,this.chars);this.grow=function(t){for(i=0;20>i;i++)this.sets[i]+=e(t-this.length,this.chars);this.length=t}},r="ABCDEFGHIJKLMNOPQRSTUVWXYZ",s=r.toLowerCase(),n={upperCase:new i(r),lowerCase:new i(s),upperAndLowerCase:new i(r+s)},a=_gsScope._gsDefine.plugin({propName:"scrambleText",version:"0.2.2",API:2,overwriteProps:["scrambleText","text"],init:function(e,r,s){if(this._prop="innerHTML"in e?"innerHTML":"textContent"in e?"textContent":0,!this._prop)return!1;this._target=e,"object"!=typeof r&&(r={text:r});var a,o,l,h;return this._delimiter=a=r.delimiter||"",this._original=t(e).replace(/\s+/g," ").split("&nbsp;").join("").split(a),this._text=(r.text||r.value||"").replace(/\s+/g," ").split(a),this._hasClass=!1,"string"==typeof r.newClass&&(this._newClass=r.newClass,this._hasClass=!0),"string"==typeof r.oldClass&&(this._oldClass=r.oldClass,this._hasClass=!0),o=this._text.length-this._original.length,this._length=this._original.join(a).length,this._lengthDif=this._text.join(a).length-this._length,this._fillChar=r.fillChar||r.chars&&-1!==r.chars.indexOf(" ")?"&nbsp;":"",this._charSet=h=n[r.chars||"upperCase"]||new i(r.chars),this._speed=.016/(r.speed||1),this._prevScrambleTime=0,this._setIndex=0|20*Math.random(),l=this._length+Math.max(this._lengthDif,0),l>h.length&&h.grow(l),this._chars=h.sets[this._setIndex],this._revealDelay=r.revealDelay||0,this._tweenLength=r.tweenLength!==!1,this._tween=s,!0},set:function(t){var e,i,r,s,n,a,o=this._text.length,l=this._delimiter,h=this._tween._time,u=h-this._prevScrambleTime;this._revealDelay&&(this._tween.vars.runBackwards&&(h=this._tween._duration-h),t=0===h?0:this._revealDelay>h?1e-6:h===this._tween._duration?1:this._tween._ease.getRatio((h-this._revealDelay)/(this._tween._duration-this._revealDelay))),0>t?t=0:t>1&&(t=1),e=0|t*o+.5,i=this._text.slice(0,e).join(l),r=this._original.slice(e).join(l),t&&((u>this._speed||-this._speed>u)&&(this._setIndex=(this._setIndex+(0|19*Math.random()))%20,this._chars=this._charSet.sets[this._setIndex],this._prevScrambleTime+=u),r=this._chars.substr(i.length,0|this._length+(this._tweenLength?1-(t=1-t)*t*t*t:1)*this._lengthDif-i.length+.5)),this._hasClass?(s=this._newClass&&0!==e,n=this._oldClass&&e!==o,a=(s?"<span class='"+this._newClass+"'>":"")+i+(s?"</span>":"")+(n?"<span class='"+this._oldClass+"'>":"")+l+r+(n?"</span>":"")):a=i+l+r,this._target[this._prop]="&nbsp;"===this._fillChar&&-1!==a.indexOf("  ")?a.split("  ").join("&nbsp;&nbsp;"):a}}),o=a.prototype;o._newClass=o._oldClass="";for(o in n)n[o.toLowerCase()]=n[o],n[o.toUpperCase()]=n[o]}),_gsScope._gsDefine&&_gsScope._gsQueue.pop()();
+
+
+/*!
+ * VERSION: beta 0.3.3
+ * DATE: 2014-10-29
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * SplitText is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://www.greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(function(t){"use strict";var e=t.GreenSockGlobals||t,i=function(t){var i,s=t.split("."),r=e;for(i=0;s.length>i;i++)r[s[i]]=r=r[s[i]]||{};return r},s=i("com.greensock.utils"),r=function(t){var e=t.nodeType,i="";if(1===e||9===e||11===e){if("string"==typeof t.textContent)return t.textContent;for(t=t.firstChild;t;t=t.nextSibling)i+=r(t)}else if(3===e||4===e)return t.nodeValue;return i},n=document,a=n.defaultView?n.defaultView.getComputedStyle:function(){},o=/([A-Z])/g,h=function(t,e,i,s){var r;return(i=i||a(t,null))?(t=i.getPropertyValue(e.replace(o,"-$1").toLowerCase()),r=t||i.length?t:i[e]):t.currentStyle&&(i=t.currentStyle,r=i[e]),s?r:parseInt(r,10)||0},l=function(t){return t.length&&t[0]&&(t[0].nodeType&&t[0].style&&!t.nodeType||t[0].length&&t[0][0])?!0:!1},_=function(t){var e,i,s,r=[],n=t.length;for(e=0;n>e;e++)if(i=t[e],l(i))for(s=i.length,s=0;i.length>s;s++)r.push(i[s]);else r.push(i);return r},u=")eefec303079ad17405c",c=/(?:<br>|<br\/>|<br \/>)/gi,p=n.all&&!n.addEventListener,f="<div style='position:relative;display:inline-block;"+(p?"*display:inline;*zoom:1;'":"'"),m=function(t){t=t||"";var e=-1!==t.indexOf("++"),i=1;return e&&(t=t.split("++").join("")),function(){return f+(t?" class='"+t+(e?i++:"")+"'>":">")}},d=s.SplitText=e.SplitText=function(t,e){if("string"==typeof t&&(t=d.selector(t)),!t)throw"cannot split a null element.";this.elements=l(t)?_(t):[t],this.chars=[],this.words=[],this.lines=[],this._originals=[],this.vars=e||{},this.split(e)},g=function(t,e,i){var s=t.nodeType;if(1===s||9===s||11===s)for(t=t.firstChild;t;t=t.nextSibling)g(t,e,i);else(3===s||4===s)&&(t.nodeValue=t.nodeValue.split(e).join(i))},v=function(t,e){for(var i=e.length;--i>-1;)t.push(e[i])},y=function(t,e,i,s,o){c.test(t.innerHTML)&&(t.innerHTML=t.innerHTML.replace(c,u));var l,_,p,f,d,y,T,w,b,x,P,S,C,k,R=r(t),A=e.type||e.split||"chars,words,lines",O=-1!==A.indexOf("lines")?[]:null,D=-1!==A.indexOf("words"),M=-1!==A.indexOf("chars"),L="absolute"===e.position||e.absolute===!0,z=L?"&#173; ":" ",I=-999,E=a(t),N=h(t,"paddingLeft",E),F=h(t,"borderBottomWidth",E)+h(t,"borderTopWidth",E),X=h(t,"borderLeftWidth",E)+h(t,"borderRightWidth",E),U=h(t,"paddingTop",E)+h(t,"paddingBottom",E),B=h(t,"paddingLeft",E)+h(t,"paddingRight",E),j=h(t,"textAlign",E,!0),Y=t.clientHeight,q=t.clientWidth,G="</div>",V=m(e.wordsClass),Q=m(e.charsClass),W=-1!==(e.linesClass||"").indexOf("++"),Z=e.linesClass,H=-1!==R.indexOf("<"),$=!0,K=[],J=[],te=[];for(W&&(Z=Z.split("++").join("")),H&&(R=R.split("<").join("{{LT}}")),l=R.length,f=V(),d=0;l>d;d++)if(T=R.charAt(d),")"===T&&R.substr(d,20)===u)f+=($?G:"")+"<BR/>",$=!1,d!==l-20&&R.substr(d+20,20)!==u&&(f+=" "+V(),$=!0),d+=19;else if(" "===T&&" "!==R.charAt(d-1)&&d!==l-1&&R.substr(d-20,20)!==u){for(f+=$?G:"",$=!1;" "===R.charAt(d+1);)f+=z,d++;(")"!==R.charAt(d+1)||R.substr(d+1,20)!==u)&&(f+=z+V(),$=!0)}else f+=M&&" "!==T?Q()+T+"</div>":T;for(t.innerHTML=f+($?G:""),H&&g(t,"{{LT}}","<"),y=t.getElementsByTagName("*"),l=y.length,w=[],d=0;l>d;d++)w[d]=y[d];if(O||L)for(d=0;l>d;d++)b=w[d],p=b.parentNode===t,(p||L||M&&!D)&&(x=b.offsetTop,O&&p&&x!==I&&"BR"!==b.nodeName&&(_=[],O.push(_),I=x),L&&(b._x=b.offsetLeft,b._y=x,b._w=b.offsetWidth,b._h=b.offsetHeight),O&&(D!==p&&M||(_.push(b),b._x-=N),p&&d&&(w[d-1]._wordEnd=!0),"BR"===b.nodeName&&b.nextSibling&&"BR"===b.nextSibling.nodeName&&O.push([])));for(d=0;l>d;d++)b=w[d],p=b.parentNode===t,"BR"!==b.nodeName?(L&&(S=b.style,D||p||(b._x+=b.parentNode._x,b._y+=b.parentNode._y),S.left=b._x+"px",S.top=b._y+"px",S.position="absolute",S.display="block",S.width=b._w+1+"px",S.height=b._h+"px"),D?p&&""!==b.innerHTML?J.push(b):M&&K.push(b):p?(t.removeChild(b),w.splice(d--,1),l--):!p&&M&&(x=!O&&!L&&b.nextSibling,t.appendChild(b),x||t.appendChild(n.createTextNode(" ")),K.push(b))):O||L?(t.removeChild(b),w.splice(d--,1),l--):D||t.appendChild(b);if(O){for(L&&(P=n.createElement("div"),t.appendChild(P),C=P.offsetWidth+"px",x=P.offsetParent===t?0:t.offsetLeft,t.removeChild(P)),S=t.style.cssText,t.style.cssText="display:none;";t.firstChild;)t.removeChild(t.firstChild);for(k=!L||!D&&!M,d=0;O.length>d;d++){for(_=O[d],P=n.createElement("div"),P.style.cssText="display:block;text-align:"+j+";position:"+(L?"absolute;":"relative;"),Z&&(P.className=Z+(W?d+1:"")),te.push(P),l=_.length,y=0;l>y;y++)"BR"!==_[y].nodeName&&(b=_[y],P.appendChild(b),k&&(b._wordEnd||D)&&P.appendChild(n.createTextNode(" ")),L&&(0===y&&(P.style.top=b._y+"px",P.style.left=N+x+"px"),b.style.top="0px",x&&(b.style.left=b._x-x+"px")));0===l&&(P.innerHTML="&nbsp;"),D||M||(P.innerHTML=r(P).split(String.fromCharCode(160)).join(" ")),L&&(P.style.width=C,P.style.height=b._h+"px"),t.appendChild(P)}t.style.cssText=S}L&&(Y>t.clientHeight&&(t.style.height=Y-U+"px",Y>t.clientHeight&&(t.style.height=Y+F+"px")),q>t.clientWidth&&(t.style.width=q-B+"px",q>t.clientWidth&&(t.style.width=q+X+"px"))),v(i,K),v(s,J),v(o,te)},T=d.prototype;T.split=function(t){this.isSplit&&this.revert(),this.vars=t||this.vars,this._originals.length=this.chars.length=this.words.length=this.lines.length=0;for(var e=this.elements.length;--e>-1;)this._originals[e]=this.elements[e].innerHTML,y(this.elements[e],this.vars,this.chars,this.words,this.lines);return this.chars.reverse(),this.words.reverse(),this.lines.reverse(),this.isSplit=!0,this},T.revert=function(){if(!this._originals)throw"revert() call wasn't scoped properly.";for(var t=this._originals.length;--t>-1;)this.elements[t].innerHTML=this._originals[t];return this.chars=[],this.words=[],this.lines=[],this.isSplit=!1,this},d.selector=t.$||t.jQuery||function(e){var i=t.$||t.jQuery;return i?(d.selector=i,i(e)):"undefined"==typeof document?e:document.querySelectorAll?document.querySelectorAll(e):document.getElementById("#"===e.charAt(0)?e.substr(1):e)},d.version="0.3.3"})(_gsScope),function(t){"use strict";var e=function(){return(_gsScope.GreenSockGlobals||_gsScope)[t]};"function"==typeof define&&define.amd?define(["TweenLite"],e):"undefined"!=typeof module&&module.exports&&(module.exports=e())}("SplitText");
+
+
+
+
+/*!
+ * VERSION: 0.0.9
+ * DATE: 2015-12-10
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * This is a special version of the plugin that is only to be used on certain sites like codepen.io. It will redirect to a page on GreenSock.com if you try using it on a different domain. Please sign up for Club GreenSock to get the fully-functional version at http://greensock.com/club/
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * DrawSVGPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * For licensing details, see http://greensock.com/licensing/
+ *
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;
+(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){function l(a,b,c,d){return c=parseFloat(c)-parseFloat(a),d=parseFloat(d)-parseFloat(b),Math.sqrt(c*c+d*d)}function m(a){return"string"!=typeof a&&a.nodeType||(a=_gsScope.TweenLite.selector(a),a.length&&(a=a[0])),a}function k(a){if(!a)return 0;a=m(a);var b,c,d,e;c=a.tagName.toLowerCase();if("path"===c){d=a.style.strokeDasharray;a.style.strokeDasharray="none";b=a.getTotalLength()||0;try{a.getBBox()}catch(f){}a.style.strokeDasharray=d}else if("rect"===
+c)b=2*a.getAttribute("width")+2*a.getAttribute("height");else if("circle"===c)b=2*Math.PI*parseFloat(a.getAttribute("r"));else if("line"===c)b=l(a.getAttribute("x1"),a.getAttribute("y1"),a.getAttribute("x2"),a.getAttribute("y2"));else if("polyline"===c||"polygon"===c)for(a=a.getAttribute("points").split(", ").join(",").split(" "),b=0,d=a[0].split(","),""===a[a.length-1]&&a.pop(),"polygon"===c&&(a.push(a[0]),-1===a[0].indexOf(",")&&a.push(a[1])),e=1;e<a.length;e++)c=a[e].split(","),1===c.length&&(c[1]=
+a[e++]),2===c.length&&(b+=l(d[0],d[1],c[0],c[1])||0,d=c);else"ellipse"===c&&(d=parseFloat(a.getAttribute("rx")),e=parseFloat(a.getAttribute("ry")),b=Math.PI*(3*(d+e)-Math.sqrt((3*d+e)*(d+3*e))));return b||0}function n(a,b){if(!a)return[0,0];a=m(a);b=b||k(a)+1;var c=p(a),d=c.strokeDasharray||"",c=parseFloat(c.strokeDashoffset),e=d.indexOf(",");return 0>e&&(e=d.indexOf(" ")),d=0>e?b:parseFloat(d.substr(0,e))||1E-5,d>b&&(d=b),[Math.max(0,-c),Math.max(0,d-c)]}var h,p=document.defaultView?document.defaultView.getComputedStyle:
+function(){};h=_gsScope._gsDefine.plugin({propName:"drawSVG",API:2,version:"0.0.9",global:!0,overwriteProps:["drawSVG"],init:function(a,b,c){if(!a.getBBox)return!1;var d;c=k(a)+1;this._style=a.style;!0===b||"true"===b?b="0 100%":b?-1===(b+"").indexOf(" ")&&(b="0 "+b):b="0 0";a=n(a,c);var e=a[0],f,g,h=b.indexOf(" ");b=(-1===h?(f=void 0!==e?e+"":b,g=b):(f=b.substr(0,h),g=b.substr(h+1)),f=-1!==f.indexOf("%")?parseFloat(f)/100*c:parseFloat(f),g=-1!==g.indexOf("%")?parseFloat(g)/100*c:parseFloat(g),f>
+g?[g,f]:[f,g]);return this._length=c+10,0===a[0]&&0===b[0]?(d=Math.max(1E-5,b[1]-c),this._dash=c+d,this._offset=c-a[1]+d,this._addTween(this,"_offset",this._offset,c-b[1]+d,"drawSVG")):(this._dash=a[1]-a[0]||1E-6,this._offset=-a[0],this._addTween(this,"_dash",this._dash,b[1]-b[0]||1E-5,"drawSVG"),this._addTween(this,"_offset",this._offset,-b[0],"drawSVG")),!0},set:function(a){this._firstPT&&(this._super.setRatio.call(this,a),this._style.strokeDashoffset=this._offset,1===a||0===a?this._style.strokeDasharray=
+.001>this._offset&&10>=this._length-this._dash?"none":this._offset===this._dash?"0px, 999999px":this._dash+"px,"+this._length+"px":this._style.strokeDasharray=this._dash+"px,"+this._length+"px")}});h.getLength=k;h.getPosition=n});_gsScope._gsDefine&&_gsScope._gsQueue.pop()();
+
+
+
+/*!
+ * VERSION: 0.9.9
+ * DATE: 2015-04-28
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * ThrowPropsPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * This work is subject to the software agreement that was issued with your membership.
+ * 
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){"use strict";_gsScope._gsDefine("plugins.ThrowPropsPlugin",["plugins.TweenPlugin","TweenLite","easing.Ease","utils.VelocityTracker"],function(a,b,c,d){var r,s,t,u,e=function(){a.call(this,"throwProps"),this._overwriteProps.length=0},f=999999999999999,g=1e-10,h=_gsScope._gsDefine.globals,i=!1,j={x:1,y:1,z:2,scale:1,scaleX:1,scaleY:1,rotation:1,rotationZ:1,rotationX:2,rotationY:2,skewX:1,skewY:1,xPercent:1,yPercent:1},k=function(a,b,c,d){for(var i,j,e=b.length,g=0,h=f;--e>-1;)i=b[e],j=i-a,0>j&&(j=-j),h>j&&i>=d&&c>=i&&(g=e,h=j);return b[g]},l=function(a,b,c,d){if("auto"===a.end)return a;c=isNaN(c)?f:c,d=isNaN(d)?-f:d;var e="function"==typeof a.end?a.end(b):a.end instanceof Array?k(b,a.end,c,d):Number(a.end);return e>c?e=c:d>e&&(e=d),{max:e,min:e,unitFactor:a.unitFactor}},m=function(a,b,c){for(var d in b)void 0===a[d]&&d!==c&&(a[d]=b[d]);return a},n=e.calculateChange=function(a,d,e,f){null==f&&(f=.05);var g=d instanceof c?d:d?new c(d):b.defaultEase;return e*f*a/g.getRatio(f)},o=e.calculateDuration=function(a,d,e,f,g){g=g||.05;var h=f instanceof c?f:f?new c(f):b.defaultEase;return Math.abs((d-a)*h.getRatio(g)/e/g)},p=e.calculateTweenDuration=function(a,f,h,j,k,p){if("string"==typeof a&&(a=b.selector(a)),!a)return 0;null==h&&(h=10),null==j&&(j=.2),null==k&&(k=1),a.length&&(a=a[0]||a);var w,x,y,z,A,B,C,D,E,F,q=0,r=9999999999,s=f.throwProps||f,t=f.ease instanceof c?f.ease:f.ease?new c(f.ease):b.defaultEase,u=isNaN(s.checkpoint)?.05:Number(s.checkpoint),v=isNaN(s.resistance)?e.defaultResistance:Number(s.resistance);for(w in s)"resistance"!==w&&"checkpoint"!==w&&"preventOvershoot"!==w&&(x=s[w],"object"!=typeof x&&(E=E||d.getByTarget(a),E&&E.isTrackingProp(w)?x="number"==typeof x?{velocity:x}:{velocity:E.getVelocity(w)}:(z=Number(x)||0,y=z*v>0?z/v:z/-v)),"object"==typeof x&&(void 0!==x.velocity&&"number"==typeof x.velocity?z=Number(x.velocity)||0:(E=E||d.getByTarget(a),z=E&&E.isTrackingProp(w)?E.getVelocity(w):0),A=isNaN(x.resistance)?v:Number(x.resistance),y=z*A>0?z/A:z/-A,B="function"==typeof a[w]?a[w.indexOf("set")||"function"!=typeof a["get"+w.substr(3)]?w:"get"+w.substr(3)]():a[w]||0,C=B+n(z,t,y,u),void 0!==x.end&&(x=l(x,C,x.max,x.min),(p||i)&&(s[w]=m(x,s[w],"end"))),void 0!==x.max&&C>Number(x.max)+g?(F=x.unitFactor||e.defaultUnitFactors[w]||1,D=B>x.max&&x.min!==x.max||z*F>-15&&45>z*F?j+.1*(h-j):o(B,x.max,z,t,u),r>D+k&&(r=D+k)):void 0!==x.min&&C<Number(x.min)-g&&(F=x.unitFactor||e.defaultUnitFactors[w]||1,D=B<x.min&&x.min!==x.max||z*F>-45&&15>z*F?j+.1*(h-j):o(B,x.min,z,t,u),r>D+k&&(r=D+k)),D>q&&(q=D)),y>q&&(q=y));return q>r&&(q=r),q>h?h:j>q?j:q},q=e.prototype=new a("throwProps");return q.constructor=e,e.version="0.9.9",e.API=2,e._autoCSS=!0,e.defaultResistance=100,e.defaultUnitFactors={time:1e3,totalTime:1e3},e.track=function(a,b,c){return d.track(a,b,c)},e.untrack=function(a,b){d.untrack(a,b)},e.isTracking=function(a,b){return d.isTracking(a,b)},e.getVelocity=function(a,b){var c=d.getByTarget(a);return c?c.getVelocity(b):0/0},e._cssRegister=function(){var b,c,f,g,a=h.com.greensock.plugins.CSSPlugin;a&&(b=a._internals,c=b._parseToProxy,f=b._setPluginRatio,g=b.CSSPropTween,b._registerComplexSpecialProp("throwProps",{parser:function(a,b,h,i,k,l){l=new e;var u,v,w,x,y,m={},n={},o={},p={},q={},t={};s={};for(w in b)"resistance"!==w&&"preventOvershoot"!==w&&(v=b[w],"object"==typeof v?(void 0!==v.velocity&&"number"==typeof v.velocity?m[w]=Number(v.velocity)||0:(y=y||d.getByTarget(a),m[w]=y&&y.isTrackingProp(w)?y.getVelocity(w):0),void 0!==v.end&&(p[w]=v.end),void 0!==v.min&&(n[w]=v.min),void 0!==v.max&&(o[w]=v.max),v.preventOvershoot&&(t[w]=!0),void 0!==v.resistance&&(u=!0,q[w]=v.resistance)):"number"==typeof v?m[w]=v:(y=y||d.getByTarget(a),m[w]=y&&y.isTrackingProp(w)?y.getVelocity(w):v||0),j[w]&&i._enableTransforms(2===j[w]));x=c(a,m,i,k,l),r=x.proxy,m=x.end;for(w in r)s[w]={velocity:m[w],min:n[w],max:o[w],end:p[w],resistance:q[w],preventOvershoot:t[w]};return null!=b.resistance&&(s.resistance=b.resistance),b.preventOvershoot&&(s.preventOvershoot=!0),k=new g(a,"throwProps",0,0,x.pt,2),i._overwriteProps.pop(),k.plugin=l,k.setRatio=f,k.data=x,l._onInitTween(r,s,i._tween),k}}))},e.to=function(a,c,d,e,f){c.throwProps||(c={throwProps:c}),0===f&&(c.throwProps.preventOvershoot=!0),i=!0;var g=new b(a,e||1,c);return g.render(0,!0,!0),g.vars.css?(g.duration(p(r,{throwProps:s,ease:c.ease},d,e,f)),g._delay&&!g.vars.immediateRender?g.invalidate():t._onInitTween(r,u,g),i=!1,g):(g.kill(),g=new b(a,p(a,c,d,e,f),c),i=!1,g)},q._onInitTween=function(a,b,c){this.target=a,this._props=[],t=this,u=b;var k,o,p,q,r,s,v,w,x,e=c._ease,f=isNaN(b.checkpoint)?.05:Number(b.checkpoint),g=c._duration,h=b.preventOvershoot,j=0;for(k in b)if("resistance"!==k&&"checkpoint"!==k&&"preventOvershoot"!==k){if(o=b[k],"number"==typeof o)r=Number(o)||0;else if("object"!=typeof o||isNaN(o.velocity)){if(x=x||d.getByTarget(a),!x||!x.isTrackingProp(k))throw"ERROR: No velocity was defined in the throwProps tween of "+a+" property: "+k;r=x.getVelocity(k)}else r=Number(o.velocity);s=n(r,e,g,f),w=0,q="function"==typeof a[k],p=q?a[k.indexOf("set")||"function"!=typeof a["get"+k.substr(3)]?k:"get"+k.substr(3)]():a[k],"object"==typeof o&&(v=p+s,void 0!==o.end&&(o=l(o,v,o.max,o.min),i&&(b[k]=m(o,b[k],"end"))),void 0!==o.max&&Number(o.max)<v?h||o.preventOvershoot?s=o.max-p:w=o.max-p-s:void 0!==o.min&&Number(o.min)>v&&(h||o.preventOvershoot?s=o.min-p:w=o.min-p-s)),this._overwriteProps[j]=k,this._props[j++]={p:k,s:p,c1:s,c2:w,f:q,r:!1}}return!0},q._kill=function(b){for(var c=this._props.length;--c>-1;)null!=b[this._props[c].p]&&this._props.splice(c,1);return a.prototype._kill.call(this,b)},q._roundProps=function(a,b){for(var c=this._props,d=c.length;--d>-1;)(a[c[d].p]||a.throwProps)&&(c[d].r=b)},q.setRatio=function(a){for(var c,d,b=this._props.length;--b>-1;)c=this._props[b],d=c.s+c.c1*a+c.c2*a*a,c.r&&(d=Math.round(d)),c.f?this.target[c.p](d):this.target[c.p]=d},a.activate([e]),e},!0),_gsScope._gsDefine("utils.VelocityTracker",["TweenLite"],function(a){var b,c,d,e,f=/([A-Z])/g,g={},h={x:1,y:1,z:2,scale:1,scaleX:1,scaleY:1,rotation:1,rotationZ:1,rotationX:2,rotationY:2,skewX:1,skewY:1,xPercent:1,yPercent:1},i=document.defaultView?document.defaultView.getComputedStyle:function(){},j=function(a,b,c){var d=(a._gsTransform||g)[b];return d||0===d?d:(a.style[b]?d=a.style[b]:(c=c||i(a,null))?d=c[b]||c.getPropertyValue(b)||c.getPropertyValue(b.replace(f,"-$1").toLowerCase()):a.currentStyle&&(d=a.currentStyle[b]),parseFloat(d)||0)},k=a.ticker,l=function(a,b,c){this.p=a,this.f=b,this.v1=this.v2=0,this.t1=this.t2=k.time,this.css=!1,this.type="",this._prev=null,c&&(this._next=c,c._prev=this)},m=function(){var f,g,a=b,c=k.time;if(c-d>=.03)for(e=d,d=c;a;){for(g=a._firstVP;g;)f=g.css?j(a.target,g.p):g.f?a.target[g.p]():a.target[g.p],(f!==g.v1||c-g.t1>.15)&&(g.v2=g.v1,g.v1=f,g.t2=g.t1,g.t1=c),g=g._next;a=a._next}},n=function(a){this._lookup={},this.target=a,this.elem=a.style&&a.nodeType?!0:!1,c||(k.addEventListener("tick",m,null,!1,-100),d=e=k.time,c=!0),b&&(this._next=b,b._prev=this),b=this},o=n.getByTarget=function(a){for(var c=b;c;){if(c.target===a)return c;c=c._next}},p=n.prototype;return p.addProp=function(b,c){if(!this._lookup[b]){var d=this.target,e="function"==typeof d[b],f=e?this._altProp(b):b,g=this._firstVP;this._firstVP=this._lookup[b]=this._lookup[f]=g=new l(f!==b&&0===b.indexOf("set")?f:b,e,g),g.css=this.elem&&(void 0!==this.target.style[g.p]||h[g.p]),g.css&&h[g.p]&&!d._gsTransform&&a.set(d,{x:"+=0",overwrite:!1}),g.type=c||g.css&&0===b.indexOf("rotation")?"deg":"",g.v1=g.v2=g.css?j(d,g.p):e?d[g.p]():d[g.p]}},p.removeProp=function(a){var b=this._lookup[a];b&&(b._prev?b._prev._next=b._next:b===this._firstVP&&(this._firstVP=b._next),b._next&&(b._next._prev=b._prev),this._lookup[a]=0,b.f&&(this._lookup[this._altProp(a)]=0))},p.isTrackingProp=function(a){return this._lookup[a]instanceof l},p.getVelocity=function(a){var d,e,f,b=this._lookup[a],c=this.target;if(!b)throw"The velocity of "+a+" is not being tracked.";return d=b.css?j(c,b.p):b.f?c[b.p]():c[b.p],e=d-b.v2,("rad"===b.type||"deg"===b.type)&&(f="rad"===b.type?2*Math.PI:360,e%=f,e!==e%(f/2)&&(e=0>e?e+f:e-f)),e/(k.time-b.t2)},p._altProp=function(a){var b=a.substr(0,3),c=("get"===b?"set":"set"===b?"get":b)+a.substr(3);return"function"==typeof this.target[c]?c:a},n.getByTarget=function(c){var d=b;for("string"==typeof c&&(c=a.selector(c)),c.length&&c!==window&&c[0]&&c[0].style&&!c.nodeType&&(c=c[0]);d;){if(d.target===c)return d;d=d._next}},n.track=function(a,b,c){var d=o(a),e=b.split(","),f=e.length;for(c=(c||"").split(","),d||(d=new n(a));--f>-1;)d.addProp(e[f],c[f]||c[0]);return d},n.untrack=function(a,c){var d=o(a),e=(c||"").split(","),f=e.length;if(d){for(;--f>-1;)d.removeProp(e[f]);d._firstVP&&c||(d._prev?d._prev._next=d._next:d===b&&(b=d._next),d._next&&(d._next._prev=d._prev))}},n.isTracking=function(a,b){var c=o(a);return c?!b&&c._firstVP?!0:c.isTrackingProp(b):!1},n},!0)}),_gsScope._gsDefine&&_gsScope._gsQueue.pop()(),function(a){"use strict";var b=function(){return(_gsScope.GreenSockGlobals||_gsScope)[a]};"function"==typeof define&&define.amd?define(["TweenLite"],b):"undefined"!=typeof module&&module.exports&&(require("../TweenLite.js"),module.exports=b())}("ThrowPropsPlugin");
+
+
+
+
+
+/*!
+ * VERSION: 0.8.1
+ * DATE: 2015-12-18
+ * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * This is a special version of the plugin that is only to be used on certain sites like codepen.io. It will redirect to a page on GreenSock.com if you try using it on a different domain. Please sign up for Club GreenSock to get the fully-functional version at http://greensock.com/club/
+ *
+ * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
+ * MorphSVGPlugin is a Club GreenSock membership benefit; You must have a valid membership to use
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * For licensing details, see http://greensock.com/licensing/
+ *
+ * @author: Jack Doyle, jack@greensock.com
+ */
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;
+(_gsScope._gsQueue||(_gsScope._gsQueue=[])).push(function(){var R=Math.PI/180,Y=180/Math.PI,ha=/[achlmqstvz]|(-?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/gi,N=/(?:(-|-=|\+=)?\d*\.?\d*(?:e[\-+]?\d+)?)[0-9]/gi,ia=/[achlmqstvz]/gi,S=_gsScope.TweenLite,L=function(b){window.console&&console.log(b)},P=function(b){var f,e,a,d,c,h,g,n,q,p,t,v,r=(b+"").match(ha)||[],w=[],l=0,m=0,D=r.length,k=2,T=0;if(!b||!isNaN(r[0])||isNaN(r[1]))return L("ERROR: malformed path data: "+b),w;for(f=0;D>f;f++)if(e=c,isNaN(r[f])?(c=r[f].toUpperCase(),
+h=c!==r[f]):f--,a=+r[f+1],d=+r[f+2],h&&(a+=l,d+=m),0===f&&(n=a,q=d),"M"===c)g&&8>g.length&&(--w.length,k=0),l=n=a,m=q=d,g=[a,d],T+=k,k=2,w.push(g),f+=2,c="L";else if("C"===c)g||(g=[0,0]),g[k++]=a,g[k++]=d,h||(l=m=0),g[k++]=l+1*r[f+3],g[k++]=m+1*r[f+4],g[k++]=l+=1*r[f+5],g[k++]=m+=1*r[f+6],f+=6;else if("S"===c)"C"===e||"S"===e?(p=l-g[k-4],t=m-g[k-3],g[k++]=l+p,g[k++]=m+t):(g[k++]=l,g[k++]=m),g[k++]=a,g[k++]=d,h||(l=m=0),g[k++]=l+=1*r[f+3],g[k++]=m+=1*r[f+4],f+=4;else if("Q"===c)p=a-l,t=d-m,g[k++]=
+l+2*p/3,g[k++]=m+2*t/3,h||(l=m=0),l+=1*r[f+3],m+=1*r[f+4],p=a-l,t=d-m,g[k++]=l+2*p/3,g[k++]=m+2*t/3,g[k++]=l,g[k++]=m,f+=4;else if("T"===c)p=l-g[k-4],t=m-g[k-3],g[k++]=l+p,g[k++]=m+t,p=l+1.5*p-a,t=m+1.5*t-d,g[k++]=a+2*p/3,g[k++]=d+2*t/3,g[k++]=l=a,g[k++]=m=d,f+=2;else if("H"===c)d=m,g[k++]=l+(a-l)/3,g[k++]=m+(d-m)/3,g[k++]=l+2*(a-l)/3,g[k++]=m+2*(d-m)/3,g[k++]=l=a,g[k++]=d,f+=1;else if("V"===c)d=a,a=l,h&&(d+=m-l),g[k++]=a,g[k++]=m+(d-m)/3,g[k++]=a,g[k++]=m+2*(d-m)/3,g[k++]=a,g[k++]=m=d,f+=1;else if("L"===
+c||"Z"===c)"Z"===c&&(a=n,d=q,g.closed=!0),("L"===c||.5<Math.abs(l-a)||.5<Math.abs(m-d))&&(g[k++]=l+(a-l)/3,g[k++]=m+(d-m)/3,g[k++]=l+2*(a-l)/3,g[k++]=m+2*(d-m)/3,g[k++]=a,g[k++]=d,"L"===c&&(f+=2)),l=a,m=d;else if("A"===c){var F=1*r[f+1],C=1*r[f+2],y=1*r[f+5];e=(h?l:0)+1*r[f+6];v=(h?m:0)+1*r[f+7];if(l!==e||m!==v){var F=Math.abs(F),C=Math.abs(C),J=1*r[f+3]%360*R,K=Math.cos(J),J=Math.sin(J),A=(l-e)/2,x=(m-v)/2,B=K*A+J*x,A=-J*A+K*x,u=F*F,E=C*C,I=B*B,H=A*A,x=I/u+H/E;1<x&&(F*=Math.sqrt(x),C*=Math.sqrt(x),
+u=F*F,E=C*C);x=1*r[f+4]===y?-1:1;u=(u*E-u*H-E*I)/(u*H+E*I);0>u&&(u=0);var u=x*Math.sqrt(u),x=F*A/C*u,H=u*-(C*B/F),l=(l+e)/2+(K*x-J*H),m=(m+v)/2+(J*x+K*H),u=(B-x)/F,E=(A-H)/C,I=(-B-x)/F,A=(-A-H)/C,H=Math.sqrt(u*u+E*E),z=u,x=0>E?-1:1,B=x*Math.acos(z/H)*Y,H=Math.sqrt((u*u+E*E)*(I*I+A*A)),z=u*I+E*A,x=0>u*A-E*I?-1:1,u=x*Math.acos(z/H)*Y;!y&&0<u?u-=360:y&&0>u&&(u+=360);for(var u=u%360,B=B%360,x=A=y=void 0,y=B,B=u,H=I=E=u=x=A=void 0,z=Math.ceil(Math.abs(B)/90),G=0,M=[],y=y*R,B=B*R,A=B/z,x=4/3*Math.sin(A/
+2)/(1+Math.cos(A/2)),H=0;z>H;H++)u=y+H*A,E=Math.cos(u),I=Math.sin(u),M[G++]=E-x*I,M[G++]=I+x*E,u+=A,E=Math.cos(u),I=Math.sin(u),M[G++]=E+x*I,M[G++]=I-x*E,M[G++]=E,M[G++]=I;B=M;u=K*F;F*=J;J*=-C;C*=K;K=B.length-2;for(y=0;K>y;y+=2)A=B[y],x=B[y+1],B[y]=A*u+x*J+l,B[y+1]=A*F+x*C+m;e=(B[B.length-2]=e,B[B.length-1]=v,B)}else e=void 0;v=e;for(e=0;e<v.length;e++)g[k++]=v[e];l=g[k-2];m=g[k-1];f+=7}else L("Error: malformed path data: "+b);return w.totalPoints=T+k,w},Q=function(b,f){var e,a,d,c,h,g,n,q,p,t,v,
+r,w,l,m=0,D=b.length,k=f/((D-2)/6);for(w=2;D>w;w+=6)for(m+=k;.999999<m;)e=b[w-2],a=b[w-1],d=b[w],c=b[w+1],h=b[w+2],g=b[w+3],n=b[w+4],q=b[w+5],l=1/(Math.floor(m)+1),p=e+(d-e)*l,v=d+(h-d)*l,p+=(v-p)*l,v+=(h+(n-h)*l-v)*l,t=a+(c-a)*l,r=c+(g-c)*l,t+=(r-t)*l,r+=(g+(q-g)*l-r)*l,b.splice(w,4,e+(d-e)*l,a+(c-a)*l,p,t,p+(v-p)*l,t+(r-t)*l,v,r,h+(n-h)*l,g+(q-g)*l),w+=6,D+=6,m--;return b},Z=function(b){var f,e,a,d,c="",h=b.length;for(e=0;h>e;e++){d=b[e];c+="M"+d[0]+","+d[1]+" C";f=d.length;for(a=2;f>a;a++)c+=(100*
+d[a++]|0)/100+","+(100*d[a++]|0)/100+" "+(100*d[a++]|0)/100+","+(100*d[a++]|0)/100+" "+(100*d[a++]|0)/100+","+(100*d[a]|0)/100+" ";d.closed&&(c+="z")}return c},O=function(b){for(var f=[],e=b.length-1,a=0;-1<--e;)f[a++]=b[e],f[a++]=b[e+1],e--;for(e=0;a>e;e++)b[e]=f[e];b.reversed=b.reversed?!1:!0},aa=function(b){var f,e=b.length,a=0,d=0;for(f=0;e>f;f++)a+=b[f++],d+=b[f];return[a/(e/2),d/(e/2)]},G=function(b){var f,e,a,d=b.length,c=b[0],h=c,g=b[1],n=g;for(a=6;d>a;a+=6)f=b[a],e=b[a+1],f>c?c=f:h>f&&(h=
+f),e>g?g=e:n>e&&(n=e);return b.centerX=(c+h)/2,b.centerY=(g+n)/2,b.size=(c-h)*(g-n)},ba=function(b){for(var f,e,a,d,c,h=b.length,g=b[0][0],n=g,q=b[0][1],p=q;-1<--h;)for(c=b[h],f=c.length,d=6;f>d;d+=6)e=c[d],a=c[d+1],e>g?g=e:n>e&&(n=e),a>q?q=a:p>a&&(p=a);return b.centerX=(g+n)/2,b.centerY=(q+p)/2,b.size=(g-n)*(q-p)},ja=function(b,f){return f.length-b.length},ca=function(b,f){var e=b.size||G(b),a=f.size||G(f);return Math.abs(a-e)<(e+a)/20?f.centerX-b.centerX||f.centerY-b.centerY:a-e},da=function(b,
+f){var e,a,d=b.slice(0),c=b.length,h=c-2;f|=0;for(e=0;c>e;e++)a=(e+f)%h,b[e++]=d[a],b[e]=d[a+1]},U=function(b,f,e,a,d){var c,h,g,n=b.length,q=0,p=n-2;e*=6;for(h=0;n>h;h+=6)c=(h+e)%p,g=b[c]-(f[h]-a),c=b[c+1]-(f[h+1]-d),q+=Math.sqrt(c*c+g*g);return q},ka=function(b,f,e,a,d,c){var h,g,n=f.length,q=0;a*=Math.min(b.size||G(b),f[e].size||G(f[e]));var p=999999999999;d=b.centerX+d;for(b=b.centerY+c;n>e&&(h=f[e].size||G(f[e]),!(a>h));e++)g=f[e].centerX-d,c=f[e].centerY-b,g=Math.sqrt(g*g+c*c),p>g&&(q=e,p=g);
+return g=f[q],f.splice(q,1),g},ea=function(b,f,e,a){var d,c,h,g,n=f.length-b.length;d=0<n?f:b;c=0<n?b:f;var q=0,p="complexity"===a?ja:ca,t="position"===a?0:"number"==typeof a?a:.8;a=c.length;var v="object"==typeof e&&e.push?e.slice(0):[e],r="reverse"===v[0]||0>v[0],w="log"===e;if(c[0]){if(1<d.length&&(b.sort(p),f.sort(p),h=d.size||ba(d),h=c.size||ba(c),h=d.centerX-c.centerX,g=d.centerY-c.centerY,p===ca))for(a=0;a<c.length;a++)d.splice(a,0,ka(c[a],d,a,t,h,g));if(n)for(0>n&&(n=-n),d[0].length>c[0].length&&
+Q(c[0],(d[0].length-c[0].length)/6|0),a=c.length;n>q;){d[a].size||G(d[a]);var l=e=void 0,m=void 0;g=h=l=void 0;for(var p=c.length,t=99999999999,D=0,k=0;-1<--p;)for(e=c[p],g=e.length,h=0;g>h;h+=6)l=e[h]-d[a].centerX,m=e[h+1]-d[a].centerY,l=Math.sqrt(l*l+m*m),t>l&&(t=l,D=e[h],k=e[h+1]);h=[D,k];e=h[0];h=h[1];c[a++]=[e,h,e,h,e,h,e,h];c.totalPoints+=8;q++}for(a=0;a<b.length;a++)if(d=f[a],c=b[a],n=d.length-c.length,0>n?Q(d,-n/6|0):0<n&&Q(c,n/6|0),r&&!c.reversed&&O(c),e=v[a]||0===v[a]?v[a]:"auto"){if(c.closed||
+.5>Math.abs(c[0]-c[c.length-2])&&.5>Math.abs(c[1]-c[c.length-1]))if("auto"===e||"log"===e){n=a;q=c;e=d;h=0===a;k=D=t=void 0;g=q.length;for(var t=aa(q),D=aa(e),p=D[0]-t[0],l=D[1]-t[1],m=U(q,e,0,p,l),z=0,k=6;g>k;k+=6)D=U(q,e,k/6,p,l),m>D&&(m=D,z=k);if(h)for(t=q.slice(0),O(t),k=6;g>k;k+=6)D=U(t,e,k/6,p,l),m>D&&(m=D,z=-k);v[n]=e=z/6;0>e&&(r=!0,O(c),e=-e);da(c,6*e)}else"reverse"!==e&&(a&&0>e&&O(c),da(c,6*(0>e?-e:e)));else!r&&("auto"===e&&Math.abs(d[0]-c[0])+Math.abs(d[1]-c[1])+Math.abs(d[d.length-2]-c[c.length-
+2])+Math.abs(d[d.length-1]-c[c.length-1])>Math.abs(d[0]-c[c.length-2])+Math.abs(d[1]-c[c.length-1])+Math.abs(d[d.length-2]-c[0])+Math.abs(d[d.length-1]-c[1])||e%2)?(O(c),v[a]=-1,r=!0):"auto"===e?v[a]=0:"reverse"===e&&(v[a]=-1);c.closed!==d.closed&&(c.closed=d.closed=!1)}return w&&L("shapeIndex: "+v),v}},V=function(b,f,e,a){var d=P(b[0]),c=P(b[1]);ea(d,c,f||0===f?f:"auto",e)&&(b[0]=Z(d),b[1]=Z(c),("log"===a||!0===a)&&L('precompile:["'+b[0]+'","'+b[1]+'"]'))},la=function(b,f,e){return f||e||b||0===
+b?function(a){V(a,b,f,e)}:V},fa=function(b,f){var e,a,d,c,h,g,n,q=0,p=parseFloat(b[0]),t=parseFloat(b[1]),v=p+","+t+" ";d=b.length;e=.5*f/(.5*d-1);for(a=0;d-2>a;a+=2){if(q+=e,g=parseFloat(b[a+2]),n=parseFloat(b[a+3]),.999999<q)for(h=1/(Math.floor(q)+1),c=1;.999999<q;)v+=(p+(g-p)*h*c).toFixed(2)+","+(t+(n-t)*h*c).toFixed(2)+" ",q--,c++;v+=g+","+n+" ";p=g;t=n}return v},W=function(b){var f=b[0].match(N)||[],e=b[1].match(N)||[],a=e.length-f.length;0<a?b[0]=fa(f,a):b[1]=fa(e,-a)},ma=function(b){return isNaN(b)?
+W:function(f){W(f);var e;var a=f[1],d=parseInt(b,10);if(d){var c,a=a.match(N)||[],h=a.length,g="";"reverse"===d?(c=h-1,e=-2):(c=(2*(parseInt(d,10)||0)+1+100*h)%h,e=2);for(d=0;h>d;d+=2)g+=a[c-1]+","+a[c]+" ",c=(c+e)%h;e=g}else e=a;f[1]=e}},ga=function(b,f){var e,a,d,c,h,g,n,q,p,t,v,r,w,l,m,D,k,z,F,C,y=b.tagName.toLowerCase();if("path"!==y&&b.getBBox){for(var J="x,y,width,height,cx,cy,rx,ry,r,x1,x2,y1,y2,points",G=document.createElementNS("http://www.w3.org/2000/svg","path"),A=Array.prototype.slice.call(b.attributes),
+x=A.length,J=","+J+",";-1<--x;)-1===J.indexOf(","+A[x].nodeName+",")&&G.setAttributeNS(null,A[x].nodeName,A[x].nodeValue);y=("rect"===y?(c=+b.getAttribute("rx")||0,h=+b.getAttribute("ry")||0,a=+b.getAttribute("x")||0,d=+b.getAttribute("y")||0,p=(+b.getAttribute("width")||0)-2*c,t=(+b.getAttribute("height")||0)-2*h,c||h?(v=a+c*(1-.552284749831),r=a+c,w=r+p,l=w+.552284749831*c,m=w+c,D=d+h*(1-.552284749831),k=d+h,z=k+t,F=z+.552284749831*h,C=z+h,e="M"+m+","+k+" V"+z+" C"+[m,F,l,C,w,C,w-(w-r)/3,C,r+(w-
+r)/3,C,r,C,v,C,a,F,a,z,a,z-(z-k)/3,a,k+(z-k)/3,a,k,a,D,v,d,r,d,r+(w-r)/3,d,w-(w-r)/3,d,w,d,l,d,m,D,m,k].join()+"z"):e="M"+(a+p)+","+d+" v"+t+" h"+-p+" v"+-t+" h"+p+"z"):"circle"===y||"ellipse"===y?("circle"===y?(c=h=+b.getAttribute("r")||0,n=.552284749831*c):(c=+b.getAttribute("rx")||0,h=+b.getAttribute("ry")||0,n=.552284749831*h),a=+b.getAttribute("cx")||0,d=+b.getAttribute("cy")||0,g=.552284749831*c,e="M"+(a+c)+","+d+" C"+[a+c,d+n,a+g,d+h,a,d+h,a-g,d+h,a-c,d+n,a-c,d,a-c,d-n,a-g,d-h,a,d-h,a+g,d-
+h,a+c,d-n,a+c,d].join()+"z"):"line"===y?e="M"+b.getAttribute("x1")+","+b.getAttribute("y1")+" L"+b.getAttribute("x2")+","+b.getAttribute("y2"):("polyline"===y||"polygon"===y)&&(q=(b.getAttribute("points")+"").match(N)||[],a=q.shift(),d=q.shift(),e="M"+a+","+d+" L"+q.join(","),"polygon"===y&&(e+=","+a+","+d+"z")),G.setAttribute("d",e),f&&b.parentNode&&(b.parentNode.insertBefore(G,b),b.parentNode.removeChild(b)),G)}else y=b;return y},X=function(b,f,e){var a,d,c="string"==typeof b;return(!c||3>(b.match(N)||
+[]).length)&&(a=c?S.selector(b):[b],a&&a[0]?(a=a[0],d=a.nodeName.toUpperCase(),f&&"PATH"!==d&&(a=ga(a,!1),d="PATH"),b=a.getAttribute("PATH"===d?"d":"points")||"",a===e&&(b=a.getAttributeNS(null,"data-original")||b)):(L("WARNING: invalid morph to: "+b),b=!1)),b},z=_gsScope._gsDefine.plugin({propName:"morphSVG",API:2,global:!0,version:"0.8.1",init:function(b,f,e){var a,d,c,h,g;return"function"!=typeof b.setAttribute?!1:(a=b.nodeName.toUpperCase(),g="POLYLINE"===a||"POLYGON"===a,"PATH"===a||g?(d="PATH"===
+a?"d":"points",("string"==typeof f||f.getBBox||f[0])&&(f={shape:f}),h=X(f.shape||f.d||f.points||"","d"===d,b),g&&ia.test(h)?(L("WARNING: a <"+a+"> cannot accept path data. Use MorphSVGPlugin.convertToPath(elementOrSelectorText) to convert to a path before morphing."),!1):(h&&(this._target=b,b.getAttributeNS(null,"data-original")||b.setAttributeNS(null,"data-original",b.getAttribute(d)),c=this._addTween(b,"setAttribute",b.getAttribute(d)+"",h+"","morphSVG",!1,d,"object"==typeof f.precompile?function(a){a[0]=
+f.precompile[0];a[1]=f.precompile[1]}:"d"===d?la(f.shapeIndex,f.map||z.defaultMap,f.precompile):ma(f.shapeIndex)),c&&(this._overwriteProps.push("morphSVG"),c.end=h,c.endProp=d)),!0)):(L("WARNING: cannot morph a <"+a+"> SVG element. Use MorphSVGPlugin.convertToPath(elementOrSelectorText) to convert to a path before morphing."),!1))},set:function(b){if(this._super.setRatio.call(this,b),1===b)for(b=this._firstPT;b;)b.end&&this._target.setAttribute(b.endProp,b.end),b=b._next}});z.pathFilter=V;z.pointsFilter=
+W;z.subdivideRawBezier=Q;z.defaultMap="size";z.pathDataToRawBezier=function(b){return P(X(b,!0))};z.equalizeSegmentQuantity=ea;z.convertToPath=function(b,f){"string"==typeof b&&(b=S.selector(b));for(var e=b&&0!==b.length?b.length&&b[0]&&b[0].nodeType?Array.prototype.slice.call(b,0):[b]:[],a=e.length;-1<--a;)e[a]=ga(e[a],!1!==f);return e};z.pathDataToBezier=function(b,f){var e,a,d,c,h,g,n,q=P(X(b,!0))[0]||[],p=0;if(f=f||{},n=f.align||f.relative,c=f.matrix||[1,0,0,1,0,0],h=f.offsetX||0,g=f.offsetY||
+0,"relative"===n||!0===n?(h-=q[0]*c[0]+q[1]*c[2],g-=q[0]*c[1]+q[1]*c[3],p="+="):(h+=c[4],g+=c[5],n&&(n="string"==typeof n?S.selector(n):[n],n&&n[0]&&(a=n[0].getBBox()||{x:0,y:0},h-=a.x,g-=a.y))),e=[],d=q.length,c)for(a=0;d>a;a+=2)e.push({x:p+(q[a]*c[0]+q[a+1]*c[2]+h),y:p+(q[a]*c[1]+q[a+1]*c[3]+g)});else for(a=0;d>a;a+=2)e.push({x:p+(q[a]+h),y:p+(q[a+1]+g)});return e}});_gsScope._gsDefine&&_gsScope._gsQueue.pop()();
+/*! Hammer.JS - v2.0.6 - 2015-12-23
+ * http://hammerjs.github.io/
+ *
+ * Copyright (c) 2015 Jorik Tangelder;
+ * Licensed under the  license */
+!function(a,b,c,d){"use strict";function e(a,b,c){return setTimeout(j(a,c),b)}function f(a,b,c){return Array.isArray(a)?(g(a,c[b],c),!0):!1}function g(a,b,c){var e;if(a)if(a.forEach)a.forEach(b,c);else if(a.length!==d)for(e=0;e<a.length;)b.call(c,a[e],e,a),e++;else for(e in a)a.hasOwnProperty(e)&&b.call(c,a[e],e,a)}function h(b,c,d){var e="DEPRECATED METHOD: "+c+"\n"+d+" AT \n";return function(){var c=new Error("get-stack-trace"),d=c&&c.stack?c.stack.replace(/^[^\(]+?[\n$]/gm,"").replace(/^\s+at\s+/gm,"").replace(/^Object.<anonymous>\s*\(/gm,"{anonymous}()@"):"Unknown Stack Trace",f=a.console&&(a.console.warn||a.console.log);return f&&f.call(a.console,e,d),b.apply(this,arguments)}}function i(a,b,c){var d,e=b.prototype;d=a.prototype=Object.create(e),d.constructor=a,d._super=e,c&&hb(d,c)}function j(a,b){return function(){return a.apply(b,arguments)}}function k(a,b){return typeof a==kb?a.apply(b?b[0]||d:d,b):a}function l(a,b){return a===d?b:a}function m(a,b,c){g(q(b),function(b){a.addEventListener(b,c,!1)})}function n(a,b,c){g(q(b),function(b){a.removeEventListener(b,c,!1)})}function o(a,b){for(;a;){if(a==b)return!0;a=a.parentNode}return!1}function p(a,b){return a.indexOf(b)>-1}function q(a){return a.trim().split(/\s+/g)}function r(a,b,c){if(a.indexOf&&!c)return a.indexOf(b);for(var d=0;d<a.length;){if(c&&a[d][c]==b||!c&&a[d]===b)return d;d++}return-1}function s(a){return Array.prototype.slice.call(a,0)}function t(a,b,c){for(var d=[],e=[],f=0;f<a.length;){var g=b?a[f][b]:a[f];r(e,g)<0&&d.push(a[f]),e[f]=g,f++}return c&&(d=b?d.sort(function(a,c){return a[b]>c[b]}):d.sort()),d}function u(a,b){for(var c,e,f=b[0].toUpperCase()+b.slice(1),g=0;g<ib.length;){if(c=ib[g],e=c?c+f:b,e in a)return e;g++}return d}function v(){return qb++}function w(b){var c=b.ownerDocument||b;return c.defaultView||c.parentWindow||a}function x(a,b){var c=this;this.manager=a,this.callback=b,this.element=a.element,this.target=a.options.inputTarget,this.domHandler=function(b){k(a.options.enable,[a])&&c.handler(b)},this.init()}function y(a){var b,c=a.options.inputClass;return new(b=c?c:tb?M:ub?P:sb?R:L)(a,z)}function z(a,b,c){var d=c.pointers.length,e=c.changedPointers.length,f=b&Ab&&d-e===0,g=b&(Cb|Db)&&d-e===0;c.isFirst=!!f,c.isFinal=!!g,f&&(a.session={}),c.eventType=b,A(a,c),a.emit("hammer.input",c),a.recognize(c),a.session.prevInput=c}function A(a,b){var c=a.session,d=b.pointers,e=d.length;c.firstInput||(c.firstInput=D(b)),e>1&&!c.firstMultiple?c.firstMultiple=D(b):1===e&&(c.firstMultiple=!1);var f=c.firstInput,g=c.firstMultiple,h=g?g.center:f.center,i=b.center=E(d);b.timeStamp=nb(),b.deltaTime=b.timeStamp-f.timeStamp,b.angle=I(h,i),b.distance=H(h,i),B(c,b),b.offsetDirection=G(b.deltaX,b.deltaY);var j=F(b.deltaTime,b.deltaX,b.deltaY);b.overallVelocityX=j.x,b.overallVelocityY=j.y,b.overallVelocity=mb(j.x)>mb(j.y)?j.x:j.y,b.scale=g?K(g.pointers,d):1,b.rotation=g?J(g.pointers,d):0,b.maxPointers=c.prevInput?b.pointers.length>c.prevInput.maxPointers?b.pointers.length:c.prevInput.maxPointers:b.pointers.length,C(c,b);var k=a.element;o(b.srcEvent.target,k)&&(k=b.srcEvent.target),b.target=k}function B(a,b){var c=b.center,d=a.offsetDelta||{},e=a.prevDelta||{},f=a.prevInput||{};(b.eventType===Ab||f.eventType===Cb)&&(e=a.prevDelta={x:f.deltaX||0,y:f.deltaY||0},d=a.offsetDelta={x:c.x,y:c.y}),b.deltaX=e.x+(c.x-d.x),b.deltaY=e.y+(c.y-d.y)}function C(a,b){var c,e,f,g,h=a.lastInterval||b,i=b.timeStamp-h.timeStamp;if(b.eventType!=Db&&(i>zb||h.velocity===d)){var j=b.deltaX-h.deltaX,k=b.deltaY-h.deltaY,l=F(i,j,k);e=l.x,f=l.y,c=mb(l.x)>mb(l.y)?l.x:l.y,g=G(j,k),a.lastInterval=b}else c=h.velocity,e=h.velocityX,f=h.velocityY,g=h.direction;b.velocity=c,b.velocityX=e,b.velocityY=f,b.direction=g}function D(a){for(var b=[],c=0;c<a.pointers.length;)b[c]={clientX:lb(a.pointers[c].clientX),clientY:lb(a.pointers[c].clientY)},c++;return{timeStamp:nb(),pointers:b,center:E(b),deltaX:a.deltaX,deltaY:a.deltaY}}function E(a){var b=a.length;if(1===b)return{x:lb(a[0].clientX),y:lb(a[0].clientY)};for(var c=0,d=0,e=0;b>e;)c+=a[e].clientX,d+=a[e].clientY,e++;return{x:lb(c/b),y:lb(d/b)}}function F(a,b,c){return{x:b/a||0,y:c/a||0}}function G(a,b){return a===b?Eb:mb(a)>=mb(b)?0>a?Fb:Gb:0>b?Hb:Ib}function H(a,b,c){c||(c=Mb);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return Math.sqrt(d*d+e*e)}function I(a,b,c){c||(c=Mb);var d=b[c[0]]-a[c[0]],e=b[c[1]]-a[c[1]];return 180*Math.atan2(e,d)/Math.PI}function J(a,b){return I(b[1],b[0],Nb)+I(a[1],a[0],Nb)}function K(a,b){return H(b[0],b[1],Nb)/H(a[0],a[1],Nb)}function L(){this.evEl=Pb,this.evWin=Qb,this.allow=!0,this.pressed=!1,x.apply(this,arguments)}function M(){this.evEl=Tb,this.evWin=Ub,x.apply(this,arguments),this.store=this.manager.session.pointerEvents=[]}function N(){this.evTarget=Wb,this.evWin=Xb,this.started=!1,x.apply(this,arguments)}function O(a,b){var c=s(a.touches),d=s(a.changedTouches);return b&(Cb|Db)&&(c=t(c.concat(d),"identifier",!0)),[c,d]}function P(){this.evTarget=Zb,this.targetIds={},x.apply(this,arguments)}function Q(a,b){var c=s(a.touches),d=this.targetIds;if(b&(Ab|Bb)&&1===c.length)return d[c[0].identifier]=!0,[c,c];var e,f,g=s(a.changedTouches),h=[],i=this.target;if(f=c.filter(function(a){return o(a.target,i)}),b===Ab)for(e=0;e<f.length;)d[f[e].identifier]=!0,e++;for(e=0;e<g.length;)d[g[e].identifier]&&h.push(g[e]),b&(Cb|Db)&&delete d[g[e].identifier],e++;return h.length?[t(f.concat(h),"identifier",!0),h]:void 0}function R(){x.apply(this,arguments);var a=j(this.handler,this);this.touch=new P(this.manager,a),this.mouse=new L(this.manager,a)}function S(a,b){this.manager=a,this.set(b)}function T(a){if(p(a,dc))return dc;var b=p(a,ec),c=p(a,fc);return b&&c?dc:b||c?b?ec:fc:p(a,cc)?cc:bc}function U(a){this.options=hb({},this.defaults,a||{}),this.id=v(),this.manager=null,this.options.enable=l(this.options.enable,!0),this.state=gc,this.simultaneous={},this.requireFail=[]}function V(a){return a&lc?"cancel":a&jc?"end":a&ic?"move":a&hc?"start":""}function W(a){return a==Ib?"down":a==Hb?"up":a==Fb?"left":a==Gb?"right":""}function X(a,b){var c=b.manager;return c?c.get(a):a}function Y(){U.apply(this,arguments)}function Z(){Y.apply(this,arguments),this.pX=null,this.pY=null}function $(){Y.apply(this,arguments)}function _(){U.apply(this,arguments),this._timer=null,this._input=null}function ab(){Y.apply(this,arguments)}function bb(){Y.apply(this,arguments)}function cb(){U.apply(this,arguments),this.pTime=!1,this.pCenter=!1,this._timer=null,this._input=null,this.count=0}function db(a,b){return b=b||{},b.recognizers=l(b.recognizers,db.defaults.preset),new eb(a,b)}function eb(a,b){this.options=hb({},db.defaults,b||{}),this.options.inputTarget=this.options.inputTarget||a,this.handlers={},this.session={},this.recognizers=[],this.element=a,this.input=y(this),this.touchAction=new S(this,this.options.touchAction),fb(this,!0),g(this.options.recognizers,function(a){var b=this.add(new a[0](a[1]));a[2]&&b.recognizeWith(a[2]),a[3]&&b.requireFailure(a[3])},this)}function fb(a,b){var c=a.element;c.style&&g(a.options.cssProps,function(a,d){c.style[u(c.style,d)]=b?a:""})}function gb(a,c){var d=b.createEvent("Event");d.initEvent(a,!0,!0),d.gesture=c,c.target.dispatchEvent(d)}var hb,ib=["","webkit","Moz","MS","ms","o"],jb=b.createElement("div"),kb="function",lb=Math.round,mb=Math.abs,nb=Date.now;hb="function"!=typeof Object.assign?function(a){if(a===d||null===a)throw new TypeError("Cannot convert undefined or null to object");for(var b=Object(a),c=1;c<arguments.length;c++){var e=arguments[c];if(e!==d&&null!==e)for(var f in e)e.hasOwnProperty(f)&&(b[f]=e[f])}return b}:Object.assign;var ob=h(function(a,b,c){for(var e=Object.keys(b),f=0;f<e.length;)(!c||c&&a[e[f]]===d)&&(a[e[f]]=b[e[f]]),f++;return a},"extend","Use `assign`."),pb=h(function(a,b){return ob(a,b,!0)},"merge","Use `assign`."),qb=1,rb=/mobile|tablet|ip(ad|hone|od)|android/i,sb="ontouchstart"in a,tb=u(a,"PointerEvent")!==d,ub=sb&&rb.test(navigator.userAgent),vb="touch",wb="pen",xb="mouse",yb="kinect",zb=25,Ab=1,Bb=2,Cb=4,Db=8,Eb=1,Fb=2,Gb=4,Hb=8,Ib=16,Jb=Fb|Gb,Kb=Hb|Ib,Lb=Jb|Kb,Mb=["x","y"],Nb=["clientX","clientY"];x.prototype={handler:function(){},init:function(){this.evEl&&m(this.element,this.evEl,this.domHandler),this.evTarget&&m(this.target,this.evTarget,this.domHandler),this.evWin&&m(w(this.element),this.evWin,this.domHandler)},destroy:function(){this.evEl&&n(this.element,this.evEl,this.domHandler),this.evTarget&&n(this.target,this.evTarget,this.domHandler),this.evWin&&n(w(this.element),this.evWin,this.domHandler)}};var Ob={mousedown:Ab,mousemove:Bb,mouseup:Cb},Pb="mousedown",Qb="mousemove mouseup";i(L,x,{handler:function(a){var b=Ob[a.type];b&Ab&&0===a.button&&(this.pressed=!0),b&Bb&&1!==a.which&&(b=Cb),this.pressed&&this.allow&&(b&Cb&&(this.pressed=!1),this.callback(this.manager,b,{pointers:[a],changedPointers:[a],pointerType:xb,srcEvent:a}))}});var Rb={pointerdown:Ab,pointermove:Bb,pointerup:Cb,pointercancel:Db,pointerout:Db},Sb={2:vb,3:wb,4:xb,5:yb},Tb="pointerdown",Ub="pointermove pointerup pointercancel";a.MSPointerEvent&&!a.PointerEvent&&(Tb="MSPointerDown",Ub="MSPointerMove MSPointerUp MSPointerCancel"),i(M,x,{handler:function(a){var b=this.store,c=!1,d=a.type.toLowerCase().replace("ms",""),e=Rb[d],f=Sb[a.pointerType]||a.pointerType,g=f==vb,h=r(b,a.pointerId,"pointerId");e&Ab&&(0===a.button||g)?0>h&&(b.push(a),h=b.length-1):e&(Cb|Db)&&(c=!0),0>h||(b[h]=a,this.callback(this.manager,e,{pointers:b,changedPointers:[a],pointerType:f,srcEvent:a}),c&&b.splice(h,1))}});var Vb={touchstart:Ab,touchmove:Bb,touchend:Cb,touchcancel:Db},Wb="touchstart",Xb="touchstart touchmove touchend touchcancel";i(N,x,{handler:function(a){var b=Vb[a.type];if(b===Ab&&(this.started=!0),this.started){var c=O.call(this,a,b);b&(Cb|Db)&&c[0].length-c[1].length===0&&(this.started=!1),this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:vb,srcEvent:a})}}});var Yb={touchstart:Ab,touchmove:Bb,touchend:Cb,touchcancel:Db},Zb="touchstart touchmove touchend touchcancel";i(P,x,{handler:function(a){var b=Yb[a.type],c=Q.call(this,a,b);c&&this.callback(this.manager,b,{pointers:c[0],changedPointers:c[1],pointerType:vb,srcEvent:a})}}),i(R,x,{handler:function(a,b,c){var d=c.pointerType==vb,e=c.pointerType==xb;if(d)this.mouse.allow=!1;else if(e&&!this.mouse.allow)return;b&(Cb|Db)&&(this.mouse.allow=!0),this.callback(a,b,c)},destroy:function(){this.touch.destroy(),this.mouse.destroy()}});var $b=u(jb.style,"touchAction"),_b=$b!==d,ac="compute",bc="auto",cc="manipulation",dc="none",ec="pan-x",fc="pan-y";S.prototype={set:function(a){a==ac&&(a=this.compute()),_b&&this.manager.element.style&&(this.manager.element.style[$b]=a),this.actions=a.toLowerCase().trim()},update:function(){this.set(this.manager.options.touchAction)},compute:function(){var a=[];return g(this.manager.recognizers,function(b){k(b.options.enable,[b])&&(a=a.concat(b.getTouchAction()))}),T(a.join(" "))},preventDefaults:function(a){if(!_b){var b=a.srcEvent,c=a.offsetDirection;if(this.manager.session.prevented)return void b.preventDefault();var d=this.actions,e=p(d,dc),f=p(d,fc),g=p(d,ec);if(e){var h=1===a.pointers.length,i=a.distance<2,j=a.deltaTime<250;if(h&&i&&j)return}if(!g||!f)return e||f&&c&Jb||g&&c&Kb?this.preventSrc(b):void 0}},preventSrc:function(a){this.manager.session.prevented=!0,a.preventDefault()}};var gc=1,hc=2,ic=4,jc=8,kc=jc,lc=16,mc=32;U.prototype={defaults:{},set:function(a){return hb(this.options,a),this.manager&&this.manager.touchAction.update(),this},recognizeWith:function(a){if(f(a,"recognizeWith",this))return this;var b=this.simultaneous;return a=X(a,this),b[a.id]||(b[a.id]=a,a.recognizeWith(this)),this},dropRecognizeWith:function(a){return f(a,"dropRecognizeWith",this)?this:(a=X(a,this),delete this.simultaneous[a.id],this)},requireFailure:function(a){if(f(a,"requireFailure",this))return this;var b=this.requireFail;return a=X(a,this),-1===r(b,a)&&(b.push(a),a.requireFailure(this)),this},dropRequireFailure:function(a){if(f(a,"dropRequireFailure",this))return this;a=X(a,this);var b=r(this.requireFail,a);return b>-1&&this.requireFail.splice(b,1),this},hasRequireFailures:function(){return this.requireFail.length>0},canRecognizeWith:function(a){return!!this.simultaneous[a.id]},emit:function(a){function b(b){c.manager.emit(b,a)}var c=this,d=this.state;jc>d&&b(c.options.event+V(d)),b(c.options.event),a.additionalEvent&&b(a.additionalEvent),d>=jc&&b(c.options.event+V(d))},tryEmit:function(a){return this.canEmit()?this.emit(a):void(this.state=mc)},canEmit:function(){for(var a=0;a<this.requireFail.length;){if(!(this.requireFail[a].state&(mc|gc)))return!1;a++}return!0},recognize:function(a){var b=hb({},a);return k(this.options.enable,[this,b])?(this.state&(kc|lc|mc)&&(this.state=gc),this.state=this.process(b),void(this.state&(hc|ic|jc|lc)&&this.tryEmit(b))):(this.reset(),void(this.state=mc))},process:function(){},getTouchAction:function(){},reset:function(){}},i(Y,U,{defaults:{pointers:1},attrTest:function(a){var b=this.options.pointers;return 0===b||a.pointers.length===b},process:function(a){var b=this.state,c=a.eventType,d=b&(hc|ic),e=this.attrTest(a);return d&&(c&Db||!e)?b|lc:d||e?c&Cb?b|jc:b&hc?b|ic:hc:mc}}),i(Z,Y,{defaults:{event:"pan",threshold:10,pointers:1,direction:Lb},getTouchAction:function(){var a=this.options.direction,b=[];return a&Jb&&b.push(fc),a&Kb&&b.push(ec),b},directionTest:function(a){var b=this.options,c=!0,d=a.distance,e=a.direction,f=a.deltaX,g=a.deltaY;return e&b.direction||(b.direction&Jb?(e=0===f?Eb:0>f?Fb:Gb,c=f!=this.pX,d=Math.abs(a.deltaX)):(e=0===g?Eb:0>g?Hb:Ib,c=g!=this.pY,d=Math.abs(a.deltaY))),a.direction=e,c&&d>b.threshold&&e&b.direction},attrTest:function(a){return Y.prototype.attrTest.call(this,a)&&(this.state&hc||!(this.state&hc)&&this.directionTest(a))},emit:function(a){this.pX=a.deltaX,this.pY=a.deltaY;var b=W(a.direction);b&&(a.additionalEvent=this.options.event+b),this._super.emit.call(this,a)}}),i($,Y,{defaults:{event:"pinch",threshold:0,pointers:2},getTouchAction:function(){return[dc]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.scale-1)>this.options.threshold||this.state&hc)},emit:function(a){if(1!==a.scale){var b=a.scale<1?"in":"out";a.additionalEvent=this.options.event+b}this._super.emit.call(this,a)}}),i(_,U,{defaults:{event:"press",pointers:1,time:251,threshold:9},getTouchAction:function(){return[bc]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime>b.time;if(this._input=a,!d||!c||a.eventType&(Cb|Db)&&!f)this.reset();else if(a.eventType&Ab)this.reset(),this._timer=e(function(){this.state=kc,this.tryEmit()},b.time,this);else if(a.eventType&Cb)return kc;return mc},reset:function(){clearTimeout(this._timer)},emit:function(a){this.state===kc&&(a&&a.eventType&Cb?this.manager.emit(this.options.event+"up",a):(this._input.timeStamp=nb(),this.manager.emit(this.options.event,this._input)))}}),i(ab,Y,{defaults:{event:"rotate",threshold:0,pointers:2},getTouchAction:function(){return[dc]},attrTest:function(a){return this._super.attrTest.call(this,a)&&(Math.abs(a.rotation)>this.options.threshold||this.state&hc)}}),i(bb,Y,{defaults:{event:"swipe",threshold:10,velocity:.3,direction:Jb|Kb,pointers:1},getTouchAction:function(){return Z.prototype.getTouchAction.call(this)},attrTest:function(a){var b,c=this.options.direction;return c&(Jb|Kb)?b=a.overallVelocity:c&Jb?b=a.overallVelocityX:c&Kb&&(b=a.overallVelocityY),this._super.attrTest.call(this,a)&&c&a.offsetDirection&&a.distance>this.options.threshold&&a.maxPointers==this.options.pointers&&mb(b)>this.options.velocity&&a.eventType&Cb},emit:function(a){var b=W(a.offsetDirection);b&&this.manager.emit(this.options.event+b,a),this.manager.emit(this.options.event,a)}}),i(cb,U,{defaults:{event:"tap",pointers:1,taps:1,interval:300,time:250,threshold:9,posThreshold:10},getTouchAction:function(){return[cc]},process:function(a){var b=this.options,c=a.pointers.length===b.pointers,d=a.distance<b.threshold,f=a.deltaTime<b.time;if(this.reset(),a.eventType&Ab&&0===this.count)return this.failTimeout();if(d&&f&&c){if(a.eventType!=Cb)return this.failTimeout();var g=this.pTime?a.timeStamp-this.pTime<b.interval:!0,h=!this.pCenter||H(this.pCenter,a.center)<b.posThreshold;this.pTime=a.timeStamp,this.pCenter=a.center,h&&g?this.count+=1:this.count=1,this._input=a;var i=this.count%b.taps;if(0===i)return this.hasRequireFailures()?(this._timer=e(function(){this.state=kc,this.tryEmit()},b.interval,this),hc):kc}return mc},failTimeout:function(){return this._timer=e(function(){this.state=mc},this.options.interval,this),mc},reset:function(){clearTimeout(this._timer)},emit:function(){this.state==kc&&(this._input.tapCount=this.count,this.manager.emit(this.options.event,this._input))}}),db.VERSION="2.0.6",db.defaults={domEvents:!1,touchAction:ac,enable:!0,inputTarget:null,inputClass:null,preset:[[ab,{enable:!1}],[$,{enable:!1},["rotate"]],[bb,{direction:Jb}],[Z,{direction:Jb},["swipe"]],[cb],[cb,{event:"doubletap",taps:2},["tap"]],[_]],cssProps:{userSelect:"none",touchSelect:"none",touchCallout:"none",contentZooming:"none",userDrag:"none",tapHighlightColor:"rgba(0,0,0,0)"}};var nc=1,oc=2;eb.prototype={set:function(a){return hb(this.options,a),a.touchAction&&this.touchAction.update(),a.inputTarget&&(this.input.destroy(),this.input.target=a.inputTarget,this.input.init()),this},stop:function(a){this.session.stopped=a?oc:nc},recognize:function(a){var b=this.session;if(!b.stopped){this.touchAction.preventDefaults(a);var c,d=this.recognizers,e=b.curRecognizer;(!e||e&&e.state&kc)&&(e=b.curRecognizer=null);for(var f=0;f<d.length;)c=d[f],b.stopped===oc||e&&c!=e&&!c.canRecognizeWith(e)?c.reset():c.recognize(a),!e&&c.state&(hc|ic|jc)&&(e=b.curRecognizer=c),f++}},get:function(a){if(a instanceof U)return a;for(var b=this.recognizers,c=0;c<b.length;c++)if(b[c].options.event==a)return b[c];return null},add:function(a){if(f(a,"add",this))return this;var b=this.get(a.options.event);return b&&this.remove(b),this.recognizers.push(a),a.manager=this,this.touchAction.update(),a},remove:function(a){if(f(a,"remove",this))return this;if(a=this.get(a)){var b=this.recognizers,c=r(b,a);-1!==c&&(b.splice(c,1),this.touchAction.update())}return this},on:function(a,b){var c=this.handlers;return g(q(a),function(a){c[a]=c[a]||[],c[a].push(b)}),this},off:function(a,b){var c=this.handlers;return g(q(a),function(a){b?c[a]&&c[a].splice(r(c[a],b),1):delete c[a]}),this},emit:function(a,b){this.options.domEvents&&gb(a,b);var c=this.handlers[a]&&this.handlers[a].slice();if(c&&c.length){b.type=a,b.preventDefault=function(){b.srcEvent.preventDefault()};for(var d=0;d<c.length;)c[d](b),d++}},destroy:function(){this.element&&fb(this,!1),this.handlers={},this.session={},this.input.destroy(),this.element=null}},hb(db,{INPUT_START:Ab,INPUT_MOVE:Bb,INPUT_END:Cb,INPUT_CANCEL:Db,STATE_POSSIBLE:gc,STATE_BEGAN:hc,STATE_CHANGED:ic,STATE_ENDED:jc,STATE_RECOGNIZED:kc,STATE_CANCELLED:lc,STATE_FAILED:mc,DIRECTION_NONE:Eb,DIRECTION_LEFT:Fb,DIRECTION_RIGHT:Gb,DIRECTION_UP:Hb,DIRECTION_DOWN:Ib,DIRECTION_HORIZONTAL:Jb,DIRECTION_VERTICAL:Kb,DIRECTION_ALL:Lb,Manager:eb,Input:x,TouchAction:S,TouchInput:P,MouseInput:L,PointerEventInput:M,TouchMouseInput:R,SingleTouchInput:N,Recognizer:U,AttrRecognizer:Y,Tap:cb,Pan:Z,Swipe:bb,Pinch:$,Rotate:ab,Press:_,on:m,off:n,each:g,merge:pb,extend:ob,assign:hb,inherit:i,bindFn:j,prefixed:u});var pc="undefined"!=typeof a?a:"undefined"!=typeof self?self:{};pc.Hammer=db,"function"==typeof define&&define.amd?define(function(){return db}):"undefined"!=typeof module&&module.exports?module.exports=db:a[c]=db}(window,document,"Hammer");
+//# sourceMappingURL=hammer.min.map
+//
+// Generated on Tue Dec 16 2014 12:13:47 GMT+0100 (CET) by Charlie Robbins, Paolo Fragomeni & the Contributors (Using Codesurgeon).
+// Version 1.2.6
+//
+(function(a){function k(a,b,c,d){var e=0,f=0,g=0,c=(c||"(").toString(),d=(d||")").toString(),h;for(h=0;h<a.length;h++){var i=a[h];if(i.indexOf(c,e)>i.indexOf(d,e)||~i.indexOf(c,e)&&!~i.indexOf(d,e)||!~i.indexOf(c,e)&&~i.indexOf(d,e)){f=i.indexOf(c,e),g=i.indexOf(d,e);if(~f&&!~g||!~f&&~g){var j=a.slice(0,(h||1)+1).join(b);a=[j].concat(a.slice((h||1)+1))}e=(g>f?g:f)+1,h=0}else e=0}return a}function j(a,b){var c,d=0,e="";while(c=a.substr(d).match(/[^\w\d\- %@&]*\*[^\w\d\- %@&]*/))d=c.index+c[0].length,c[0]=c[0].replace(/^\*/,"([_.()!\\ %@&a-zA-Z0-9-]+)"),e+=a.substr(0,c.index)+c[0];a=e+=a.substr(d);var f=a.match(/:([^\/]+)/ig),g,h;if(f){h=f.length;for(var j=0;j<h;j++)g=f[j],g.slice(0,2)==="::"?a=g.slice(1):a=a.replace(g,i(g,b))}return a}function i(a,b,c){c=a;for(var d in b)if(b.hasOwnProperty(d)){c=b[d](a);if(c!==a)break}return c===a?"([._a-zA-Z0-9-%()]+)":c}function h(a,b,c){if(!a.length)return c();var d=0;(function e(){b(a[d],function(b){b||b===!1?(c(b),c=function(){}):(d+=1,d===a.length?c():e())})})()}function g(a){var b=[];for(var c=0,d=a.length;c<d;c++)b=b.concat(a[c]);return b}function f(a,b){for(var c=0;c<a.length;c+=1)if(b(a[c],c,a)===!1)return}function c(){return b.hash===""||b.hash==="#"}var b=document.location,d={mode:"modern",hash:b.hash,history:!1,check:function(){var a=b.hash;a!=this.hash&&(this.hash=a,this.onHashChanged())},fire:function(){this.mode==="modern"?this.history===!0?window.onpopstate():window.onhashchange():this.onHashChanged()},init:function(a,b){function d(a){for(var b=0,c=e.listeners.length;b<c;b++)e.listeners[b](a)}var c=this;this.history=b,e.listeners||(e.listeners=[]);if("onhashchange"in window&&(document.documentMode===undefined||document.documentMode>7))this.history===!0?setTimeout(function(){window.onpopstate=d},500):window.onhashchange=d,this.mode="modern";else{var f=document.createElement("iframe");f.id="state-frame",f.style.display="none",document.body.appendChild(f),this.writeFrame(""),"onpropertychange"in document&&"attachEvent"in document&&document.attachEvent("onpropertychange",function(){event.propertyName==="location"&&c.check()}),window.setInterval(function(){c.check()},50),this.onHashChanged=d,this.mode="legacy"}e.listeners.push(a);return this.mode},destroy:function(a){if(!!e&&!!e.listeners){var b=e.listeners;for(var c=b.length-1;c>=0;c--)b[c]===a&&b.splice(c,1)}},setHash:function(a){this.mode==="legacy"&&this.writeFrame(a),this.history===!0?(window.history.pushState({},document.title,a),this.fire()):b.hash=a[0]==="/"?a:"/"+a;return this},writeFrame:function(a){var b=document.getElementById("state-frame"),c=b.contentDocument||b.contentWindow.document;c.open(),c.write("<script>_hash = '"+a+"'; onload = parent.listener.syncHash;<script>"),c.close()},syncHash:function(){var a=this._hash;a!=b.hash&&(b.hash=a);return this},onHashChanged:function(){}},e=a.Router=function(a){if(this instanceof e)this.params={},this.routes={},this.methods=["on","once","after","before"],this.scope=[],this._methods={},this._insert=this.insert,this.insert=this.insertEx,this.historySupport=(window.history!=null?window.history.pushState:null)!=null,this.configure(),this.mount(a||{});else return new e(a)};e.prototype.init=function(a){var e=this,f;this.handler=function(a){var b=a&&a.newURL||window.location.hash,c=e.history===!0?e.getPath():b.replace(/.*#/,"");e.dispatch("on",c.charAt(0)==="/"?c:"/"+c)},d.init(this.handler,this.history),this.history===!1?c()&&a?b.hash=a:c()||e.dispatch("on","/"+b.hash.replace(/^(#\/|#|\/)/,"")):(this.convert_hash_in_init?(f=c()&&a?a:c()?null:b.hash.replace(/^#/,""),f&&window.history.replaceState({},document.title,f)):f=this.getPath(),(f||this.run_in_init===!0)&&this.handler());return this},e.prototype.explode=function(){var a=this.history===!0?this.getPath():b.hash;a.charAt(1)==="/"&&(a=a.slice(1));return a.slice(1,a.length).split("/")},e.prototype.setRoute=function(a,b,c){var e=this.explode();typeof a=="number"&&typeof b=="string"?e[a]=b:typeof c=="string"?e.splice(a,b,s):e=[a],d.setHash(e.join("/"));return e},e.prototype.insertEx=function(a,b,c,d){a==="once"&&(a="on",c=function(a){var b=!1;return function(){if(!b){b=!0;return a.apply(this,arguments)}}}(c));return this._insert(a,b,c,d)},e.prototype.getRoute=function(a){var b=a;if(typeof a=="number")b=this.explode()[a];else if(typeof a=="string"){var c=this.explode();b=c.indexOf(a)}else b=this.explode();return b},e.prototype.destroy=function(){d.destroy(this.handler);return this},e.prototype.getPath=function(){var a=window.location.pathname;a.substr(0,1)!=="/"&&(a="/"+a);return a};var l=/\?.*/;e.prototype.configure=function(a){a=a||{};for(var b=0;b<this.methods.length;b++)this._methods[this.methods[b]]=!0;this.recurse=a.recurse||this.recurse||!1,this.async=a.async||!1,this.delimiter=a.delimiter||"/",this.strict=typeof a.strict=="undefined"?!0:a.strict,this.notfound=a.notfound,this.resource=a.resource,this.history=a.html5history&&this.historySupport||!1,this.run_in_init=this.history===!0&&a.run_handler_in_init!==!1,this.convert_hash_in_init=this.history===!0&&a.convert_hash_in_init!==!1,this.every={after:a.after||null,before:a.before||null,on:a.on||null};return this},e.prototype.param=function(a,b){a[0]!==":"&&(a=":"+a);var c=new RegExp(a,"g");this.params[a]=function(a){return a.replace(c,b.source||b)};return this},e.prototype.on=e.prototype.route=function(a,b,c){var d=this;!c&&typeof b=="function"&&(c=b,b=a,a="on");if(Array.isArray(b))return b.forEach(function(b){d.on(a,b,c)});b.source&&(b=b.source.replace(/\\\//ig,"/"));if(Array.isArray(a))return a.forEach(function(a){d.on(a.toLowerCase(),b,c)});b=b.split(new RegExp(this.delimiter)),b=k(b,this.delimiter),this.insert(a,this.scope.concat(b),c)},e.prototype.path=function(a,b){var c=this,d=this.scope.length;a.source&&(a=a.source.replace(/\\\//ig,"/")),a=a.split(new RegExp(this.delimiter)),a=k(a,this.delimiter),this.scope=this.scope.concat(a),b.call(this,this),this.scope.splice(d,a.length)},e.prototype.dispatch=function(a,b,c){function h(){d.last=e.after,d.invoke(d.runlist(e),d,c)}var d=this,e=this.traverse(a,b.replace(l,""),this.routes,""),f=this._invoked,g;this._invoked=!0;if(!e||e.length===0){this.last=[],typeof this.notfound=="function"&&this.invoke([this.notfound],{method:a,path:b},c);return!1}this.recurse==="forward"&&(e=e.reverse()),g=this.every&&this.every.after?[this.every.after].concat(this.last):[this.last];if(g&&g.length>0&&f){this.async?this.invoke(g,this,h):(this.invoke(g,this),h());return!0}h();return!0},e.prototype.invoke=function(a,b,c){var d=this,e;this.async?(e=function(c,d){if(Array.isArray(c))return h(c,e,d);typeof c=="function"&&c.apply(b,(a.captures||[]).concat(d))},h(a,e,function(){c&&c.apply(b,arguments)})):(e=function(c){if(Array.isArray(c))return f(c,e);if(typeof c=="function")return c.apply(b,a.captures||[]);typeof c=="string"&&d.resource&&d.resource[c].apply(b,a.captures||[])},f(a,e))},e.prototype.traverse=function(a,b,c,d,e){function l(a){function c(a){for(var b=a.length-1;b>=0;b--)Array.isArray(a[b])?(c(a[b]),a[b].length===0&&a.splice(b,1)):e(a[b])||a.splice(b,1)}function b(a){var c=[];for(var d=0;d<a.length;d++)c[d]=Array.isArray(a[d])?b(a[d]):a[d];return c}if(!e)return a;var d=b(a);d.matched=a.matched,d.captures=a.captures,d.after=a.after.filter(e),c(d);return d}var f=[],g,h,i,j,k;if(b===this.delimiter&&c[a]){j=[[c.before,c[a]].filter(Boolean)],j.after=[c.after].filter(Boolean),j.matched=!0,j.captures=[];return l(j)}for(var m in c)if(c.hasOwnProperty(m)&&(!this._methods[m]||this._methods[m]&&typeof c[m]=="object"&&!Array.isArray(c[m]))){g=h=d+this.delimiter+m,this.strict||(h+="["+this.delimiter+"]?"),i=b.match(new RegExp("^"+h));if(!i)continue;if(i[0]&&i[0]==b&&c[m][a]){j=[[c[m].before,c[m][a]].filter(Boolean)],j.after=[c[m].after].filter(Boolean),j.matched=!0,j.captures=i.slice(1),this.recurse&&c===this.routes&&(j.push([c.before,c.on].filter(Boolean)),j.after=j.after.concat([c.after].filter(Boolean)));return l(j)}j=this.traverse(a,b,c[m],g);if(j.matched){j.length>0&&(f=f.concat(j)),this.recurse&&(f.push([c[m].before,c[m].on].filter(Boolean)),j.after=j.after.concat([c[m].after].filter(Boolean)),c===this.routes&&(f.push([c.before,c.on].filter(Boolean)),j.after=j.after.concat([c.after].filter(Boolean)))),f.matched=!0,f.captures=j.captures,f.after=j.after;return l(f)}}return!1},e.prototype.insert=function(a,b,c,d){var e,f,g,h,i;b=b.filter(function(a){return a&&a.length>0}),d=d||this.routes,i=b.shift(),/\:|\*/.test(i)&&!/\\d|\\w/.test(i)&&(i=j(i,this.params));if(b.length>0){d[i]=d[i]||{};return this.insert(a,b,c,d[i])}{if(!!i||!!b.length||d!==this.routes){f=typeof d[i],g=Array.isArray(d[i]);if(d[i]&&!g&&f=="object"){e=typeof d[i][a];switch(e){case"function":d[i][a]=[d[i][a],c];return;case"object":d[i][a].push(c);return;case"undefined":d[i][a]=c;return}}else if(f=="undefined"){h={},h[a]=c,d[i]=h;return}throw new Error("Invalid route context: "+f)}e=typeof d[a];switch(e){case"function":d[a]=[d[a],c];return;case"object":d[a].push(c);return;case"undefined":d[a]=c;return}}},e.prototype.extend=function(a){function e(a){b._methods[a]=!0,b[a]=function(){var c=arguments.length===1?[a,""]:[a];b.on.apply(b,c.concat(Array.prototype.slice.call(arguments)))}}var b=this,c=a.length,d;for(d=0;d<c;d++)e(a[d])},e.prototype.runlist=function(a){var b=this.every&&this.every.before?[this.every.before].concat(g(a)):g(a);this.every&&this.every.on&&b.push(this.every.on),b.captures=a.captures,b.source=a.source;return b},e.prototype.mount=function(a,b){function d(b,d){var e=b,f=b.split(c.delimiter),g=typeof a[b],h=f[0]===""||!c._methods[f[0]],i=h?"on":e;h&&(e=e.slice((e.match(new RegExp("^"+c.delimiter))||[""])[0].length),f.shift());h&&g==="object"&&!Array.isArray(a[b])?(d=d.concat(f),c.mount(a[b],d)):(h&&(d=d.concat(e.split(c.delimiter)),d=k(d,c.delimiter)),c.insert(i,d,a[b]))}if(!!a&&typeof a=="object"&&!Array.isArray(a)){var c=this;b=b||[],Array.isArray(b)||(b=b.split(c.delimiter));for(var e in a)a.hasOwnProperty(e)&&d(e,b.slice(0))}}})(typeof exports=="object"?exports:window)
+"use strict"
+// Module export pattern from
+// https://github.com/umdjs/umd/blob/master/returnExports.js
+;(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define([], factory);
+    } else if (typeof exports === 'object') {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory();
+    } else {
+        // Browser globals (root is window)
+        root.store = factory();
+  }
+}(this, function () {
+	
+	// Store.js
+	var store = {},
+		win = window,
+		doc = win.document,
+		localStorageName = 'localStorage',
+		scriptTag = 'script',
+		storage
+
+	store.disabled = false
+	store.version = '1.3.17'
+	store.set = function(key, value) {}
+	store.get = function(key, defaultVal) {}
+	store.has = function(key) { return store.get(key) !== undefined }
+	store.remove = function(key) {}
+	store.clear = function() {}
+	store.transact = function(key, defaultVal, transactionFn) {
+		if (transactionFn == null) {
+			transactionFn = defaultVal
+			defaultVal = null
+		}
+		if (defaultVal == null) {
+			defaultVal = {}
+		}
+		var val = store.get(key, defaultVal)
+		transactionFn(val)
+		store.set(key, val)
+	}
+	store.getAll = function() {}
+	store.forEach = function() {}
+
+	store.serialize = function(value) {
+		return JSON.stringify(value)
+	}
+	store.deserialize = function(value) {
+		if (typeof value != 'string') { return undefined }
+		try { return JSON.parse(value) }
+		catch(e) { return value || undefined }
+	}
+
+	// Functions to encapsulate questionable FireFox 3.6.13 behavior
+	// when about.config::dom.storage.enabled === false
+	// See https://github.com/marcuswestin/store.js/issues#issue/13
+	function isLocalStorageNameSupported() {
+		try { return (localStorageName in win && win[localStorageName]) }
+		catch(err) { return false }
+	}
+
+	if (isLocalStorageNameSupported()) {
+		storage = win[localStorageName]
+		store.set = function(key, val) {
+			if (val === undefined) { return store.remove(key) }
+			storage.setItem(key, store.serialize(val))
+			return val
+		}
+		store.get = function(key, defaultVal) {
+			var val = store.deserialize(storage.getItem(key))
+			return (val === undefined ? defaultVal : val)
+		}
+		store.remove = function(key) { storage.removeItem(key) }
+		store.clear = function() { storage.clear() }
+		store.getAll = function() {
+			var ret = {}
+			store.forEach(function(key, val) {
+				ret[key] = val
+			})
+			return ret
+		}
+		store.forEach = function(callback) {
+			for (var i=0; i<storage.length; i++) {
+				var key = storage.key(i)
+				callback(key, store.get(key))
+			}
+		}
+	} else if (doc.documentElement.addBehavior) {
+		var storageOwner,
+			storageContainer
+		// Since #userData storage applies only to specific paths, we need to
+		// somehow link our data to a specific path.  We choose /favicon.ico
+		// as a pretty safe option, since all browsers already make a request to
+		// this URL anyway and being a 404 will not hurt us here.  We wrap an
+		// iframe pointing to the favicon in an ActiveXObject(htmlfile) object
+		// (see: http://msdn.microsoft.com/en-us/library/aa752574(v=VS.85).aspx)
+		// since the iframe access rules appear to allow direct access and
+		// manipulation of the document element, even for a 404 page.  This
+		// document can be used instead of the current document (which would
+		// have been limited to the current path) to perform #userData storage.
+		try {
+			storageContainer = new ActiveXObject('htmlfile')
+			storageContainer.open()
+			storageContainer.write('<'+scriptTag+'>document.w=window</'+scriptTag+'><iframe src="/favicon.ico"></iframe>')
+			storageContainer.close()
+			storageOwner = storageContainer.w.frames[0].document
+			storage = storageOwner.createElement('div')
+		} catch(e) {
+			// somehow ActiveXObject instantiation failed (perhaps some special
+			// security settings or otherwse), fall back to per-path storage
+			storage = doc.createElement('div')
+			storageOwner = doc.body
+		}
+		var withIEStorage = function(storeFunction) {
+			return function() {
+				var args = Array.prototype.slice.call(arguments, 0)
+				args.unshift(storage)
+				// See http://msdn.microsoft.com/en-us/library/ms531081(v=VS.85).aspx
+				// and http://msdn.microsoft.com/en-us/library/ms531424(v=VS.85).aspx
+				storageOwner.appendChild(storage)
+				storage.addBehavior('#default#userData')
+				storage.load(localStorageName)
+				var result = storeFunction.apply(store, args)
+				storageOwner.removeChild(storage)
+				return result
+			}
+		}
+
+		// In IE7, keys cannot start with a digit or contain certain chars.
+		// See https://github.com/marcuswestin/store.js/issues/40
+		// See https://github.com/marcuswestin/store.js/issues/83
+		var forbiddenCharsRegex = new RegExp("[!\"#$%&'()*+,/\\\\:;<=>?@[\\]^`{|}~]", "g")
+		var ieKeyFix = function(key) {
+			return key.replace(/^d/, '___$&').replace(forbiddenCharsRegex, '___')
+		}
+		store.set = withIEStorage(function(storage, key, val) {
+			key = ieKeyFix(key)
+			if (val === undefined) { return store.remove(key) }
+			storage.setAttribute(key, store.serialize(val))
+			storage.save(localStorageName)
+			return val
+		})
+		store.get = withIEStorage(function(storage, key, defaultVal) {
+			key = ieKeyFix(key)
+			var val = store.deserialize(storage.getAttribute(key))
+			return (val === undefined ? defaultVal : val)
+		})
+		store.remove = withIEStorage(function(storage, key) {
+			key = ieKeyFix(key)
+			storage.removeAttribute(key)
+			storage.save(localStorageName)
+		})
+		store.clear = withIEStorage(function(storage) {
+			var attributes = storage.XMLDocument.documentElement.attributes
+			storage.load(localStorageName)
+			while (attributes.length) {
+				storage.removeAttribute(attributes[0].name)
+			}
+			storage.save(localStorageName)
+		})
+		store.getAll = function(storage) {
+			var ret = {}
+			store.forEach(function(key, val) {
+				ret[key] = val
+			})
+			return ret
+		}
+		store.forEach = withIEStorage(function(storage, callback) {
+			var attributes = storage.XMLDocument.documentElement.attributes
+			for (var i=0, attr; attr=attributes[i]; ++i) {
+				callback(attr.name, store.deserialize(storage.getAttribute(attr.name)))
+			}
+		})
+	}
+
+	try {
+		var testKey = '__storejs__'
+		store.set(testKey, testKey)
+		if (store.get(testKey) != testKey) { store.disabled = true }
+		store.remove(testKey)
+	} catch(e) {
+		store.disabled = true
+	}
+	store.enabled = !store.disabled
+	
+	return store
+}));
+
+//jQuery Cookie Plugin v1.4.1
+(function (factory) {
+	if (typeof define === 'function' && define.amd) {
+		// AMD (Register as an anonymous module)
+		define(['jquery'], factory);
+	} else if (typeof exports === 'object') {
+		// Node/CommonJS
+		module.exports = factory(require('jquery'));
+	} else {
+		// Browser globals
+		factory(jQuery);
+	}
+}(function ($) {
+
+	var pluses = /\+/g;
+
+	function encode(s) {
+		return config.raw ? s : encodeURIComponent(s);
+	}
+
+	function decode(s) {
+		return config.raw ? s : decodeURIComponent(s);
+	}
+
+	function stringifyCookieValue(value) {
+		return encode(config.json ? JSON.stringify(value) : String(value));
+	}
+
+	function parseCookieValue(s) {
+		if (s.indexOf('"') === 0) {
+			// This is a quoted cookie as according to RFC2068, unescape...
+			s = s.slice(1, -1).replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+		}
+
+		try {
+			// Replace server-side written pluses with spaces.
+			// If we can't decode the cookie, ignore it, it's unusable.
+			// If we can't parse the cookie, ignore it, it's unusable.
+			s = decodeURIComponent(s.replace(pluses, ' '));
+			return config.json ? JSON.parse(s) : s;
+		} catch(e) {}
+	}
+
+	function read(s, converter) {
+		var value = config.raw ? s : parseCookieValue(s);
+		return $.isFunction(converter) ? converter(value) : value;
+	}
+
+	var config = $.cookie = function (key, value, options) {
+
+		// Write
+
+		if (arguments.length > 1 && !$.isFunction(value)) {
+			options = $.extend({}, config.defaults, options);
+
+			if (typeof options.expires === 'number') {
+				var days = options.expires, t = options.expires = new Date();
+				t.setMilliseconds(t.getMilliseconds() + days * 864e+5);
+			}
+
+			return (document.cookie = [
+				encode(key), '=', stringifyCookieValue(value),
+				options.expires ? '; expires=' + options.expires.toUTCString() : '', // use expires attribute, max-age is not supported by IE
+				options.path    ? '; path=' + options.path : '',
+				options.domain  ? '; domain=' + options.domain : '',
+				options.secure  ? '; secure' : ''
+			].join(''));
+		}
+
+		// Read
+
+		var result = key ? undefined : {},
+			// To prevent the for loop in the first place assign an empty array
+			// in case there are no cookies at all. Also prevents odd result when
+			// calling $.cookie().
+			cookies = document.cookie ? document.cookie.split('; ') : [],
+			i = 0,
+			l = cookies.length;
+
+		for (; i < l; i++) {
+			var parts = cookies[i].split('='),
+				name = decode(parts.shift()),
+				cookie = parts.join('=');
+
+			if (key === name) {
+				// If second argument (value) is a function it's a converter...
+				result = read(cookie, value);
+				break;
+			}
+
+			// Prevent storing a cookie that we couldn't decode.
+			if (!key && (cookie = read(cookie)) !== undefined) {
+				result[name] = cookie;
+			}
+		}
+
+		return result;
+	};
+
+	config.defaults = {};
+
+	$.removeCookie = function (key, options) {
+		// Must not alter options, thus extending a fresh object...
+		$.cookie(key, '', $.extend({}, options, { expires: -1 }));
+		return !$.cookie(key);
+	};
+
+}));
+
+// Device.js
+// (c) 2014 Matthew Hudson
+// Device.js is freely distributable under the MIT license.
+// For all details and documentation:
+// http://matthewhudson.me/projects/device.js/
+
+(function() {
+  var device,
+    previousDevice,
+    addClass,
+    documentElement,
+    find,
+    handleOrientation,
+    hasClass,
+    orientationEvent,
+    removeClass,
+    userAgent;
+
+  // Save the previous value of the device variable.
+  previousDevice = window.device;
+
+  device = {};
+
+  // Add device as a global object.
+  window.device = device;
+  
+  window.SLeasy = window.Sleasy || {};
+
+  // The <html> element.
+  documentElement = window.document.documentElement;
+
+  // The client user agent string.
+  // Lowercase, so we can use the more efficient indexOf(), instead of Regex
+  userAgent = window.navigator.userAgent.toLowerCase();
+
+  // Main functions
+  // --------------
+
+  device.ios = function () {
+    return device.iphone() || device.ipod() || device.ipad();
+  };
+
+  device.iphone = function () {
+    return !device.windows() && find('iphone');
+  };
+
+  device.ipod = function () {
+    return find('ipod');
+  };
+
+  device.ipad = function () {
+    return find('ipad');
+  };
+
+  device.android = function () {
+    return !device.windows() && find('android');
+  };
+
+  device.androidPhone = function () {
+    return device.android() && find('mobile');
+  };
+
+  device.androidTablet = function () {
+    return device.android() && !find('mobile');
+  };
+
+  device.blackberry = function () {
+    return find('blackberry') || find('bb10') || find('rim');
+  };
+
+  device.blackberryPhone = function () {
+    return device.blackberry() && !find('tablet');
+  };
+
+  device.blackberryTablet = function () {
+    return device.blackberry() && find('tablet');
+  };
+
+  device.windows = function () {
+    return find('windows');
+  };
+
+  device.windowsPhone = function () {
+    return device.windows() && find('phone');
+  };
+
+  device.windowsTablet = function () {
+    return device.windows() && (find('touch') && !device.windowsPhone());
+  };
+
+  device.fxos = function () {
+    return (find('(mobile;') || find('(tablet;')) && find('; rv:');
+  };
+
+  device.fxosPhone = function () {
+    return device.fxos() && find('mobile');
+  };
+
+  device.fxosTablet = function () {
+    return device.fxos() && find('tablet');
+  };
+
+  device.meego = function () {
+    return find('meego');
+  };
+
+  device.cordova = function () {
+    return window.cordova && location.protocol === 'file:';
+  };
+
+  device.nodeWebkit = function () {
+    return typeof window.process === 'object';
+  };
+
+  device.mobile = function () {
+    return device.androidPhone() || device.iphone() || device.ipod() || device.windowsPhone() || device.blackberryPhone() || device.fxosPhone() || device.meego();
+  };
+
+  device.tablet = function () {
+    return device.ipad() || device.androidTablet() || device.blackberryTablet() || device.windowsTablet() || device.fxosTablet();
+  };
+
+  device.desktop = function () {
+    return !device.tablet() && !device.mobile();
+  };
+
+  device.television = function() {
+    var i, tvString;
+
+    television = [
+      "googletv",
+      "viera",
+      "smarttv",
+      "internet.tv",
+      "netcast",
+      "nettv",
+      "appletv",
+      "boxee",
+      "kylo",
+      "roku",
+      "dlnadoc",
+      "roku",
+      "pov_tv",
+      "hbbtv",
+      "ce-html"
+    ];
+
+    i = 0;
+    while (i < television.length) {
+      if (find(television[i])) {
+        return true;
+      }
+      i++;
+    }
+    return false;
+  };
+
+  device.portrait = function () {
+    return (window.innerHeight / window.innerWidth) > 1;
+  };
+
+  device.landscape = function () {
+    return (window.innerHeight / window.innerWidth) < 1;
+  };
+
+  // Public Utility Functions
+  // ------------------------
+
+  // Run device.js in noConflict mode,
+  // returning the device variable to its previous owner.
+  device.noConflict = function () {
+    window.device = previousDevice;
+    return this;
+  };
+
+  // Private Utility Functions
+  // -------------------------
+
+  // Simple UA string search
+  find = function (needle) {
+    return userAgent.indexOf(needle) !== -1;
+  };
+
+  // Check if documentElement already has a given class.
+  hasClass = function (className) {
+    var regex;
+    regex = new RegExp(className, 'i');
+    return documentElement.className.match(regex);
+  };
+
+  // Add one or more CSS classes to the <html> element.
+  addClass = function (className) {
+    var currentClassNames = null;
+    if (!hasClass(className)) {
+      currentClassNames = documentElement.className.replace(/^\s+|\s+$/g, '');
+      documentElement.className = currentClassNames + " " + className;
+    }
+  };
+
+  // Remove single CSS class from the <html> element.
+  removeClass = function (className) {
+    if (hasClass(className)) {
+      documentElement.className = documentElement.className.replace(" " + className, "");
+    }
+  };
+
+  // HTML Element Handling
+  // ---------------------
+
+  // Insert the appropriate CSS class based on the _user_agent.
+
+  if (device.ios()) {
+    if (device.ipad()) {
+      addClass("ios ipad tablet");
+    } else if (device.iphone()) {
+      addClass("ios iphone mobile");
+    } else if (device.ipod()) {
+      addClass("ios ipod mobile");
+    }
+  } else if (device.android()) {
+    if (device.androidTablet()) {
+      addClass("android tablet");
+    } else {
+      addClass("android mobile");
+    }
+  } else if (device.blackberry()) {
+    if (device.blackberryTablet()) {
+      addClass("blackberry tablet");
+    } else {
+      addClass("blackberry mobile");
+    }
+  } else if (device.windows()) {
+    if (device.windowsTablet()) {
+      addClass("windows tablet");
+    } else if (device.windowsPhone()) {
+      addClass("windows mobile");
+    } else {
+      addClass("desktop");
+    }
+  } else if (device.fxos()) {
+    if (device.fxosTablet()) {
+      addClass("fxos tablet");
+    } else {
+      addClass("fxos mobile");
+    }
+  } else if (device.meego()) {
+    addClass("meego mobile");
+  } else if (device.nodeWebkit()) {
+    addClass("node-webkit");
+  } else if (device.television()) {
+    addClass("television");
+  } else if (device.desktop()) {
+    addClass("desktop");
+  }
+
+  if (device.cordova()) {
+    addClass("cordova");
+  }
+
+  // Orientation Handling
+  // --------------------
+
+  // Handle device orientation changes.
+  handleOrientation = function () {
+    if (device.landscape()) {
+		//alert('横屏~');
+      removeClass("portrait");
+      addClass("landscape");
+	  window.SLeasy && SLeasy.onResize && SLeasy.onResize();
+    } else {
+		 //alert('竖屏~');
+      removeClass("landscape");
+      addClass("portrait");
+	  window.SLeasy && SLeasy.onResize && SLeasy.onResize();
+    }
+    return;
+  };
+  
+
+  // Detect whether device supports orientationchange event,
+  // otherwise fall back to the resize event.
+  if (Object.prototype.hasOwnProperty.call(window, "onorientationchange")) {
+    orientationEvent = "orientationchange";
+  } else {
+    //orientationEvent = "resize";
+	orientationEvent = "orientationchange";
+  }
+  
+  //alert(orientationEvent);
+
+  // Listen for changes in orientation.
+  if (window.addEventListener) {
+	  //alert('1');
+    window.addEventListener(orientationEvent, handleOrientation, false);
+  } else if (window.attachEvent) {
+	   //alert('2');
+    window.attachEvent(orientationEvent, handleOrientation);
+  } else {
+	   //alert('3');
+    window[orientationEvent] = handleOrientation;
+  }
+
+  handleOrientation();
+
+  if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+    define(function() {
+      return device;
+    });
+  } else if (typeof module !== 'undefined' && module.exports) {
+    module.exports = device;
+  } else {
+    window.device = device;
+  }
+
+}).call(this);
+
+//SLeasy3-config
+;
+(function(SLeasy, $) {
+	//config
+	var $config = { //默认配置
+		//SLeasy------------------------------------------
+		id:'',//幻灯容器id
+		bg:'',//幻灯容器背景
+		host:'images/',//资源目录url
+		width:640,//幻灯宽度
+		height:1008,//幻灯高度
+		viewport:321,//视口大小
+		motionTime:0.8,//切换动画时间
+		motionStyle:0,//动画风格，默认随机
+		loopMode:0,//启用首尾循环模式
+		swipeMode:'y',//滑动模式，xy：上下左右，x：水平，y：垂直
+		routerMode:1,//路由开启模式
+		arrowMode:1,//是否显示滑动指示箭头
+		arrowColor:'#fff',//箭头颜色
+		alignMode:'top',//幻灯背景对齐方式
+		alignOffset:0,//对齐偏移值
+		preload:1,//是否对素材预加载
+		autoStart:1,//自动开始跳转默认幻灯
+		autoRemoveChildren:true,//每张幻灯子动画全部完毕后，自动删除子动画tween
+		debugMode:1,
+		reloadMode:1,
+		stageMode:'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
+		positionMode:'absolute',//舞台子元素position模式
+
+		//music-------------------------------------------
+		musicUrl:'',//背景音乐url
+		musicBt:[1,'',30,30.5,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
+		
+		//slider------------------------------------------
+		sliders: [], //幻灯json数组
+
+		//detail-------------------------------------------
+		details:[],//幻灯详情页json数组
+		
+		//float-------------------------------------------
+		floats:[],//固定漂浮元素
+		
+		//loader------------------------------------------
+		loader:{
+			bg:'none',//loading页背景
+			size:[38,38],//宽高
+			style:0,//loading内置式样索引或自定义html
+			textStyle:'font-size:12px;color:#fff', //字体式样
+			endAt:100,	
+		},
+
+		//其他----------------------------------------------
+		exLoadArr: [], //额外加载项数组
+		title:document.title,//全局网页标题
+		
+		//事件回调-------------------------------------------
+		on:{
+			'loadProgress': function(percent){ //预加载进行时回调
+				SLeasy.loader.text(percent);
+				console.log('当前加载进度' + percent + '~！');
+			},
+			'loaded': function(){//预加载完毕回调
+				console.log('======================================加载完毕~！');
+			}, 
+			'domReady':function(){
+				console.log('SLeasy dom init over~~~~');
+			},
+			'sliderChange':function(sliderIndex){//幻灯切换回调
+				console.log('切换到第'+(sliderIndex+1)+'张幻灯~！')
+			},
+			'subMotion':function(sliderIndex){//子动画开始播放回调
+				console.log('第'+(sliderIndex+1)+'张幻灯的子动画开始运行~');
+			},
+			'detailMotion':function(sliderIndex){//详情页子动画开始播放回调
+				console.log('第'+(sliderIndex+1)+'张详情页的子动画开始运行~');
+			},
+			'detailOpen':function(sliderIndex){//详情页打开回调
+				console.log('第'+(sliderIndex+1)+'张详情页打开~');
+			},
+			'detailClose':function(sliderIndex){//详情页关闭回调
+				console.log('第'+(sliderIndex+1)+'张详情页关闭~');
+			},
+			'timeline':function(tl){//子动画时间轴ready回调
+				console.log('子动画timeline ready~')
+			},
+			
+		}
+
+
+	}
+
+	SLeasy.config = function(opt) {
+		if (arguments.length > 0) {
+			return $.extend(true,$config, opt);
+		} else {
+			//console.log($config);
+			return $config;
+		}
+	}
+	
+	
+})(
+	window.SLeasy = window.SLeasy || {},
+	jQuery
+);
+
+/*
+<meta http-equiv=”Cache-Control” content=”no-transform” />
+<meta http-equiv=”Cache-Control” content=”no-siteapp” />
+<meta name="applicable-device" content="pc,mobile">
+<meta name="MobileOptimized" content="width"/>
+<meta name="HandheldFriendly" content="true"/>
+*/
+// SLeasy3-scope
+;(function(SLeasy,$){
+	var $config=SLeasy.config();
+	
+	//scope
+	var $scope={//全域变量
+		title:$config.title,//当前title
+		body:$('body'),//body标签dom
+		viewScale:$config.viewport/$config.width,//幻灯缩放比例因子
+		fixHeight:0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
+		eventArr:[],//需要绑定的事件及元素数据数组
+		sliderBox:null,//幻灯框架dom缓存变量
+		swipe:1,//是否允许滑动幻灯
+		
+		sliders:null,//幻灯dom缓存变量
+		sliderIndex:0,//幻灯当前索引
+		subMotion:null,//幻灯子动画元素dom缓存变量
+		
+		details:null,//详情页dom缓存变量
+		detailIndex:0,//当前详情页索引
+		detailMotion:null,//详情页子动画元素dom缓存变量
+				
+		loader:null,//loading dom元素缓存变量
+		floats:null,//浮动元素dom缓存变量
+		canvas:null,//画布元素dom缓存变量
+				
+		isMusic:0,//音乐状态
+		isAnim:0,//当前幻灯切换状态
+		isDetail:0,//详情页是否打开
+		isSubMotion:0,//当前子动画完成状态
+		isDetailMotion:0,//当前详情页子动画完成状态
+		
+		timeLine:null,//子动画时间线
+		fixPropsArr:['x','y','width','height','left','right','top','bottom','lineHeight','marginLeft','marginRight','marginTop','marginBottom','paddingLeft','paddingRight','paddingTop','paddingBottom','fontSize','clip'],//需要修正的属性
+		FXDirection:'upDown',//幻灯切换效果方向
+		clearProps:'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
+		
+		labelHash:{},//标签哈希表
+		router:{},//路由
+		preHash:'',//上一路由哈希值
+
+		userData:{},//用户自定义数据
+		pluginList:[],//插件初始化函数列表
+
+		bitmaps:{},//ae原生位图序列
+		aeBitmaps:{},//ae位图对象序列
+		aeLayer:{},//ae渲染层
+		aeStage:{},//ae渲染舞台
+		aeTimeLine:{},//ae时间线
+
+		totalLoad:[],//应用要加载的图片总数组
+	}
+	
+	
+	
+	SLeasy.scope=function(){
+		return $scope;
+	}
+	
+	//get label
+	SLeasy.label=function(key){
+		if(key){
+			var value=typeof $scope.labelHash[key]!='undefined' ? $scope.labelHash[key] : null;
+			if(typeof value == 'string'){
+				return $(value);
+			}else{
+				return value;
+			}
+		}else{
+			return $scope.labelHash;
+		}
+	}
+	
+		
+	//check weChat
+	SLeasy.isWechat=SLeasy.isWeixin=function(){
+		var ua = window.navigator.userAgent.toLowerCase();
+    	if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+        	return true;
+    	}else{
+    		return false;
+    	}	
+	}
+	
+	//check weibo
+	SLeasy.isWeibo=function(){
+		var ua = window.navigator.userAgent.toLowerCase();
+    	if(ua.match(/weibo/i) == 'weibo'){
+        	return true;
+    	}else{
+    		return false;
+    	}	
+	}
+	
+	
+	//weChat share
+	SLeasy.share=function(opt){
+		var imgHtml='<img src="'+opt.imgUrl+'" width="300" height="300" style="position:absolute;top:-9999px">',
+			linkUrl=opt.link || location.href;
+		$('body').prepend(imgHtml);
+		opt.title && setTimeout(function(){document.title = opt.title},1000);
+		//location.hash='/goTo/'+linkUrl.replace('http://','').replace('https://','');
+		$scope.referrer=opt.referrer;
+		$scope.goLink=opt.link || location.href;
+	}
+	
+	
+	//check http
+	SLeasy.isHttp=function(){
+		return (location.href.indexOf('http')==0) ? true : false;	
+	}
+	
+	//SLeasy 检测函数,检测支持见:https://github.com/matthewhudson/device.js
+	SLeasy.is=function(key,callback){
+		console.log(key);
+		var res='检测参数错误~！';
+		if(key=='wechat' || key=='weixin'){
+			res=SLeasy.isWechat();
+		}else if(key=='weibo'){
+			res=SLeasy.isWeibo();
+		}else if(key=='http'){
+			res=SLeasy.isHttp();
+		}else{
+			res=device[key]();
+		}
+		callback && callback(res);
+		return res;	
+	}
+	
+	//set title
+	$(document).ready(function(e) {
+		$scope.body=$('body');
+		SLeasy.title=function(title){
+			document.title = title;
+			if(SLeasy.is('weixin')){
+				// hack在微信等webview中无法修改document.title的情况
+				var $iframe = $('<iframe src="/favicon.ico" style="display:none"></iframe>').on('load', function() {
+					setTimeout(function() {
+						$iframe.off('load').remove();
+					}, 0)
+				}).appendTo($scope.body)
+			}
+		} 
+    });
+	
+	
+	
+	//goto url
+	SLeasy.goUrl=function(url){
+		window.location.href=url || '#';	
+	}
+	
+	//go taobao
+	SLeasy.goTaobao=SLeasy.goTmall=function(shop){
+		$scope.preHash='/'+$scope.router.getRoute().join('/');
+		//$scope.router.setRoute('goTaobao/'+shop);
+		//return $scope.preHash;
+		location.href='tmall.html#/goTaobao/'+shop;
+	}
+	
+	//check goto
+	SLeasy.checkGoto=function(){
+		//
+		//alert(!document.referrer || document.referrer.indexOf($scope.referrer)==-1);
+		
+		if(!document.referrer || document.referrer.indexOf($scope.referrer)==-1){
+			//console.log($scope.referrer);
+			//console.log($scope.goLink);
+			//console.log(location.href.indexOf($scope.referrer)==-1);
+			if(SLeasy.isHttp() && $scope.referrer && $scope.goLink && location.href.indexOf($scope.goLink)==-1){
+				location.href=$scope.goLink;
+			}
+		}
+		
+		var _router=new Router();
+		_router.init();
+		
+		var isGoto=_router.getRoute(0),
+			url=_router.getRoute(1);
+		
+		//普通跳转探测
+		if(isGoto=='goTo'){
+			//SLeasy.goUrl('http://'+url);
+		}
+				
+		//淘宝跳转探测
+		if(isGoto=='goTmall' || isGoto=='goTaobao'){
+			if(!SLeasy.isWeixin()){
+				setTimeout(function(){
+					SLeasy.goUrl('http://'+url);
+				},500);
+				SLeasy.is('ios') && SLeasy.goUrl('taobao://'+url);			
+			}
+		}
+		//alert(isGoto);
+		delete _router;
+	
+	//		
+	}
+	
+	//资源路径拼接
+	SLeasy.path=function(host,url){
+		if(url.search(/^\/\//)==-1){
+			return host+url;
+		}else{
+			return url.replace(/^\/\//,'');	
+		}
+	}
+	
+	//获取url参数
+	SLeasy.getRequest=function(name){
+    	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+    	var r = window.location.search.substr(1).match(reg);
+	 	//console.log(r);
+     	if(r!=null)return r[2];
+		return null;
+	}
+	
+	
+	//禁止触摸默认滚动
+	function stopDefaultScroll(e){
+			e.preventDefault();
+			e.stopPropagation();
+	}
+	SLeasy.touchScroll=function(scroll){
+		if(!scroll){
+			document.addEventListener("touchmove",stopDefaultScroll,false);
+		}else{
+			document.removeEventListener("touchmove",stopDefaultScroll,false);	
+		}
+	}
+
+	//生成图片序列
+	SLeasy.addBitmaps=function(layerName,prefix,start,end,suffix,bit){
+		var picUrlArr=[];
+		for(var i=start;i<=end;i++){
+			var picUrl=prefix+bitConvent(i,bit)+suffix;
+			picUrlArr.push(picUrl);
+		}
+
+		if(!layerName) return picUrlArr;
+
+		//合并位图序列
+		if($scope.bitmaps[layerName] && $scope.bitmaps[layerName].length){
+			return $scope.bitmaps[layerName];
+		}else{
+			$scope.bitmaps[layerName]=picUrlArr;
+			return picUrlArr;
+		}
+
+		function bitConvent(num,bit){
+			var numBit=num.toString().length;
+			var bits='',numString;
+			for(var n=0;n<bit-numBit;n++){//前置填充'0'
+				bits+='0';
+				numString=bits+num;
+			}
+			//console.log(numString)
+			if(numString) {
+				return numString;
+			}else{
+				return num.toString();
+			}
+		}
+	}
+	
+	
+	//摇一摇事件封装
+	SLeasy.shake=function (start,callback) {
+		var myShakeEvent = new Shake({
+			threshold: 15, // optional shake strength threshold
+			timeout: 1000 // optional, determines the frequency of event generation
+		});
+
+		if(start=='start') {
+			myShakeEvent.start();
+			window.addEventListener('shake', callback, false);
+		}else if(start=='stop'){
+			window.removeEventListener('shake', callback, false);
+			myShakeEvent.stop();
+		}
+	}
+
+
+
+
+
+	//时间线控制,用于'时间轴模式'下
+	SLeasy.play=function(){
+		$scope.timeLine.play();
+	}
+
+	SLeasy.pause=function(){
+		$scope.timeLine.pause();
+	}
+
+	SLeasy.resume=function(){
+		$scope.timeLine.resume()
+	}
+
+	SLeasy.reverse=function(){
+		$scope.timeLine.reverse();
+	}
+
+	SLeasy.tweenTo=function(){
+		$scope.timeLine.tweenTo();
+	}
+
+	SLeasy.tweenFromTo=function(){
+		$scope.timeLine.tweenFromTo();
+	}
+
+
+
+	
+	//shadown button
+	SLeasy.shadownBt='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTQ2MEFENzAxNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTQ2MEFENzExNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NDYwQUQ2RTE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NDYwQUQ2RjE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg+JIfMAAAAQSURBVHjaYvj//z8DQIABAAj8Av7bok0WAAAAAElFTkSuQmCC'
+	
+})(
+window.SLeasy=window.SLeasy || {},
+jQuery
+);
+// SLeasy3-cache
+;(function(SLeasy,$,store){
+	//set/read Cache
+	SLeasy.cache=function(){
+		console.log('arguments:'+arguments);
+		var vars=arguments.length,
+			args=arguments;
+		
+		//不同参数策略
+		var cacheFuncs=[
+			function(){
+				var value=$.extend(($.cookie() || {}),store.getAll());
+				return value;
+			},
+			function(){
+				console.log('get cache~'+args[0]);
+				var value=$.cookie(args[0]) || store.get(args[0]);
+				return value;
+			},
+			function(){
+				console.log('set cache~'+args[0]+':'+args[1]);
+				$.cookie(args[0],args[1]);
+				store.set(args[0],args[1]);
+			},
+			function(){
+				$.cookie((args[0],args[1]),$.extend({expires:7},args[2]));
+				store.set(args[0],args[1]);
+			}
+		];
+		
+		//策略执行
+		return cacheFuncs[vars]();
+	}
+	
+	//delete Cache
+	SLeasy.noCache=function(){
+		var vars=arguments.length;
+		
+		//不同参数策略
+		var noCacheFuncs=[
+			function(){
+				store.clear();
+				$.each($.cookie(),function(index,value){
+					$.removeCookie(index);
+				})
+			},
+			function(){
+				var value=$.removeCookie(args[0]);
+				store.remove(args[0]);
+				return value;
+			}
+		];
+		
+		//策略执行OO
+		return noCacheFuncs[vars]();
+		
+	}
+	
+	
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery,
+store
+);
+// SLeasy3-viewport
+;(function (SLeasy, $, device) {
+    var $config = SLeasy.config(),
+        $scope = SLeasy.scope();
+
+    //设置视口
+    SLeasy.viewport = function () {
+        //重置body
+        $("body").css({"padding": 0, "margin": "0 0"});
+
+        //适配策略
+        var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
+            minHeight = 480,//最小高度
+            ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            viewport = {
+                'width': function () {
+                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                        viewportContent = 'width=' + width + ',user-scalable=no';
+                    return viewportContent;
+                },
+                'height': function (thresholdHeight) {
+                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                        viewHeight = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
+                        height = viewHeight > minHeight ? viewHeight : minHeight,
+                        viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
+                    return viewportContent;
+                },
+                'auto': function () {
+                    // ratio = $(window).width() / $(window).height();//刷新当前宽高比
+                    var viewportContent = $config.width / $config.height >= ratio ? viewport.width() : viewport.height();
+                    return viewportContent;
+                },
+                'scroll': function () {
+                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                        viewportContent = 'width=' + width + ',user-scalable=no';
+                    return viewportContent;
+                },
+                'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
+                    // alert($config.width / threshold >= ratio)
+                    var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
+                    return viewportContent;
+                }
+            };
+
+
+        var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
+        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="' + _content + '">');
+        if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
+            SLeasy.onResize = function () {
+                $config.reloadMode && window.location.reload();
+            }
+        }
+
+        var sliderBoxHeight = $config.height * $scope.viewScale;
+        //$scope.fixHeight=$(window).height();//设置自适应全屏高度
+        $scope.fixHeight = $(window).height() > sliderBoxHeight ? sliderBoxHeight : $(window).height();//设置自适应全屏高度
+        if ($config.stageMode == 'scroll') {
+            $scope.fixHeight = sliderBoxHeight;
+        }
+    }
+})(
+    window.SLeasy = window.SLeasy || {},
+    jQuery,
+    device
+);
+// SLeasy3-slider
+;(function (SLeasy, $) {
+    var $config = SLeasy.config(),
+        $scope = SLeasy.scope();
+
+    //html
+    SLeasy.slider = function (opt) {
+
+        //背景对齐策略
+        var bgAlign = {
+            "top": 'center ' + $config.alignOffset + 'px',
+            "center": 'center ' + (($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset) + 'px',
+            "bottom": 'center ' + ($scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset) + 'px',
+            "photo": 'center center'
+        }
+
+        //slider label hash
+        if (typeof opt.label != 'undefined') {
+            $scope.labelHash[opt.label] = opt.index;
+        }
+
+        //slider
+        var html = '\
+			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
+			style="\
+			width:' + $config.viewport + 'px;\
+			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
+			background-image:' + sliderBg() + ';\
+			background-repeat:no-repeat;\
+			background-size:100% auto;\
+			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
+			background-color:' + (opt.bgColor || "transparent") + ';\
+			overflow:' + ($config.positionMode == "absolute" ? "hidden" : "visible") + ';\
+			position:absolute; display:none;\
+			">';
+
+        function sliderBg() {
+            if (!opt.bg) return 'none';
+            if (typeof opt.bg == 'string') {
+                return 'url(' + SLeasy.path($config.host, opt.bg) + ');'
+            } else {//多重背景
+                var bgString = '';
+                for (var i = 0; i < opt.bg.length; i++) {
+                    bgString += 'url(' + SLeasy.path($config.host, opt.bg[i]) + ')' + (i == opt.bg.length - 1 ? ';' : ',')//如果是最后一个则添加;号 不是则添加,号
+                }
+                console.log(bgString);
+                return bgString;
+            }
+        }
+
+        //subMotion element
+        //console.log(opt.index);
+        html += SLeasy.subElement(opt.syncMotion || [], 'test', opt.index);
+        html += SLeasy.subElement(opt.subMotion || [], opt.type, opt.index) + '</div>';//子动画元素
+
+        return html
+    }
+
+    SLeasy.subElement = function (subArr, type, sliderIndex, display) {
+        //不同类型幻灯对应的子元素关键字标识
+        var subName = {
+            "sliders": "subMotion",
+            "details": "detailMotion",
+            "floats": 'floatElement'
+        }
+
+        //不同类型子动画元素生成策略
+        var subElement = {
+            "img": function (opt) {
+                //img to div
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' ' + (typeof opt.toDiv != 'undefined' && !opt.toDiv ? 'noDiv' : 'toDiv') + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<img src="' + SLeasy.path($config.host, opt.img) + '">\
+				</div>';
+            },
+            "shadownBt": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' SLeasy_shadownBt toDiv"\
+				style="position:absolute; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
+				</div>';
+            },
+            "dom": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<div id="' + opt.dom + '"></div>\
+				</div>';
+            },
+            "html": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				' + opt.html + '\
+				</div>';
+            },
+            "svg": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
+				</div>';
+            },
+            "canvas": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="transform: matrix(1, 0, 0, 1, 0, 0);position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<canvas id="' + opt.canvas[0] + '" class="SLeasy_canvas" width="' + opt.canvas[1] + '" height="' + opt.canvas[2] + '" style="position:absolute;top:0px;left:0px;width:' + opt.canvas[1] * $scope.viewScale + 'px;height:' + opt.canvas[2] * $scope.viewScale + 'px"></canvas>\
+				</div>';
+            },
+            "text": function (opt) {
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_text SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				' + opt.text + '\
+				</div>';
+            },
+            "input": function (opt) {
+                //
+                var inputHtml = {
+                    'text': function () {
+                        return '<input type="' + opt.input + '"\
+						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
+						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
+						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '">';
+                    },
+                    'textArea': function () {
+                        return '<textArea type="' + opt.input + '"\
+						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
+						style="border:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
+						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"></textArea>';
+                    },
+                    'select': function () {
+                        var opitionHtml = '';
+                        for (var i = 0; i < opt.opition.length; i++) {
+                            var row = '<option value="' + opt.opition[i][1] + '">' + opt.opition[i][0] + '</option>';
+                            opitionHtml += row;
+                        }
+                        return '<select\
+						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
+						style="-webkit-appearance:none;appearance:none;border:0px solid;background:transparent;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+						' + opitionHtml + '</select>';
+                    }
+                }
+
+                return inputHtml[opt.input]();
+            },
+            "plugin": function (opt) {
+                var id = 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index;
+                //把插件初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
+                $scope.pluginList.push([opt.plugin[0], $.extend(opt.plugin[1], {node: id}), opt.plugin[2]]);
+                return '<div id="' + id + '" \
+				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				</div>';
+            },
+            "ae": function (opt) {
+                //添加ae渲染层
+                SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit) {
+                    SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
+                    //渲染层初始化
+                    $scope.aeBitmaps[layerName] = [];
+                    for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                        var _bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
+                        $scope.aeBitmaps[layerName].push(_bitmap);
+                    }
+                    $scope.aeLayer[layerName] = new createjs.Container();
+                    $scope.aeLayer[layerName].frame = 0;
+                    $scope.aeLayer[layerName].name = layerName;//设置该渲染层name,以便回调中获取
+                    $scope.aeLayer[layerName].sliderIndex = stageObj.sliderIndex;
+                    if (addAt == 'auto') {
+                        stageObj.addChild($scope.aeLayer[layerName]);
+                    } else {
+                        stageObj.addChildAt($scope.aeLayer[layerName], addAt);
+                    }
+
+
+                    //ticker
+                    TweenMax.ticker.addEventListener("tick", function () {
+                        $scope.aeLayer[layerName].removeAllChildren();
+                        //根据当前序列容器的frame值添加相应索引值的位图对象
+                        $scope.aeLayer[layerName].addChild($scope.aeBitmaps[layerName][$scope.aeLayer[layerName].frame]);
+                    });
+
+                    return $scope.aeLayer[layerName];
+                }
+
+
+                //播放渲染层
+                SLeasy.playAeLayer = function (aeOpt) {
+                    var frame = Math.abs(aeOpt.end - aeOpt.start),
+                        time = frame / (aeOpt.fps || 25);
+                    var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+
+                    aeTl.add(
+                        TweenMax.to(aeOpt.aeLayer, time,
+                            {
+                                roundProps: "frame",
+                                frame: aeOpt.end,
+                                ease: SteppedEase.config(frame),
+                                repeat: aeOpt.repeat,
+                                onStart: aeOpt.onStart,
+                                onUpdate: aeOpt.onUpdate,
+                                onComplete: aeOpt.onComplete,
+                            }
+                        ), '+=' + (aeOpt.offsetTime || 0)
+                    );
+                }
+
+
+                var config = {
+                    stage: '_stage_',
+                    width: '640',
+                    height: '1136',
+                    fps: 25,
+                    repeat: 1,
+                    layer: [],
+                    onInit: function () {
+                    }
+                }
+                $.extend(config, opt.ae);
+
+
+                //内置ae插件初始化函数
+                function aeMotion(aeOpt) {
+                    //AE
+                    var stage = $scope.aeStage[aeOpt.stage] = new createjs.Stage(aeOpt.node);
+                    stage.sliderIndex = aeOpt.sliderIndex;
+                    stage.name = config.stage;
+
+                    for (var i = 0; i < aeOpt.layer.length; i++) {
+                        var layerArg = aeOpt.layer[i],
+                            layerName = layerArg[0],
+                            addAt = 'auto',
+                            prefix = layerArg[1],
+                            start = layerArg[2],
+                            end = layerArg[3],
+                            suffix = layerArg[4],
+                            bit = layerArg[5];
+
+                        $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit);
+
+                        var frame = end - start,
+                            time = frame / (aeOpt.fps || 25);
+
+
+                        $scope.aeLayer[layerName].time = time;
+                        $scope.aeLayer[layerName].tweenData = {
+                            frame: frame,
+                            roundProps: "frame",
+                            ease: SteppedEase.config(frame),
+                            repeat: aeOpt.repeat,
+                            onUpdate: function () {
+                                //console.log(this.target.frame);
+                            }
+                        }
+                    }
+
+                    //ticker
+                    TweenMax.ticker.addEventListener("tick", function () {
+                        stage.update();
+                    });
+
+                    //console.log(stage);
+                    return stage;
+
+                }
+
+
+                //把ae内置插件,初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
+                config.node = config.stage;
+                config.sliderIndex = sliderIndex;//并入当前ae插件所在的幻灯索引值
+                $scope.pluginList.push([aeMotion, config, config.onInit]);
+
+                return '<div\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_canvas SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				<canvas id="' + config.stage + '" class="SLeasy_canvas SLeasy_ae" width="' + config.width + '" height="' + config.height + '" style="position:absolute;top:0px;left:0px;width:' + config.width * $scope.viewScale + 'px;height:' + config.height * $scope.viewScale + 'px"></canvas>\
+				</div>';
+            },
+        }
+
+
+        //sub element html
+        var html = '';
+
+        //subMotion element
+        for (var i = 0; i < subArr.length; i++) {
+            //console.log(index);
+            var subMotion = subArr[i];
+            $.extend(subMotion, {index: (sliderIndex || 0) + '_' + i});//合并slider初始化索引及当前子元素初始化索引，以便生成唯一id
+
+            //subMotion label hash
+            if (typeof subMotion.label != 'undefined') {
+                $scope.labelHash[subMotion.label] = '#SLeasy_' + (subName[type] || type) + '_' + subMotion.index;
+            }
+
+            //遍历子元素生成策略并执行
+            $.each(subElement, function (index, value) {
+                if (subMotion[index]) {
+                    var row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
+                    html += row;
+                    return;
+                }
+            });
+
+
+            if (subMotion['event']) {
+                var info = {
+                    id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                    event: subMotion.event,
+                    onEvent: subMotion.onEvent,
+                }
+                $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+            }
+
+        }
+
+        return html
+    }
+
+})(
+    window.SLeasy = window.SLeasy || {},
+    jQuery
+);
+// SLeasy3-imgToDiv
+;(function(SLeasy,$){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+		
+	SLeasy.imgToDiv=function($myDom){
+		var $dom=$myDom || $scope.sliderBox;
+		//to div
+		$dom.find(".toDiv img").each(function(index, element) {//获取所有图片宽度
+			$(this).load(function(e) {
+                var w = $(this)[0].width,
+					h = $(this)[0].height,
+					style={
+						'backgroundImage':'url('+$(this).attr("src")+')',
+						'backgroundRepeat':'no-repeat',
+						'backgroundSize':w*$scope.viewScale+'px',
+						'width':w*$scope.viewScale+'px',
+						'height':h*$scope.viewScale+'px'
+						}
+				
+				$(this).parent().css(style);
+				$(this).remove();
+        	});		
+		});	
+		//no to div
+		$dom.find(".noDiv img").each(function(index, element) {//获取所有图片宽度
+			$(this).load(function(e) {
+                var w = $(this)[0].width,
+					h = $(this)[0].height,
+					style={
+						'width':w*$scope.viewScale+'px',
+						'height':h*$scope.viewScale+'px'
+						}			
+				$(this).css(style);
+        	});	
+		});
+	}
+	
+})(
+window.SLeasy=window.SLeasy || {},
+jQuery
+);
+// SLeasy3-fix
+;(function(SLeasy){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+	
+	
+	//子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
+	SLeasy.fixPosition=function(opt){
+		//console.log(opt)
+		//背景对齐模式导致的子元素y轴偏移策略
+		var yOffset={
+			"top":$config.alignOffset,
+			"center":($scope.fixHeight-$config.height*$scope.viewScale)/2+$config.alignOffset,
+			"bottom":$scope.fixHeight-$config.height*$scope.viewScale+$config.alignOffset	
+			},
+			sliders=opt || $config.sliders;
+		
+		for(var i=0;i<sliders.length;i++){
+			var subMotions=sliders[i].subMotion;//当前幻灯子动画数组
+			for(var j=0;j<(subMotions && subMotions.length || 0);j++){
+				//console.log(subMotions[j]);
+				if(subMotions[j].shadownBt){//处理shadownBt的情况
+					var bt=subMotions[j].shadownBt;
+					//subMotions[j].in={x:bt[2],y:bt[3]};
+					//subMotions[j].show={x:bt[2],y:bt[3]};
+					subMotions[j].set=$.extend({x:bt[2],y:bt[3]},subMotions[j].set);
+				}
+				
+				var subIn=subMotions[j].in || {},
+					subShow=subMotions[j].show || {},
+					subSet=subMotions[j].set || {},
+					subTo=subMotions[j].to || [];
+			
+					SLeasy.fixProps(subIn);
+					SLeasy.fixProps(subShow);
+					SLeasy.fixProps(subSet);
+					
+					if(subTo.length){
+						for(var k=0;k<subTo.length;k++){
+							SLeasy.fixProps(subTo[k].to);
+
+						}
+					}
+									
+					//根据幻灯对齐方式参数，进行y轴自适应修正
+					if(subIn.y) subIn.y+=yOffset[$config.alignMode];
+					if(subShow.y) subShow.y+=yOffset[$config.alignMode];
+					if(subSet.y) subSet.y+=yOffset[$config.alignMode];
+					if(subTo.length){
+						for(var l=0;l<subTo.length;l++){
+							if(subTo[l].to && typeof subTo[l].to.y!='undefined') subTo[l].to.y+=yOffset[$config.alignMode];
+						}
+					}
+			}
+		}
+	}
+	
+	//属性缩放变换
+	SLeasy.fixProps=function fixProps(transObj){
+		var addPX={//需要添加px单位的属性
+				'lineHeight':true
+			}
+		//console.log(transObj);
+		for(var i=0;i<$scope.fixPropsArr.length;i++){
+			var props=transObj[$scope.fixPropsArr[i]],
+				postfix;
+			if(props){
+				if(typeof props=='string'){
+					//clip
+					if(props.indexOf('rect')!=-1){
+						props=props.split('(')[1].replace(')','').split(' ');
+						for(var n=0;n<props.length;n++){
+							props[n]=parseInt(props[n])*$scope.viewScale+'px';
+						}
+						transObj[$scope.fixPropsArr[i]]='rect('+props.join(' ')+')';
+						continue;
+					}
+					//px
+					if(props.indexOf('rect')==-1 && props.lastIndexOf('px')!=-1){
+						props=parseInt(props);//去掉px后缀
+						postfix=addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
+						transObj[$scope.fixPropsArr[i]]=props*$scope.viewScale+postfix;//按照viewScale等比缩放
+						continue;
+					}
+					//%
+					if(props.lastIndexOf('%')!=-1){
+						props=parseInt(props);//去掉%后缀
+						postfix='%';//确定后缀值
+						transObj[$scope.fixPropsArr[i]]=props+postfix;//按照viewScale等比缩放
+						continue;
+					}
+				}else{
+					props=parseInt(props);
+					postfix=addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
+					transObj[$scope.fixPropsArr[i]]=props*$scope.viewScale+postfix;//按照viewScale等比缩放
+				}
+			}		
+		}
+		return transObj;
+	}
+	
+	//添加/获取缩放属性
+	SLeasy.fixPropsArr=function(arr){
+			if(arr){
+				for(var i=0;i<arr.length;i++){
+					if($scope.fixPropsArr.join('').indexOf(arr[i])==-1) $scope.fixPropsArr.push(arr[i]);//如果新添加的属性不存在,则添加
+				}
+			}else{
+				return 	$scope.fixPropsArr;
+			}
+		}
+	
+	
+})(
+window.SLeasy=window.SLeasy || {}
+);
+// SLeasy3-subMotion
+;(function(SLeasy,$,T){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+	
+	
+	//subMotion,参数:为单个slider/detail配置对象数据
+	SLeasy.subMotion=function(subMotionArr,type){
+		console.log('subMotion~~~');
+		if(!subMotionArr || !subMotionArr.length) return;
+		
+		//不同类型幻灯对应的子元素关键字标识
+		var subName={
+			"sliders":"subMotion",
+			"details":"detailMotion",
+			'floats':'floatElement',
+		}
+		
+		
+		//console.log($scope.sliderIndex);
+		var count=subMotionArr.length;//子动画数量
+		
+		var subCallback={
+			"sliders":function(){$config.on['subMotion']($scope.sliderIndex)},//子元素动画开始回调,
+			"details":function(){$config.on['detailMotion']($scope.detailIndex)},//详情页子元素动画开始回调
+			'floats':''
+		}
+		
+		//console.log(subMotionArr);
+		subCallback[type] && subCallback[type]();//执行config相应类型的子动画回调
+		
+			
+		//根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
+		if(type && type!='sliders'){
+			var tl=new TimelineMax({autoRemoveChildren:$config.autoRemoveChildren,paused:true});
+			$scope.isDetailMotion=0;//详情页子动画开始、完成状态
+		}else{
+			var tl=$scope.timeLine;
+			$scope.isSubMotion=0;//子动画是否正在播放状态	
+		}
+
+
+		for(var i=0;i<count;i++){
+			var	subMotion=subMotionArr[i],//当前子动画
+				preSubMotion=subMotionArr[i-1],//上一子动画
+				$dom=$('#SLeasy_'+(subName[type] || type)+'_'+subMotion.index),//当前子动画元素dom
+				time=subMotion.time || 0,//time
+				offsetTime=preSubMotion && preSubMotion.time-subMotion.start || 0,//和上个子动画之间的间隔时间
+				subIn= $.extend({force3D:true},subMotion.in || {}),//in
+				subShow=$.extend({display:'block',force3D:true},subMotion.show || {}),//show
+				set=subMotion.set ? $.extend({position:'absolute'},subMotion.set) : {position:'absolute'};//set
+
+
+			//判断当前幻灯是否包含ae渲染层
+			if($dom.find('.SLeasy_ae').length){
+				//如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
+				$.extend(subShow,{onStart:function(){
+					$.each($scope.aeLayer,function(index,aeLayer){
+						if(aeLayer.sliderIndex==$scope.sliderIndex){
+							aeLayer.frame=0;//重置帧时间线
+							T.to(aeLayer,aeLayer.time,aeLayer.tweenData);
+						}
+					});
+				}})
+			}
+
+			//console.log(subMotion);
+			//set
+			subMotion.set && T.set($dom,subMotion.set);
+			
+			//add label
+			subMotion.label && tl.addLabel(subMotion.label);
+
+			//add pause
+			subMotion.pause && tl.addPause();
+			
+
+			tl.add(T.fromTo($dom, time, subIn, subShow), '-=' + offsetTime);
+			
+			
+			$scope.isSubMotion=1;//子动画是否正在播放状态		
+
+
+			//add pause to
+			subMotion.pauseTo && tl.addPause();
+
+			//to
+			if(subMotion.to){
+				for(
+					var j=0;j<subMotion.to.length;j++){
+					var to=$.extend({force3D:true},subMotion.to[j]),
+						preTo=subMotion.to[j-1] || {},
+						time=to.time || 0.4,
+						offsetTime=preTo && (preTo.time-to.start) || 0//和上个子动画之间的间隔时间
+						;
+						
+					var dom=$(SLeasy.label(to.el));
+					//console.log('===========================');
+					//console.log(dom);
+					tl.add(T.to(dom,time,to.to),'-='+offsetTime);
+				}
+			}
+			
+			
+		}
+		
+		//relative模式处理
+		if($config.positionMode=='relative'){
+			tl.eventCallback('onStart',function(){$("html,body").css("overflow","hidden")});
+			 tl.eventCallback('onComplete',function(){$("html,body").css("overflow","visible")});
+		}
+
+		//play
+		//tl.progress(0.999).progress(0);
+		tl.play();
+
+
+	}
+	
+	//play
+	SLeasy.play=function(from){
+		$scope.timeLine.play(from);	
+	}
+	
+	//pause
+	SLeasy.pause=function(atTime){
+		$scope.timeLine.pause(atTime);	
+	}
+	
+			
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery,
+TweenMax || TweenLite
+);
+// SLeasy3-motionFX
+;
+(function (SLeasy) {
+    var $config = SLeasy.config(),
+        $scope = SLeasy.scope();
+
+    //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
+    SLeasy.getMotionFX = function (direction, style) {
+        //内置动画式样数组
+        var motionFX = {
+            leftRight: [//左右
+                {
+                    set: {},
+                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {transformPerspective: 400, backfaceVisibility: 'hidden'},
+                    in: {rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {transformOrigin: '50% 120%'},
+                    in: {rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {
+                        transformOrigin: '50% 50% -' + $config.width * $scope.viewScale / 2,
+                        transformPerspective: 400,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden'
+                    },
+                    in: {rotationY: 90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
+                    show: {rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
+                    out: {rotationY: -90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'}
+                },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 0, ease: Linear.easeNone}
+                },
+                {
+                    set: {},
+                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone}
+                },
+            ],
+            upDown: [//上下
+                {
+                    set: {},
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {transformPerspective: 400, backfaceVisibility: 'hidden'},
+                    in: {rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {transformOrigin: '120% 50%'},
+                    in: {rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                },
+                {
+                    set: {
+                        transformOrigin: '50% 50% -' + $scope.fixHeight / 2,
+                        transformPerspective: 400,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden'
+                    },
+                    in: {rotationX: -90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
+                    show: {rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
+                    out: {rotationX: 90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'}
+                },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 0, ease: Linear.easeNone}
+                },
+                {
+                    set: {},
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone}
+                }
+            ]
+        };
+
+        //获取切换式样
+        var FXIndex = ($config.motionStyle == 'rand') ? Math.round(Math.random() * (motionFX.leftRight.length - 1)) : $config.motionStyle;
+        FXIndex = typeof style != 'undefined' ? style : FXIndex;
+        var FXDirection = direction || $scope.FXDirection;
+
+
+        return motionFX[FXDirection][FXIndex];
+    }
+
+
+})(window.SLeasy = window.SLeasy || {});
+// SLeasy3-transition
+;(function(SLeasy,$,T){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+		
+	//go slider
+	SLeasy.goSlider=function(index){
+		var nextIndex=SLeasy.nextIndex(index);
+		if($config.routerMode){
+			//var detailHash=$scope.router.getRoute(1);
+			$scope.router.setRoute(0,nextIndex+'');//设置路由
+		}else{
+			SLeasy.transit(nextIndex);
+		}
+	}
+	
+	SLeasy.nextIndex=function(index){
+		//如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
+		var index=(typeof index=='number' || index.indexOf('-=')!=-1 || index.indexOf('+=')!=-1) ? index : SLeasy.label(index);
+		console.log(index);
+		var totalIndex=$scope.sliders.length-1,//最大索引值
+			total=totalIndex+1,//幻灯总数
+			nextIndex		
+			;
+
+		if(!$config.loopMode){//非循环模式
+			//不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
+			var indexType={
+				"number":function(){
+					if(index>=0 && index<=totalIndex){//索引边界内
+						nextIndex=index;	
+					}else{//索引边界外
+						if(index>totalIndex){
+							nextIndex=totalIndex;
+						}else{
+							nextIndex=0;	
+						}
+					}
+				},
+				"string":function(){
+					var _arr=index.split('=');
+					if(_arr[0]=='-'){
+						nextIndex=($scope.sliderIndex-parseInt(_arr[1])<0) ? 0 : $scope.sliderIndex-parseInt(_arr[1]);
+					}else if(_arr[0]=='+'){
+						nextIndex=($scope.sliderIndex+parseInt(_arr[1])>totalIndex) ? totalIndex : $scope.sliderIndex+parseInt(_arr[1]);
+					}else{
+						return alert('幻灯跳转索引值错误！');
+					}
+				},	
+			}
+						
+			if(typeof indexType[(typeof index)]=='undefined') return alert('幻灯索引参数错误~！');
+			indexType[(typeof index)]();//策略执行
+			//$scope.sliderIndex=nextIndex;//更新当前slider索引
+			return nextIndex;
+											
+		}else{//循环模式
+			var indexType={
+				"number":function(){
+					nextIndex=index%total>=0 ? index%total : total+index%total;
+					},
+				"string":function(){
+					var _arr=index.split('=');
+					if(_arr[0]=='-'){
+						nextIndex=($scope.sliderIndex-parseInt(_arr[1]))<0 ? total+($scope.sliderIndex-parseInt(_arr[1]))%total : ($scope.sliderIndex-parseInt(_arr[1]))%total;//索引取模
+						
+					}else if(_arr[0]=='+'){
+						nextIndex=($scope.sliderIndex+parseInt(_arr[1]))%total;								
+					}else{
+						return alert('幻灯跳转索引值错误！');
+					}
+				},	
+			}
+			if(typeof indexType[(typeof index)]=='undefined') return alert('幻灯索引参数错误~！');;
+			indexType[(typeof index)]();//策略执行
+			//$scope.sliderIndex=nextIndex;//更新当前slider索引
+			return nextIndex;
+		}
+		
+	}
+	
+	SLeasy.transitFX=function(nextIndex){
+		var _in,
+			_out,
+			_show,
+			_set,
+			motionFX=SLeasy.getMotionFX(),//获取全局配置切换效果
+			customFX
+			;
+		
+		//如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
+		console.log($scope.sliderIndex+':'+nextIndex);
+			
+		
+	
+		//自定义切换效果
+		customFXAguments=$config.sliders[nextIndex].motionFX || null;
+		//console.log(customFX);
+		customFX=customFXAguments ? SLeasy.getMotionFX(customFXAguments[0],customFXAguments[1]) : {};
+		
+		//in
+		if($scope.sliderIndex<nextIndex){		
+			if($scope.sliderIndex==0 && nextIndex==$config.sliders.length-1){//为最首，最末页情况
+				_in=$.extend({display:'block'},(customFX.out || motionFX.out));	
+			}else{
+				_in=$.extend({display:'block'},(customFX.in || motionFX.in));
+			}
+		}else{
+			if($scope.sliderIndex==$config.sliders.length-1 && nextIndex==0){//为最首，最末页情况
+				_in=$.extend({display:'block'},(customFX.in || motionFX.in));
+			}else{
+				_in=$.extend({display:'block'},(customFX.out || motionFX.out));
+			}
+		}
+		
+		//out
+		if($scope.sliderIndex<nextIndex){
+			if($scope.sliderIndex==0 && nextIndex==$config.sliders.length-1){//为最首，最末页情况
+				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
+			}else{
+				_out=$.extend({display:'none'},(customFX.out || motionFX.out));	
+			}
+		}else{
+			if($scope.sliderIndex==$config.sliders.length-1 && nextIndex==0){//为最首，最末页情况
+				_out=$.extend({display:'none'},(customFX.out || motionFX.out));
+			}else{
+				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
+			}
+			
+		}
+		
+		if($config.sliders.length==2){
+			if($scope.sliderIndex<nextIndex){
+				_in=$.extend({display:'block'},(customFX.in || motionFX.in));	
+				_out=$.extend({display:'none'},(customFX.out || motionFX.out));
+			}else{
+				_in=$.extend({display:'block'},(customFX.out || motionFX.out));
+				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
+			}
+		}
+
+
+
+		var currentSlider=$scope.sliders.eq($scope.sliderIndex),//当前幻灯
+			currentSubMotion=currentSlider.find($scope.subMotion),//当前幻灯子元素
+			nextSlider=$scope.sliders.eq(nextIndex);//下一幻灯
+
+
+		//show
+		_show=$.extend({//show FX
+			onStart:function(){
+				if($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
+			},
+			onComplete:function(){
+				if($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
+				//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
+				T.set(currentSubMotion,{clearProps:$scope.clearProps,display:'none'});//清除子动画图片内联式样
+				T.set([currentSlider,nextSlider],{clearProps:$scope.clearProps});
+
+				$scope.isAnim=0;//重置运动状态
+				//console.log($scope.labelHash);
+				//sub motion
+				var subMotionArr=$config.sliders[nextIndex].subMotion;
+				SLeasy.subMotion(subMotionArr,'sliders');
+			},
+		},(customFX.show || motionFX.show));
+		_set=customFX.set || motionFX.set;
+		
+		//force3D
+		_in= $.extend({force3D:true},_in);
+		_out= $.extend({force3D:true},_out);
+		_show= $.extend({force3D:true},_show);
+
+
+		return {
+				in:_in,
+				show:_show,
+				out:_out,
+				set:_set	
+				}
+		
+	}
+	
+	SLeasy.transit=function(nextIndex){
+		if($scope.sliders.length==0) return alert('当前没有任何幻灯json数据~!');
+		if($scope.isAnim) return;
+		$scope.isAnim=1;//重置运动状态
+		
+		var currentSlider=$scope.sliders.eq($scope.sliderIndex),//当前幻灯
+			//nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
+			nextSlider=$scope.sliders.eq(nextIndex),//下一幻灯
+			FX=SLeasy.transitFX(nextIndex)//切换效果
+			;
+		
+		//设置该页标题
+		var title=$config.sliders[nextIndex].title || $config.title;
+		if(title && title!=$scope.title){
+			SLeasy.title(title);
+			$scope.title=title;	 
+		}
+		
+		
+		//set
+		T.set(currentSlider,FX.set);
+		T.set(nextSlider,$.extend(FX.set,$config.sliders[nextIndex].set));
+		$config.on['sliderChange'](nextIndex);//幻灯切换回调
+
+			
+		//冻结并清除当前子动画
+		if(currentSlider[0]!=nextSlider[0]) $scope.timeLine.clear();
+						
+		//动画切换执行
+		if(currentSlider[0]==nextSlider[0]){//如果上下页是同一页，则只执行子动画
+			//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
+			T.set($scope.sliders,{clearProps:$scope.clearProps});
+			currentSlider.fadeIn(1000,function(){
+				//sub motion
+				var subMotionArr=$config.sliders[nextIndex].subMotion;
+				//如果正在关闭详情页则不播放子动画
+				console.log($scope.isSubMotion);
+				if(!$scope.isSubMotion) SLeasy.subMotion(subMotionArr,'sliders');
+				$scope.isAnim=0;//重置运动状态
+			});
+				
+		}else{
+			//清除所有ae渲染层tween
+			$.each($scope.aeLayer,function(index,aeLayer){
+				T.killTweensOf(aeLayer);
+			})
+
+			//slider切换
+			var motionTime=$config.sliders[nextIndex].time || $config.motionTime;
+			T.to(currentSlider,motionTime,FX.out);
+			T.fromTo(nextSlider,motionTime,FX.in,FX.show);
+		}	
+		//更新当前slider索引
+		$scope.sliderIndex=nextIndex;
+	}
+	
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery,
+TweenMax || TweenLite
+);
+
+// SLeasy3-detail
+;(function(SLeasy,$,T){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+	
+	
+	//goDetail
+	SLeasy.goDetail=function(index){
+		var nextIndex=SLeasy.nextDetailIndex(index);
+		if($config.routerMode){
+			$scope.router.setRoute(1,nextIndex+'');//设置路由
+		}else{
+			SLeasy.detailTransit(nextIndex);
+		}
+	}
+	
+	SLeasy.nextDetailIndex=function(index){
+		return index=(typeof index=='number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
+	}
+	
+	SLeasy.detailFX=function(index){
+		var detail=$config.details[index] || (alert('详情页索引参数错误~！')),
+			motionFX=detail.motionFX || null,
+			motionFX=motionFX ? SLeasy.getMotionFX(motionFX[0],motionFX[1]) : SLeasy.getMotionFX('leftRight',0),
+			_in=$.extend(motionFX.in,{display:'block'}),
+			_show=$.extend(motionFX.show,{
+              				onComplete:function(){
+					SLeasy.hammerObj().get('swipe').set({enable:false});//禁止slider滑动手势
+					SLeasy.touchScroll(false);//禁止触摸默认滚动
+					SLeasy.subMotion(detail.subMotion,'details');
+					$scope.isDetail=1;//详情页已打开
+				}
+			}),
+			_set=$.extend({zIndex:1},detail.set) || {};
+			
+		
+		return {                         
+				in:_in,
+				show:_show,
+				set:_set			
+				}
+		
+	}
+	
+	SLeasy.detailTransit=function(index){
+		//如果详情页处于打开状态未关闭，则return 
+		if($scope.isDetail) return;
+		//索引边界检查
+		if(typeof index=='undefined' || index<0 || index>$config.details.length-1) return;
+			
+		$scope.detailIndex=index;
+		
+		var	detail=$config.details[index],
+			dom=$scope.details.eq(index),
+			FX=SLeasy.detailFX(index),
+			time=detail.time || $config.motionTime
+		;
+		
+		//详情页打开回调
+		$config.on['detailOpen'](index);
+			
+		//设置该页标题
+		var title=$config.details[$scope.detailIndex].title || $config.title;
+		if(title && title!=$scope.title){
+			SLeasy.title(title);
+			$scope.title=title;	 
+		}
+		
+		//如果positionMod为relative情况
+		if($config.positionMode=='relative'){
+			dom.css("top",$(window).scrollTop());
+			$scope.sliderBox.height($(document).height()).css("overflow","hidden");
+		}
+			
+		T.set(dom,FX.set);//自定义set，主要是z-index等
+		T.fromTo(dom,time,FX.in,FX.show);	
+			
+	}
+	
+	
+	//closeDetail
+	SLeasy.closeDetail=function(index){
+		var nextIndex=SLeasy.nextDetailIndex(index);
+		if($config.routerMode){
+			var sliderHash=$scope.router.getRoute(1)
+			//$scope.router.setRoute('/'+nextIndex+'/'+detailHash);//设置路由
+			$scope.router.setRoute(1,'html');//设置路由
+		}else{
+			SLeasy.closeDetailTransit(nextIndex);
+		}
+	}
+	
+	SLeasy.closeDetailTransit=function(index){
+		//如果详情页处于打开状态未关闭，则return
+		if(!$scope.isDetail) return; 
+		//索引边界检查
+		if(typeof index=='undefined' || index<0 || index>$config.details.length-1) return;
+		
+		var	detail=$config.details[index],
+			dom=$scope.details.eq(index),
+			onComplete={
+				onComplete:function(){
+					//启用slider滑动手势/恢复触摸默认滚动
+					$config.stageMode!='scroll' ? SLeasy.hammerObj().get('swipe').set({enable:true}) : SLeasy.touchScroll(true);
+					var clearProps='x,y,scale,rotationX,rotationY,rotationZ,transformPerspective,WebkitTransformOrigin,transformOrigin,zIndex';
+					T.set(dom,{clearProps:clearProps,display:'none'});//清除幻灯内联式样
+					T.set($scope.detailMotion,{clearProps:clearProps,display:'none'});//清除子动画图片内联式样
+					$scope.isDetail=0;//详情页已关闭
+					//如果positionMod为relative情况
+					$config.positionMode=='relative' && $scope.sliderBox.css("overflow","visible");	
+				}
+			},
+			FX=SLeasy.detailFX(index),
+			time=detail.time || $config.motionTime
+		;
+		
+		//详情页关闭回调
+		$config.on['detailClose'](index);
+			
+		//设置该页标题
+		var title=$config.sliders[$scope.sliderIndex].title || $config.title;
+		if(title && title!=$scope.title){
+			SLeasy.title(title);
+			$scope.title=title;	 
+		}
+		
+		
+		
+		delete FX.show.onComplete;
+		$.extend(FX.in,onComplete);
+		T.fromTo(dom,time,FX.show,FX.in);	
+	}
+	
+		
+
+})(
+window.SLeasy = window.SLeasy,
+jQuery,
+TweenMax || TweenLite
+);
+// SLeasy3-eventBind
+;(function(SLeasy,H,$,T){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope(),
+		sliderBox;//hammerObj
+		
+	//get hammerObj
+	SLeasy.hammerObj=function(){
+		return sliderBox ? sliderBox : alert('hammerObj尚未初始化~！');
+	}
+	
+	//event bind
+	SLeasy.eventBind=function(){
+		//禁止触摸默认行为
+		SLeasy.touchScroll(false);
+		
+		sliderBox=H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+		sliderBox.get('swipe').set({velocity:0.2,direction: Hammer.DIRECTION_ALL});
+		$config.stageMode=='scroll' && sliderBox.get('swipe').set({enable:false});
+		
+		//swipe eventBind
+		if($config.swipeMode=='x' || $config.swipeMode=='xy'){//水平左右
+			$scope.FXDirection='leftRight';//设置切换式样方向
+			
+			sliderBox.on('swipeleft',function(e){
+				$scope.swipe && SLeasy.goSlider('+=1');
+			});
+			sliderBox.on('swiperight',function(e){
+				$scope.swipe && SLeasy.goSlider('-=1');
+			});
+			
+		}else if($config.swipeMode=='y' || $config.swipeMode=='xy'){//垂直上下
+			$scope.FXDirection='upDown';//设置切换式样方向
+			
+			sliderBox.on('swipeup',function(e){
+				console.log($scope.swipe);
+				$scope.swipe && SLeasy.goSlider('+=1');
+			});
+			sliderBox.on('swipedown',function(e){
+				$scope.swipe && SLeasy.goSlider('-=1');
+			});
+		}
+		
+		//子画元素事件绑定策略
+		for(var i=0;i<$scope.eventArr.length;i++){
+			var el=$scope.eventArr[i],
+				id=el.id,
+				HDom=H(document.getElementById(id)),
+				e=el.event,
+				callback=el.onEvent
+				;	
+				
+			document.getElementById(id).style.cursor="pointer";//鼠标手势
+			//console.log(document.getElementById(id));
+			if(e=='hold'){//长按事件
+				HDom.get('press').set({time:1000});
+				HDom.on('press',callback);
+			}else{
+				HDom.on(e,callback);//事件绑定
+			}
+			
+		}
+		
+	}
+})(
+window.SLeasy = window.SLeasy || {},
+Hammer,
+jQuery,
+TweenMax || TweenLite
+);
+// SLeasy3-float
+;(function(SLeasy,$,T){
+	var $config =SLeasy.config(),//全局配置
+	 	$scope=SLeasy.scope();//公有变量
+		
+	//
+	SLeasy.float=function(){
+		SLeasy.fixPosition([{subMotion:$config.floats}]);//全部浮动元素自适应坐标值修正转换
+		var html=SLeasy.subElement($config.floats,'floats');	
+		$(html).appendTo($scope.sliderBox);
+		$('.SLeasy_floatElement').each(function(index, element) {
+			T.set($(this),$.extend({zIndex:10},$config.floats[index].set));
+        });
+	}
+	
+	
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery,
+TweenMax || TweenLite
+);
+// SLeasy3-music
+;(function(SLeasy,$,H,T){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope()
+	
+	SLeasy.music = SLeasy.music || {};
+	
+	//music
+	SLeasy.music.init=function(opt){
+		if(!$config.musicUrl) return '';
+		
+		//=============微信webview背景音乐及视频行内播放======================================
+		if ("wView" in window) {
+    		window.wView.allowsInlineMediaPlayback = "YES";
+   	 		window.wView.mediaPlaybackRequiresUserAction = "NO";
+		}
+	
+		var tmpHtml='\
+			<audio id="SLeasy_music" loop="loop" autoplay="autoplay">\
+			<source src="'+SLeasy.path($config.host,$config.musicUrl.slice(0,-4))+'.mp3" type="audio/mpeg">\
+			<source src="'+SLeasy.path($config.host,$config.musicUrl.slice(0,-4))+'.ogg" type="audio/ogg">\
+			<source src="'+SLeasy.path($config.host,$config.musicUrl.slice(0,-4))+'.wav" type="audio/wav">\
+			</audio>';
+		
+		return tmpHtml;	
+	}
+
+
+	/*//music autoplay hack
+	H(document).on('press pressup tap',function(e){
+		SLeasy.music.play();
+	})*/
+	
+	//play
+	SLeasy.music.play=function(){
+		$("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+		/*$("#SLeasy_music")[0].onplaying=function(){
+			$scope.isMusic=1;
+			T.to($("#SLeasy_musicBt"),0.5,{backgroundPosition:'center 0px',ease:Power4.easeOut});
+		}*/
+		//兼容安卓
+		$("#SLeasy_music").on('playing',function(){
+			$scope.isMusic=1;
+			T.to($("#SLeasy_musicBt"),0.5,{backgroundPosition:'center 0px',ease:Power4.easeOut});
+		})
+
+		setTimeout(function(){//不支持自动播放情况
+			if(!$scope.isMusic){
+				T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px', ease: Power4.easeOut});
+			}
+		},50)
+	}
+	
+	//pause
+	SLeasy.music.pause=function(){
+		$("#SLeasy_music")[0].pause();
+		/*$("#SLeasy_music")[0].onpause=function() {
+			$scope.isMusic = 0;
+			T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px', ease: Power4.easeOut});
+		}*/
+		//兼容安卓
+		$("#SLeasy_music").on('pause',function(){
+			$scope.isMusic = 0;
+			T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px', ease: Power4.easeOut});
+		})
+
+	}
+	
+	//musicBt:[1,'http://xxx/musicBt.png',30,30,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
+	SLeasy.music.bt=function(){
+		var base64='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAB6CAYAAADj/TADAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDNCNzI5ODQ3NkQ3MTFFNDk0RTBDN0FEQzAxQ0I2Q0EiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDNCNzI5ODM3NkQ3MTFFNDk0RTBDN0FEQzAxQ0I2Q0EiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpEOEE3Njc5NDYyNjcxMUU0ODE0NUQ4OTMyQjgxMzFFOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEOEE3Njc5NTYyNjcxMUU0ODE0NUQ4OTMyQjgxMzFFOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pp4tr78AAA3ASURBVHja7Fx7TFTZGb8zAyIMD0UEBQ2PRTCKiFbBoqJZrfiIi6+uoFFMtmsqitr6qP5jU2NTRV1BBRPW12pw0VqwmkI1ai0iVVYFBeMDFdlFRojyHhEGZ/p9eA653rl33sM84Eu+eC9z7rnf755zvsc536eIMR+JgaWEnYGdgB2BHchvSErgTmAFcDtwG7CcsNIcQolM3B+CGUhYygKmLykJ6AbCndYG2AV4CPAAM3xEFXAj8Bvg95YGjEB9gT2YnqEm4BpjgBsKWAI8DNiLsQy9Ba4G/qg2HVSqzwGKREYDdgMOJArIkoSKrhK4xZyAh5AprNNzsbGx7uvWrZswcuTI8AEDBgRIpdLhjo6OAyUSSX/8/ePHjx8UCkWDXC6vbmxsrHzy5MnDw4cP3718+XKzHuu7hqxvkwLGdgHAntoajh8/3mX//v0zxo0bN9/d3T0CXqivplY2NTWVlpSUXNq0adO1+/fv67JeG8hoq0wBGAX+AthdU6OpU6e6ZmRkJMBoJjg4OLibYs7CDGh+/Pjxj8nJydk3btxo0dIcZ8ULAKw0BjD+HqwJLExREUzBuQB4IwAdyFlPH5ubmx/V1NT8VFlZ+fTu3buvioqK3paXl6ODwYSFhTlHR0d7TZgwISAwMDDU19d3IsyK0SCkhN1PZ2dnw82bN1NhieTBElBpAf2cPcxcwNoIldOvhDguLm7mu3fvilQcev/+/SsAt3/hwoW/0fQ8H+Mz+Cz2we0X34Xv1NJHIOKlrI9Z8iGmh5dAuYStXr06BUbYm/7tw4cPrwsKCtJB6KsgsFGuoYuLizg3N3dmTEzM2v79+/t1q2aFoi4zM3MrKMNyDY9XA9hafaY0OhQjhX7PysqKjI+P3ycWi13I1FU+e/bshwULFhwFTdtuStsDOsHpwoULvwsJCUmkClCpVLadPXt287Jly+5o0N5PcLJxAYsFlFSQENhTp05NTEhISKNgYX3Vnzhx4vcgWLqpwSJhn9g3vgNGt75LQLHYGT54KsqiQfcE8VkICU9jX+ITq9GuXbuC16xZcxhfSKZwzbZt21Zv3779qbm9jIsXL8paW1v/M23atBhQjm6o2EDpTe/Xr1/h9evX6wUCGRHXMeECdiKKSm1058yZ43Hw4MFMWLOD8L69vb127dq13xw5ckTWU67V7du3m2Uy2TXQ1tPR9MGH7xcVFTX53r17ec+fP+ebXRix1bNdUBGPVuZ1Lmpra1O8vb2/JNO4CUZ2FTgYv1jCpwSHZPju3btPAuiuoKWuru66j4/PVoHm9cQpUVvDTkJgc3JyYihYVAiXLl36i6XAIuG7UQainBiUDRRbjEBzT4JNbYSH47Pc1sHBwf3KysrOg2nAtc1UVVX9IyAg4G+MFdCrV6+2+/v7L6b6ZMyYMUtganfwNK0D/oU9wiKh0QVN+BUFix7PqlWrDjNWQigLyoTXKOOZM2cWaxhlERuwB9Fqn9GgQYMkEASspPfgyH+vg0+rs2MBTspX4FUtM7QPlAVlovfh4eHLUWYBje3BBsw7usePH5/KGt36xMTEf5oCbHp6+hhQgifB/97h5ubmaUxfKBO1z05OTkNQZg2j3AVYJBQcgMqfS68rKiouGOtYgGfkVV1dvTMpKem4q6vrKF2fQzc2Ly9vppBjAuv2Ar2fNGnSXIFuEGOXJ+LM54D4+fk5Dh48OJreZ2dn/9tQoNhXaWlp4unTp3Pgeq6+Gw+LFi2KBz9gt9DvbNm8vLwmgyLrJ7At5Uz3jtVo586dY8Cwd+1MtLW1/Qz3Lw0Be/78+SkwAufGjh2bTN1RXUgul2e/ffv2oC5tUTaQsYq4nU47duwIE2gqdSAjrEaRkZHjunV6Xd1dbS+F0C2D+zdw+1x1nbowzX03bNiw+OrVqzfAgyuTSCSu4Fi06vqBQMZ7MLL+LNnv8zRzdmAbZTbBdA5h2btybS/09PSMNGZ9gzXwxogIPhy6qmUG2ORywLuIyB4q0Kw/Tmm++c7AyAyn1xD6VTFWTmwZQXahON5RzGd/iYrv3nMuLCyUWTtgtoxs2bmKSywQIjKwhrpNFSgdubUDBvPUypLdTWhDUixkIiDe7B75oqIiqwdcXFz8niW7o6YR5t0FVKlU3Sd20dHRUmsHDJrZhbW9K7SX/VHM8JzP0D1heh0UFORi7YBBw3cPilKpFJqRSgTMe/YK4VYt6+t528AId8vY3t7+VtMI88WPTEtLy8/0OiwsLMDaAYOM/nyyc0iBgNsFPKduVzIwMHC0tQMGGcP4ZOdOXNTEbQJarwS+Wte1j4/PRG0vrK+vLzbGtSwpKanDvW3416AdUJBxAlt2gWZdWFEhqR1ZgJv2azzOpMcc4JD/ltHz2AQ5JyfnDxh8qATo6dOnJ/ieg+ChAoKHW3hdU1OTT86LeN+BstH+UGaUXaCti5igVtPUVVVVHeSFXRQfHz/bkC8PoV1BcHDw1w8ePEgH7alzqoJUKo2HUG+9Lm3ZsqHMKDufwkKs1A7zHkDfvn07j16PGDFiAR57GAL69evXioiIiBMrVqxYJJPJ8oVsvxDBLMnOz8/fxvcbygQfdAG9v3PnTr5AN4hRRb0sPGn4gm9Pq7q6Opdu88DaSImKijpnii2elStX/gnW90hYtydDQ0MN3hgEgF+DSdpKzNEbPz+/OFBafL7FC+BGuqfVxGeP8cHS0tLT9H78+PHfTp8+3c1YwBjvgpJZefPmzZ2tra2NhvaDsqBM9P7hw4dZAmA7CUb996Uh7vw7mIA91mCKQJZtoKCWEEdJr31p+kc1wg6uXLmyn94HBAQswZMIS4NFGegmPBLI+J0A2M+wsQGjA8J3CsfExcX9F89vaDAyf/78P+P5jqXA4rtRBjpDUTaQ8YaQi8B2riQ8hnkwX8j46NGj4iVLlsQ6ODi44uZeTEzM5MrKymsw3d/3JFjc6k1LSzsCTo03VVQJCQkbBU4P0Rq8ZJtdCY+twlF35Zna7bCOiydPnjwbjynx5G7evHlfgtIpAE3Z0hNgN2zY4Hfo0KHvQY5hJKJrTUlJScrMzJRpmMoNnwXEfDukzKdderWtHzx4BiX2KDw8PBYPpPFgesaMGbGwlsovXrz4xpxgjx49Om7Lli2HnZycvEm8rsjKyvpjcnKy0AZjOxndz2y+QTkeZ86ciVq6dOk+mgmAHh3J8ThmjhwPUFDfwL+JNJ3JmBwPU2fxVBcUFGSYOIsniU7hrvjOyCwebeTPWC5Pq5InT+t/OuRp+Ruap0V/D2IEkly6NnodHUVgA+dNmTIFM/EGcPbFMBOvHKKdYtDoFexMvM7OThX41y6sTLwRvr6+ke7u7mE8mXiNhYWFqbNmzfqXlkw89NpeasrE0zXXEkF7aHPzYJpjrmU8e4vXGMJ9NdAJ2TB9f+ypXEt2uwBGz2xaDw+PCEb/ugeLZ9OySe986fXr108ICQnBfOlAiHGHkXxpZzKCbZgvDev1dUNDw8uKiooycCp+0jNfWkaYLiOTAkbqVRnxbIel19Q8cB2UXlHVwge8V9QtccmBaHIEborKtEYS3lldZZqQ/ZaSyAtzRZzIB+GrPewkzv4H4FbGjLWHDj2w7lScDyxifWgR56OrzC1MX7Fln9Kyd7PEF1KpPfQpmrEKx0ObvFodDx06sCrXEuRtMRtgeNgqiy1B5jcmBSz69JTe4WFPF1uqeITXGzAR2H6LLdmAycjad7ElZwPM/ostaSP4Mr2j2BIBQ6PeU2xJOu0rtkTqK7a0QLFleHj4q1GjRs1GC2L3xZZ79+4N3bhxYwYtsqRkl8WWXLAkRVjvYks2YN6MWUxqgem8md5XVVXlYLKZJcHCDGs+cODAtygLy2/fjLIKdOHNBWy1xZZ8YFNTU9ds2bLlqd0VW2oCi/d2VWypDSwluyi25FFQcgg4fuCCpY6JTRdb8o1sY2Pjg4iIiGShZ2y22JKAPULBYmVNWlpaUkdHh8YdEJsstsQPA1HWHhSY7nzI5fIXmzdvfgJLQevzNlVsiSMLkdZfKVicxhARKfDAXNc+bKbYUiqVeuI0lkgkUhL6fcBpjIln+vRjM8WWQ4cOjWXvgYE1yMZprG8/NlNsSacxmp4uT7++3qAURpsqtsQ1e+vWre+M6cNmii1hzbbjmjVWT9hMsaVMJrtiyJrlks0UW4KtfWeKfvqKLfmpr9iSrfWMLrZ0dnb2Ag7SReCeKrbEEZYLOOTlqEGJ4IHgkGsUHALvJDZDXJrm6Oio84F5RkZGTWho6CEs4iJKsxXMlU4n/Sgb/bAoM8oupDLMUmzJinrcqZ2trKw8Z5fFlnxg0c6CaUuxhmJLeoMnDWoncTA1IyHOfE1P76CzPYyGkzsAu0yhUDTR9ni9b9++5dx26enpq0CTPtZUP6wro0z0fWBKZSizQNsB7D0to4sthUaWz6mw+WJLfcCakixSbGkpsIYWWxp1tjRkyBAXS4A15j/y5AJGLTyaETg9zM3NzcK9X7zv6OiohbjThcaePQUWt3qPHTuG9YfDid/8ZuHChctBizfxBX3AjxgN1aU6F1vi/2jG3oPqCbAWL7akXxGC970JCQm3zAnWbMWWuuR42FWxpZFZPLZXbMnJcbL/YkueTDz7LrYUyLW032JLU2bT9nSxpUmyaTkPW2WxJcgs0yCz4YBJB70nI57Vif3UPOhrLpm+Ysu+YktDqK/Y0lT0fwEGAImjrCobt88kAAAAAElFTkSuQmCC',
+		imgUrl=$config.musicBt[1] || base64;
+		
+		var position={
+			'topLeft':'left:'+$config.musicBt[5]*$scope.viewScale+'px; top:'+$config.musicBt[6]*$scope.viewScale+'px;',
+			'topRight':'right:'+$config.musicBt[5]*$scope.viewScale+'px; top:'+$config.musicBt[6]*$scope.viewScale+'px;',
+			'bottomLeft':'left:'+$config.musicBt[5]*$scope.viewScale+'px; bottom:'+$config.musicBt[6]*$scope.viewScale+'px;',
+			'bottomRight':'right:'+$config.musicBt[5]*$scope.viewScale+'px; bottom:'+$config.musicBt[6]*$scope.viewScale+'px;'
+		}
+		
+		$('<div id="SLeasy_musicBt"\
+			style="position:absolute;'+position[$config.musicBt[4]]+'display:block;\
+			width:'+$config.musicBt[2]*$scope.viewScale+'px;height:'+$config.musicBt[3]*$scope.viewScale+'px;\
+			background-image:url('+imgUrl+');\
+			background-repeat:no-repeat;\
+			background-position:center 0px;\
+			background-size:100% auto">\
+			</div>')
+		.appendTo($('#'+$config.id).length ? '#'+$config.id : '#SLeasy').css("cursor","pointer");
+		
+		H($("#SLeasy_musicBt")[0]).on('tap',function(){
+			if(!$scope.isMusic){
+				SLeasy.music.play();
+			}else{
+				SLeasy.music.pause();
+			}
+		});
+	}
+	
+	
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery,
+Hammer,
+TweenMax || TweenLite
+);
+// SLeasy3-arrow
+;(function(SLeasy,$,T){
+	var $config =SLeasy.config(),//全局配置
+		$scope=SLeasy.scope()
+	 
+		
+	SLeasy.arrow = SLeasy.arrow || {};
+	
+	//init
+	SLeasy.arrow.init=function(color){
+		var arrowColor=color || '#fff';//箭头颜色
+		
+		if($config.arrowMode){
+			if($config.swipeMode=='x'){
+				var arrowHtml='\
+				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
+				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="'+arrowColor+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
+				</svg>';
+				
+				$(arrowHtml).appendTo('#'+($config.id || 'SLeasy'));					
+				T.set($("#SLeasy_arrow"),{rotation:-90,right:0,display:'block',opacity:0.8});
+				T.from($("#SLeasy_arrow"),1.5,{opacity:0,x:'+=10',repeat:-1,zIndex:10,ease:Power3.easeOut,delay:1});
+			}else{
+				
+				var arrowHtml='\
+				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
+				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="'+arrowColor+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
+				</svg>';
+				var arrowBox=$config.stageMode=='scroll' ? 'body' : '#'+($config.id || 'SLeasy');
+				$(arrowHtml).appendTo(arrowBox);
+				T.set($("#SLeasy_arrow"),{bottom:10,display:'block',opacity:0.8});
+				T.from($("#SLeasy_arrow"),1.5,{opacity:0,y:'+=10',repeat:-1,zIndex:10,ease:Power3.easeOut,delay:1});
+			}
+		}	
+	}
+})(
+window.SLeasy = window.SLeasy,
+jQuery,
+TweenMax || TweenLite
+);
+// SLeasy3-boot
+;(function(SLeasy,$){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+	
+	
+	//boot
+	SLeasy.boot=function(){
+		//var dfd=$.Deferred();
+		
+		var sliderHtml='',
+			detailHtml='',
+			musicHtml='xxx',
+			floatHtml='';
+
+
+		//幻灯初始化
+		sliderHtml=pageInit('sliders');
+
+		//详情页初始化
+		detailHtml=pageInit('details');
+
+
+		//类型页面初始化函数
+		function pageInit(type){
+			var tmpHtml='';
+			for(var i=0;i<$config[type].length;i++){
+				$.extend($config[type][i],{index:i,type:type});//并入当前幻灯索引值,及类型
+				tmpHtml+=SLeasy.slider($config[type][i]);
+			}
+			return tmpHtml;
+		}
+
+		//音乐初始化
+		musicHtml=SLeasy.music.init();
+
+		//框架初始化($scope.sliderBox.html()包含了loading结构代码)
+		$scope.sliderBox.html($scope.sliderBox.html()+sliderHtml+detailHtml+musicHtml);
+
+		SLeasy.loader.hidden();//隐藏loading
+		SLeasy.float();//浮动元素初始化
+		SLeasy.arrow.init($config.arrowColor);//箭头初始化
+		$config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
+
+		SLeasy.fixPosition($config.sliders);//全部幻灯子动画自适应坐标值修正转换
+		SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
+
+		//img to div
+		SLeasy.imgToDiv();
+
+		//dom缓存
+		$scope.sliders=$(".SLeasy_sliders");//幻灯引用缓存
+		$scope.subMotion=$(".SLeasy_subMotion");//子动画元素合集引用缓存
+		$scope.details=$(".SLeasy_details");//详情页引用缓存
+		$scope.detailMotion=$(".SLeasy_detailMotion");//详情页子动画元素缓存
+		$scope.loader=$("#SLeasy_loader");//loading元素dom缓存
+		$scope.floats=$(".SLeasy_floatElement");//浮动元素dom缓存
+		$scope.canvas=$(".SLeasy_canvas");//画布元素dom缓存
+		$config.on['domReady']();//SLeasy dom初始化完毕回调
+
+		$scope.canvas.length && TweenMax.set($scope.canvas.parent(),{y:0});//修正安卓下,画布元素默认不左上对齐的bug
+
+		//插件初始化
+		for(var j=0;j<$scope.pluginList.length;j++){
+			//console.log($scope.pluginList[j]);
+			var SLeasyPlugin=$scope.pluginList[j][0],
+				//把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
+				pluginArg= $.extend($scope.pluginList[j][1],{dom:$('#'+$scope.pluginList[j][1].node)}),
+				pluginInitCallback=$scope.pluginList[j][2],//插件初始化回调
+				pluginObj=SLeasyPlugin(pluginArg);//执行插件初始化
+
+			pluginInitCallback(pluginObj);//执行插件初始化后的回调
+		}
+
+		//渲染启动
+		$scope.timeLine=new TimelineMax({//子动画主时间线初始化
+			autoRemoveChildren:$config.autoRemoveChildren,
+			paused:true,
+			onComplete:function(){
+				//orientationPX();//重力感应视差效果
+				console.log('子动画完成~~~！');
+				//$scope.isSubMotion=1;//子动画是否正在播放状态
+			}});
+		$config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
+
+		SLeasy.eventBind();//事件绑定
+		SLeasy.router();//路由初始化
+		//dfd.resolve();//初始化完毕
+
+
+		//默认显示渲染
+		SLeasy.music.play();//播放背景音乐
+		//如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+		$config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+
+		
+		//return dfd.promise();
+	}
+})(
+window.SLeasy=window.SLeasy || {},
+jQuery
+);
+// SLeasy3-loader
+;
+(function(SLeasy,$) {
+	var $config =SLeasy.config(),//全局配置
+	 	$scope=SLeasy.scope();//公有变量
+
+	SLeasy.loader=SLeasy.loader|| {}
+	
+	//loading-style
+	var loaderStyle = [
+		'<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff">\
+            <g fill="none" fill-rule="evenodd">\
+                <g transform="translate(1 1)" stroke-width="2">\
+                	<circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
+                	<path d="M36 18c0-9.94-8.06-18-18-18">\
+                    	<animateTransform\
+                        	attributeName="transform"\
+                        	type="rotate"\
+                        	from="0 18 18"\
+                        	to="360 18 18"\
+                        	dur="1s"\
+                        	repeatCount="indefinite"/>\
+                	</path>\
+                </g>\
+            </g>\
+        </svg>',
+
+		//==================================================================================
+
+		'<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">\
+        	<defs>\
+            <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
+                <stop stop-color="#fff" stop-opacity="0" offset="0%"/>\
+                <stop stop-color="#fff" stop-opacity=".631" offset="63.146%"/>\
+                <stop stop-color="#fff" offset="100%"/>\
+            </linearGradient>\
+        	</defs>\
+        	<g fill="none" fill-rule="evenodd">\
+            	<g transform="translate(1 1)">\
+            		<path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2">\
+                		<animateTransform\
+                    		attributeName="transform"\
+                    		type="rotate"\
+                    		from="0 18 18"\
+                    		to="360 18 18"\
+                    		dur="0.9s"\
+                    		repeatCount="indefinite" />\
+            		</path>\
+            		<circle fill="#fff" cx="36" cy="18" r="1">\
+                		<animateTransform\
+                    		attributeName="transform"\
+                    		type="rotate"\
+                    		from="0 18 18"\
+                    		to="360 18 18"\
+                    		dur="0.9s"\
+                    		repeatCount="indefinite" />\
+            		</circle>\
+        		</g>\
+			</g>\
+		</svg>'
+
+		//==================================================================================    
+	];
+
+
+	//html
+	SLeasy.loader.html = function() {
+		var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;'+
+							'margin-left:' + -$config.loader.size[0] / 2 + 'px;'+
+							'margin-top:' + -$config.loader.size[1] / 2 + 'px';
+							
+		var textStyle = 'position:absolute;text-align:center;top:0;left:0;'+
+						'width:' + $config.loader.size[0] + 'px;'+
+						'height:' + $config.loader.size[1] + 'px;'+
+						'line-height:' + $config.loader.size[1] + 'px;'+
+						$config.loader.textStyle;
+						
+		var textHtml = '<div id="SLeasy_loader_text" style="' + textStyle + '"></div>';
+		return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + (typeof $config.loader.style =='number' ? loaderStyle[$config.loader.style] : $config.loader.style) + textHtml + '</div>';
+	}
+
+
+	//text
+	SLeasy.loader.text = function(txt) {
+		$("#SLeasy_loader_text").text(txt);
+	}
+
+	//show
+	SLeasy.loader.show = function() {
+		if ($("#SLeasy_loader").length) { //如果loader已初始化
+			$("#SLeasy_loader").fadeIn(300);
+		} else {
+			var loaderBox=$config.stageMode=='scroll' ? $("body") : $scope.sliderBox;
+			loaderBox.prepend(SLeasy.loader.html());
+			$("#SLeasy_loader").fadeIn(300);
+		}
+	}
+
+	//hidden
+	SLeasy.loader.hidden = function() {
+		$("#SLeasy_loader").fadeOut(300);
+	}
+
+	//load
+	SLeasy.loader.load = function(loadArr) {
+		var dfd = $.Deferred();
+		SLeasy.loader.show();
+
+		var loaded = 0;
+
+		(loadArr && loadArr.length) ? _load(loadArr) : (SLeasy.loader.hidden(),dfd.resolve($config,$scope));//如果加载数组为空则立即返回
+
+		function _load(loadArr) {
+			var img = new Image();
+			img.src = loadArr[loaded];
+			console.log('开始加载：'+img.src);
+			img.onload = function() {
+				loaded++;
+				//console.log(loaded);
+				SLeasy.loader.percent = Math.round(loaded * 100/ loadArr.length/($config.loader.endAt/100));
+				SLeasy.loader.percent = SLeasy.loader.percent>100 ? 100 : SLeasy.loader.percent;
+				$config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
+				dfd.notify(SLeasy.loader.percent);
+				if (SLeasy.loader.percent >= 100) {
+					$config.on['loaded'](); //预加载完毕回调
+					dfd.resolve($config,$scope);
+				} else {
+					_load(loadArr);
+				}
+			}
+		}
+		return dfd.promise();
+	}
+
+	//  
+})(
+window.SLeasy = window.SLeasy || {},
+jQuery
+);
+// SLeasy3-router
+;(function(SLeasy,Router,$){
+	var $config=SLeasy.config(),
+		$scope=SLeasy.scope();
+	
+	//router
+	SLeasy.router=function(opt){
+		
+		if(!Router){
+			alert('路由模块文件缺失~！');
+			return;
+		}
+		
+		var def={
+			'/:sliderIndex':function(sliderIndex){
+				 $scope.router.setRoute(1,'html');//设置路由
+			},
+			'/:sliderIndex/:detailIndex':function(sliderIndex,detailIndex){
+				//如果是跳转淘宝
+				if(sliderIndex=='goTaobao' || sliderIndex=='goTmall') return;
+				
+				//如果详情索引为'html'，则关闭详情页
+				if(detailIndex=='html'){
+					
+					console.log('当前幻灯索引：'+sliderIndex);	
+					console.log('当前详情页索引：'+detailIndex);
+					var _index=isNaN(parseInt(sliderIndex))? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
+						_index=SLeasy.nextIndex(_index);
+					SLeasy.transit(_index);
+					console.log(_index+'------------------------------------------------------');
+					SLeasy.closeDetailTransit($scope.detailIndex);
+					
+				}else{
+					console.log('当前幻灯索引：'+sliderIndex);	
+					console.log('当前详情页索引：'+detailIndex);
+					
+					if(typeof detailIndex=='undefined') $scope.router.setRoute(1,'html');//设置路由
+					
+					
+					//如果子动画状态为未完成，则执行幻灯切换+子动画（刷新的情况）
+					if(!$scope.isSubMotion){
+						var _index=isNaN(parseInt(sliderIndex))? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
+						_index=SLeasy.nextIndex(_index);
+						SLeasy.transit(_index);	
+					}
+					
+					var _dIndex=isNaN(parseInt(detailIndex))? detailIndex : parseInt(detailIndex);//判断标签字符串与索引
+						_dIndex=SLeasy.nextDetailIndex(_dIndex);
+					SLeasy.detailTransit(_dIndex);
+					
+				}
+			}
+		}
+		var cfg={
+			on:function(){
+				console.log('router action~~~');	
+			}
+		}
+		var router=new Router($.extend(def,{}));
+		SLeasy.router=$scope.router=router;
+		//设置全局执行函数
+		router.configure(cfg);
+		$config.routerMode && $config.autoStart ? router.init('/0/html') : router.init();
+		
+	}
+	
+})(
+window.SLeasy = window.SLeasy,
+window.Router = window.Router || null,
+jQuery
+);
+// SLeasy3-init
+;(function(SLeasy,$){
+	var $scope=SLeasy.scope();
+
+	//init
+	SLeasy.init=function(opt){
+		SLeasy.checkGoto();//跳转(url/淘宝)检测	
+		var $config=SLeasy.config(opt);//合并自定义参数
+		if($config.debugMode){//debug模式
+			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;}';
+			$('head style').html($('head style').html()+debugStyle);
+		}else{
+			console.log=function(){};//设置console.log输出
+		}
+		console.log($config);
+		SLeasy.viewport();//设置视口
+		
+		//SLeasy容器初始化
+		$scope.sliderBox=$('#'+$config.id).length?$('#'+$config.id):$('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
+		$scope.sliderBox.css({
+			"width":$config.viewport+'px',
+			"height":$scope.fixHeight+'px',
+			"background-image":$config.bg ? 'url('+$config.host+$config.bg+')' : 'none',
+			"background-color":$config.bgColor || 'transparent',
+			"background-size":"100% auto",
+			"background-repeat":"no-repeat",
+			"overflow":$config.positionMode=="absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
+			"position":"relative",
+			"margin":"0 auto",
+			"display":"none"
+		}).fadeIn(300);
+		
+		//loading资源加载
+		return SLeasy.loader.load(getLoadArr()).done(function(){//资源加载
+			console.log($('#SLeasy_loader'));
+			SLeasy.boot();
+		});
+		
+		
+		//获取预加载图片url
+		function getLoadArr(){
+			var totalArr=[];
+			
+			//幻灯容器背景
+			if($config.bg) totalArr.push(SLeasy.path($config.host,$config.bg));
+			
+			//幻灯背景+子动画元素
+			for(var i=0;i<$config.sliders.length;i++){
+				if(!$config.sliders[i].bg) continue;
+				if(typeof $config.sliders[i].bg=='string'){
+					totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
+				}else{
+					for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
+						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));	
+					}
+				}	
+				
+				for(var k=0;k<($config.sliders[i].subMotion && $config.sliders[i].subMotion.length);k++){
+					$config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.sliders[i].subMotion[k].img));
+				}
+			}
+			
+			//详情页背景+子动画元素
+			for(var i=0;i<$config.details.length;i++){
+				if(typeof $config.details[i].bg=='string'){
+					totalArr.push(SLeasy.path($config.host,$config.details[i].bg));
+				}else{
+					for(var j=0;j<$config.details[i].bg.length;j++){//多重背景
+						totalArr.push(SLeasy.path($config.host,$config.details[i].bg[j]));	
+					}	
+				}
+				
+				for(var k=0;k<($config.details[i].subMotion && $config.details[i].subMotion.length);k++){
+					$config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.details[i].subMotion[k].img));
+				}
+			}
+			
+			//浮动元素
+			for(var i=0;i<$config.floats.length;i++){
+				$config.floats[i].img && totalArr.push(SLeasy.path($config.host,$config.floats[i].img));	
+			}
+			
+			//额外加载项
+			for(var i=0;i<$config.exLoadArr.length;i++){
+				totalArr.push(SLeasy.path($config.host,$config.exLoadArr[i]));	
+			}
+
+			//位图序列
+			$.each($scope.bitmaps,function(index,value){
+				totalArr=totalArr.concat($scope.bitmaps[index]);
+			})
+		
+			//return
+			if(!$config.preload){
+				$scope.totalLoad=totalArr;
+				return;//是否进行预加载
+			}else{
+				//console.log(totalArr);
+				return totalArr;
+			}
+		}
+		
+	}
+
+})(
+window.SLeasy=window.SLeasy || {},
+jQuery
+);

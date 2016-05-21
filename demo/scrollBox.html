@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=321,user-scalable=no">
+<title>scrollBox</title>
+<script src="../lib/jquery.min.js" charset="utf-8"></script>
+<script src="../lib/GSAP-max.js" charset="utf-8"></script>
+<script src="../lib/Draggable.min.js" charset="utf-8"></script>
+<script src="../lib/Hammer.js" charset="utf-8"></script>
+<script src="../src/config.js" charset="utf-8"></script>
+<script src="../src/scope.js" charset="utf-8"></script>
+<script src="../src/slider.js" charset="utf-8"></script>
+<script src="../src/imgToDiv.js" charset="utf-8"></script>
+<script src="../src/position.js" charset="utf-8"></script>
+<script src="../src/subMotion.js" charset="utf-8"></script>
+<script src="../plugin/scrollBox.js" charset="utf-8"></script>
+<style type="text/css">
+body {
+	background-color: #A3A3A3;
+	margin-left: 0px;
+	margin-top: 0px;
+	margin-right: 0px;
+	margin-bottom: 0px;
+}
+</style>
+</head>
+
+<body>
+<script>
+$(document).ready(function(e) {
+	var pageHtml=[
+			[
+			{
+			text:'1111111',
+			set:{left:'50%',xPercent:-50,y:0},
+			time:0.5,
+			in:{opacity:0,scale:3},
+			show:{opacity:1,scale:1},
+			},
+			{
+			text:'2222222',
+			set:{left:'50%',xPercent:-50,y:420},
+			time:1,
+			in:{opacity:0,scale:3},
+			show:{opacity:1,scale:1},
+			},
+			{
+			text:'3333333',
+			set:{left:'50%',xPercent:-50,y:840},
+			time:1,
+			in:{opacity:0,scale:3},
+			show:{opacity:1,scale:1},
+			}
+			],
+		];
+   SLeasy.scrollBox();
+	SLeasy.scrollBox({
+		scrollType:'scrollTop',//排列模式
+		scrollMode:'scroll',
+		scrollHeight:1200,
+		//scrollWidth:1200,
+		//pointPosition:'right',//对齐方向
+		motionMode:1,
+		pageHtml:pageHtml
+	});
+});
+</script>
+</body>
+</html>

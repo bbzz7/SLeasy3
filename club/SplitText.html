@@ -1,0 +1,27 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>SplitText</title>
+<script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script src="http://115.29.102.189/lab/GSAP/1.16.1/src/minified/TweenMax.min.js"></script>
+<!--<script src="SplitText.min.js"></script>-->
+<script src="ClubPlugins.min.js"></script>
+<style>
+.myLine{color:red}
+</style>
+</head>
+
+<body>
+<div id="myText">
+Works with arrays and selectors - a single SplitText instance can manage multiple elements; you can feed in a regular array like new SplitText([element1, element2]) or a selector object (think jQuery), like new SplitText( $(".yourClass") ). In fact, you can define a SplitText.selector just like TweenLite.selector so that you can feed in selector text directly and have it use whatever selector you want! It will use jQuery by default (if it is loaded), or whatever window.$ is. For example, new SplitText("#yourID", {wordsClass:"word"}) would find the element with the ID "yourID" and split its text, applying a "word" class to every resulting word.
+</div>
+
+<script>
+$(document).ready(function(e) {
+    var split=new SplitText($("#myText"),{type:"chars,words,lines",position:"absolute",linesClass:'myLine'});
+	TweenMax.staggerFrom(split.lines, 1, {x:200, autoAlpha:0, ease:Elastic.easeOut}, 0.1);
+});
+</script>
+</body>
+</html>
