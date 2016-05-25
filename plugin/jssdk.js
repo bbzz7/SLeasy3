@@ -14,7 +14,7 @@
             url: window.location.href.split('#')[0],
             debug: false,
             time: new Date().getTime(),
-            signUrl: 'http://h5.tsnc98.com/CI/index.php/jssdk'//签名后端
+            signUrl: 'http://h5.zhuzhouzhixin.com/CI/index.php/jssdk'//签名后端
             //signUrl:'http://zhuzhouzhixin.com/CI/index.php/jssdk'//签名后端
         };
         $.extend($config, myOpt);
