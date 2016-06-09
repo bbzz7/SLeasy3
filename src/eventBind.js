@@ -17,6 +17,8 @@
 		sliderBox=H(document.getElementById($config.id) || document.getElementById('SLeasy'));
 		sliderBox.get('swipe').set({velocity:0.2,direction: Hammer.DIRECTION_ALL});
 		$config.stageMode=='scroll' && sliderBox.get('swipe').set({enable:false});
+
+		//todo:修正ios下微信双击上移
 		
 		//swipe eventBind
 		if($config.swipeMode=='x' || $config.swipeMode=='xy'){//水平左右
