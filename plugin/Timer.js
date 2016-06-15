@@ -4,19 +4,19 @@
     $ && ($.Timer = Timer);//挂载到$对象
 
     Timer.is = function (operator, time, callback) {
-
         var YMD = time.split(' ')[0].split('-'),//年月日数组
             Hms = time.split(' ')[1] ? time.split(' ')[1].split(':') : [0, 0, 0],//时分秒数组
             YYYY = parseInt(YMD[0]),//年
             MM = parseInt(YMD[1]) - 1,//月
             DD = parseInt(YMD[2]),//天
-            HH = parseInt(Hms[0]),//时
-            mm = parseInt(Hms[1]),//分
-            ss = parseInt(Hms[2])//秒
+            HH = parseInt(Hms[0]) || 0,//时
+            mm = parseInt(Hms[1]) || 0,//分
+            ss = parseInt(Hms[2]) || 0//秒
             ;
 
         var now = new Date().getTime();//获取当前时间毫秒
         var fireTime = new Date(YYYY, MM, DD, HH, mm, ss).getTime();//获取目标时间毫秒
+        console.log(now+':'+fireTime)
 
         //操作符策略
         var operators = {
