@@ -131,7 +131,9 @@
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
-						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '">';
+						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"\
+                        placeholder="'+(opt.placeholder || '')+'"\
+                        >';
                     },
                     'textArea': function () {
                         return '<textArea type="' + opt.input + '"\
