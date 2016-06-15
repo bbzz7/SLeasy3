@@ -816,7 +816,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 		autoStart:1,//自动开始跳转默认幻灯
 		autoRemoveChildren:true,//每张幻灯子动画全部完毕后，自动删除子动画tween
 		debugMode:1,
-		reloadMode:1,
+		reloadMode:0,//屏幕旋转自动刷新页面重新适配
 		stageMode:'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
 		positionMode:'absolute',//舞台子元素position模式
 
@@ -2495,13 +2495,9 @@ TweenMax || TweenLite
 		
 		sliderBox=H(document.getElementById($config.id) || document.getElementById('SLeasy'));
 		sliderBox.get('swipe').set({velocity:0.2,direction: Hammer.DIRECTION_ALL});
-		//修正ios下微信双击上移
-		sliderBox.get('tap').set({taps:2});
-		sliderBox.on('tap',function(e){
-			console.log('tap~');
-		});
-		
 		$config.stageMode=='scroll' && sliderBox.get('swipe').set({enable:false});
+
+		//todo:修正ios下微信双击上移
 		
 		//swipe eventBind
 		if($config.swipeMode=='x' || $config.swipeMode=='xy'){//水平左右
