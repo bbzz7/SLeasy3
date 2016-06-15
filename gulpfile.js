@@ -103,5 +103,5 @@ gulp.task('SLeasy-publish',['build'],function(){
 gulp.task('tinypng',function () {
 	return gulp.src('images/*.png')
 		.pipe($.tinypng('_m2Wv-QqrVpEh3pZaAdBJMBOXHS-wcqS'))
-		.pipe(gulp.dest(LocalPath + 'images/')
+		.pipe(gulp.dest(LocalPath + 'images/'))
 })
