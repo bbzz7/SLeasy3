@@ -1,45 +1,46 @@
 var SLeasyPath = '../@GitHub/SLeasy3/',
     LocalPath = '',
     gulp = require('gulp'),
-    del = require(SLeasyPath+'node_modules/del'),
+    del = require(SLeasyPath + 'node_modules/del'),
     $ = {};
 
 $.concat = require(SLeasyPath + 'node_modules/gulp-concat');
 $.uglify = require(SLeasyPath + 'node_modules/gulp-uglify');
 $.replace = require(SLeasyPath + 'node_modules/gulp-replace');
+$.tinypng = require(SLeasyPath + 'node_modules/gulp-tinypng');
 
 
 gulp.task('build', function () {
     return gulp.src([
-            'src/version.js',
-            'lib/GSAP/club.js',
-            'lib/Hammer.min.js',
-            'lib/director.js',
-            'lib/store.js',
-            'lib/jquery.cookie.js',
-            'lib/device.js',
-            'src/config.js',
-            'src/scope.js',
-            'src/cache.js',
-            'src/viewport.js',
-            'src/slider.js',
-            'src/imgToDiv.js',
-            'src/position.js',
-            'src/subMotion.js',
-            'src/motionFX.js',
-            'src/transition.js',
-            'src/detail.js',
-            'src/eventBind.js',
-            'src/float.js',
-            'src/music.js',
-            'src/arrow.js',
-            'src/boot.js',
-            'src/loader.js',
-            'src/router.js',
-            'src/init.js'
-        ].map(function (item) {
-            return SLeasyPath + item;
-        }))
+        'src/version.js',
+        'lib/GSAP/club.js',
+        'lib/Hammer.min.js',
+        'lib/director.js',
+        'lib/store.js',
+        'lib/jquery.cookie.js',
+        'lib/device.js',
+        'src/config.js',
+        'src/scope.js',
+        'src/cache.js',
+        'src/viewport.js',
+        'src/slider.js',
+        'src/imgToDiv.js',
+        'src/position.js',
+        'src/subMotion.js',
+        'src/motionFX.js',
+        'src/transition.js',
+        'src/detail.js',
+        'src/eventBind.js',
+        'src/float.js',
+        'src/music.js',
+        'src/arrow.js',
+        'src/boot.js',
+        'src/loader.js',
+        'src/router.js',
+        'src/init.js'
+    ].map(function (item) {
+        return SLeasyPath + item;
+    }))
         .pipe($.concat('SLeasy3.js'))
         .pipe(gulp.dest(SLeasyPath + 'build/'))
         .pipe($.uglify({
@@ -70,9 +71,9 @@ gulp.task('js-min', ['js-publish'], function () {
         ];
     for (var i = 0; i < files.length; i++) {
         gulp.src([
-                LocalPath + 'js/copyRight.js',
-                host + files[i] + '.js'
-            ])
+            LocalPath + 'js/copyRight.js',
+            host + files[i] + '.js'
+        ])
             .pipe($.uglify({
                 preserveComments: function (n, c) {
                     if (c.value.indexOf('庄宇') != -1) return true
@@ -105,14 +106,20 @@ gulp.task('font-publish', function () {
 
 gulp.task('img-publish', function () {
     return gulp.src(['images/*', 'images/*/*', 'images/*/*/*', 'images/*/*/*/*'].map(function (item) {
-            return LocalPath + item;
-        }))
+        return LocalPath + item;
+    }))
         .pipe(gulp.dest(LocalPath + '@publish/images/'))
 })
 
 gulp.task('SLeasy-publish', ['build'], function () {
     return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/physics/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
-            return SLeasyPath + item;
-        }))
+        return SLeasyPath + item;
+    }))
         .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
+})
+
+gulp.task('tinypng',function () {
+    return gulp.src('images/*.png')
+        .pipe($.tinypng('_m2Wv-QqrVpEh3pZaAdBJMBOXHS-wcqS'))
+        .pipe(gulp.dest(LocalPath + 'images/')
 })

@@ -99,3 +99,9 @@ gulp.task('SLeasy-publish',['build'],function(){
 	return gulp.src(['build*/SLeasy3.min.js','plugin*/*','lib*/*','lib*/canvas/*','lib*/physics/*','lib*/GSAP*/*','lib*/GSAP*/easing*/*','lib*/GSAP*/plugin*/*','lib*/GSAP*/plugins*/*','lib*/GSAP*/utils*/*'])
 	.pipe(gulp.dest('../@publish/SLeasy3/'))
 })
+
+gulp.task('tinypng',function () {
+	return gulp.src('images/*.png')
+		.pipe($.tinypng('_m2Wv-QqrVpEh3pZaAdBJMBOXHS-wcqS'))
+		.pipe(gulp.dest(LocalPath + 'images/')
+})
