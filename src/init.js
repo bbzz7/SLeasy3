@@ -32,7 +32,7 @@
 		
 		//loading资源加载
 		return SLeasy.loader.load(getLoadArr()).done(function(){//资源加载
-			console.log($('#SLeasy_loader'));
+			console.log(getLoadArr());
 			SLeasy.boot();
 		});
 		
@@ -46,15 +46,15 @@
 			
 			//幻灯背景+子动画元素
 			for(var i=0;i<$config.sliders.length;i++){
-				if(!$config.sliders[i].bg) continue;
-				if(typeof $config.sliders[i].bg=='string'){
-					totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
-				}else{
-					for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
-						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));	
+				if($config.sliders[i].bg){
+					if(typeof $config.sliders[i].bg=='string'){
+						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
+					}else{
+						for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
+							totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));
+						}
 					}
-				}	
-				
+				}
 				for(var k=0;k<($config.sliders[i].subMotion && $config.sliders[i].subMotion.length);k++){
 					$config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.sliders[i].subMotion[k].img));
 				}
