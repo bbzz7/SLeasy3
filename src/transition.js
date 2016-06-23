@@ -213,7 +213,7 @@
 		if(currentSlider[0]==nextSlider[0]){//如果上下页是同一页，则只执行子动画
 			//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
 			T.set($scope.sliders,{clearProps:$scope.clearProps});
-			currentSlider.fadeIn(1000,function(){
+			currentSlider.fadeIn($config.motionTime,function(){
 				//sub motion
 				var subMotionArr=$config.sliders[nextIndex].subMotion;
 				//如果正在关闭详情页则不播放子动画
