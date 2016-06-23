@@ -798,7 +798,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 	var $config = { //默认配置
 		//SLeasy------------------------------------------
 		id:'',//幻灯容器id
-		bg:'',//幻灯容器背景
+		bg:'',//幻灯容器背景图片
+		bgColor:'',//幻灯容器背景颜色
 		host:'images/',//资源目录url
 		width:640,//幻灯宽度
 		height:1008,//幻灯高度
@@ -1488,7 +1489,9 @@ store
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
-						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '">';
+						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"\
+                        placeholder="'+(opt.placeholder || '')+'"\
+                        >';
                     },
                     'textArea': function () {
                         return '<textArea type="' + opt.input + '"\
@@ -2495,7 +2498,10 @@ TweenMax || TweenLite
 		
 		sliderBox=H(document.getElementById($config.id) || document.getElementById('SLeasy'));
 		sliderBox.get('swipe').set({velocity:0.2,direction: Hammer.DIRECTION_ALL});
-		$config.stageMode=='scroll' && sliderBox.get('swipe').set({enable:false});
+		if($config.stageMode=='scroll'){
+			SLeasy.touchScroll(true);
+			sliderBox.get('swipe').set({enable:false});
+		}
 
 		//todo:修正ios下微信双击上移
 		
@@ -3062,7 +3068,7 @@ jQuery
 		
 		//loading资源加载
 		return SLeasy.loader.load(getLoadArr()).done(function(){//资源加载
-			console.log($('#SLeasy_loader'));
+			console.log(getLoadArr());
 			SLeasy.boot();
 		});
 		
@@ -3076,15 +3082,15 @@ jQuery
 			
 			//幻灯背景+子动画元素
 			for(var i=0;i<$config.sliders.length;i++){
-				if(!$config.sliders[i].bg) continue;
-				if(typeof $config.sliders[i].bg=='string'){
-					totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
-				}else{
-					for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
-						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));	
+				if($config.sliders[i].bg){
+					if(typeof $config.sliders[i].bg=='string'){
+						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
+					}else{
+						for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
+							totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));
+						}
 					}
-				}	
-				
+				}
 				for(var k=0;k<($config.sliders[i].subMotion && $config.sliders[i].subMotion.length);k++){
 					$config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.sliders[i].subMotion[k].img));
 				}
