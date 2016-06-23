@@ -816,7 +816,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 		preload:1,//是否对素材预加载
 		autoStart:1,//自动开始跳转默认幻灯
 		autoRemoveChildren:true,//每张幻灯子动画全部完毕后，自动删除子动画tween
-		debugMode:1,
+		debugMode:window.location.href.indexOf('http')==0 ? 0 :1,//默认仅当本地环境开启debug模式
 		reloadMode:0,//屏幕旋转自动刷新页面重新适配
 		stageMode:'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
 		positionMode:'absolute',//舞台子元素position模式
@@ -2310,7 +2310,7 @@ TweenMax || TweenLite
 		if(currentSlider[0]==nextSlider[0]){//如果上下页是同一页，则只执行子动画
 			//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
 			T.set($scope.sliders,{clearProps:$scope.clearProps});
-			currentSlider.fadeIn(1000,function(){
+			currentSlider.fadeIn($config.motionTime,function(){
 				//sub motion
 				var subMotionArr=$config.sliders[nextIndex].subMotion;
 				//如果正在关闭详情页则不播放子动画
