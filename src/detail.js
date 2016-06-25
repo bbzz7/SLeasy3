@@ -15,7 +15,7 @@
 	}
 	
 	SLeasy.nextDetailIndex=function(index){
-		return index=(typeof index=='number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
+		return index=(typeof index=='number') ? index : SLeasy.label(index,true);//如果是label标签，则获取标签对应的索引值
 	}
 	
 	SLeasy.detailFX=function(index){
