@@ -140,7 +140,7 @@
             document.title = title;
             if (SLeasy.is('weixin')) {
                 // hack在微信等webview中无法修改document.title的情况
-                var $iframe = $('<iframe src="/favicon.ico" style="display:none"></iframe>').on('load', function () {
+                var $iframe = $('<iframe src="'+window.location.href+'" style="display:none"></iframe>').on('load', function () {
                     setTimeout(function () {
                         $iframe.off('load').remove();
                     }, 0)
