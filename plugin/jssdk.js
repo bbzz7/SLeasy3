@@ -227,5 +227,22 @@
     };
 
 
+    //隐藏复制链接、用浏览器打开、阅读模式、邮件等菜单
+    jssdk.hide = function (itemArr) {
+        var $config = {
+            menuList: [
+                'menuItem:copyUrl',//复制链接
+                'menuItem:openWithQQBrowser',//在QQ浏览器中打开
+                'menuItem:openWithSafari',//在Safari中打开
+                'menuItem:readMode',//阅读模式
+                'menuItem:share:email',//邮件
+
+            ] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
+        };
+        $.extend($config,{menuList:itemArr});
+        wx.hideMenuItems($config);
+    }
+
+
 //
 })(window.jssdk = window.jssdk || {}, jQuery);
