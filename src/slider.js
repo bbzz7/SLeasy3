@@ -77,7 +77,8 @@
             },
             "shadownBt": function (opt) {
                 return '<div\
-				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+                id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				name="' + (opt.name || 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index) + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' SLeasy_shadownBt toDiv"\
 				style="position:absolute; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
