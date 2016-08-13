@@ -1047,7 +1047,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             document.title = title;
             if (SLeasy.is('weixin')) {
                 // hack在微信等webview中无法修改document.title的情况
-                var $iframe = $('<iframe src="/favicon.ico" style="display:none"></iframe>').on('load', function () {
+                var $iframe = $('<iframe src="'+window.location.href+'" style="display:none"></iframe>').on('load', function () {
                     setTimeout(function () {
                         $iframe.off('load').remove();
                     }, 0)
@@ -1437,7 +1437,8 @@ store
             },
             "shadownBt": function (opt) {
                 return '<div\
-				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+                id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				name="' + (opt.name || 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index) + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' SLeasy_shadownBt toDiv"\
 				style="position:absolute; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
@@ -2483,79 +2484,82 @@ jQuery,
 TweenMax || TweenLite
 );
 // SLeasy3-eventBind
-;(function(SLeasy,H,$,T){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope(),
-		sliderBox;//hammerObj
-		
-	//get hammerObj
-	SLeasy.hammerObj=function(){
-		return sliderBox ? sliderBox : alert('hammerObj尚未初始化~！');
-	}
-	
-	//event bind
-	SLeasy.eventBind=function(){
-		//禁止触摸默认行为
-		SLeasy.touchScroll(false);
-		
-		sliderBox=H(document.getElementById($config.id) || document.getElementById('SLeasy'));
-		sliderBox.get('swipe').set({velocity:0.2,direction: Hammer.DIRECTION_ALL});
-		if($config.stageMode=='scroll'){
-			SLeasy.touchScroll(true);
-			sliderBox.get('swipe').set({enable:false});
-		}
+;(function (SLeasy, H, $, T) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope(),
+        sliderBox;//hammerObj
 
-		//todo:修正ios下微信双击上移
-		
-		//swipe eventBind
-		if($config.swipeMode=='x' || $config.swipeMode=='xy'){//水平左右
-			$scope.FXDirection='leftRight';//设置切换式样方向
-			
-			sliderBox.on('swipeleft',function(e){
-				$scope.swipe && SLeasy.goSlider('+=1');
-			});
-			sliderBox.on('swiperight',function(e){
-				$scope.swipe && SLeasy.goSlider('-=1');
-			});
-			
-		}else if($config.swipeMode=='y' || $config.swipeMode=='xy'){//垂直上下
-			$scope.FXDirection='upDown';//设置切换式样方向
-			
-			sliderBox.on('swipeup',function(e){
-				console.log($scope.swipe);
-				$scope.swipe && SLeasy.goSlider('+=1');
-			});
-			sliderBox.on('swipedown',function(e){
-				$scope.swipe && SLeasy.goSlider('-=1');
-			});
-		}
-		
-		//子画元素事件绑定策略
-		for(var i=0;i<$scope.eventArr.length;i++){
-			var el=$scope.eventArr[i],
-				id=el.id,
-				HDom=H(document.getElementById(id)),
-				e=el.event,
-				callback=el.onEvent
-				;	
-				
-			document.getElementById(id).style.cursor="pointer";//鼠标手势
-			//console.log(document.getElementById(id));
-			if(e=='hold'){//长按事件
-				HDom.get('press').set({time:1000});
-				HDom.on('press',callback);
-			}else{
-				HDom.on(e,callback);//事件绑定
-			}
-			
-		}
-		
-	}
+    //get hammerObj
+    SLeasy.hammerObj = function () {
+        return sliderBox ? sliderBox : alert('hammerObj尚未初始化~！');
+    }
+
+    //event bind
+    SLeasy.eventBind = function () {
+        //禁止触摸默认行为
+        SLeasy.touchScroll(false);
+
+        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+        sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
+        if ($config.stageMode == 'scroll') {
+            SLeasy.touchScroll(true);
+            sliderBox.get('swipe').set({enable: false});
+        }
+
+        //todo:修正ios下微信双击上移
+
+        //swipe eventBind
+        if ($config.swipeMode == 'x' || $config.swipeMode == 'xy') {//水平左右
+            $scope.FXDirection = 'leftRight';//设置切换式样方向
+
+            sliderBox.on('swipeleft', function (e) {
+                $scope.swipe && SLeasy.goSlider('+=1');
+            });
+            sliderBox.on('swiperight', function (e) {
+                $scope.swipe && SLeasy.goSlider('-=1');
+            });
+
+        } else if ($config.swipeMode == 'y' || $config.swipeMode == 'xy') {//垂直上下
+            $scope.FXDirection = 'upDown';//设置切换式样方向
+
+            sliderBox.on('swipeup', function (e) {
+                console.log($scope.swipe);
+                $scope.swipe && SLeasy.goSlider('+=1');
+            });
+            sliderBox.on('swipedown', function (e) {
+                $scope.swipe && SLeasy.goSlider('-=1');
+            });
+        }
+
+        //子画元素事件绑定策略
+        for (var i = 0; i < $scope.eventArr.length; i++) {
+            var el       = $scope.eventArr[i],
+                id       = el.id,
+                dom      = document.getElementById(id),
+                HDom     = H(dom),
+                e        = el.event,
+                callback = el.onEvent
+                ;
+
+            dom.style.cursor = "pointer";//鼠标手势
+            //console.log(document.getElementById(id));
+            if (e == 'click') {//点击事件,方便某些广告监测代码
+                $(dom).on('click', callback);
+            } else if (e == 'hold') {//长按事件
+                HDom.get('press').set({time: 1000});
+                HDom.on('press', callback);
+            } else {
+                HDom.on(e, callback);//事件绑定
+            }
+
+        }
+
+    }
 })(
-window.SLeasy = window.SLeasy || {},
-Hammer,
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy || {},
+    Hammer,
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-float
 ;(function(SLeasy,$,T){
@@ -3047,7 +3051,7 @@ jQuery
 		SLeasy.checkGoto();//跳转(url/淘宝)检测	
 		var $config=SLeasy.config(opt);//合并自定义参数
 		if($config.debugMode){//debug模式
-			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;}';
+			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
 			$('head style').html($('head style').html()+debugStyle);
 		}else{
 			console.log=function(){};//设置console.log输出
