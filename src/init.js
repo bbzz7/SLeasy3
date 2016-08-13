@@ -7,7 +7,7 @@
 		SLeasy.checkGoto();//跳转(url/淘宝)检测	
 		var $config=SLeasy.config(opt);//合并自定义参数
 		if($config.debugMode){//debug模式
-			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;}';
+			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
 			$('head style').html($('head style').html()+debugStyle);
 		}else{
 			console.log=function(){};//设置console.log输出
