@@ -1,34 +1,33 @@
 <!doctype html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>DrawSVGPlugin</title>
-<script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
-<script src="TweenMax.min.js"></script>
-<script src="DrawSVGPlugin.min.js"></script>
-<!--<script src="ClubPlugins.min.js"></script>-->
-<style>
-body {
-	margin-left: 0px;
-	margin-top: 0px;
-	margin-right: 0px;
-	margin-bottom: 0px;
-	background-color: #000000;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>DrawSVGPlugin</title>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script src="TweenMax.min.js"></script>
+    <script src="DrawSVGPlugin.min.js"></script>
+    <!--<script src="ClubPlugins.min.js"></script>-->
+    <style>
+        body {
+            margin-left: 0px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            background-color: #fff;
+        }
+    </style>
 </head>
 
 <body>
 <svg id="loadingBarBox" style="overflow:visible">
-	<circle stroke-width="6" stroke="#959595" fill="none" cx="78" cy="78" r="75"/>
-	 <circle stroke-width="6" stroke="#f2c730" fill="none" cx="78" cy="78" r="75" id="loadingBar"/>
+    <circle stroke-width="6" stroke="#959595" fill="none" cx="78" cy="78" r="75"/>
+    <circle stroke-width="6" stroke="#f2c730" fill="none" cx="78" cy="78" r="75" id="loadingBar"/>
 </svg>
-
 <script>
-$(document).ready(function(e) {
-	TweenMax.set("#loadingBarBox",{rotation:-89.9, x:-75,y:-65});
-   TweenMax.from("#loadingBar", 2, {drawSVG:"0",ease:Power3.easeInOut});
-});
+    $(document).ready(function (e) {
+        TweenMax.set("#loadingBarBox", {rotation: -89.9, x: -75, y: -65});
+        TweenMax.from("#loadingBar", 2, {drawSVG: "0", ease: Power3.easeInOut});
+    });
 </script>
 </body>
 </html>
