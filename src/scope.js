@@ -140,7 +140,7 @@
             document.title = title;
             if (SLeasy.is('weixin')) {
                 // hack在微信等webview中无法修改document.title的情况
-                var $iframe = $('<iframe src="'+window.location.href+'" style="display:none"></iframe>').on('load', function () {
+                var $iframe = $('<iframe src="' + window.location.href + '" style="display:none"></iframe>').on('load', function () {
                     setTimeout(function () {
                         $iframe.off('load').remove();
                     }, 0)
@@ -181,7 +181,7 @@
         _router.init();
 
         var isGoto = _router.getRoute(0),
-            url = _router.getRoute(1);
+            url    = _router.getRoute(1);
 
         //普通跳转探测
         if (isGoto == 'goTo') {

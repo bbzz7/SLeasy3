@@ -70,18 +70,33 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
 /*!
- * VERSION: beta 0.3.3
- * DATE: 2014-10-29
+ * VERSION: 0.4.0
+ * DATE: 2016-07-09
  * UPDATES AND DOCS AT: http://greensock.com
+ *
+ * This is a special version that is only to be used on certain sites like codepen.io. It will redirect to a page on GreenSock.com if you try using it on a different domain. Please sign up for Club GreenSock to get the fully-functional version at https://greensock.com/club/
  *
  * @license Copyright (c) 2008-2015, GreenSock. All rights reserved.
  * SplitText is a Club GreenSock membership benefit; You must have a valid membership to use
- * this code without violating the terms of use. Visit http://www.greensock.com/club/ to sign up or get more details.
- * This work is subject to the software agreement that was issued with your membership.
- * 
+ * this code without violating the terms of use. Visit http://greensock.com/club/ to sign up or get more details.
+ * For licensing details, see http://greensock.com/licensing/
+ *
  * @author: Jack Doyle, jack@greensock.com
  */
-var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;(function(t){"use strict";var e=t.GreenSockGlobals||t,i=function(t){var i,s=t.split("."),r=e;for(i=0;s.length>i;i++)r[s[i]]=r=r[s[i]]||{};return r},s=i("com.greensock.utils"),r=function(t){var e=t.nodeType,i="";if(1===e||9===e||11===e){if("string"==typeof t.textContent)return t.textContent;for(t=t.firstChild;t;t=t.nextSibling)i+=r(t)}else if(3===e||4===e)return t.nodeValue;return i},n=document,a=n.defaultView?n.defaultView.getComputedStyle:function(){},o=/([A-Z])/g,h=function(t,e,i,s){var r;return(i=i||a(t,null))?(t=i.getPropertyValue(e.replace(o,"-$1").toLowerCase()),r=t||i.length?t:i[e]):t.currentStyle&&(i=t.currentStyle,r=i[e]),s?r:parseInt(r,10)||0},l=function(t){return t.length&&t[0]&&(t[0].nodeType&&t[0].style&&!t.nodeType||t[0].length&&t[0][0])?!0:!1},_=function(t){var e,i,s,r=[],n=t.length;for(e=0;n>e;e++)if(i=t[e],l(i))for(s=i.length,s=0;i.length>s;s++)r.push(i[s]);else r.push(i);return r},u=")eefec303079ad17405c",c=/(?:<br>|<br\/>|<br \/>)/gi,p=n.all&&!n.addEventListener,f="<div style='position:relative;display:inline-block;"+(p?"*display:inline;*zoom:1;'":"'"),m=function(t){t=t||"";var e=-1!==t.indexOf("++"),i=1;return e&&(t=t.split("++").join("")),function(){return f+(t?" class='"+t+(e?i++:"")+"'>":">")}},d=s.SplitText=e.SplitText=function(t,e){if("string"==typeof t&&(t=d.selector(t)),!t)throw"cannot split a null element.";this.elements=l(t)?_(t):[t],this.chars=[],this.words=[],this.lines=[],this._originals=[],this.vars=e||{},this.split(e)},g=function(t,e,i){var s=t.nodeType;if(1===s||9===s||11===s)for(t=t.firstChild;t;t=t.nextSibling)g(t,e,i);else(3===s||4===s)&&(t.nodeValue=t.nodeValue.split(e).join(i))},v=function(t,e){for(var i=e.length;--i>-1;)t.push(e[i])},y=function(t,e,i,s,o){c.test(t.innerHTML)&&(t.innerHTML=t.innerHTML.replace(c,u));var l,_,p,f,d,y,T,w,b,x,P,S,C,k,R=r(t),A=e.type||e.split||"chars,words,lines",O=-1!==A.indexOf("lines")?[]:null,D=-1!==A.indexOf("words"),M=-1!==A.indexOf("chars"),L="absolute"===e.position||e.absolute===!0,z=L?"&#173; ":" ",I=-999,E=a(t),N=h(t,"paddingLeft",E),F=h(t,"borderBottomWidth",E)+h(t,"borderTopWidth",E),X=h(t,"borderLeftWidth",E)+h(t,"borderRightWidth",E),U=h(t,"paddingTop",E)+h(t,"paddingBottom",E),B=h(t,"paddingLeft",E)+h(t,"paddingRight",E),j=h(t,"textAlign",E,!0),Y=t.clientHeight,q=t.clientWidth,G="</div>",V=m(e.wordsClass),Q=m(e.charsClass),W=-1!==(e.linesClass||"").indexOf("++"),Z=e.linesClass,H=-1!==R.indexOf("<"),$=!0,K=[],J=[],te=[];for(W&&(Z=Z.split("++").join("")),H&&(R=R.split("<").join("{{LT}}")),l=R.length,f=V(),d=0;l>d;d++)if(T=R.charAt(d),")"===T&&R.substr(d,20)===u)f+=($?G:"")+"<BR/>",$=!1,d!==l-20&&R.substr(d+20,20)!==u&&(f+=" "+V(),$=!0),d+=19;else if(" "===T&&" "!==R.charAt(d-1)&&d!==l-1&&R.substr(d-20,20)!==u){for(f+=$?G:"",$=!1;" "===R.charAt(d+1);)f+=z,d++;(")"!==R.charAt(d+1)||R.substr(d+1,20)!==u)&&(f+=z+V(),$=!0)}else f+=M&&" "!==T?Q()+T+"</div>":T;for(t.innerHTML=f+($?G:""),H&&g(t,"{{LT}}","<"),y=t.getElementsByTagName("*"),l=y.length,w=[],d=0;l>d;d++)w[d]=y[d];if(O||L)for(d=0;l>d;d++)b=w[d],p=b.parentNode===t,(p||L||M&&!D)&&(x=b.offsetTop,O&&p&&x!==I&&"BR"!==b.nodeName&&(_=[],O.push(_),I=x),L&&(b._x=b.offsetLeft,b._y=x,b._w=b.offsetWidth,b._h=b.offsetHeight),O&&(D!==p&&M||(_.push(b),b._x-=N),p&&d&&(w[d-1]._wordEnd=!0),"BR"===b.nodeName&&b.nextSibling&&"BR"===b.nextSibling.nodeName&&O.push([])));for(d=0;l>d;d++)b=w[d],p=b.parentNode===t,"BR"!==b.nodeName?(L&&(S=b.style,D||p||(b._x+=b.parentNode._x,b._y+=b.parentNode._y),S.left=b._x+"px",S.top=b._y+"px",S.position="absolute",S.display="block",S.width=b._w+1+"px",S.height=b._h+"px"),D?p&&""!==b.innerHTML?J.push(b):M&&K.push(b):p?(t.removeChild(b),w.splice(d--,1),l--):!p&&M&&(x=!O&&!L&&b.nextSibling,t.appendChild(b),x||t.appendChild(n.createTextNode(" ")),K.push(b))):O||L?(t.removeChild(b),w.splice(d--,1),l--):D||t.appendChild(b);if(O){for(L&&(P=n.createElement("div"),t.appendChild(P),C=P.offsetWidth+"px",x=P.offsetParent===t?0:t.offsetLeft,t.removeChild(P)),S=t.style.cssText,t.style.cssText="display:none;";t.firstChild;)t.removeChild(t.firstChild);for(k=!L||!D&&!M,d=0;O.length>d;d++){for(_=O[d],P=n.createElement("div"),P.style.cssText="display:block;text-align:"+j+";position:"+(L?"absolute;":"relative;"),Z&&(P.className=Z+(W?d+1:"")),te.push(P),l=_.length,y=0;l>y;y++)"BR"!==_[y].nodeName&&(b=_[y],P.appendChild(b),k&&(b._wordEnd||D)&&P.appendChild(n.createTextNode(" ")),L&&(0===y&&(P.style.top=b._y+"px",P.style.left=N+x+"px"),b.style.top="0px",x&&(b.style.left=b._x-x+"px")));0===l&&(P.innerHTML="&nbsp;"),D||M||(P.innerHTML=r(P).split(String.fromCharCode(160)).join(" ")),L&&(P.style.width=C,P.style.height=b._h+"px"),t.appendChild(P)}t.style.cssText=S}L&&(Y>t.clientHeight&&(t.style.height=Y-U+"px",Y>t.clientHeight&&(t.style.height=Y+F+"px")),q>t.clientWidth&&(t.style.width=q-B+"px",q>t.clientWidth&&(t.style.width=q+X+"px"))),v(i,K),v(s,J),v(o,te)},T=d.prototype;T.split=function(t){this.isSplit&&this.revert(),this.vars=t||this.vars,this._originals.length=this.chars.length=this.words.length=this.lines.length=0;for(var e=this.elements.length;--e>-1;)this._originals[e]=this.elements[e].innerHTML,y(this.elements[e],this.vars,this.chars,this.words,this.lines);return this.chars.reverse(),this.words.reverse(),this.lines.reverse(),this.isSplit=!0,this},T.revert=function(){if(!this._originals)throw"revert() call wasn't scoped properly.";for(var t=this._originals.length;--t>-1;)this.elements[t].innerHTML=this._originals[t];return this.chars=[],this.words=[],this.lines=[],this.isSplit=!1,this},d.selector=t.$||t.jQuery||function(e){var i=t.$||t.jQuery;return i?(d.selector=i,i(e)):"undefined"==typeof document?e:document.querySelectorAll?document.querySelectorAll(e):document.getElementById("#"===e.charAt(0)?e.substr(1):e)},d.version="0.3.3"})(_gsScope),function(t){"use strict";var e=function(){return(_gsScope.GreenSockGlobals||_gsScope)[t]};"function"==typeof define&&define.amd?define(["TweenLite"],e):"undefined"!=typeof module&&module.exports&&(module.exports=e())}("SplitText");
+var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof global?global:this||window;
+!function(r){var y=r.GreenSockGlobals||r,D=function(a){var b=a.split("."),d=y;for(a=0;a<b.length;a++)d[b[a]]=d=d[b[a]]||{};return d}("com.greensock.utils"),K=function(a){var b=a.nodeType,d="";if(1===b||9===b||11===b){if("string"==typeof a.textContent)return a.textContent;for(a=a.firstChild;a;a=a.nextSibling)d+=K(a)}else if(3===b||4===b)return a.nodeValue;return d},z=document,R=z.defaultView?z.defaultView.getComputedStyle:function(){},L=/([A-Z])/g,k=function(a,b,d,t){var p;return(d=d||R(a,null))?(a=
+d.getPropertyValue(b.replace(L,"-$1").toLowerCase()),p=a||d.length?a:d[b]):a.currentStyle&&(d=a.currentStyle,p=d[b]),t?p:parseInt(p,10)||0},G=function(a){return a.length&&a[0]&&(a[0].nodeType&&a[0].style&&!a.nodeType||a[0].length&&a[0][0])?!0:!1},aa=/(?:\r|\n|\s\s|\t\t)/g,S=/(?:<br>|<br\/>|<br \/>)/gi,M=" style='position:relative;display:inline-block;"+(z.all&&!z.addEventListener?"*display:inline;*zoom:1;'":"'"),T=function(a,b){a=a||"";var d=-1!==a.indexOf("++"),t=1;return d&&(a=a.split("++").join("")),
+function(){return"<"+b+M+(a?" class='"+a+(d?t++:"")+"'>":">")}},A=D.SplitText=y.SplitText=function(a,b){if("string"==typeof a&&(a=A.selector(a)),!a)throw"cannot split a null element.";var d;if(G(a)){d=a;var t,p,k,f=[],w=d.length;for(t=0;w>t;t++)if(p=d[t],G(p))for(k=0;k<p.length;k++)f.push(p[k]);else f.push(p);d=f}else d=[a];this.elements=d;this.chars=[];this.words=[];this.lines=[];this._originals=[];this.vars=b||{};void this.split(b)},U=function(a,b,d){var k=a.nodeType;if(1===k||9===k||11===k)for(a=
+a.firstChild;a;a=a.nextSibling)U(a,b,d);else 3!==k&&4!==k||(a.nodeValue=a.nodeValue.split(b).join(d))},N=function(a,b){for(var d=b.length;-1<--d;)a.push(b[d])},D=A.prototype;D.split=function(a){this.isSplit&&this.revert();this.vars=a||this.vars;this._originals.length=this.chars.length=this.words.length=this.lines.length=0;for(a=this.elements.length;-1<--a;){this._originals[a]=this.elements[a].innerHTML;var b=this.elements[a],d=this.vars,t=this.chars,p=this.words,r=this.lines;S.test(b.innerHTML)&&
+(b.innerHTML=b.innerHTML.replace(S,")eefec303079ad17405c"));var f=void 0,w=void 0,g=void 0,m=void 0,e=void 0,h=g=g=void 0,c=void 0,u=void 0,l=void 0,x=void 0,y=void 0,B=void 0,h=K(b),F=d.span?"span":"div",q=d.type||d.split||"chars,words,lines",v=-1!==q.indexOf("lines")?[]:null,C=-1!==q.indexOf("words"),q=-1!==q.indexOf("chars"),n="absolute"===d.position||!0===d.absolute,B=d.wordDelimiter||" ",A=" "!==B?"":n?"&#173; ":" ",D=-999,f=R(b),G=k(b,"paddingLeft",f),L=k(b,"borderBottomWidth",f)+k(b,"borderTopWidth",
+f),M=k(b,"borderLeftWidth",f)+k(b,"borderRightWidth",f),ba=k(b,"paddingTop",f)+k(b,"paddingBottom",f),ca=k(b,"paddingLeft",f)+k(b,"paddingRight",f),da=k(b,"textAlign",f,!0),ea=.2*k(b,"fontSize"),H=b.clientHeight,I=b.clientWidth,O=d.span?"</span>":"</div>",P=T(d.wordsClass,F),V=T(d.charsClass,F),W=-1!==(d.linesClass||"").indexOf("++"),J=d.linesClass,X=-1!==h.indexOf("<"),E=!0,Q=[],Y=[],Z=[];0!=!d.reduceWhiteSpace&&(h=h.replace(aa,""));W&&(J=J.split("++").join(""));X&&(h=h.split("<").join("{{LT}}"));
+f=h.length;m=P();for(e=0;f>e;e++)if(g=h.charAt(e),")"===g&&")eefec303079ad17405c"===h.substr(e,20))m+=(E?O:"")+"<BR/>",E=!1,e!==f-20&&")eefec303079ad17405c"!==h.substr(e+20,20)&&(m+=" "+P(),E=!0),e+=19;else if(g===B&&h.charAt(e-1)!==B&&e!==f-1&&")eefec303079ad17405c"!==h.substr(e-20,20)){m+=E?O:"";for(E=!1;h.charAt(e+1)===B;)m+=A,e++;(")"!==h.charAt(e+1)||")eefec303079ad17405c"!==h.substr(e+1,20))&&(m+=A+P(),E=!0)}else"{"===g&&"{{LT}}"===h.substr(e,6)?(m+=q?V()+"{{LT}}</"+F+">":"{{LT}}",e+=5):m+=
+q&&" "!==g?V()+g+"</"+F+">":g;b.innerHTML=m+(E?O:"");X&&U(b,"{{LT}}","<");g=b.getElementsByTagName("*");f=g.length;h=[];for(e=0;f>e;e++)h[e]=g[e];if(v||n)for(e=0;f>e;e++)c=h[e],((g=c.parentNode===b)||n||q&&!C)&&(u=c.offsetTop,v&&g&&Math.abs(u-D)>ea&&"BR"!==c.nodeName&&(w=[],v.push(w),D=u),n&&(c._x=c.offsetLeft,c._y=u,c._w=c.offsetWidth,c._h=c.offsetHeight),v&&(C!==g&&q||(w.push(c),c._x-=G),g&&e&&(h[e-1]._wordEnd=!0),"BR"===c.nodeName&&c.nextSibling&&"BR"===c.nextSibling.nodeName&&v.push([])));for(e=
+0;f>e;e++)c=h[e],g=c.parentNode===b,"BR"!==c.nodeName?(n&&(x=c.style,C||g||(c._x+=c.parentNode._x,c._y+=c.parentNode._y),x.left=c._x+"px",x.top=c._y+"px",x.position="absolute",x.display="block",x.width=c._w+1+"px",x.height=c._h+"px"),C?g&&""!==c.innerHTML?Y.push(c):q&&Q.push(c):g?(b.removeChild(c),h.splice(e--,1),f--):!g&&q&&(u=!v&&!n&&c.nextSibling,b.appendChild(c),u||b.appendChild(z.createTextNode(" ")),Q.push(c))):v||n?(b.removeChild(c),h.splice(e--,1),f--):C||b.appendChild(c);if(v){n&&(l=z.createElement(F),
+b.appendChild(l),y=l.offsetWidth+"px",u=l.offsetParent===b?0:b.offsetLeft,b.removeChild(l));x=b.style.cssText;for(b.style.cssText="display:none;";b.firstChild;)b.removeChild(b.firstChild);B=" "===B&&(!n||!C&&!q);for(e=0;e<v.length;e++){w=v[e];l=z.createElement(F);l.style.cssText="display:block;text-align:"+da+";position:"+(n?"absolute;":"relative;");J&&(l.className=J+(W?e+1:""));Z.push(l);f=w.length;for(g=0;f>g;g++)"BR"!==w[g].nodeName&&(c=w[g],l.appendChild(c),B&&(c._wordEnd||C)&&l.appendChild(z.createTextNode(" ")),
+n&&(0===g&&(l.style.top=c._y+"px",l.style.left=G+u+"px"),c.style.top="0px",u&&(c.style.left=c._x-u+"px")));0===f&&(l.innerHTML="&nbsp;");C||q||(l.innerHTML=K(l).split(String.fromCharCode(160)).join(" "));n&&(l.style.width=y,l.style.height=c._h+"px");b.appendChild(l)}b.style.cssText=x}n&&(H>b.clientHeight&&(b.style.height=H-ba+"px",b.clientHeight<H&&(b.style.height=H+L+"px")),I>b.clientWidth&&(b.style.width=I-ca+"px",b.clientWidth<I&&(b.style.width=I+M+"px")));N(t,Q);N(p,Y);N(r,Z)}return this.chars.reverse(),
+this.words.reverse(),this.lines.reverse(),this.isSplit=!0,this};D.revert=function(){if(!this._originals)throw"revert() call wasn't scoped properly.";for(var a=this._originals.length;-1<--a;)this.elements[a].innerHTML=this._originals[a];return this.chars=[],this.words=[],this.lines=[],this.isSplit=!1,this};A.selector=r.$||r.jQuery||function(a){var b=r.$||r.jQuery;return b?(A.selector=b,b(a)):"undefined"==typeof document?a:document.querySelectorAll?document.querySelectorAll(a):document.getElementById("#"===
+a.charAt(0)?a.substr(1):a)};A.version="0.4.0"}(_gsScope);(function(r){var y=function(){return(_gsScope.GreenSockGlobals||_gsScope)[r]};"function"==typeof define&&define.amd?define([],y):"undefined"!=typeof module&&module.exports&&(module.exports=y())})("SplitText");
 
 
 
@@ -794,118 +809,118 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 //SLeasy3-config
 ;
-(function(SLeasy, $) {
-	//config
-	var $config = { //默认配置
-		//SLeasy------------------------------------------
-		id:'',//幻灯容器id
-		bg:'',//幻灯容器背景图片
-		bgColor:'',//幻灯容器背景颜色
-		host:'images/',//资源目录url
-		width:640,//幻灯宽度
-		height:1008,//幻灯高度
-		viewport:321,//视口大小
-		motionTime:0.8,//切换动画时间
-		motionStyle:0,//动画风格，默认随机
-		loopMode:0,//启用首尾循环模式
-		swipeMode:'y',//滑动模式，xy：上下左右，x：水平，y：垂直
-		routerMode:1,//路由开启模式
-		arrowMode:1,//是否显示滑动指示箭头
-		arrowColor:'#fff',//箭头颜色
-		alignMode:'top',//幻灯背景对齐方式
-		alignOffset:0,//对齐偏移值
-		preload:1,//是否对素材预加载
-		autoStart:1,//自动开始跳转默认幻灯
-		autoRemoveChildren:true,//每张幻灯子动画全部完毕后，自动删除子动画tween
-		debugMode:window.location.href.indexOf('http')==0 ? 0 :1,//默认仅当本地环境开启debug模式
-		reloadMode:0,//屏幕旋转自动刷新页面重新适配
-		stageMode:'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
-		positionMode:'absolute',//舞台子元素position模式
+(function (SLeasy, $) {
+    //config
+    var $config = { //默认配置
+        //SLeasy------------------------------------------
+        id: '',//幻灯容器id
+        bg: '',//幻灯容器背景图片
+        bgColor: '',//幻灯容器背景颜色
+        host: 'images/',//资源目录url
+        width: 640,//幻灯宽度
+        height: 1008,//幻灯高度
+        viewport: 321,//视口大小
+        motionTime: 0.8,//切换动画时间
+        motionStyle: 0,//动画风格，默认随机
+        loopMode: 0,//启用首尾循环模式
+        swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
+        routerMode: 1,//路由开启模式
+        arrowMode: 1,//是否显示滑动指示箭头
+        arrowColor: '#fff',//箭头颜色
+        alignMode: 'top',//幻灯背景对齐方式
+        alignOffset: 0,//对齐偏移值
+        preload: 1,//是否对素材预加载
+        autoStart: 1,//自动开始跳转默认幻灯
+        autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
+        debugMode: window.location.href.indexOf('http') == 0 ? 0 : 1,//默认仅当本地环境开启debug模式
+        reloadMode: 0,//屏幕旋转自动刷新页面重新适配
+        stageMode: 'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
+        positionMode: 'absolute',//舞台子元素position模式
 
-		//music-------------------------------------------
-		musicUrl:'',//背景音乐url
-		musicBt:[1,'',30,30.5,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
-		
-		//slider------------------------------------------
-		sliders: [], //幻灯json数组
+        //music-------------------------------------------
+        musicUrl: '',//背景音乐url
+        musicBt: [1, '', 30, 30.5, 'topRight', 10, 10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
-		//detail-------------------------------------------
-		details:[],//幻灯详情页json数组
-		
-		//float-------------------------------------------
-		floats:[],//固定漂浮元素
-		
-		//loader------------------------------------------
-		loader:{
-			bg:'none',//loading页背景
-			size:[38,38],//宽高
-			style:0,//loading内置式样索引或自定义html
-			textStyle:'font-size:12px;color:#fff', //字体式样
-			endAt:100,	
-		},
+        //slider------------------------------------------
+        sliders: [], //幻灯json数组
 
-		//其他----------------------------------------------
-		exLoadArr: [], //额外加载项数组
-		title:document.title,//全局网页标题
-		
-		//事件回调-------------------------------------------
-		on:{
-			'loadProgress': function(percent){ //预加载进行时回调
-				SLeasy.loader.text(percent);
-				console.log('当前加载进度' + percent + '~！');
-			},
-			'loaded': function(){//预加载完毕回调
-				console.log('======================================加载完毕~！');
-			}, 
-			'domReady':function(){
-				console.log('SLeasy dom init over~~~~');
-			},
-			'sliderChange':function(sliderIndex){//幻灯切换回调
-				console.log('切换到第'+(sliderIndex+1)+'张幻灯~！')
-			},
-			'subMotion':function(sliderIndex){//子动画开始播放回调
-				console.log('第'+(sliderIndex+1)+'张幻灯的子动画开始运行~');
-			},
-			'detailMotion':function(sliderIndex){//详情页子动画开始播放回调
-				console.log('第'+(sliderIndex+1)+'张详情页的子动画开始运行~');
-			},
-			'detailOpen':function(sliderIndex){//详情页打开回调
-				console.log('第'+(sliderIndex+1)+'张详情页打开~');
-			},
-			'detailClose':function(sliderIndex){//详情页关闭回调
-				console.log('第'+(sliderIndex+1)+'张详情页关闭~');
-			},
-			'timeline':function(tl){//子动画时间轴ready回调
-				console.log('子动画timeline ready~')
-			},
-			
-		}
+        //detail-------------------------------------------
+        details: [],//幻灯详情页json数组
+
+        //float-------------------------------------------
+        floats: [],//固定漂浮元素
+
+        //loader------------------------------------------
+        loader: {
+            bg: 'none',//loading页背景
+            size: [38, 38],//宽高
+            style: 0,//loading内置式样索引或自定义html
+            textStyle: 'font-size:12px;color:#fff', //字体式样
+            endAt: 100,
+        },
+
+        //其他----------------------------------------------
+        exLoadArr: [], //额外加载项数组
+        title: document.title,//全局网页标题
+
+        //事件回调-------------------------------------------
+        on: {
+            'loadProgress': function (percent) { //预加载进行时回调
+                SLeasy.loader.text(percent);
+                console.log('当前加载进度' + percent + '~！');
+            },
+            'loaded': function () {//预加载完毕回调
+                console.log('======================================加载完毕~！');
+            },
+            'domReady': function () {
+                console.log('SLeasy dom init over~~~~');
+            },
+            'sliderChange': function (sliderIndex) {//幻灯切换回调
+                console.log('切换到第' + (sliderIndex + 1) + '张幻灯~！')
+            },
+            'subMotion': function (sliderIndex) {//子动画开始播放回调
+                console.log('第' + (sliderIndex + 1) + '张幻灯的子动画开始运行~');
+            },
+            'detailMotion': function (sliderIndex) {//详情页子动画开始播放回调
+                console.log('第' + (sliderIndex + 1) + '张详情页的子动画开始运行~');
+            },
+            'detailOpen': function (sliderIndex) {//详情页打开回调
+                console.log('第' + (sliderIndex + 1) + '张详情页打开~');
+            },
+            'detailClose': function (sliderIndex) {//详情页关闭回调
+                console.log('第' + (sliderIndex + 1) + '张详情页关闭~');
+            },
+            'timeline': function (tl) {//子动画时间轴ready回调
+                console.log('子动画timeline ready~')
+            },
+
+        }
 
 
-	}
+    }
 
-	SLeasy.config = function(opt) {
-		if (arguments.length > 0) {
-			return $.extend(true,$config, opt);
-		} else {
-			//console.log($config);
-			return $config;
-		}
-	}
-	
-	
+    SLeasy.config = function (opt) {
+        if (arguments.length > 0) {
+            return $.extend(true, $config, opt);
+        } else {
+            //console.log($config);
+            return $config;
+        }
+    }
+
+
 })(
-	window.SLeasy = window.SLeasy || {},
-	jQuery
+    window.SLeasy = window.SLeasy || {},
+    jQuery
 );
 
 /*
-<meta http-equiv=”Cache-Control” content=”no-transform” />
-<meta http-equiv=”Cache-Control” content=”no-siteapp” />
-<meta name="applicable-device" content="pc,mobile">
-<meta name="MobileOptimized" content="width"/>
-<meta name="HandheldFriendly" content="true"/>
-*/
+ <meta http-equiv=”Cache-Control” content=”no-transform” />
+ <meta http-equiv=”Cache-Control” content=”no-siteapp” />
+ <meta name="applicable-device" content="pc,mobile">
+ <meta name="MobileOptimized" content="width"/>
+ <meta name="HandheldFriendly" content="true"/>
+ */
 // SLeasy3-scope
 ;(function (SLeasy, $) {
     var $config = SLeasy.config();
@@ -1048,7 +1063,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             document.title = title;
             if (SLeasy.is('weixin')) {
                 // hack在微信等webview中无法修改document.title的情况
-                var $iframe = $('<iframe src="'+window.location.href+'" style="display:none"></iframe>').on('load', function () {
+                var $iframe = $('<iframe src="' + window.location.href + '" style="display:none"></iframe>').on('load', function () {
                     setTimeout(function () {
                         $iframe.off('load').remove();
                     }, 0)
@@ -1089,7 +1104,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         _router.init();
 
         var isGoto = _router.getRoute(0),
-            url = _router.getRoute(1);
+            url    = _router.getRoute(1);
 
         //普通跳转探测
         if (isGoto == 'goTo') {
@@ -1231,73 +1246,73 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     jQuery
 );
 // SLeasy3-cache
-;(function(SLeasy,$,store){
-	//set/read Cache
-	SLeasy.cache=function(){
-		console.log('arguments:'+arguments);
-		var vars=arguments.length,
-			args=arguments;
-		
-		//不同参数策略
-		var cacheFuncs=[
-			function(){
-				var value=$.extend(($.cookie() || {}),store.getAll());
-				return value;
-			},
-			function(){
-				console.log('get cache~'+args[0]);
-				var value=$.cookie(args[0]) || store.get(args[0]);
-				return value;
-			},
-			function(){
-				console.log('set cache~'+args[0]+':'+args[1]);
-				$.cookie(args[0],args[1]);
-				store.set(args[0],args[1]);
-			},
-			function(){
-				$.cookie((args[0],args[1]),$.extend({expires:7},args[2]));
-				store.set(args[0],args[1]);
-			}
-		];
-		
-		//策略执行
-		return cacheFuncs[vars]();
-	}
-	
-	//delete Cache
-	SLeasy.noCache=function(){
-		var vars=arguments.length;
-		
-		//不同参数策略
-		var noCacheFuncs=[
-			function(){
-				store.clear();
-				$.each($.cookie(),function(index,value){
-					$.removeCookie(index);
-				})
-			},
-			function(){
-				var value=$.removeCookie(args[0]);
-				store.remove(args[0]);
-				return value;
-			}
-		];
-		
-		//策略执行OO
-		return noCacheFuncs[vars]();
-		
-	}
-	
-	
+;(function (SLeasy, $, store) {
+    //set/read Cache
+    SLeasy.cache = function () {
+        console.log('arguments:' + arguments);
+        var vars = arguments.length,
+            args = arguments;
+
+        //不同参数策略
+        var cacheFuncs = [
+            function () {
+                var value = $.extend(($.cookie() || {}), store.getAll());
+                return value;
+            },
+            function () {
+                console.log('get cache~' + args[0]);
+                var value = $.cookie(args[0]) || store.get(args[0]);
+                return value;
+            },
+            function () {
+                console.log('set cache~' + args[0] + ':' + args[1]);
+                $.cookie(args[0], args[1]);
+                store.set(args[0], args[1]);
+            },
+            function () {
+                $.cookie((args[0], args[1]), $.extend({expires: 7}, args[2]));
+                store.set(args[0], args[1]);
+            }
+        ];
+
+        //策略执行
+        return cacheFuncs[vars]();
+    }
+
+    //delete Cache
+    SLeasy.noCache = function () {
+        var vars = arguments.length;
+
+        //不同参数策略
+        var noCacheFuncs = [
+            function () {
+                store.clear();
+                $.each($.cookie(), function (index, value) {
+                    $.removeCookie(index);
+                })
+            },
+            function () {
+                var value = $.removeCookie(args[0]);
+                store.remove(args[0]);
+                return value;
+            }
+        ];
+
+        //策略执行OO
+        return noCacheFuncs[vars]();
+
+    }
+
+
 })(
-window.SLeasy = window.SLeasy || {},
-jQuery,
-store
+    window.SLeasy = window.SLeasy || {},
+    jQuery,
+    store
 );
 // SLeasy3-viewport
 ;(function (SLeasy, $, device) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //设置视口
     SLeasy.viewport = function () {
@@ -1305,19 +1320,19 @@ store
         $("body").css({"padding": 0, "margin": "0 0"});
 
         //适配策略
-        var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
+        var minWidth  = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
-            ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
-            viewport = {
+            ratio     = $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            viewport  = {
                 'width': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width=' + width + ',user-scalable=no';
                     return viewportContent;
                 },
                 'height': function (thresholdHeight) {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewHeight = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
-                        height = viewHeight > minHeight ? viewHeight : minHeight,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
+                        viewHeight      = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
+                        height          = viewHeight > minHeight ? viewHeight : minHeight,
                         viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
                     return viewportContent;
                 },
@@ -1327,7 +1342,7 @@ store
                     return viewportContent;
                 },
                 'scroll': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width=' + width + ',user-scalable=no';
                     return viewportContent;
                 },
@@ -1362,7 +1377,7 @@ store
 // SLeasy3-slider
 ;(function (SLeasy, $) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //html
     SLeasy.slider = function (opt) {
@@ -1485,6 +1500,30 @@ store
 				' + opt.text + '\
 				</div>';
             },
+            'audio': function (opt) {
+                return '<audio\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + $config.host + opt.audio + '" preload="auto">\
+				</audio>';
+            },
+            'video': function (opt) {
+                return '<video\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + $config.host + opt.video + '" type="video/mp4" webkit-playsinline playsinline>\
+				</video>';
+            },
+            'iframe': function (opt) {
+                return '<iframe\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_iframe SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + opt.iframe + '" frameborder="0">\
+				</iframe>';
+            },
             "input": function (opt) {
                 //
                 var inputHtml = {
@@ -1494,7 +1533,7 @@ store
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
 						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"\
-                        placeholder="'+(opt.placeholder || '')+'"\
+                        placeholder="' + (opt.placeholder || '') + '"\
                         >';
                     },
                     'textArea': function () {
@@ -1564,7 +1603,7 @@ store
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     var frame = Math.abs(aeOpt.end - aeOpt.start),
-                        time = frame / (aeOpt.fps || 25);
+                        time  = frame / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
                     aeTl.add(
@@ -1604,19 +1643,19 @@ store
                     stage.name = config.stage;
 
                     for (var i = 0; i < aeOpt.layer.length; i++) {
-                        var layerArg = aeOpt.layer[i],
+                        var layerArg  = aeOpt.layer[i],
                             layerName = layerArg[0],
-                            addAt = 'auto',
-                            prefix = layerArg[1],
-                            start = layerArg[2],
-                            end = layerArg[3],
-                            suffix = layerArg[4],
-                            bit = layerArg[5];
+                            addAt     = 'auto',
+                            prefix    = layerArg[1],
+                            start     = layerArg[2],
+                            end       = layerArg[3],
+                            suffix    = layerArg[4],
+                            bit       = layerArg[5];
 
                         $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit);
 
                         var frame = end - start,
-                            time = frame / (aeOpt.fps || 25);
+                            time  = frame / (aeOpt.fps || 25);
 
 
                         $scope.aeLayer[layerName].time = time;
@@ -1700,303 +1739,312 @@ store
     jQuery
 );
 // SLeasy3-imgToDiv
-;(function(SLeasy,$){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-		
-	SLeasy.imgToDiv=function($myDom){
-		var $dom=$myDom || $scope.sliderBox;
-		//to div
-		$dom.find(".toDiv img").each(function(index, element) {//获取所有图片宽度
-			$(this).load(function(e) {
-                var w = $(this)[0].width,
-					h = $(this)[0].height,
-					style={
-						'backgroundImage':'url('+$(this).attr("src")+')',
-						'backgroundRepeat':'no-repeat',
-						'backgroundSize':w*$scope.viewScale+'px',
-						'width':w*$scope.viewScale+'px',
-						'height':h*$scope.viewScale+'px'
-						}
-				
-				$(this).parent().css(style);
-				$(this).remove();
-        	});		
-		});	
-		//no to div
-		$dom.find(".noDiv img").each(function(index, element) {//获取所有图片宽度
-			$(this).load(function(e) {
-                var w = $(this)[0].width,
-					h = $(this)[0].height,
-					style={
-						'width':w*$scope.viewScale+'px',
-						'height':h*$scope.viewScale+'px'
-						}			
-				$(this).css(style);
-        	});	
-		});
-	}
-	
+;(function (SLeasy, $) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
+
+    SLeasy.imgToDiv = function ($myDom) {
+        var $dom = $myDom || $scope.sliderBox;
+        //to div
+        $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
+            $(this).load(function (e) {
+                var w     = $(this)[0].width,
+                    h     = $(this)[0].height,
+                    style = {
+                        'backgroundImage': 'url(' + $(this).attr("src") + ')',
+                        'backgroundRepeat': 'no-repeat',
+                        'backgroundSize': w * $scope.viewScale + 'px',
+                        'width': w * $scope.viewScale + 'px',
+                        'height': h * $scope.viewScale + 'px'
+                    }
+
+                $(this).parent().css(style);
+                $(this).remove();
+            });
+        });
+        //no to div
+        $dom.find(".noDiv img").each(function (index, element) {//获取所有图片宽度
+            $(this).load(function (e) {
+                var w     = $(this)[0].width,
+                    h     = $(this)[0].height,
+                    style = {
+                        'width': w * $scope.viewScale + 'px',
+                        'height': h * $scope.viewScale + 'px'
+                    }
+                $(this).css(style);
+            });
+        });
+    }
+
 })(
-window.SLeasy=window.SLeasy || {},
-jQuery
+    window.SLeasy = window.SLeasy || {},
+    jQuery
 );
 // SLeasy3-fix
-;(function(SLeasy){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-	
-	
-	//子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
-	SLeasy.fixPosition=function(opt){
-		//console.log(opt)
-		//背景对齐模式导致的子元素y轴偏移策略
-		var yOffset={
-			"top":$config.alignOffset,
-			"center":($scope.fixHeight-$config.height*$scope.viewScale)/2+$config.alignOffset,
-			"bottom":$scope.fixHeight-$config.height*$scope.viewScale+$config.alignOffset	
-			},
-			sliders=opt || $config.sliders;
-		
-		for(var i=0;i<sliders.length;i++){
-			var subMotions=sliders[i].subMotion;//当前幻灯子动画数组
-			for(var j=0;j<(subMotions && subMotions.length || 0);j++){
-				//console.log(subMotions[j]);
-				if(subMotions[j].shadownBt){//处理shadownBt的情况
-					var bt=subMotions[j].shadownBt;
-					//subMotions[j].in={x:bt[2],y:bt[3]};
-					//subMotions[j].show={x:bt[2],y:bt[3]};
-					subMotions[j].set=$.extend({x:bt[2],y:bt[3]},subMotions[j].set);
-				}
-				
-				var subIn=subMotions[j].in || {},
-					subShow=subMotions[j].show || {},
-					subSet=subMotions[j].set || {},
-					subTo=subMotions[j].to || [];
-			
-					SLeasy.fixProps(subIn);
-					SLeasy.fixProps(subShow);
-					SLeasy.fixProps(subSet);
-					
-					if(subTo.length){
-						for(var k=0;k<subTo.length;k++){
-							SLeasy.fixProps(subTo[k].to);
+;(function (SLeasy) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
 
-						}
-					}
-									
-					//根据幻灯对齐方式参数，进行y轴自适应修正
-					if(subIn.y) subIn.y+=yOffset[$config.alignMode];
-					if(subShow.y) subShow.y+=yOffset[$config.alignMode];
-					if(subSet.y) subSet.y+=yOffset[$config.alignMode];
-					if(subTo.length){
-						for(var l=0;l<subTo.length;l++){
-							if(subTo[l].to && typeof subTo[l].to.y!='undefined') subTo[l].to.y+=yOffset[$config.alignMode];
-						}
-					}
-			}
-		}
-	}
-	
-	//属性缩放变换
-	SLeasy.fixProps=function fixProps(transObj){
-		var addPX={//需要添加px单位的属性
-				'lineHeight':true
-			}
-		//console.log(transObj);
-		for(var i=0;i<$scope.fixPropsArr.length;i++){
-			var props=transObj[$scope.fixPropsArr[i]],
-				postfix;
-			if(props){
-				if(typeof props=='string'){
-					//clip
-					if(props.indexOf('rect')!=-1){
-						props=props.split('(')[1].replace(')','').split(' ');
-						for(var n=0;n<props.length;n++){
-							props[n]=parseInt(props[n])*$scope.viewScale+'px';
-						}
-						transObj[$scope.fixPropsArr[i]]='rect('+props.join(' ')+')';
-						continue;
-					}
-					//px
-					if(props.indexOf('rect')==-1 && props.lastIndexOf('px')!=-1){
-						props=parseInt(props);//去掉px后缀
-						postfix=addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
-						transObj[$scope.fixPropsArr[i]]=props*$scope.viewScale+postfix;//按照viewScale等比缩放
-						continue;
-					}
-					//%
-					if(props.lastIndexOf('%')!=-1){
-						props=parseInt(props);//去掉%后缀
-						postfix='%';//确定后缀值
-						transObj[$scope.fixPropsArr[i]]=props+postfix;//按照viewScale等比缩放
-						continue;
-					}
-				}else{
-					props=parseInt(props);
-					postfix=addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
-					transObj[$scope.fixPropsArr[i]]=props*$scope.viewScale+postfix;//按照viewScale等比缩放
-				}
-			}		
-		}
-		return transObj;
-	}
-	
-	//添加/获取缩放属性
-	SLeasy.fixPropsArr=function(arr){
-			if(arr){
-				for(var i=0;i<arr.length;i++){
-					if($scope.fixPropsArr.join('').indexOf(arr[i])==-1) $scope.fixPropsArr.push(arr[i]);//如果新添加的属性不存在,则添加
-				}
-			}else{
-				return 	$scope.fixPropsArr;
-			}
-		}
-	
-	
+
+    //子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
+    SLeasy.fixPosition = function (opt) {
+        //console.log(opt)
+        //背景对齐模式导致的子元素y轴偏移策略
+        var yOffset = {
+                "top": $config.alignOffset,
+                "center": ($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset,
+                "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
+            },
+            sliders = opt || $config.sliders;
+
+        for (var i = 0; i < sliders.length; i++) {
+            var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
+            for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
+                //console.log(subMotions[j]);
+                if (subMotions[j].shadownBt) {//处理shadownBt的情况
+                    var bt = subMotions[j].shadownBt;
+                    //subMotions[j].in={x:bt[2],y:bt[3]};
+                    //subMotions[j].show={x:bt[2],y:bt[3]};
+                    subMotions[j].set = $.extend({x: bt[2], y: bt[3]}, subMotions[j].set);
+                }
+
+                var subIn   = subMotions[j].in || {},
+                    subShow = subMotions[j].show || {},
+                    subSet  = subMotions[j].set || {},
+                    subTo   = subMotions[j].to || [];
+
+                SLeasy.fixProps(subIn);
+                SLeasy.fixProps(subShow);
+                SLeasy.fixProps(subSet);
+
+                if (subTo.length) {
+                    for (var k = 0; k < subTo.length; k++) {
+                        SLeasy.fixProps(subTo[k].to);
+
+                    }
+                }
+
+                //根据幻灯对齐方式参数，进行y轴自适应修正
+                if (subIn.y) subIn.y += yOffset[$config.alignMode];
+                if (subShow.y) subShow.y += yOffset[$config.alignMode];
+                if (subSet.y) subSet.y += yOffset[$config.alignMode];
+                if (subTo.length) {
+                    for (var l = 0; l < subTo.length; l++) {
+                        if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
+                    }
+                }
+            }
+        }
+    }
+
+    //属性缩放变换
+    SLeasy.fixProps = function fixProps(transObj) {
+        var addPX = {//需要添加px单位的属性
+            'lineHeight': true
+        }
+        //console.log(transObj);
+        for (var i = 0; i < $scope.fixPropsArr.length; i++) {
+            var props = transObj[$scope.fixPropsArr[i]],
+                postfix;
+            if (props) {
+                if (typeof props == 'string') {
+                    //clip
+                    if (props.indexOf('rect') != -1) {
+                        props = props.split('(')[1].replace(')', '').split(' ');
+                        for (var n = 0; n < props.length; n++) {
+                            props[n] = parseInt(props[n]) * $scope.viewScale + 'px';
+                        }
+                        transObj[$scope.fixPropsArr[i]] = 'rect(' + props.join(' ') + ')';
+                        continue;
+                    }
+                    //px
+                    if (props.indexOf('rect') == -1 && props.lastIndexOf('px') != -1) {
+                        props = parseInt(props);//去掉px后缀
+                        postfix = addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
+                        transObj[$scope.fixPropsArr[i]] = props * $scope.viewScale + postfix;//按照viewScale等比缩放
+                        continue;
+                    }
+                    //%
+                    if (props.lastIndexOf('%') != -1) {
+                        props = parseInt(props);//去掉%后缀
+                        postfix = '%';//确定后缀值
+                        transObj[$scope.fixPropsArr[i]] = props + postfix;//按照viewScale等比缩放
+                        continue;
+                    }
+                } else {
+                    props = parseInt(props);
+                    postfix = addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
+                    transObj[$scope.fixPropsArr[i]] = props * $scope.viewScale + postfix;//按照viewScale等比缩放
+                }
+            }
+        }
+        return transObj;
+    }
+
+    //添加/获取缩放属性
+    SLeasy.fixPropsArr = function (arr) {
+        if (arr) {
+            for (var i = 0; i < arr.length; i++) {
+                if ($scope.fixPropsArr.join('').indexOf(arr[i]) == -1) $scope.fixPropsArr.push(arr[i]);//如果新添加的属性不存在,则添加
+            }
+        } else {
+            return $scope.fixPropsArr;
+        }
+    }
+
+
 })(
-window.SLeasy=window.SLeasy || {}
+    window.SLeasy = window.SLeasy || {}
 );
 // SLeasy3-subMotion
-;(function(SLeasy,$,T){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-	
-	
-	//subMotion,参数:为单个slider/detail配置对象数据
-	SLeasy.subMotion=function(subMotionArr,type){
-		console.log('subMotion~~~');
-		if(!subMotionArr || !subMotionArr.length) return;
-		
-		//不同类型幻灯对应的子元素关键字标识
-		var subName={
-			"sliders":"subMotion",
-			"details":"detailMotion",
-			'floats':'floatElement',
-		}
-		
-		
-		//console.log($scope.sliderIndex);
-		var count=subMotionArr.length;//子动画数量
-		
-		var subCallback={
-			"sliders":function(){$config.on['subMotion']($scope.sliderIndex)},//子元素动画开始回调,
-			"details":function(){$config.on['detailMotion']($scope.detailIndex)},//详情页子元素动画开始回调
-			'floats':''
-		}
-		
-		//console.log(subMotionArr);
-		subCallback[type] && subCallback[type]();//执行config相应类型的子动画回调
-		
-			
-		//根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
-		if(type && type!='sliders'){
-			var tl=new TimelineMax({autoRemoveChildren:$config.autoRemoveChildren,paused:true});
-			$scope.isDetailMotion=0;//详情页子动画开始、完成状态
-		}else{
-			var tl=$scope.timeLine;
-			$scope.isSubMotion=0;//子动画是否正在播放状态	
-		}
+;(function (SLeasy, $, T) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
 
 
-		for(var i=0;i<count;i++){
-			var	subMotion=subMotionArr[i],//当前子动画
-				preSubMotion=subMotionArr[i-1],//上一子动画
-				$dom=$('#SLeasy_'+(subName[type] || type)+'_'+subMotion.index),//当前子动画元素dom
-				time=subMotion.time || 0,//time
-				offsetTime=preSubMotion && preSubMotion.time-subMotion.start || 0,//和上个子动画之间的间隔时间
-				subIn= $.extend({force3D:true},subMotion.in || {}),//in
-				subShow=$.extend({display:'block',force3D:true},subMotion.show || {}),//show
-				set=subMotion.set ? $.extend({position:'absolute'},subMotion.set) : {position:'absolute'};//set
+    //subMotion,参数:为单个slider/detail配置对象数据
+    SLeasy.subMotion = function (subMotionArr, type) {
+        console.log('subMotion~~~');
+        if (!subMotionArr || !subMotionArr.length) return;
+
+        //不同类型幻灯对应的子元素关键字标识
+        var subName = {
+            "sliders": "subMotion",
+            "details": "detailMotion",
+            'floats': 'floatElement',
+        }
 
 
-			//判断当前幻灯是否包含ae渲染层
-			if($dom.find('.SLeasy_ae').length){
-				//如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
-				$.extend(subShow,{onStart:function(){
-					$.each($scope.aeLayer,function(index,aeLayer){
-						if(aeLayer.sliderIndex==$scope.sliderIndex){
-							aeLayer.frame=0;//重置帧时间线
-							T.to(aeLayer,aeLayer.time,aeLayer.tweenData);
-						}
-					});
-				}})
-			}
+        //console.log($scope.sliderIndex);
+        var count = subMotionArr.length;//子动画数量
 
-			//console.log(subMotion);
-			//set
-			subMotion.set && T.set($dom,subMotion.set);
-			
-			//add label
-			subMotion.label && tl.addLabel(subMotion.label);
+        var subCallback = {
+            "sliders": function () {
+                $config.on['subMotion']($scope.sliderIndex)
+            },//子元素动画开始回调,
+            "details": function () {
+                $config.on['detailMotion']($scope.detailIndex)
+            },//详情页子元素动画开始回调
+            'floats': ''
+        }
 
-			//add pause
-			subMotion.pause && tl.addPause();
-			
-
-			tl.add(T.fromTo($dom, time, subIn, subShow), '-=' + offsetTime);
-			
-			
-			$scope.isSubMotion=1;//子动画是否正在播放状态		
+        //console.log(subMotionArr);
+        subCallback[type] && subCallback[type]();//执行config相应类型的子动画回调
 
 
-			//add pause to
-			subMotion.pauseTo && tl.addPause();
-
-			//to
-			if(subMotion.to){
-				for(
-					var j=0;j<subMotion.to.length;j++){
-					var to=$.extend({force3D:true},subMotion.to[j]),
-						preTo=subMotion.to[j-1] || {},
-						time=to.time || 0.4,
-						offsetTime=preTo && (preTo.time-to.start) || 0//和上个子动画之间的间隔时间
-						;
-						
-					var dom=$(SLeasy.label(to.el));
-					//console.log('===========================');
-					//console.log(dom);
-					tl.add(T.to(dom,time,to.to),'-='+offsetTime);
-				}
-			}
-			
-			
-		}
-		
-		//relative模式处理
-		if($config.positionMode=='relative'){
-			tl.eventCallback('onStart',function(){$("html,body").css("overflow","hidden")});
-			 tl.eventCallback('onComplete',function(){$("html,body").css("overflow","visible")});
-		}
-
-		//play
-		//tl.progress(0.999).progress(0);
-		tl.play();
+        //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
+        if (type && type != 'sliders') {
+            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
+            $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
+        } else {
+            var tl = $scope.timeLine;
+            $scope.isSubMotion = 0;//子动画是否正在播放状态
+        }
 
 
-	}
-	
-	//play
-	SLeasy.play=function(from){
-		$scope.timeLine.play(from);	
-	}
-	
-	//pause
-	SLeasy.pause=function(atTime){
-		$scope.timeLine.pause(atTime);	
-	}
-	
-			
+        for (var i = 0; i < count; i++) {
+            var subMotion    = subMotionArr[i],//当前子动画
+                preSubMotion = subMotionArr[i - 1],//上一子动画
+                $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
+                time         = subMotion.time || 0,//time
+                offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
+                subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
+                subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+
+            //判断当前幻灯是否包含ae渲染层
+            if ($dom.find('.SLeasy_ae').length) {
+                //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
+                $.extend(subShow, {
+                    onStart: function () {
+                        $.each($scope.aeLayer, function (index, aeLayer) {
+                            if (aeLayer.sliderIndex == $scope.sliderIndex) {
+                                aeLayer.frame = 0;//重置帧时间线
+                                T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
+                            }
+                        });
+                    }
+                })
+            }
+
+            //console.log(subMotion);
+            //set
+            subMotion.set && T.set($dom, subMotion.set);
+
+            //add label
+            subMotion.label && tl.addLabel(subMotion.label);
+
+            //add pause
+            subMotion.pause && tl.addPause();
+
+
+            tl.add(T.fromTo($dom, time, subIn, subShow), '-=' + offsetTime);
+
+
+            $scope.isSubMotion = 1;//子动画是否正在播放状态
+
+
+            //add pause to
+            subMotion.pauseTo && tl.addPause();
+
+            //to
+            if (subMotion.to) {
+                for (
+                    var j = 0; j < subMotion.to.length; j++) {
+                    var to         = $.extend({force3D: true}, subMotion.to[j]),
+                        preTo      = subMotion.to[j - 1] || {},
+                        time       = to.time || 0.4,
+                        offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间
+                        ;
+
+                    var dom = $(SLeasy.label(to.el));
+                    //console.log('===========================');
+                    //console.log(dom);
+                    tl.add(T.to(dom, time, to.to), '-=' + offsetTime);
+                }
+            }
+
+
+        }
+
+        //relative模式处理
+        if ($config.positionMode == 'relative') {
+            tl.eventCallback('onStart', function () {
+                $("html,body").css("overflow", "hidden")
+            });
+            tl.eventCallback('onComplete', function () {
+                $("html,body").css("overflow", "visible")
+            });
+        }
+
+        //play
+        //tl.progress(0.999).progress(0);
+        tl.play();
+
+
+    }
+
+    //play
+    SLeasy.play = function (from) {
+        $scope.timeLine.play(from);
+    }
+
+    //pause
+    SLeasy.pause = function (atTime) {
+        $scope.timeLine.pause(atTime);
+    }
+
+
 })(
-window.SLeasy = window.SLeasy || {},
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy || {},
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-motionFX
 ;
 (function (SLeasy) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
     SLeasy.getMotionFX = function (direction, style) {
@@ -2100,389 +2148,383 @@ TweenMax || TweenLite
 
 })(window.SLeasy = window.SLeasy || {});
 // SLeasy3-transition
-;(function(SLeasy,$,T){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-		
-	//go slider
-	SLeasy.goSlider=function(index){
-		var nextIndex=SLeasy.nextIndex(index);
-		if($config.routerMode){
-			//var detailHash=$scope.router.getRoute(1);
-			$scope.router.setRoute(0,nextIndex+'');//设置路由
-		}else{
-			SLeasy.transit(nextIndex);
-		}
-	}
-	
-	SLeasy.nextIndex=function(index){
-		//如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
-		var index=(typeof index=='number' || index.indexOf('-=')!=-1 || index.indexOf('+=')!=-1) ? index : SLeasy.label(index,true);
-		console.log(index);
-		var totalIndex=$scope.sliders.length-1,//最大索引值
-			total=totalIndex+1,//幻灯总数
-			nextIndex		
-			;
+;(function (SLeasy, $, T) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
 
-		if(!$config.loopMode){//非循环模式
-			//不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
-			var indexType={
-				"number":function(){
-					if(index>=0 && index<=totalIndex){//索引边界内
-						nextIndex=index;	
-					}else{//索引边界外
-						if(index>totalIndex){
-							nextIndex=totalIndex;
-						}else{
-							nextIndex=0;	
-						}
-					}
-				},
-				"string":function(){
-					var _arr=index.split('=');
-					if(_arr[0]=='-'){
-						nextIndex=($scope.sliderIndex-parseInt(_arr[1])<0) ? 0 : $scope.sliderIndex-parseInt(_arr[1]);
-					}else if(_arr[0]=='+'){
-						nextIndex=($scope.sliderIndex+parseInt(_arr[1])>totalIndex) ? totalIndex : $scope.sliderIndex+parseInt(_arr[1]);
-					}else{
-						return alert('幻灯跳转索引值错误！');
-					}
-				},	
-			}
-						
-			if(typeof indexType[(typeof index)]=='undefined') return alert('幻灯索引参数错误~！');
-			indexType[(typeof index)]();//策略执行
-			//$scope.sliderIndex=nextIndex;//更新当前slider索引
-			return nextIndex;
-											
-		}else{//循环模式
-			var indexType={
-				"number":function(){
-					nextIndex=index%total>=0 ? index%total : total+index%total;
-					},
-				"string":function(){
-					var _arr=index.split('=');
-					if(_arr[0]=='-'){
-						nextIndex=($scope.sliderIndex-parseInt(_arr[1]))<0 ? total+($scope.sliderIndex-parseInt(_arr[1]))%total : ($scope.sliderIndex-parseInt(_arr[1]))%total;//索引取模
-						
-					}else if(_arr[0]=='+'){
-						nextIndex=($scope.sliderIndex+parseInt(_arr[1]))%total;								
-					}else{
-						return alert('幻灯跳转索引值错误！');
-					}
-				},	
-			}
-			if(typeof indexType[(typeof index)]=='undefined') return alert('幻灯索引参数错误~！');;
-			indexType[(typeof index)]();//策略执行
-			//$scope.sliderIndex=nextIndex;//更新当前slider索引
-			return nextIndex;
-		}
-		
-	}
-	
-	SLeasy.transitFX=function(nextIndex){
-		var _in,
-			_out,
-			_show,
-			_set,
-			motionFX=SLeasy.getMotionFX(),//获取全局配置切换效果
-			customFX
-			;
-		
-		//如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
-		console.log($scope.sliderIndex+':'+nextIndex);
-			
-		
-	
-		//自定义切换效果
-		customFXAguments=$config.sliders[nextIndex].motionFX || null;
-		//console.log(customFX);
-		customFX=customFXAguments ? SLeasy.getMotionFX(customFXAguments[0],customFXAguments[1]) : {};
-		
-		//in
-		if($scope.sliderIndex<nextIndex){		
-			if($scope.sliderIndex==0 && nextIndex==$config.sliders.length-1){//为最首，最末页情况
-				_in=$.extend({display:'block'},(customFX.out || motionFX.out));	
-			}else{
-				_in=$.extend({display:'block'},(customFX.in || motionFX.in));
-			}
-		}else{
-			if($scope.sliderIndex==$config.sliders.length-1 && nextIndex==0){//为最首，最末页情况
-				_in=$.extend({display:'block'},(customFX.in || motionFX.in));
-			}else{
-				_in=$.extend({display:'block'},(customFX.out || motionFX.out));
-			}
-		}
-		
-		//out
-		if($scope.sliderIndex<nextIndex){
-			if($scope.sliderIndex==0 && nextIndex==$config.sliders.length-1){//为最首，最末页情况
-				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
-			}else{
-				_out=$.extend({display:'none'},(customFX.out || motionFX.out));	
-			}
-		}else{
-			if($scope.sliderIndex==$config.sliders.length-1 && nextIndex==0){//为最首，最末页情况
-				_out=$.extend({display:'none'},(customFX.out || motionFX.out));
-			}else{
-				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
-			}
-			
-		}
-		
-		if($config.sliders.length==2){
-			if($scope.sliderIndex<nextIndex){
-				_in=$.extend({display:'block'},(customFX.in || motionFX.in));	
-				_out=$.extend({display:'none'},(customFX.out || motionFX.out));
-			}else{
-				_in=$.extend({display:'block'},(customFX.out || motionFX.out));
-				_out=$.extend({display:'none'},(customFX.in || motionFX.in));
-			}
-		}
+    //go slider
+    SLeasy.goSlider = function (index) {
+        var nextIndex = SLeasy.nextIndex(index);
+        if ($config.routerMode) {
+            //var detailHash=$scope.router.getRoute(1);
+            $scope.router.setRoute(0, nextIndex + '');//设置路由
+        } else {
+            SLeasy.transit(nextIndex);
+        }
+    }
+
+    SLeasy.nextIndex = function (index) {
+        //如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
+        var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index, true);
+        console.log(index);
+        var totalIndex = $scope.sliders.length - 1,//最大索引值
+            total      = totalIndex + 1,//幻灯总数
+            nextIndex
+            ;
+
+        if (!$config.loopMode) {//非循环模式
+            //不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
+            var indexType = {
+                "number": function () {
+                    if (index >= 0 && index <= totalIndex) {//索引边界内
+                        nextIndex = index;
+                    } else {//索引边界外
+                        if (index > totalIndex) {
+                            nextIndex = totalIndex;
+                        } else {
+                            nextIndex = 0;
+                        }
+                    }
+                },
+                "string": function () {
+                    var _arr = index.split('=');
+                    if (_arr[0] == '-') {
+                        nextIndex = ($scope.sliderIndex - parseInt(_arr[1]) < 0) ? 0 : $scope.sliderIndex - parseInt(_arr[1]);
+                    } else if (_arr[0] == '+') {
+                        nextIndex = ($scope.sliderIndex + parseInt(_arr[1]) > totalIndex) ? totalIndex : $scope.sliderIndex + parseInt(_arr[1]);
+                    } else {
+                        return alert('幻灯跳转索引值错误！');
+                    }
+                },
+            }
+
+            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
+            indexType[(typeof index)]();//策略执行
+            //$scope.sliderIndex=nextIndex;//更新当前slider索引
+            return nextIndex;
+
+        } else {//循环模式
+            var indexType = {
+                "number": function () {
+                    nextIndex = index % total >= 0 ? index % total : total + index % total;
+                },
+                "string": function () {
+                    var _arr = index.split('=');
+                    if (_arr[0] == '-') {
+                        nextIndex = ($scope.sliderIndex - parseInt(_arr[1])) < 0 ? total + ($scope.sliderIndex - parseInt(_arr[1])) % total : ($scope.sliderIndex - parseInt(_arr[1])) % total;//索引取模
+
+                    } else if (_arr[0] == '+') {
+                        nextIndex = ($scope.sliderIndex + parseInt(_arr[1])) % total;
+                    } else {
+                        return alert('幻灯跳转索引值错误！');
+                    }
+                },
+            }
+            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
+            ;
+            indexType[(typeof index)]();//策略执行
+            //$scope.sliderIndex=nextIndex;//更新当前slider索引
+            return nextIndex;
+        }
+
+    }
+
+    SLeasy.transitFX = function (nextIndex) {
+        var _in,
+            _out,
+            _show,
+            _set,
+            motionFX = SLeasy.getMotionFX(),//获取全局配置切换效果
+            customFX
+            ;
+
+        //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
+        console.log($scope.sliderIndex + ':' + nextIndex);
 
 
+        //自定义切换效果
+        customFXAguments = $config.sliders[nextIndex].motionFX || null;
+        //console.log(customFX);
+        customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1]) : {};
 
-		var currentSlider=$scope.sliders.eq($scope.sliderIndex),//当前幻灯
-			currentSubMotion=currentSlider.find($scope.subMotion),//当前幻灯子元素
-			nextSlider=$scope.sliders.eq(nextIndex);//下一幻灯
+        //in
+        if ($scope.sliderIndex < nextIndex) {
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+                _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
+            } else {
+                _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
+            }
+        } else {
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+                _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
+            } else {
+                _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
+            }
+        }
+
+        //out
+        if ($scope.sliderIndex < nextIndex) {
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+                _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
+            } else {
+                _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
+            }
+        } else {
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+                _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
+            } else {
+                _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
+            }
+
+        }
+
+        if ($config.sliders.length == 2) {
+            if ($scope.sliderIndex < nextIndex) {
+                _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
+                _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
+            } else {
+                _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
+                _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
+            }
+        }
 
 
-		//show
-		_show=$.extend({//show FX
-			onStart:function(){
-				if($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
-			},
-			onComplete:function(){
-				if($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
-				//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
-				T.set(currentSubMotion,{clearProps:$scope.clearProps,display:'none'});//清除子动画图片内联式样
-				T.set([currentSlider,nextSlider],{clearProps:$scope.clearProps});
+        //show
+        _show = $.extend({//show FX
+            onStart: function () {
+                var currentSlider    = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
+                    currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
 
-				$scope.isAnim=0;//重置运动状态
-				//console.log($scope.labelHash);
-				//sub motion
-				var subMotionArr=$config.sliders[nextIndex].subMotion;
-				SLeasy.subMotion(subMotionArr,'sliders');
-			},
-		},(customFX.show || motionFX.show));
-		_set=customFX.set || motionFX.set;
-		
-		//force3D
-		_in= $.extend({force3D:true},_in);
-		_out= $.extend({force3D:true},_out);
-		_show= $.extend({force3D:true},_show);
+                if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
+
+                //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
+                T.set(currentSubMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
+                T.set(currentSlider, {clearProps: $scope.clearProps});
+
+                //sub motion
+                var subMotionArr = $config.sliders[nextIndex].subMotion;
+                SLeasy.subMotion(subMotionArr, 'sliders');
+            },
+            onComplete: function () {
+                if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
+                $scope.isAnim = 0;//重置运动状态
+                //console.log($scope.labelHash);
+            },
+        }, (customFX.show || motionFX.show));
+        _set = customFX.set || motionFX.set;
+
+        //force3D
+        _in = $.extend({force3D: true}, _in);
+        _out = $.extend({force3D: true}, _out);
+        _show = $.extend({force3D: true}, _show);
 
 
-		return {
-				in:_in,
-				show:_show,
-				out:_out,
-				set:_set	
-				}
-		
-	}
-	
-	SLeasy.transit=function(nextIndex){
-		if($scope.sliders.length==0) return alert('当前没有任何幻灯json数据~!');
-		if($scope.isAnim) return;
-		$scope.isAnim=1;//重置运动状态
-		
-		var currentSlider=$scope.sliders.eq($scope.sliderIndex),//当前幻灯
-			//nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
-			nextSlider=$scope.sliders.eq(nextIndex),//下一幻灯
-			FX=SLeasy.transitFX(nextIndex)//切换效果
-			;
-		
-		//设置该页标题
-		var title=$config.sliders[nextIndex].title || $config.title;
-		if(title && title!=$scope.title){
-			SLeasy.title(title);
-			$scope.title=title;	 
-		}
-		
-		
-		//set
-		T.set(currentSlider,FX.set);
-		T.set(nextSlider,$.extend(FX.set,$config.sliders[nextIndex].set));
-		$config.on['sliderChange'](nextIndex);//幻灯切换回调
+        return {
+            in: _in,
+            show: _show,
+            out: _out,
+            set: _set
+        }
 
-			
-		//冻结并清除当前子动画
-		if(currentSlider[0]!=nextSlider[0]) $scope.timeLine.clear();
-						
-		//动画切换执行
-		if(currentSlider[0]==nextSlider[0]){//如果上下页是同一页，则只执行子动画
-			//清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
-			T.set($scope.sliders,{clearProps:$scope.clearProps});
-			currentSlider.fadeIn($config.motionTime*1000,function(){
-				//sub motion
-				var subMotionArr=$config.sliders[nextIndex].subMotion;
-				//如果正在关闭详情页则不播放子动画
-				console.log($scope.isSubMotion);
-				if(!$scope.isSubMotion) SLeasy.subMotion(subMotionArr,'sliders');
-				$scope.isAnim=0;//重置运动状态
-			});
-				
-		}else{
-			//清除所有ae渲染层tween
-			$.each($scope.aeLayer,function(index,aeLayer){
-				T.killTweensOf(aeLayer);
-			})
+    }
 
-			//slider切换
-			var motionTime=$config.sliders[nextIndex].time || $config.motionTime;
-			T.to(currentSlider,motionTime,FX.out);
-			T.fromTo(nextSlider,motionTime,FX.in,FX.show);
-		}	
-		//更新当前slider索引
-		$scope.sliderIndex=nextIndex;
-	}
-	
+    SLeasy.transit = function (nextIndex) {
+        if ($scope.sliders.length == 0) return alert('当前没有任何幻灯json数据~!');
+        if ($scope.isAnim) return;
+        $scope.isAnim = 1;//重置运动状态
+
+        var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
+            //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
+            nextSlider    = $scope.sliders.eq(nextIndex),//下一幻灯
+            FX            = SLeasy.transitFX(nextIndex)//切换效果
+            ;
+
+        //设置该页标题
+        var title = $config.sliders[nextIndex].title || $config.title;
+        if (title && title != $scope.title) {
+            SLeasy.title(title);
+            $scope.title = title;
+        }
+
+
+        //set
+        T.set(currentSlider, FX.set);
+        T.set(nextSlider, $.extend(FX.set, $config.sliders[nextIndex].set));
+        $config.on['sliderChange'](nextIndex);//幻灯切换回调
+
+
+        //冻结并清除当前子动画
+        if (currentSlider[0] != nextSlider[0]) $scope.timeLine.clear();
+
+        //动画切换执行
+        var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
+        if (currentSlider[0] == nextSlider[0]) {//如果上下页是同一页，则只执行子动画
+            T.fromTo(currentSlider, motionTime, FX.in, FX.show);
+            /*currentSlider.fadeIn($config.motionTime*1000,function(){
+             //sub motion
+             var subMotionArr=$config.sliders[nextIndex].subMotion;
+             //如果正在关闭详情页则不播放子动画
+             console.log($scope.isSubMotion);
+             if(!$scope.isSubMotion) SLeasy.subMotion(subMotionArr,'sliders');
+             $scope.isAnim=0;//重置运动状态
+             });*/
+        } else {
+            //清除所有ae渲染层tween
+            $.each($scope.aeLayer, function (index, aeLayer) {
+                T.killTweensOf(aeLayer);
+            })
+
+            //slider切换
+            T.to(currentSlider, motionTime, FX.out);
+            T.fromTo(nextSlider, motionTime, FX.in, FX.show);
+        }
+        //更新当前slider索引
+        $scope.sliderIndex = nextIndex;
+    }
+
 })(
-window.SLeasy = window.SLeasy || {},
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy || {},
+    jQuery,
+    TweenMax || TweenLite
 );
 
 // SLeasy3-detail
-;(function(SLeasy,$,T){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-	
-	
-	//goDetail
-	SLeasy.goDetail=function(index){
-		var nextIndex=SLeasy.nextDetailIndex(index);
-		if($config.routerMode){
-			$scope.router.setRoute(1,nextIndex+'');//设置路由
-		}else{
-			SLeasy.detailTransit(nextIndex);
-		}
-	}
-	
-	SLeasy.nextDetailIndex=function(index){
-		return index=(typeof index=='number') ? index : SLeasy.label(index,true);//如果是label标签，则获取标签对应的索引值
-	}
-	
-	SLeasy.detailFX=function(index){
-		var detail=$config.details[index] || (alert('详情页索引参数错误~！')),
-			motionFX=detail.motionFX || null,
-			motionFX=motionFX ? SLeasy.getMotionFX(motionFX[0],motionFX[1]) : SLeasy.getMotionFX('leftRight',0),
-			_in=$.extend(motionFX.in,{display:'block'}),
-			_show=$.extend(motionFX.show,{
-              				onComplete:function(){
-					SLeasy.hammerObj().get('swipe').set({enable:false});//禁止slider滑动手势
-					SLeasy.touchScroll(false);//禁止触摸默认滚动
-					SLeasy.subMotion(detail.subMotion,'details');
-					$scope.isDetail=1;//详情页已打开
-				}
-			}),
-			_set=$.extend({zIndex:1},detail.set) || {};
-			
-		
-		return {                         
-				in:_in,
-				show:_show,
-				set:_set			
-				}
-		
-	}
-	
-	SLeasy.detailTransit=function(index){
-		//如果详情页处于打开状态未关闭，则return 
-		if($scope.isDetail) return;
-		//索引边界检查
-		if(typeof index=='undefined' || index<0 || index>$config.details.length-1) return;
-			
-		$scope.detailIndex=index;
-		
-		var	detail=$config.details[index],
-			dom=$scope.details.eq(index),
-			FX=SLeasy.detailFX(index),
-			time=detail.time || $config.motionTime
-		;
-		
-		//详情页打开回调
-		$config.on['detailOpen'](index);
-			
-		//设置该页标题
-		var title=$config.details[$scope.detailIndex].title || $config.title;
-		if(title && title!=$scope.title){
-			SLeasy.title(title);
-			$scope.title=title;	 
-		}
-		
-		//如果positionMod为relative情况
-		if($config.positionMode=='relative'){
-			dom.css("top",$(window).scrollTop());
-			$scope.sliderBox.height($(document).height()).css("overflow","hidden");
-		}
-			
-		T.set(dom,FX.set);//自定义set，主要是z-index等
-		T.fromTo(dom,time,FX.in,FX.show);	
-			
-	}
-	
-	
-	//closeDetail
-	SLeasy.closeDetail=function(index){
-		var nextIndex=SLeasy.nextDetailIndex(index);
-		if($config.routerMode){
-			var sliderHash=$scope.router.getRoute(1)
-			//$scope.router.setRoute('/'+nextIndex+'/'+detailHash);//设置路由
-			$scope.router.setRoute(1,'html');//设置路由
-		}else{
-			SLeasy.closeDetailTransit(nextIndex);
-		}
-	}
-	
-	SLeasy.closeDetailTransit=function(index){
-		//如果详情页处于打开状态未关闭，则return
-		if(!$scope.isDetail) return; 
-		//索引边界检查
-		if(typeof index=='undefined' || index<0 || index>$config.details.length-1) return;
-		
-		var	detail=$config.details[index],
-			dom=$scope.details.eq(index),
-			onComplete={
-				onComplete:function(){
-					//启用slider滑动手势/恢复触摸默认滚动
-					$config.stageMode!='scroll' ? SLeasy.hammerObj().get('swipe').set({enable:true}) : SLeasy.touchScroll(true);
-					var clearProps='x,y,scale,rotationX,rotationY,rotationZ,transformPerspective,WebkitTransformOrigin,transformOrigin,zIndex';
-					T.set(dom,{clearProps:clearProps,display:'none'});//清除幻灯内联式样
-					T.set($scope.detailMotion,{clearProps:clearProps,display:'none'});//清除子动画图片内联式样
-					$scope.isDetail=0;//详情页已关闭
-					//如果positionMod为relative情况
-					$config.positionMode=='relative' && $scope.sliderBox.css("overflow","visible");	
-				}
-			},
-			FX=SLeasy.detailFX(index),
-			time=detail.time || $config.motionTime
-		;
-		
-		//详情页关闭回调
-		$config.on['detailClose'](index);
-			
-		//设置该页标题
-		var title=$config.sliders[$scope.sliderIndex].title || $config.title;
-		if(title && title!=$scope.title){
-			SLeasy.title(title);
-			$scope.title=title;	 
-		}
-		
-		
-		
-		delete FX.show.onComplete;
-		$.extend(FX.in,onComplete);
-		T.fromTo(dom,time,FX.show,FX.in);	
-	}
-	
-		
+;(function (SLeasy, $, T) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
+
+
+    //goDetail
+    SLeasy.goDetail = function (index) {
+        var nextIndex = SLeasy.nextDetailIndex(index);
+        if ($config.routerMode) {
+            $scope.router.setRoute(1, nextIndex + '');//设置路由
+        } else {
+            SLeasy.detailTransit(nextIndex);
+        }
+    }
+
+    SLeasy.nextDetailIndex = function (index) {
+        return index = (typeof index == 'number') ? index : SLeasy.label(index, true);//如果是label标签，则获取标签对应的索引值
+    }
+
+    SLeasy.detailFX = function (index) {
+        var detail   = $config.details[index] || (alert('详情页索引参数错误~！')),
+            motionFX = detail.motionFX || null,
+            motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
+            _in      = $.extend(motionFX.in, {display: 'block'}),
+            _show    = $.extend(motionFX.show, {
+                onComplete: function () {
+                    SLeasy.hammerObj().get('swipe').set({enable: false});//禁止slider滑动手势
+                    SLeasy.touchScroll(false);//禁止触摸默认滚动
+                    SLeasy.subMotion(detail.subMotion, 'details');
+                    $scope.isDetail = 1;//详情页已打开
+                }
+            }),
+            _set     = $.extend({zIndex: 1}, detail.set) || {};
+
+
+        return {
+            in: _in,
+            show: _show,
+            set: _set
+        }
+
+    }
+
+    SLeasy.detailTransit = function (index) {
+        //如果详情页处于打开状态未关闭，则return
+        if ($scope.isDetail) return;
+        //索引边界检查
+        if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
+
+        $scope.detailIndex = index;
+
+        var detail = $config.details[index],
+            dom    = $scope.details.eq(index),
+            FX     = SLeasy.detailFX(index),
+            time   = detail.time || $config.motionTime
+            ;
+
+        //详情页打开回调
+        $config.on['detailOpen'](index);
+
+        //设置该页标题
+        var title = $config.details[$scope.detailIndex].title || $config.title;
+        if (title && title != $scope.title) {
+            SLeasy.title(title);
+            $scope.title = title;
+        }
+
+        //如果positionMod为relative情况
+        if ($config.positionMode == 'relative') {
+            dom.css("top", $(window).scrollTop());
+            $scope.sliderBox.height($(document).height()).css("overflow", "hidden");
+        }
+
+        T.set(dom, FX.set);//自定义set，主要是z-index等
+        T.fromTo(dom, time, FX.in, FX.show);
+
+    }
+
+
+    //closeDetail
+    SLeasy.closeDetail = function (index) {
+        var nextIndex = SLeasy.nextDetailIndex(index);
+        if ($config.routerMode) {
+            var sliderHash = $scope.router.getRoute(1)
+            //$scope.router.setRoute('/'+nextIndex+'/'+detailHash);//设置路由
+            $scope.router.setRoute(1, 'html');//设置路由
+        } else {
+            SLeasy.closeDetailTransit(nextIndex);
+        }
+    }
+
+    SLeasy.closeDetailTransit = function (index) {
+        //如果详情页处于打开状态未关闭，则return
+        if (!$scope.isDetail) return;
+        //索引边界检查
+        if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
+
+        var detail     = $config.details[index],
+            dom        = $scope.details.eq(index),
+            onComplete = {
+                onComplete: function () {
+                    //启用slider滑动手势/恢复触摸默认滚动
+                    $config.stageMode != 'scroll' ? SLeasy.hammerObj().get('swipe').set({enable: true}) : SLeasy.touchScroll(true);
+                    var clearProps = 'x,y,scale,rotationX,rotationY,rotationZ,transformPerspective,WebkitTransformOrigin,transformOrigin,zIndex';
+                    T.set(dom, {clearProps: clearProps, display: 'none'});//清除幻灯内联式样
+                    T.set($scope.detailMotion, {clearProps: clearProps, display: 'none'});//清除子动画图片内联式样
+                    $scope.isDetail = 0;//详情页已关闭
+                    //如果positionMod为relative情况
+                    $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
+                }
+            },
+            FX         = SLeasy.detailFX(index),
+            time       = detail.time || $config.motionTime
+            ;
+
+        //详情页关闭回调
+        $config.on['detailClose'](index);
+
+        //设置该页标题
+        var title = $config.sliders[$scope.sliderIndex].title || $config.title;
+        if (title && title != $scope.title) {
+            SLeasy.title(title);
+            $scope.title = title;
+        }
+
+
+        delete FX.show.onComplete;
+        $.extend(FX.in, onComplete);
+        T.fromTo(dom, time, FX.show, FX.in);
+    }
+
 
 })(
-window.SLeasy = window.SLeasy,
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy,
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-eventBind
 ;(function (SLeasy, H, $, T) {
@@ -2554,6 +2596,12 @@ TweenMax || TweenLite
             }
 
         }
+        
+        //箭头事件绑定
+        $("#SLeasy_arrow").css("cursor","pointer");
+        H($("#SLeasy_arrow")[0]).on('tap',function (e) {
+            SLeasy.goSlider('+=1');
+        })
 
     }
 })(
@@ -2563,30 +2611,30 @@ TweenMax || TweenLite
     TweenMax || TweenLite
 );
 // SLeasy3-float
-;(function(SLeasy,$,T){
-	var $config =SLeasy.config(),//全局配置
-	 	$scope=SLeasy.scope();//公有变量
-		
-	//
-	SLeasy.float=function(){
-		SLeasy.fixPosition([{subMotion:$config.floats}]);//全部浮动元素自适应坐标值修正转换
-		var html=SLeasy.subElement($config.floats,'floats');	
-		$(html).appendTo($scope.sliderBox);
-		$('.SLeasy_floatElement').each(function(index, element) {
-			T.set($(this),$.extend({zIndex:10},$config.floats[index].set));
+;(function (SLeasy, $, T) {
+    var $config = SLeasy.config(),//全局配置
+        $scope  = SLeasy.scope();//公有变量
+
+    //
+    SLeasy.float = function () {
+        SLeasy.fixPosition([{subMotion: $config.floats}]);//全部浮动元素自适应坐标值修正转换
+        var html = SLeasy.subElement($config.floats, 'floats');
+        $(html).appendTo($scope.sliderBox);
+        $('.SLeasy_floatElement').each(function (index, element) {
+            T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
         });
-	}
-	
-	
+    }
+
+
 })(
-window.SLeasy = window.SLeasy || {},
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy || {},
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-music
 ;(function (SLeasy, $, H, T) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope()
+        $scope  = SLeasy.scope()
 
     SLeasy.music = SLeasy.music || {};
 
@@ -2616,7 +2664,7 @@ TweenMax || TweenLite
 
     //play
     SLeasy.music.play = function () {
-        if($("#SLeasy_music").length){
+        if ($("#SLeasy_music").length) {
             $("#SLeasy_music")[0].play();
             //hack部分机型无法自动播放的bug
             document.addEventListener("WeixinJSBridgeReady", function () {
@@ -2692,463 +2740,480 @@ TweenMax || TweenLite
     TweenMax || TweenLite
 );
 // SLeasy3-arrow
-;(function(SLeasy,$,T){
-	var $config =SLeasy.config(),//全局配置
-		$scope=SLeasy.scope()
-	 
-		
-	SLeasy.arrow = SLeasy.arrow || {};
-	
-	//init
-	SLeasy.arrow.init=function(color){
-		var arrowColor=color || '#fff';//箭头颜色
-		
-		if($config.arrowMode){
-			if($config.swipeMode=='x'){
-				var arrowHtml='\
+;(function (SLeasy, $, T) {
+    var $config = SLeasy.config(),//全局配置
+        $scope  = SLeasy.scope()
+
+
+    SLeasy.arrow = SLeasy.arrow || {};
+
+    //init
+    SLeasy.arrow.init = function (color) {
+        var arrowColor = color || '#fff';//箭头颜色
+
+        if ($config.arrowMode) {
+            if ($config.swipeMode == 'x') {
+                var arrowHtml = '\
 				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
-				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="'+arrowColor+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
+				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
-				
-				$(arrowHtml).appendTo('#'+($config.id || 'SLeasy'));					
-				T.set($("#SLeasy_arrow"),{rotation:-90,right:0,display:'block',opacity:0.8});
-				T.from($("#SLeasy_arrow"),1.5,{opacity:0,x:'+=10',repeat:-1,zIndex:10,ease:Power3.easeOut,delay:1});
-			}else{
-				
-				var arrowHtml='\
+
+                $(arrowHtml).appendTo('#' + ($config.id || 'SLeasy'));
+                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', opacity: 0.8});
+                T.from($("#SLeasy_arrow"), 1.5, {
+                    opacity: 0,
+                    x: '+=10',
+                    repeat: -1,
+                    zIndex: 10,
+                    ease: Power3.easeOut,
+                    delay: 1
+                });
+            } else {
+
+                var arrowHtml = '\
 				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
-				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="'+arrowColor+'" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
+				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
-				var arrowBox=$config.stageMode=='scroll' ? 'body' : '#'+($config.id || 'SLeasy');
-				$(arrowHtml).appendTo(arrowBox);
-				T.set($("#SLeasy_arrow"),{bottom:10,display:'block',opacity:0.8});
-				T.from($("#SLeasy_arrow"),1.5,{opacity:0,y:'+=10',repeat:-1,zIndex:10,ease:Power3.easeOut,delay:1});
-			}
-		}	
-	}
+                var arrowBox = $config.stageMode == 'scroll' ? 'body' : '#' + ($config.id || 'SLeasy');
+                $(arrowHtml).appendTo(arrowBox);
+                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', opacity: 0.8});
+                T.from($("#SLeasy_arrow"), 1.5, {
+                    opacity: 0,
+                    y: '+=10',
+                    repeat: -1,
+                    zIndex: 10,
+                    ease: Power3.easeOut,
+                    delay: 1
+                });
+            }
+        }
+    }
 })(
-window.SLeasy = window.SLeasy,
-jQuery,
-TweenMax || TweenLite
+    window.SLeasy = window.SLeasy,
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-boot
-;(function(SLeasy,$){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-	
-	
-	//boot
-	SLeasy.boot=function(){
-		//var dfd=$.Deferred();
-		
-		var sliderHtml='',
-			detailHtml='',
-			musicHtml='xxx',
-			floatHtml='';
+;(function (SLeasy, $) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
 
 
-		//幻灯初始化
-		sliderHtml=pageInit('sliders');
+    //boot
+    SLeasy.boot = function () {
+        //var dfd=$.Deferred();
 
-		//详情页初始化
-		detailHtml=pageInit('details');
-
-
-		//类型页面初始化函数
-		function pageInit(type){
-			var tmpHtml='';
-			for(var i=0;i<$config[type].length;i++){
-				$.extend($config[type][i],{index:i,type:type});//并入当前幻灯索引值,及类型
-				tmpHtml+=SLeasy.slider($config[type][i]);
-			}
-			return tmpHtml;
-		}
-
-		//音乐初始化
-		musicHtml=SLeasy.music.init();
-
-		//框架初始化($scope.sliderBox.html()包含了loading结构代码)
-		$scope.sliderBox.html($scope.sliderBox.html()+sliderHtml+detailHtml+musicHtml);
-
-		SLeasy.loader.hidden();//隐藏loading
-		SLeasy.float();//浮动元素初始化
-		SLeasy.arrow.init($config.arrowColor);//箭头初始化
-		$config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
-
-		SLeasy.fixPosition($config.sliders);//全部幻灯子动画自适应坐标值修正转换
-		SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
-
-		//img to div
-		SLeasy.imgToDiv();
-
-		//dom缓存
-		$scope.sliders=$(".SLeasy_sliders");//幻灯引用缓存
-		$scope.subMotion=$(".SLeasy_subMotion");//子动画元素合集引用缓存
-		$scope.details=$(".SLeasy_details");//详情页引用缓存
-		$scope.detailMotion=$(".SLeasy_detailMotion");//详情页子动画元素缓存
-		$scope.loader=$("#SLeasy_loader");//loading元素dom缓存
-		$scope.floats=$(".SLeasy_floatElement");//浮动元素dom缓存
-		$scope.canvas=$(".SLeasy_canvas");//画布元素dom缓存
-		$config.on['domReady']();//SLeasy dom初始化完毕回调
-
-		$scope.canvas.length && TweenMax.set($scope.canvas.parent(),{y:0});//修正安卓下,画布元素默认不左上对齐的bug
-
-		//插件初始化
-		for(var j=0;j<$scope.pluginList.length;j++){
-			//console.log($scope.pluginList[j]);
-			var SLeasyPlugin=$scope.pluginList[j][0],
-				//把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
-				pluginArg= $.extend($scope.pluginList[j][1],{dom:$('#'+$scope.pluginList[j][1].node)}),
-				pluginInitCallback=$scope.pluginList[j][2],//插件初始化回调
-				pluginObj=SLeasyPlugin(pluginArg);//执行插件初始化
-
-			pluginInitCallback(pluginObj);//执行插件初始化后的回调
-		}
-
-		//渲染启动
-		$scope.timeLine=new TimelineMax({//子动画主时间线初始化
-			autoRemoveChildren:$config.autoRemoveChildren,
-			paused:true,
-			onComplete:function(){
-				//orientationPX();//重力感应视差效果
-				console.log('子动画完成~~~！');
-				//$scope.isSubMotion=1;//子动画是否正在播放状态
-			}});
-		$config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
-
-		SLeasy.eventBind();//事件绑定
-		SLeasy.router();//路由初始化
-		//dfd.resolve();//初始化完毕
+        var sliderHtml = '',
+            detailHtml = '',
+            musicHtml  = 'xxx',
+            floatHtml  = '';
 
 
-		//默认显示渲染
-		SLeasy.music.play();//播放背景音乐
-		//如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-		$config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+        //幻灯初始化
+        sliderHtml = pageInit('sliders');
 
-		
-		//return dfd.promise();
-	}
+        //详情页初始化
+        detailHtml = pageInit('details');
+
+
+        //类型页面初始化函数
+        function pageInit(type) {
+            var tmpHtml = '';
+            for (var i = 0; i < $config[type].length; i++) {
+                $.extend($config[type][i], {index: i, type: type});//并入当前幻灯索引值,及类型
+                tmpHtml += SLeasy.slider($config[type][i]);
+            }
+            return tmpHtml;
+        }
+
+        //音乐初始化
+        musicHtml = SLeasy.music.init();
+
+        //框架初始化($scope.sliderBox.html()包含了loading结构代码)
+        $scope.sliderBox.html($scope.sliderBox.html() + sliderHtml + detailHtml + musicHtml);
+
+        SLeasy.loader.hidden();//隐藏loading
+        SLeasy.float();//浮动元素初始化
+        SLeasy.arrow.init($config.arrowColor);//箭头初始化
+        $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
+
+        SLeasy.fixPosition($config.sliders);//全部幻灯子动画自适应坐标值修正转换
+        SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
+
+        //img to div
+        SLeasy.imgToDiv();
+
+        //dom缓存
+        $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
+        $scope.subMotion = $(".SLeasy_subMotion");//子动画元素合集引用缓存
+        $scope.details = $(".SLeasy_details");//详情页引用缓存
+        $scope.detailMotion = $(".SLeasy_detailMotion");//详情页子动画元素缓存
+        $scope.loader = $("#SLeasy_loader");//loading元素dom缓存
+        $scope.floats = $(".SLeasy_floatElement");//浮动元素dom缓存
+        $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
+        $config.on['domReady']();//SLeasy dom初始化完毕回调
+
+        $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
+
+        //插件初始化
+        for (var j = 0; j < $scope.pluginList.length; j++) {
+            //console.log($scope.pluginList[j]);
+            var SLeasyPlugin       = $scope.pluginList[j][0],
+                //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
+                pluginArg          = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
+                pluginInitCallback = $scope.pluginList[j][2],//插件初始化回调
+                pluginObj          = SLeasyPlugin(pluginArg);//执行插件初始化
+
+            pluginInitCallback(pluginObj);//执行插件初始化后的回调
+        }
+
+        //渲染启动
+        $scope.timeLine = new TimelineMax({//子动画主时间线初始化
+            autoRemoveChildren: $config.autoRemoveChildren,
+            paused: true,
+            onComplete: function () {
+                //orientationPX();//重力感应视差效果
+                console.log('子动画完成~~~！');
+                //$scope.isSubMotion=1;//子动画是否正在播放状态
+            }
+        });
+        $config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
+
+        SLeasy.eventBind();//事件绑定
+        SLeasy.router();//路由初始化
+        //dfd.resolve();//初始化完毕
+
+
+        //默认显示渲染
+        SLeasy.music.play();//播放背景音乐
+        //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+        $config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+
+
+        //return dfd.promise();
+    }
 })(
-window.SLeasy=window.SLeasy || {},
-jQuery
+    window.SLeasy = window.SLeasy || {},
+    jQuery
 );
 // SLeasy3-loader
 ;
-(function(SLeasy,$) {
-	var $config =SLeasy.config(),//全局配置
-	 	$scope=SLeasy.scope();//公有变量
+(function (SLeasy, $) {
+    var $config = SLeasy.config(),//全局配置
+        $scope  = SLeasy.scope();//公有变量
 
-	SLeasy.loader=SLeasy.loader|| {}
-	
-	//loading-style
-	var loaderStyle = [
-		'<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff">\
+    SLeasy.loader = SLeasy.loader || {}
+
+    //loading-style
+    var loaderStyle = [
+        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
-                	<circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
-                	<path d="M36 18c0-9.94-8.06-18-18-18">\
-                    	<animateTransform\
-                        	attributeName="transform"\
-                        	type="rotate"\
-                        	from="0 18 18"\
-                        	to="360 18 18"\
-                        	dur="1s"\
-                        	repeatCount="indefinite"/>\
-                	</path>\
+                    <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
+                    <path d="M36 18c0-9.94-8.06-18-18-18">\
+                        <animateTransform\
+                            attributeName="transform"\
+                            type="rotate"\
+                            from="0 18 18"\
+                            to="360 18 18"\
+                            dur="1s"\
+                            repeatCount="indefinite"/>\
+                    </path>\
                 </g>\
             </g>\
         </svg>',
 
-		//==================================================================================
+        //==================================================================================
 
-		'<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">\
-        	<defs>\
+        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">\
+            <defs>\
             <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
                 <stop stop-color="#fff" stop-opacity="0" offset="0%"/>\
                 <stop stop-color="#fff" stop-opacity=".631" offset="63.146%"/>\
                 <stop stop-color="#fff" offset="100%"/>\
             </linearGradient>\
-        	</defs>\
-        	<g fill="none" fill-rule="evenodd">\
-            	<g transform="translate(1 1)">\
-            		<path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2">\
-                		<animateTransform\
-                    		attributeName="transform"\
-                    		type="rotate"\
-                    		from="0 18 18"\
-                    		to="360 18 18"\
-                    		dur="0.9s"\
-                    		repeatCount="indefinite" />\
-            		</path>\
-            		<circle fill="#fff" cx="36" cy="18" r="1">\
-                		<animateTransform\
-                    		attributeName="transform"\
-                    		type="rotate"\
-                    		from="0 18 18"\
-                    		to="360 18 18"\
-                    		dur="0.9s"\
-                    		repeatCount="indefinite" />\
-            		</circle>\
-        		</g>\
-			</g>\
-		</svg>'
+            </defs>\
+            <g fill="none" fill-rule="evenodd">\
+                <g transform="translate(1 1)">\
+                    <path d="M36 18c0-9.94-8.06-18-18-18" id="Oval-2" stroke="url(#a)" stroke-width="2">\
+                        <animateTransform\
+                            attributeName="transform"\
+                            type="rotate"\
+                            from="0 18 18"\
+                            to="360 18 18"\
+                            dur="0.9s"\
+                            repeatCount="indefinite" />\
+                    </path>\
+                    <circle fill="#fff" cx="36" cy="18" r="1">\
+                        <animateTransform\
+                            attributeName="transform"\
+                            type="rotate"\
+                            from="0 18 18"\
+                            to="360 18 18"\
+                            dur="0.9s"\
+                            repeatCount="indefinite" />\
+                    </circle>\
+                </g>\
+            </g>\
+        </svg>'
 
-		//==================================================================================    
-	];
-
-
-	//html
-	SLeasy.loader.html = function() {
-		var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;'+
-							'margin-left:' + -$config.loader.size[0] / 2 + 'px;'+
-							'margin-top:' + -$config.loader.size[1] / 2 + 'px';
-							
-		var textStyle = 'position:absolute;text-align:center;top:0;left:0;'+
-						'width:' + $config.loader.size[0] + 'px;'+
-						'height:' + $config.loader.size[1] + 'px;'+
-						'line-height:' + $config.loader.size[1] + 'px;'+
-						$config.loader.textStyle;
-						
-		var textHtml = '<div id="SLeasy_loader_text" style="' + textStyle + '"></div>';
-		return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + (typeof $config.loader.style =='number' ? loaderStyle[$config.loader.style] : $config.loader.style) + textHtml + '</div>';
-	}
+        //==================================================================================
+    ];
 
 
-	//text
-	SLeasy.loader.text = function(txt) {
-		$("#SLeasy_loader_text").text(txt);
-	}
+    //html
+    SLeasy.loader.html = function () {
+        var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;' +
+            'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
+            'margin-top:' + -$config.loader.size[1] / 2 + 'px';
 
-	//show
-	SLeasy.loader.show = function() {
-		if ($("#SLeasy_loader").length) { //如果loader已初始化
-			$("#SLeasy_loader").fadeIn(300);
-		} else {
-			var loaderBox=$config.stageMode=='scroll' ? $("body") : $scope.sliderBox;
-			loaderBox.prepend(SLeasy.loader.html());
-			$("#SLeasy_loader").fadeIn(300);
-		}
-	}
+        var textStyle = 'position:absolute;text-align:center;top:0;left:0;' +
+            'width:' + $config.loader.size[0] + 'px;' +
+            'height:' + $config.loader.size[1] + 'px;' +
+            'line-height:' + $config.loader.size[1] + 'px;' +
+            $config.loader.textStyle;
 
-	//hidden
-	SLeasy.loader.hidden = function() {
-		$("#SLeasy_loader").fadeOut(300);
-	}
+        var textHtml = '<div id="SLeasy_loader_text" style="' + textStyle + '"></div>';
+        return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + (typeof $config.loader.style == 'number' ? loaderStyle[$config.loader.style] : $config.loader.style) + textHtml + '</div>';
+    }
 
-	//load
-	SLeasy.loader.load = function(loadArr) {
-		var dfd = $.Deferred();
-		SLeasy.loader.show();
 
-		var loaded = 0;
+    //text
+    SLeasy.loader.text = function (txt) {
+        $("#SLeasy_loader_text").text(txt);
+    }
 
-		(loadArr && loadArr.length) ? _load(loadArr) : (SLeasy.loader.hidden(),dfd.resolve($config,$scope));//如果加载数组为空则立即返回
+    //show
+    SLeasy.loader.show = function () {
+        if ($("#SLeasy_loader").length) { //如果loader已初始化
+            $("#SLeasy_loader").fadeIn(300);
+        } else {
+            var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
+            loaderBox.prepend(SLeasy.loader.html());
+            $("#SLeasy_loader").fadeIn(300);
+        }
+    }
 
-		function _load(loadArr) {
-			var img = new Image();
-			img.src = loadArr[loaded];
-			console.log('开始加载：'+img.src);
-			img.onload = function() {
-				loaded++;
-				//console.log(loaded);
-				SLeasy.loader.percent = Math.round(loaded * 100/ loadArr.length/($config.loader.endAt/100));
-				SLeasy.loader.percent = SLeasy.loader.percent>100 ? 100 : SLeasy.loader.percent;
-				$config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-				dfd.notify(SLeasy.loader.percent);
-				if (SLeasy.loader.percent >= 100) {
-					$config.on['loaded'](); //预加载完毕回调
-					dfd.resolve($config,$scope);
-				} else {
-					_load(loadArr);
-				}
-			}
-		}
-		return dfd.promise();
-	}
+    //hidden
+    SLeasy.loader.hidden = function () {
+        $("#SLeasy_loader").fadeOut(300);
+    }
 
-	//  
+    //load
+    SLeasy.loader.load = function (loadArr) {
+        var dfd = $.Deferred();
+        SLeasy.loader.show();
+
+        var loaded = 0;
+
+        (loadArr && loadArr.length) ? _load(loadArr) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
+
+        function _load(loadArr) {
+            var img = new Image();
+            img.src = loadArr[loaded];
+            console.log('开始加载：' + img.src);
+            img.onload = function () {
+                loaded++;
+                //console.log(loaded);
+                SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
+                SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
+                dfd.notify(SLeasy.loader.percent);
+                if (SLeasy.loader.percent >= 100) {
+                    $config.on['loaded'](); //预加载完毕回调
+                    dfd.resolve($config, $scope);
+                } else {
+                    _load(loadArr);
+                }
+            }
+        }
+
+        return dfd.promise();
+    }
+
+    //
 })(
-window.SLeasy = window.SLeasy || {},
-jQuery
+    window.SLeasy = window.SLeasy || {},
+    jQuery
 );
 // SLeasy3-router
-;(function(SLeasy,Router,$){
-	var $config=SLeasy.config(),
-		$scope=SLeasy.scope();
-	
-	//router
-	SLeasy.router=function(opt){
-		
-		if(!Router){
-			alert('路由模块文件缺失~！');
-			return;
-		}
-		
-		var def={
-			'/:sliderIndex':function(sliderIndex){
-				 $scope.router.setRoute(1,'html');//设置路由
-			},
-			'/:sliderIndex/:detailIndex':function(sliderIndex,detailIndex){
-				//如果是跳转淘宝
-				if(sliderIndex=='goTaobao' || sliderIndex=='goTmall') return;
-				
-				//如果详情索引为'html'，则关闭详情页
-				if(detailIndex=='html'){
-					
-					console.log('当前幻灯索引：'+sliderIndex);	
-					console.log('当前详情页索引：'+detailIndex);
-					var _index=isNaN(parseInt(sliderIndex))? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
-						_index=SLeasy.nextIndex(_index);
-					SLeasy.transit(_index);
-					console.log(_index+'------------------------------------------------------');
-					SLeasy.closeDetailTransit($scope.detailIndex);
-					
-				}else{
-					console.log('当前幻灯索引：'+sliderIndex);	
-					console.log('当前详情页索引：'+detailIndex);
-					
-					if(typeof detailIndex=='undefined') $scope.router.setRoute(1,'html');//设置路由
-					
-					
-					//如果子动画状态为未完成，则执行幻灯切换+子动画（刷新的情况）
-					if(!$scope.isSubMotion){
-						var _index=isNaN(parseInt(sliderIndex))? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
-						_index=SLeasy.nextIndex(_index);
-						SLeasy.transit(_index);	
-					}
-					
-					var _dIndex=isNaN(parseInt(detailIndex))? detailIndex : parseInt(detailIndex);//判断标签字符串与索引
-						_dIndex=SLeasy.nextDetailIndex(_dIndex);
-					SLeasy.detailTransit(_dIndex);
-					
-				}
-			}
-		}
-		var cfg={
-			on:function(){
-				console.log('router action~~~');	
-			}
-		}
-		var router=new Router($.extend(def,{}));
-		SLeasy.router=$scope.router=router;
-		//设置全局执行函数
-		router.configure(cfg);
-		$config.routerMode && $config.autoStart ? router.init('/0/html') : router.init();
-		
-	}
-	
+;(function (SLeasy, Router, $) {
+    var $config = SLeasy.config(),
+        $scope  = SLeasy.scope();
+
+    //router
+    SLeasy.router = function (opt) {
+
+        if (!Router) {
+            alert('路由模块文件缺失~！');
+            return;
+        }
+
+        var def = {
+            '/:sliderIndex': function (sliderIndex) {
+                $scope.router.setRoute(1, 'html');//设置路由
+            },
+            '/:sliderIndex/:detailIndex': function (sliderIndex, detailIndex) {
+                //如果是跳转淘宝
+                if (sliderIndex == 'goTaobao' || sliderIndex == 'goTmall') return;
+
+                //如果详情索引为'html'，则关闭详情页
+                if (detailIndex == 'html') {
+
+                    console.log('当前幻灯索引：' + sliderIndex);
+                    console.log('当前详情页索引：' + detailIndex);
+                    var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
+                    _index = SLeasy.nextIndex(_index);
+                    SLeasy.transit(_index);
+                    console.log(_index + '------------------------------------------------------');
+                    SLeasy.closeDetailTransit($scope.detailIndex);
+
+                } else {
+                    console.log('当前幻灯索引：' + sliderIndex);
+                    console.log('当前详情页索引：' + detailIndex);
+
+                    if (typeof detailIndex == 'undefined') $scope.router.setRoute(1, 'html');//设置路由
+
+
+                    //如果子动画状态为未完成，则执行幻灯切换+子动画（刷新的情况）
+                    if (!$scope.isSubMotion) {
+                        var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
+                        _index = SLeasy.nextIndex(_index);
+                        SLeasy.transit(_index);
+                    }
+
+                    var _dIndex = isNaN(parseInt(detailIndex)) ? detailIndex : parseInt(detailIndex);//判断标签字符串与索引
+                    _dIndex = SLeasy.nextDetailIndex(_dIndex);
+                    SLeasy.detailTransit(_dIndex);
+
+                }
+            }
+        }
+        var cfg = {
+            on: function () {
+                console.log('router action~~~');
+            }
+        }
+        var router = new Router($.extend(def, {}));
+        SLeasy.router = $scope.router = router;
+        //设置全局执行函数
+        router.configure(cfg);
+        $config.routerMode && $config.autoStart ? router.init('/0/html') : router.init();
+
+    }
+
 })(
-window.SLeasy = window.SLeasy,
-window.Router = window.Router || null,
-jQuery
+    window.SLeasy = window.SLeasy,
+    window.Router = window.Router || null,
+    jQuery
 );
 // SLeasy3-init
-;(function(SLeasy,$){
-	var $scope=SLeasy.scope();
+;(function (SLeasy, $) {
+    var $scope = SLeasy.scope();
 
-	//init
-	SLeasy.init=function(opt){
-		SLeasy.checkGoto();//跳转(url/淘宝)检测	
-		var $config=SLeasy.config(opt);//合并自定义参数
-		if(!SLeasy.isHttp()){//debug模式
-			var debugStyle='.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
-			$('head style').html($('head style').html()+debugStyle);
-		}
-		if(!$config.debugMode){
-			console.log=function(){};//设置console.log输出
-		}
-		console.log($config);
-		SLeasy.viewport();//设置视口
-		
-		//SLeasy容器初始化
-		$scope.sliderBox=$('#'+$config.id).length?$('#'+$config.id):$('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
-		$scope.sliderBox.css({
-			"width":$config.viewport+'px',
-			"height":$scope.fixHeight+'px',
-			"background-image":$config.bg ? 'url('+$config.host+$config.bg+')' : 'none',
-			"background-color":$config.bgColor || 'transparent',
-			"background-size":"100% auto",
-			"background-repeat":"no-repeat",
-			"overflow":$config.positionMode=="absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
-			"position":"relative",
-			"margin":"0 auto",
-			"display":"none"
-		}).fadeIn(300);
-		
-		//loading资源加载
-		return SLeasy.loader.load(getLoadArr()).done(function(){//资源加载
-			console.log(getLoadArr());
-			SLeasy.boot();
-		});
-		
-		
-		//获取预加载图片url
-		function getLoadArr(){
-			var totalArr=[];
-			
-			//幻灯容器背景
-			if($config.bg) totalArr.push(SLeasy.path($config.host,$config.bg));
-			
-			//幻灯背景+子动画元素
-			for(var i=0;i<$config.sliders.length;i++){
-				if($config.sliders[i].bg){
-					if(typeof $config.sliders[i].bg=='string'){
-						totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg));
-					}else{
-						for(var j=0;j<$config.sliders[i].bg.length;j++){//多重背景
-							totalArr.push(SLeasy.path($config.host,$config.sliders[i].bg[j]));
-						}
-					}
-				}
-				for(var k=0;k<($config.sliders[i].subMotion && $config.sliders[i].subMotion.length);k++){
-					$config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.sliders[i].subMotion[k].img));
-				}
-			}
-			
-			//详情页背景+子动画元素
-			for(var i=0;i<$config.details.length;i++){
-				if(typeof $config.details[i].bg=='string'){
-					totalArr.push(SLeasy.path($config.host,$config.details[i].bg));
-				}else{
-					for(var j=0;j<$config.details[i].bg.length;j++){//多重背景
-						totalArr.push(SLeasy.path($config.host,$config.details[i].bg[j]));	
-					}	
-				}
-				
-				for(var k=0;k<($config.details[i].subMotion && $config.details[i].subMotion.length);k++){
-					$config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host,$config.details[i].subMotion[k].img));
-				}
-			}
-			
-			//浮动元素
-			for(var i=0;i<$config.floats.length;i++){
-				$config.floats[i].img && totalArr.push(SLeasy.path($config.host,$config.floats[i].img));	
-			}
-			
-			//额外加载项
-			for(var i=0;i<$config.exLoadArr.length;i++){
-				totalArr.push(SLeasy.path($config.host,$config.exLoadArr[i]));	
-			}
+    //init
+    SLeasy.init = function (opt) {
+        SLeasy.checkGoto();//跳转(url/淘宝)检测
+        var $config = SLeasy.config(opt);//合并自定义参数
+        if (!SLeasy.isHttp()) {//debug模式
+            var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
+            $('head style').html($('head style').html() + debugStyle);
+        }
+        if (!$config.debugMode) {
+            console.log = function () {
+            };//设置console.log输出
+        }
+        console.log($config);
+        SLeasy.viewport();//设置视口
 
-			//位图序列
-			$.each($scope.bitmaps,function(index,value){
-				totalArr=totalArr.concat($scope.bitmaps[index]);
-			})
-		
-			//return
-			if(!$config.preload){
-				$scope.totalLoad=totalArr;
-				return;//是否进行预加载
-			}else{
-				//console.log(totalArr);
-				return totalArr;
-			}
-		}
-		
-	}
+        //SLeasy容器初始化
+        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
+        $scope.sliderBox.css({
+            "width": $config.viewport + 'px',
+            "height": $scope.fixHeight + 'px',
+            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-color": $config.bgColor || 'transparent',
+            "background-size": "100% auto",
+            "background-repeat": "no-repeat",
+            "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
+            "position": "relative",
+            "margin": "0 auto",
+            "display": "none"
+        }).fadeIn(300);
+
+        //loading资源加载
+        return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
+            console.log(getLoadArr());
+            SLeasy.boot();
+        });
+
+
+        //获取预加载图片url
+        function getLoadArr() {
+            var totalArr = [];
+
+            //幻灯容器背景
+            if ($config.bg) totalArr.push(SLeasy.path($config.host, $config.bg));
+
+            //幻灯背景+子动画元素
+            for (var i = 0; i < $config.sliders.length; i++) {
+                if ($config.sliders[i].bg) {
+                    if (typeof $config.sliders[i].bg == 'string') {
+                        totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg));
+                    } else {
+                        for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
+                            totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
+                        }
+                    }
+                }
+                for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
+                    $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
+                }
+            }
+
+            //详情页背景+子动画元素
+            for (var i = 0; i < $config.details.length; i++) {
+                if (typeof $config.details[i].bg == 'string') {
+                    totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
+                } else {
+                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
+                        totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                    }
+                }
+
+                for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
+                    $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
+                }
+            }
+
+            //浮动元素
+            for (var i = 0; i < $config.floats.length; i++) {
+                $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
+            }
+
+            //额外加载项
+            for (var i = 0; i < $config.exLoadArr.length; i++) {
+                totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
+            }
+
+            //位图序列
+            $.each($scope.bitmaps, function (index, value) {
+                totalArr = totalArr.concat($scope.bitmaps[index]);
+            })
+
+            //return
+            if (!$config.preload) {
+                $scope.totalLoad = totalArr;
+                return;//是否进行预加载
+            } else {
+                //console.log(totalArr);
+                return totalArr;
+            }
+        }
+
+    }
 
 })(
-window.SLeasy=window.SLeasy || {},
-jQuery
+    window.SLeasy = window.SLeasy || {},
+    jQuery
 );

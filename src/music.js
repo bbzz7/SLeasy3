@@ -1,7 +1,7 @@
 // SLeasy3-music
 ;(function (SLeasy, $, H, T) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope()
+        $scope  = SLeasy.scope()
 
     SLeasy.music = SLeasy.music || {};
 
@@ -31,7 +31,7 @@
 
     //play
     SLeasy.music.play = function () {
-        if($("#SLeasy_music").length){
+        if ($("#SLeasy_music").length) {
             $("#SLeasy_music")[0].play();
             //hack部分机型无法自动播放的bug
             document.addEventListener("WeixinJSBridgeReady", function () {

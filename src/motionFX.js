@@ -2,7 +2,7 @@
 ;
 (function (SLeasy) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
     SLeasy.getMotionFX = function (direction, style) {
