@@ -1,7 +1,7 @@
 // SLeasy3-viewport
 ;(function (SLeasy, $, device) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //设置视口
     SLeasy.viewport = function () {
@@ -9,19 +9,19 @@
         $("body").css({"padding": 0, "margin": "0 0"});
 
         //适配策略
-        var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
+        var minWidth  = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
-            ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
-            viewport = {
+            ratio     = $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            viewport  = {
                 'width': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width=' + width + ',user-scalable=no';
                     return viewportContent;
                 },
                 'height': function (thresholdHeight) {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewHeight = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
-                        height = viewHeight > minHeight ? viewHeight : minHeight,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
+                        viewHeight      = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
+                        height          = viewHeight > minHeight ? viewHeight : minHeight,
                         viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
                     return viewportContent;
                 },
@@ -31,7 +31,7 @@
                     return viewportContent;
                 },
                 'scroll': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
+                    var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width=' + width + ',user-scalable=no';
                     return viewportContent;
                 },
