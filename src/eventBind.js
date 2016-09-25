@@ -68,6 +68,12 @@
             }
 
         }
+        
+        //箭头事件绑定
+        $("#SLeasy_arrow").css("cursor","pointer");
+        H($("#SLeasy_arrow")[0]).on('tap',function (e) {
+            SLeasy.goSlider('+=1');
+        })
 
     }
 })(
