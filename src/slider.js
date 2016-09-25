@@ -1,7 +1,7 @@
 // SLeasy3-slider
 ;(function (SLeasy, $) {
     var $config = SLeasy.config(),
-        $scope = SLeasy.scope();
+        $scope  = SLeasy.scope();
 
     //html
     SLeasy.slider = function (opt) {
@@ -124,6 +124,30 @@
 				' + opt.text + '\
 				</div>';
             },
+            'audio': function (opt) {
+                return '<audio\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + $config.host + opt.audio + '" preload="auto">\
+				</audio>';
+            },
+            'video': function (opt) {
+                return '<video\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + $config.host + opt.video + '" type="video/mp4" webkit-playsinline playsinline>\
+				</video>';
+            },
+            'iframe': function (opt) {
+                return '<iframe\
+				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				class="' + (opt.class || '') + ' SLeasy_iframe SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + opt.iframe + '" frameborder="0">\
+				</iframe>';
+            },
             "input": function (opt) {
                 //
                 var inputHtml = {
@@ -133,7 +157,7 @@
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
 						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"\
-                        placeholder="'+(opt.placeholder || '')+'"\
+                        placeholder="' + (opt.placeholder || '') + '"\
                         >';
                     },
                     'textArea': function () {
@@ -203,7 +227,7 @@
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     var frame = Math.abs(aeOpt.end - aeOpt.start),
-                        time = frame / (aeOpt.fps || 25);
+                        time  = frame / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
                     aeTl.add(
@@ -243,19 +267,19 @@
                     stage.name = config.stage;
 
                     for (var i = 0; i < aeOpt.layer.length; i++) {
-                        var layerArg = aeOpt.layer[i],
+                        var layerArg  = aeOpt.layer[i],
                             layerName = layerArg[0],
-                            addAt = 'auto',
-                            prefix = layerArg[1],
-                            start = layerArg[2],
-                            end = layerArg[3],
-                            suffix = layerArg[4],
-                            bit = layerArg[5];
+                            addAt     = 'auto',
+                            prefix    = layerArg[1],
+                            start     = layerArg[2],
+                            end       = layerArg[3],
+                            suffix    = layerArg[4],
+                            bit       = layerArg[5];
 
                         $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit);
 
                         var frame = end - start,
-                            time = frame / (aeOpt.fps || 25);
+                            time  = frame / (aeOpt.fps || 25);
 
 
                         $scope.aeLayer[layerName].time = time;
