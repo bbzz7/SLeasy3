@@ -5,7 +5,7 @@
         $scope  = SLeasy.scope();
 
     //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
-    SLeasy.getMotionFX = function (direction, style) {
+    SLeasy.getMotionFX = function (direction, style, reverse) {
         //内置动画式样数组
         var motionFX = {
             leftRight: [//左右
@@ -99,8 +99,19 @@
         FXIndex = typeof style != 'undefined' ? style : FXIndex;
         var FXDirection = direction || $scope.FXDirection;
 
+        //反向动效
+        if(reverse){
+            var fx={};
+            fx.set=motionFX[FXDirection][FXIndex].set;
+            fx.in=motionFX[FXDirection][FXIndex].out;
+            fx.show=motionFX[FXDirection][FXIndex].show;
+            fx.out=motionFX[FXDirection][FXIndex].in;
+            console.log(fx);
+            return fx;
+        }else{
+            return motionFX[FXDirection][FXIndex];
+        }
 
-        return motionFX[FXDirection][FXIndex];
     }
 
 
