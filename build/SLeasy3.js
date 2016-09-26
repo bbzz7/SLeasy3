@@ -1,6 +1,6 @@
 /*!
 SLeasy 3.3.0 by 宇文互动 庄宇 2016-04-17 email：30755405@qq.com
-
+3.4.0(2016-09-25):子动画队列播放重构为与场景切换动效前置对齐的模式，添加audio、video、iframe等内置元素;
 3.3.1(2016-08-14):添加传统click事件支持,方便兼容某些广告监测代码,shadownBt添加name属性,以及debug模式下的对比阴影;
 3.3.0(2016-04-17):backfaceVisiblity bug修复,添加阈值高度(threshold)适配模式,优化gulpfile自动化构建;
 3.2.7(2015-12-23):SLeasy.cache方法bug修复，添加更多fixProps;
@@ -839,7 +839,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //music-------------------------------------------
         musicUrl: '',//背景音乐url
-        musicBt: [1, '', 30, 30.5, 'topRight', 10, 10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
+        musicAutoPlay: 1,//背景音乐自动播放
+        musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //slider------------------------------------------
         sliders: [], //幻灯json数组
@@ -2047,7 +2048,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         $scope  = SLeasy.scope();
 
     //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
-    SLeasy.getMotionFX = function (direction, style) {
+    SLeasy.getMotionFX = function (direction, style, reverse) {
         //内置动画式样数组
         var motionFX = {
             leftRight: [//左右
@@ -2141,8 +2142,19 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         FXIndex = typeof style != 'undefined' ? style : FXIndex;
         var FXDirection = direction || $scope.FXDirection;
 
+        //反向动效
+        if(reverse){
+            var fx={};
+            fx.set=motionFX[FXDirection][FXIndex].set;
+            fx.in=motionFX[FXDirection][FXIndex].out;
+            fx.show=motionFX[FXDirection][FXIndex].show;
+            fx.out=motionFX[FXDirection][FXIndex].in;
+            console.log(fx);
+            return fx;
+        }else{
+            return motionFX[FXDirection][FXIndex];
+        }
 
-        return motionFX[FXDirection][FXIndex];
     }
 
 
@@ -2245,7 +2257,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         //自定义切换效果
         customFXAguments = $config.sliders[nextIndex].motionFX || null;
         //console.log(customFX);
-        customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1]) : {};
+        customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1], customFXAguments[2]) : {};
 
         //in
         if ($scope.sliderIndex < nextIndex) {
@@ -2414,11 +2426,15 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
             _in      = $.extend(motionFX.in, {display: 'block'}),
             _show    = $.extend(motionFX.show, {
-                onComplete: function () {
+                onStart: function (e) {
+                    detail.onStart && detail.onStart();
                     SLeasy.hammerObj().get('swipe').set({enable: false});//禁止slider滑动手势
                     SLeasy.touchScroll(false);//禁止触摸默认滚动
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
+                },
+                onComplete:function (e) {
+                    detail.onComplete && detail.onComplete();
                 }
             }),
             _set     = $.extend({zIndex: 1}, detail.set) || {};
@@ -2473,7 +2489,6 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             var sliderHash = $scope.router.getRoute(1)
-            //$scope.router.setRoute('/'+nextIndex+'/'+detailHash);//设置路由
             $scope.router.setRoute(1, 'html');//设置路由
         } else {
             SLeasy.closeDetailTransit(nextIndex);
@@ -2490,11 +2505,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             dom        = $scope.details.eq(index),
             onComplete = {
                 onComplete: function () {
+                    console.log(dom);
+                    dom.data['onClose'] && dom.data['onClose']();//回调hack
                     //启用slider滑动手势/恢复触摸默认滚动
                     $config.stageMode != 'scroll' ? SLeasy.hammerObj().get('swipe').set({enable: true}) : SLeasy.touchScroll(true);
-                    var clearProps = 'x,y,scale,rotationX,rotationY,rotationZ,transformPerspective,WebkitTransformOrigin,transformOrigin,zIndex';
-                    T.set(dom, {clearProps: clearProps, display: 'none'});//清除幻灯内联式样
-                    T.set($scope.detailMotion, {clearProps: clearProps, display: 'none'});//清除子动画图片内联式样
+                    T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
+                    T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                     $scope.isDetail = 0;//详情页已关闭
                     //如果positionMod为relative情况
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
@@ -2703,7 +2719,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
     //musicBt:[1,'http://xxx/musicBt.png',30,30,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
     SLeasy.music.bt = function () {
-        var base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAB6CAYAAADj/TADAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RDNCNzI5ODQ3NkQ3MTFFNDk0RTBDN0FEQzAxQ0I2Q0EiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RDNCNzI5ODM3NkQ3MTFFNDk0RTBDN0FEQzAxQ0I2Q0EiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpEOEE3Njc5NDYyNjcxMUU0ODE0NUQ4OTMyQjgxMzFFOSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpEOEE3Njc5NTYyNjcxMUU0ODE0NUQ4OTMyQjgxMzFFOSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pp4tr78AAA3ASURBVHja7Fx7TFTZGb8zAyIMD0UEBQ2PRTCKiFbBoqJZrfiIi6+uoFFMtmsqitr6qP5jU2NTRV1BBRPW12pw0VqwmkI1ai0iVVYFBeMDFdlFRojyHhEGZ/p9eA653rl33sM84Eu+eC9z7rnf755zvsc536eIMR+JgaWEnYGdgB2BHchvSErgTmAFcDtwG7CcsNIcQolM3B+CGUhYygKmLykJ6AbCndYG2AV4CPAAM3xEFXAj8Bvg95YGjEB9gT2YnqEm4BpjgBsKWAI8DNiLsQy9Ba4G/qg2HVSqzwGKREYDdgMOJArIkoSKrhK4xZyAh5AprNNzsbGx7uvWrZswcuTI8AEDBgRIpdLhjo6OAyUSSX/8/ePHjx8UCkWDXC6vbmxsrHzy5MnDw4cP3718+XKzHuu7hqxvkwLGdgHAntoajh8/3mX//v0zxo0bN9/d3T0CXqivplY2NTWVlpSUXNq0adO1+/fv67JeG8hoq0wBGAX+AthdU6OpU6e6ZmRkJMBoJjg4OLibYs7CDGh+/Pjxj8nJydk3btxo0dIcZ8ULAKw0BjD+HqwJLExREUzBuQB4IwAdyFlPH5ubmx/V1NT8VFlZ+fTu3buvioqK3paXl6ODwYSFhTlHR0d7TZgwISAwMDDU19d3IsyK0SCkhN1PZ2dnw82bN1NhieTBElBpAf2cPcxcwNoIldOvhDguLm7mu3fvilQcev/+/SsAt3/hwoW/0fQ8H+Mz+Cz2we0X34Xv1NJHIOKlrI9Z8iGmh5dAuYStXr06BUbYm/7tw4cPrwsKCtJB6KsgsFGuoYuLizg3N3dmTEzM2v79+/t1q2aFoi4zM3MrKMNyDY9XA9hafaY0OhQjhX7PysqKjI+P3ycWi13I1FU+e/bshwULFhwFTdtuStsDOsHpwoULvwsJCUmkClCpVLadPXt287Jly+5o0N5PcLJxAYsFlFSQENhTp05NTEhISKNgYX3Vnzhx4vcgWLqpwSJhn9g3vgNGt75LQLHYGT54KsqiQfcE8VkICU9jX+ITq9GuXbuC16xZcxhfSKZwzbZt21Zv3779qbm9jIsXL8paW1v/M23atBhQjm6o2EDpTe/Xr1/h9evX6wUCGRHXMeECdiKKSm1058yZ43Hw4MFMWLOD8L69vb127dq13xw5ckTWU67V7du3m2Uy2TXQ1tPR9MGH7xcVFTX53r17ec+fP+ebXRix1bNdUBGPVuZ1Lmpra1O8vb2/JNO4CUZ2FTgYv1jCpwSHZPju3btPAuiuoKWuru66j4/PVoHm9cQpUVvDTkJgc3JyYihYVAiXLl36i6XAIuG7UQainBiUDRRbjEBzT4JNbYSH47Pc1sHBwf3KysrOg2nAtc1UVVX9IyAg4G+MFdCrV6+2+/v7L6b6ZMyYMUtganfwNK0D/oU9wiKh0QVN+BUFix7PqlWrDjNWQigLyoTXKOOZM2cWaxhlERuwB9Fqn9GgQYMkEASspPfgyH+vg0+rs2MBTspX4FUtM7QPlAVlovfh4eHLUWYBje3BBsw7usePH5/KGt36xMTEf5oCbHp6+hhQgifB/97h5ubmaUxfKBO1z05OTkNQZg2j3AVYJBQcgMqfS68rKiouGOtYgGfkVV1dvTMpKem4q6vrKF2fQzc2Ly9vppBjAuv2Ar2fNGnSXIFuEGOXJ+LM54D4+fk5Dh48OJreZ2dn/9tQoNhXaWlp4unTp3Pgeq6+Gw+LFi2KBz9gt9DvbNm8vLwmgyLrJ7At5Uz3jtVo586dY8Cwd+1MtLW1/Qz3Lw0Be/78+SkwAufGjh2bTN1RXUgul2e/ffv2oC5tUTaQsYq4nU47duwIE2gqdSAjrEaRkZHjunV6Xd1dbS+F0C2D+zdw+1x1nbowzX03bNiw+OrVqzfAgyuTSCSu4Fi06vqBQMZ7MLL+LNnv8zRzdmAbZTbBdA5h2btybS/09PSMNGZ9gzXwxogIPhy6qmUG2ORywLuIyB4q0Kw/Tmm++c7AyAyn1xD6VTFWTmwZQXahON5RzGd/iYrv3nMuLCyUWTtgtoxs2bmKSywQIjKwhrpNFSgdubUDBvPUypLdTWhDUixkIiDe7B75oqIiqwdcXFz8niW7o6YR5t0FVKlU3Sd20dHRUmsHDJrZhbW9K7SX/VHM8JzP0D1heh0UFORi7YBBw3cPilKpFJqRSgTMe/YK4VYt6+t528AId8vY3t7+VtMI88WPTEtLy8/0OiwsLMDaAYOM/nyyc0iBgNsFPKduVzIwMHC0tQMGGcP4ZOdOXNTEbQJarwS+Wte1j4/PRG0vrK+vLzbGtSwpKanDvW3416AdUJBxAlt2gWZdWFEhqR1ZgJv2azzOpMcc4JD/ltHz2AQ5JyfnDxh8qATo6dOnJ/ieg+ChAoKHW3hdU1OTT86LeN+BstH+UGaUXaCti5igVtPUVVVVHeSFXRQfHz/bkC8PoV1BcHDw1w8ePEgH7alzqoJUKo2HUG+9Lm3ZsqHMKDufwkKs1A7zHkDfvn07j16PGDFiAR57GAL69evXioiIiBMrVqxYJJPJ8oVsvxDBLMnOz8/fxvcbygQfdAG9v3PnTr5AN4hRRb0sPGn4gm9Pq7q6Opdu88DaSImKijpnii2elStX/gnW90hYtydDQ0MN3hgEgF+DSdpKzNEbPz+/OFBafL7FC+BGuqfVxGeP8cHS0tLT9H78+PHfTp8+3c1YwBjvgpJZefPmzZ2tra2NhvaDsqBM9P7hw4dZAmA7CUb996Uh7vw7mIA91mCKQJZtoKCWEEdJr31p+kc1wg6uXLmyn94HBAQswZMIS4NFGegmPBLI+J0A2M+wsQGjA8J3CsfExcX9F89vaDAyf/78P+P5jqXA4rtRBjpDUTaQ8YaQi8B2riQ8hnkwX8j46NGj4iVLlsQ6ODi44uZeTEzM5MrKymsw3d/3JFjc6k1LSzsCTo03VVQJCQkbBU4P0Rq8ZJtdCY+twlF35Zna7bCOiydPnjwbjynx5G7evHlfgtIpAE3Z0hNgN2zY4Hfo0KHvQY5hJKJrTUlJScrMzJRpmMoNnwXEfDukzKdderWtHzx4BiX2KDw8PBYPpPFgesaMGbGwlsovXrz4xpxgjx49Om7Lli2HnZycvEm8rsjKyvpjcnKy0AZjOxndz2y+QTkeZ86ciVq6dOk+mgmAHh3J8ThmjhwPUFDfwL+JNJ3JmBwPU2fxVBcUFGSYOIsniU7hrvjOyCwebeTPWC5Pq5InT+t/OuRp+Ruap0V/D2IEkly6NnodHUVgA+dNmTIFM/EGcPbFMBOvHKKdYtDoFexMvM7OThX41y6sTLwRvr6+ke7u7mE8mXiNhYWFqbNmzfqXlkw89NpeasrE0zXXEkF7aHPzYJpjrmU8e4vXGMJ9NdAJ2TB9f+ypXEt2uwBGz2xaDw+PCEb/ugeLZ9OySe986fXr108ICQnBfOlAiHGHkXxpZzKCbZgvDev1dUNDw8uKiooycCp+0jNfWkaYLiOTAkbqVRnxbIel19Q8cB2UXlHVwge8V9QtccmBaHIEborKtEYS3lldZZqQ/ZaSyAtzRZzIB+GrPewkzv4H4FbGjLWHDj2w7lScDyxifWgR56OrzC1MX7Fln9Kyd7PEF1KpPfQpmrEKx0ObvFodDx06sCrXEuRtMRtgeNgqiy1B5jcmBSz69JTe4WFPF1uqeITXGzAR2H6LLdmAycjad7ElZwPM/ostaSP4Mr2j2BIBQ6PeU2xJOu0rtkTqK7a0QLFleHj4q1GjRs1GC2L3xZZ79+4N3bhxYwYtsqRkl8WWXLAkRVjvYks2YN6MWUxqgem8md5XVVXlYLKZJcHCDGs+cODAtygLy2/fjLIKdOHNBWy1xZZ8YFNTU9ds2bLlqd0VW2oCi/d2VWypDSwluyi25FFQcgg4fuCCpY6JTRdb8o1sY2Pjg4iIiGShZ2y22JKAPULBYmVNWlpaUkdHh8YdEJsstsQPA1HWHhSY7nzI5fIXmzdvfgJLQevzNlVsiSMLkdZfKVicxhARKfDAXNc+bKbYUiqVeuI0lkgkUhL6fcBpjIln+vRjM8WWQ4cOjWXvgYE1yMZprG8/NlNsSacxmp4uT7++3qAURpsqtsQ1e+vWre+M6cNmii1hzbbjmjVWT9hMsaVMJrtiyJrlks0UW4KtfWeKfvqKLfmpr9iSrfWMLrZ0dnb2Ag7SReCeKrbEEZYLOOTlqEGJ4IHgkGsUHALvJDZDXJrm6Oio84F5RkZGTWho6CEs4iJKsxXMlU4n/Sgb/bAoM8oupDLMUmzJinrcqZ2trKw8Z5fFlnxg0c6CaUuxhmJLeoMnDWoncTA1IyHOfE1P76CzPYyGkzsAu0yhUDTR9ni9b9++5dx26enpq0CTPtZUP6wro0z0fWBKZSizQNsB7D0to4sthUaWz6mw+WJLfcCakixSbGkpsIYWWxp1tjRkyBAXS4A15j/y5AJGLTyaETg9zM3NzcK9X7zv6OiohbjThcaePQUWt3qPHTuG9YfDid/8ZuHChctBizfxBX3AjxgN1aU6F1vi/2jG3oPqCbAWL7akXxGC970JCQm3zAnWbMWWuuR42FWxpZFZPLZXbMnJcbL/YkueTDz7LrYUyLW032JLU2bT9nSxpUmyaTkPW2WxJcgs0yCz4YBJB70nI57Vif3UPOhrLpm+Ysu+YktDqK/Y0lT0fwEGAImjrCobt88kAAAAAElFTkSuQmCC',
+        var base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABYCAYAAACONxXWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NEUxQUE2RjlFODUyMTFFNThCQzNDMkEyRUVFRkQxNUQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NEUxQUE2RkFFODUyMTFFNThCQzNDMkEyRUVFRkQxNUQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0RTFBQTZGN0U4NTIxMUU1OEJDM0MyQTJFRUVGRDE1RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0RTFBQTZGOEU4NTIxMUU1OEJDM0MyQTJFRUVGRDE1RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjjeU1sAAAcmSURBVHja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',
             imgUrl = $config.musicBt[1] || base64;
 
         var position = {
@@ -2885,7 +2901,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
         //默认显示渲染
-        SLeasy.music.play();//播放背景音乐
+        $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
         //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
         $config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
 

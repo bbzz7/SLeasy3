@@ -96,7 +96,7 @@
         //自定义切换效果
         customFXAguments = $config.sliders[nextIndex].motionFX || null;
         //console.log(customFX);
-        customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1]) : {};
+        customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1], customFXAguments[2]) : {};
 
         //in
         if ($scope.sliderIndex < nextIndex) {
