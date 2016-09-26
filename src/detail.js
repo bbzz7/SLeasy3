@@ -24,11 +24,15 @@
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
             _in      = $.extend(motionFX.in, {display: 'block'}),
             _show    = $.extend(motionFX.show, {
-                onComplete: function () {
+                onStart: function (e) {
+                    detail.onStart && detail.onStart();
                     SLeasy.hammerObj().get('swipe').set({enable: false});//禁止slider滑动手势
                     SLeasy.touchScroll(false);//禁止触摸默认滚动
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
+                },
+                onComplete:function (e) {
+                    detail.onComplete && detail.onComplete();
                 }
             }),
             _set     = $.extend({zIndex: 1}, detail.set) || {};
@@ -83,7 +87,6 @@
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             var sliderHash = $scope.router.getRoute(1)
-            //$scope.router.setRoute('/'+nextIndex+'/'+detailHash);//设置路由
             $scope.router.setRoute(1, 'html');//设置路由
         } else {
             SLeasy.closeDetailTransit(nextIndex);
@@ -100,11 +103,12 @@
             dom        = $scope.details.eq(index),
             onComplete = {
                 onComplete: function () {
+                    console.log(dom);
+                    dom.data['onClose'] && dom.data['onClose']();//回调hack
                     //启用slider滑动手势/恢复触摸默认滚动
                     $config.stageMode != 'scroll' ? SLeasy.hammerObj().get('swipe').set({enable: true}) : SLeasy.touchScroll(true);
-                    var clearProps = 'x,y,scale,rotationX,rotationY,rotationZ,transformPerspective,WebkitTransformOrigin,transformOrigin,zIndex';
-                    T.set(dom, {clearProps: clearProps, display: 'none'});//清除幻灯内联式样
-                    T.set($scope.detailMotion, {clearProps: clearProps, display: 'none'});//清除子动画图片内联式样
+                    T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
+                    T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                     $scope.isDetail = 0;//详情页已关闭
                     //如果positionMod为relative情况
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
