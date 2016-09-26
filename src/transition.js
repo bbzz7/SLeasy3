@@ -209,8 +209,9 @@
 
         //动画切换执行
         var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
-        if (currentSlider[0] == nextSlider[0]) {//如果上下页是同一页，则只执行子动画
-            T.fromTo(currentSlider, motionTime, FX.in, FX.show);
+        if (currentSlider[0] == nextSlider[0]) {
+            //如果上下页是同一页，则只执行to动画及子动画
+            T.to(currentSlider, motionTime, $.extend({display:'block'},FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion
              var subMotionArr=$config.sliders[nextIndex].subMotion;
