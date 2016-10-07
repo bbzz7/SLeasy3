@@ -2370,8 +2370,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //动画切换执行
         var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
-        if (currentSlider[0] == nextSlider[0]) {//如果上下页是同一页，则只执行子动画
-            T.fromTo(currentSlider, motionTime, FX.in, FX.show);
+        if (currentSlider[0] == nextSlider[0]) {
+            //如果上下页是同一页，则只执行to动画及子动画
+            T.to(currentSlider, motionTime, $.extend({display:'block'},FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion
              var subMotionArr=$config.sliders[nextIndex].subMotion;
@@ -2614,11 +2615,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         }
         
         //箭头事件绑定
-        $("#SLeasy_arrow").css("cursor","pointer");
-        H($("#SLeasy_arrow")[0]).on('tap',function (e) {
-            SLeasy.goSlider('+=1');
-        })
-
+        if($config.arrowMode){
+            $("#SLeasy_arrow").css("cursor","pointer");
+            H($("#SLeasy_arrow")[0]).on('tap',function (e) {
+                SLeasy.goSlider('+=1');
+            })
+        }
     }
 })(
     window.SLeasy = window.SLeasy || {},
