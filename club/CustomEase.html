@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>DrawSVGPlugin</title>
+    <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script src="TweenMax.min.js"></script>
+    <script src="CustomEase.min.js"></script>
+    <script src="CustomBounce.min.js"></script>
+    <!--<script src="ClubPlugins.min.js"></script>-->
+    <style>
+        body {
+            margin-left: 0px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            background-color: black;
+        }
+
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body>
+<svg width="100%" height="700" viewBox="0 0 700 700">
+    <line x1="0" x2="700" y1="701" y2="701" stroke="#ccc" stroke-width="2"/>
+    <path id="bounce" fill="none" stroke="#336633" stroke-width="4px"/>
+    <path id="squish" fill="none" stroke="#663333" stroke-width="4px"/>
+    <circle id="ball" fill="blue" r="75" cx="350" cy="75"/>
+</svg>
+<script>
+    $(document).ready(function (e) {
+        /*
+         Demonstrates the new CustomBounce ease that'll create a bouncing CustomEase according to the parameters you feed in (like strength and squash)
+         and also [optionally] create an accompanying "squash" ease curve that is perfectly synchronized with the bounce so that you can apply
+         other complimentary effects that kick in on the bounce (typically squashing/stretching).
+
+         Special properties:
+
+         - strength: a value between 0 and 1 (default: 0.7) that controls the bounciness. The higher the number, the more bouncy.
+
+         - squash: A number that controls how much of a gap is introduced between each bounce to make room for the "squash" to happen. A common value is 2. Default is 0 (no squash)
+
+         - squashName: The name that you want assigned to the squish CustomEase. By default, it will simply append "-squash" to the name you give the bounce.
+
+         In the example, the green line is the bounce, and the brown line is the accompanying squash ease. Play with the strength/squish values and see what happens.
+
+         If you think about the physics of a ball bouncing (one that’s really bouncy/squashy), when it hits the ground it doesn’t INSTANTLY go back up; it strikes, compresses (so it’s still on the ground this whole time), then transfers energy back up and takes off again. That's the "stick" or gap in the bounce. The squash.
+         */
+
+        CustomBounce.create("myBounce", {strength: 0.7, squash: 2, squashName: "myBounce-squash"});
+
+        //the bounce:
+        var duration = 6;
+        TweenMax.to("#ball", duration, {delay: 0.2, y: 550, ease: "myBounce", repeat: -1, repeatDelay: 1.5});
+        //the squish which affects scaleX and scaleY. To make the effect stronger/weaker, just change the scaleX/scaleY values:
+        TweenMax.to("#ball", duration, {
+            delay: 0.2,
+            scaleX: 1.5,
+            scaleY: 0.5,
+            ease: "myBounce-squash",
+            transformOrigin: "bottom center",
+            repeat: -1,
+            repeatDelay: 1.5
+        });
+
+
+        //graph the lines...
+        document.getElementById("bounce").setAttribute("d", CustomEase.getSVGData("myBounce", {
+            width: 700,
+            height: 500
+        }));
+        document.getElementById("squish").setAttribute("d", CustomEase.getSVGData("myBounce-squash", {
+            width: 700,
+            height: 500
+        }));
+
+        //watch the video: https://www.youtube.com/watch?v=GjXUhpYA168
+    });
+</script>
+</body>
+</html>
