@@ -30,7 +30,7 @@
             "position": "relative",
             "margin": "0 auto",
             "display": "none"
-        }).fadeIn(300);
+        }).fadeIn($config.motionTime*1000);
 
         //loading资源加载
         return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
