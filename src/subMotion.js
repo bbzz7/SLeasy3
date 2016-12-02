@@ -13,7 +13,7 @@
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            'floats': 'floatElement',
+            'floats' : 'floatElement',
         }
 
 
@@ -27,7 +27,7 @@
             "details": function () {
                 $config.on['detailMotion']($scope.detailIndex)
             },//详情页子元素动画开始回调
-            'floats': ''
+            'floats' : ''
         }
 
         //console.log(subMotionArr);
@@ -44,15 +44,19 @@
         }
 
 
+        var totalTime = 0, startTime = 0;
         for (var i = 0; i < count; i++) {
             var subMotion    = subMotionArr[i],//当前子动画
                 preSubMotion = subMotionArr[i - 1],//上一子动画
                 $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
                 time         = subMotion.time || 0,//time
-                offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
-                subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
-                set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+                preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0;
+            totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : time,
+                startTime = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preTime)) : $config.motionTime,
+                // offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
+                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
+                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -79,8 +83,8 @@
             //add pause
             subMotion.pause && tl.addPause();
 
-
-            tl.add(T.fromTo($dom, time, subIn, subShow), '-=' + offsetTime);
+            //add motion
+            tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
