@@ -95,8 +95,8 @@
 
         //自定义切换效果
         customFXAguments = $config.sliders[nextIndex].motionFX || null;
-        //console.log(customFX);
         customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1], customFXAguments[2]) : {};
+
 
         //in
         if ($scope.sliderIndex < nextIndex) {
@@ -189,7 +189,6 @@
             nextSlider    = $scope.sliders.eq(nextIndex),//下一幻灯
             FX            = SLeasy.transitFX(nextIndex)//切换效果
             ;
-
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
         if (title && title != $scope.title) {

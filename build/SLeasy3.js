@@ -1912,7 +1912,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            'floats': 'floatElement',
+            'floats' : 'floatElement',
         }
 
 
@@ -1926,7 +1926,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             "details": function () {
                 $config.on['detailMotion']($scope.detailIndex)
             },//详情页子元素动画开始回调
-            'floats': ''
+            'floats' : ''
         }
 
         //console.log(subMotionArr);
@@ -1943,12 +1943,15 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         }
 
 
+        var totalTime = 0, startTime = 0;
         for (var i = 0; i < count; i++) {
             var subMotion    = subMotionArr[i],//当前子动画
                 preSubMotion = subMotionArr[i - 1],//上一子动画
                 $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
                 time         = subMotion.time || 0,//time
-                offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
+                totalTime    = preSubMotion ? (totalTime + (subMotion.start ? (preSubMotion.time - subMotion.start > subMotion.time ? 0 : subMotion.time - (preSubMotion.time - subMotion.start)) : subMotion.time)) : time,
+                startTime    = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preSubMotion.time)) : 0.3,
+                // offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
                 subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
                 subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
                 set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
@@ -1978,8 +1981,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             //add pause
             subMotion.pause && tl.addPause();
 
-
-            tl.add(T.fromTo($dom, time, subIn, subShow), '-=' + offsetTime);
+            //add motion
+            tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
@@ -2256,8 +2259,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //自定义切换效果
         customFXAguments = $config.sliders[nextIndex].motionFX || null;
-        //console.log(customFX);
         customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1], customFXAguments[2]) : {};
+
 
         //in
         if ($scope.sliderIndex < nextIndex) {
@@ -2350,7 +2353,6 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             nextSlider    = $scope.sliders.eq(nextIndex),//下一幻灯
             FX            = SLeasy.transitFX(nextIndex)//切换效果
             ;
-
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
         if (title && title != $scope.title) {
@@ -2893,7 +2895,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 //orientationPX();//重力感应视差效果
                 console.log('子动画完成~~~！');
                 //$scope.isSubMotion=1;//子动画是否正在播放状态
-            }
+            },
         });
         $config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
 
