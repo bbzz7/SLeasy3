@@ -1,5 +1,6 @@
 /*!
-SLeasy 3.4.1 by 宇文互动 庄宇 2016-10-07 email：30755405@qq.com
+SLeasy 3.5.0 by 宇文互动 庄宇 2016-12-03 email：30755405@qq.com
+3.5.0(2016-12-03):重构子动画timeline开始时间为绝对时间值,添加loaderMsg模块;
 3.4.0(2016-09-25):子动画队列播放重构为与场景切换动效前置对齐的模式，添加audio、video、iframe等内置元素;
 3.3.1(2016-08-14):添加传统click事件支持,方便兼容某些广告监测代码,shadownBt添加name属性,以及debug模式下的对比阴影;
 3.3.0(2016-04-17):backfaceVisiblity bug修复,添加阈值高度(threshold)适配模式,优化gulpfile自动化构建;
@@ -867,7 +868,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         //事件回调-------------------------------------------
         on: {
             'loadProgress': function (percent) { //预加载进行时回调
-                SLeasy.loader.process(percent);
+                SLeasy.loader.progress(percent);
                 console.log('当前加载进度' + percent + '~！');
             },
             'loaded': function () {//预加载完毕回调
@@ -3015,19 +3016,19 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
     //percent
-    SLeasy.loader.process = function (percent) {
+    SLeasy.loader.progress = function (percent) {
         $("#SLeasy_loader_percent").text(percent);
     }
 
     //show
     SLeasy.loader.show = function (msg) {
         if ($("#SLeasy_loader").length) { //如果loader已初始化
-            msg && $("#SLeasy_loader_msg").text(msg);
+            msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
             $("#SLeasy_loader").fadeIn(300);
         } else {
             var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
             loaderBox.prepend(SLeasy.loader.html());
-            msg && $("#SLeasy_loader_msg").text(msg);
+            msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
             $("#SLeasy_loader").fadeIn(300);
         }
     }
