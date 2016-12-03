@@ -867,7 +867,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         //事件回调-------------------------------------------
         on: {
             'loadProgress': function (percent) { //预加载进行时回调
-                SLeasy.loader.text(percent);
+                SLeasy.loader.process(percent);
                 console.log('当前加载进度' + percent + '~！');
             },
             'loaded': function () {//预加载完毕回调
@@ -1949,12 +1949,13 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 preSubMotion = subMotionArr[i - 1],//上一子动画
                 $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
                 time         = subMotion.time || 0,//time
-                totalTime    = preSubMotion ? (totalTime + (subMotion.start ? (preSubMotion.time - subMotion.start > subMotion.time ? 0 : subMotion.time - (preSubMotion.time - subMotion.start)) : subMotion.time)) : time,
-                startTime    = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preSubMotion.time)) : 0.3,
+                preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0;
+            totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : time,
+                startTime = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preTime)) : $config.motionTime,
                 // offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
-                subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
-                set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
+                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -2895,7 +2896,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 //orientationPX();//重力感应视差效果
                 console.log('子动画完成~~~！');
                 //$scope.isSubMotion=1;//子动画是否正在播放状态
-            },
+            }
         });
         $config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
 
@@ -2920,13 +2921,13 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 ;
 (function (SLeasy, $) {
     var $config = SLeasy.config(),//全局配置
-        $scope  = SLeasy.scope();//公有变量
+        $scope = SLeasy.scope();//公有变量
 
     SLeasy.loader = SLeasy.loader || {}
 
     //loading-style
     var loaderStyle = [
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff">\
+        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff" style="position: relative">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
                     <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
@@ -2945,7 +2946,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //==================================================================================
 
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg">\
+        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
             <defs>\
             <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
                 <stop stop-color="#fff" stop-opacity="0" offset="0%"/>\
@@ -2987,29 +2988,46 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
             'margin-top:' + -$config.loader.size[1] / 2 + 'px';
 
-        var textStyle = 'position:absolute;text-align:center;top:0;left:0;' +
+        var percentStyle = 'position:absolute;text-align:center;top:0;left:0;' +
             'width:' + $config.loader.size[0] + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
 
-        var textHtml = '<div id="SLeasy_loader_text" style="' + textStyle + '"></div>';
-        return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + (typeof $config.loader.style == 'number' ? loaderStyle[$config.loader.style] : $config.loader.style) + textHtml + '</div>';
+        var msgStyle = 'position:absolute;text-align:center;' +
+            'top:' + ($config.loader.size[1]) + 'px;' +
+            'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;' +
+            'width:' + $config.viewport + 'px;' +
+            'height:' + $config.loader.size[1] + 'px;' +
+            'line-height:' + $config.loader.size[1] + 'px;' +
+            $config.loader.textStyle;
+
+        var overLayStyle = 'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
+            'background:rgba(0,0,0,0.9);position:absolute;' +
+            'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;top:-' + ($scope.fixHeight - $config.loader.size[1]) / 2 + 'px';
+
+        var percentHtml = '<div id="SLeasy_loader_percent" style="' + percentStyle + '"></div>';
+        var msgHtml = '<div id="SLeasy_loader_msg" style="' + msgStyle + '"></div>';
+        var overLayHtml = '<div id="SLeasy_loader_overLay" style="' + overLayStyle + '"></div>'
+
+        return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + overLayHtml + (typeof $config.loader.style == 'number' ? loaderStyle[$config.loader.style] : $config.loader.style) + percentHtml + msgHtml + '</div>';
     }
 
 
-    //text
-    SLeasy.loader.text = function (txt) {
-        $("#SLeasy_loader_text").text(txt);
+    //percent
+    SLeasy.loader.process = function (percent) {
+        $("#SLeasy_loader_percent").text(percent);
     }
 
     //show
-    SLeasy.loader.show = function () {
+    SLeasy.loader.show = function (msg) {
         if ($("#SLeasy_loader").length) { //如果loader已初始化
+            msg && $("#SLeasy_loader_msg").text(msg);
             $("#SLeasy_loader").fadeIn(300);
         } else {
             var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
             loaderBox.prepend(SLeasy.loader.html());
+            msg && $("#SLeasy_loader_msg").text(msg);
             $("#SLeasy_loader").fadeIn(300);
         }
     }
@@ -3159,7 +3177,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             "position": "relative",
             "margin": "0 auto",
             "display": "none"
-        }).fadeIn(300);
+        }).fadeIn($config.motionTime*1000);
 
         //loading资源加载
         return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
