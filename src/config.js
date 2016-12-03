@@ -58,7 +58,7 @@
         //事件回调-------------------------------------------
         on: {
             'loadProgress': function (percent) { //预加载进行时回调
-                SLeasy.loader.text(percent);
+                SLeasy.loader.progress(percent);
                 console.log('当前加载进度' + percent + '~！');
             },
             'loaded': function () {//预加载完毕回调
