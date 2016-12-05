@@ -224,18 +224,24 @@
 
 
     //禁止触摸默认滚动
-    function stopDefaultScroll(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    SLeasy.touchScroll = function (scroll) {
-        if (!scroll) {
+    SLeasy.touchScroll = function (alowTouchmove, alowSwipe) {
+        //触摸滑动默认行为
+        if (alowTouchmove) {
+            document.removeEventListener("touchmove", stopDefaultScroll, false);
+        } else {
             document.addEventListener("touchmove", stopDefaultScroll, false);
+        }
+
+        //幻灯全局swipe
+        if (alowSwipe) {
             SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
-            document.removeEventListener("touchmove", stopDefaultScroll, false);
             SLeasy.hammerObj().get('swipe').set({enable: false});
+        }
+
+        function stopDefaultScroll(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
     }
 
