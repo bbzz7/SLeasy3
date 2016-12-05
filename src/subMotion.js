@@ -52,7 +52,7 @@
                 time         = subMotion.time || 0,//time
                 preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0;
             totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : time,
-                startTime = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preTime)) : $config.motionTime,
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
                 // offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
                 subIn = $.extend({force3D: true}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
