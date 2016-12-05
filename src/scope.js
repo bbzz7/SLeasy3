@@ -4,48 +4,48 @@
 
     //scope
     var $scope = {//全域变量
-        title: $config.title,//当前title
-        body: $('body'),//body标签dom
+        title    : $config.title,//当前title
+        body     : $('body'),//body标签dom
         viewScale: $config.viewport / $config.width,//幻灯缩放比例因子
         fixHeight: 0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
-        eventArr: [],//需要绑定的事件及元素数据数组
+        eventArr : [],//需要绑定的事件及元素数据数组
         sliderBox: null,//幻灯框架dom缓存变量
-        swipe: 1,//是否允许滑动幻灯
+        swipe    : 1,//是否允许滑动幻灯
 
-        sliders: null,//幻灯dom缓存变量
+        sliders    : null,//幻灯dom缓存变量
         sliderIndex: 0,//幻灯当前索引
-        subMotion: null,//幻灯子动画元素dom缓存变量
+        subMotion  : null,//幻灯子动画元素dom缓存变量
 
-        details: null,//详情页dom缓存变量
-        detailIndex: 0,//当前详情页索引
+        details     : null,//详情页dom缓存变量
+        detailIndex : 0,//当前详情页索引
         detailMotion: null,//详情页子动画元素dom缓存变量
 
         loader: null,//loading dom元素缓存变量
         floats: null,//浮动元素dom缓存变量
         canvas: null,//画布元素dom缓存变量
 
-        isMusic: 0,//音乐状态
-        isAnim: 0,//当前幻灯切换状态
-        isDetail: 0,//详情页是否打开
-        isSubMotion: 0,//当前子动画完成状态
+        isMusic       : 0,//音乐状态
+        isAnim        : 0,//当前幻灯切换状态
+        isDetail      : 0,//详情页是否打开
+        isSubMotion   : 0,//当前子动画完成状态
         isDetailMotion: 0,//当前详情页子动画完成状态
 
-        timeLine: null,//子动画时间线
+        timeLine   : null,//子动画时间线
         fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
-        clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
+        clearProps : 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
         labelHash: {},//标签哈希表
-        router: {},//路由
-        preHash: '',//上一路由哈希值
+        router   : {},//路由
+        preHash  : '',//上一路由哈希值
 
-        userData: {},//用户自定义数据
+        userData  : {},//用户自定义数据
         pluginList: [],//插件初始化函数列表
 
-        bitmaps: {},//ae原生位图序列
-        aeBitmaps: {},//ae位图对象序列
-        aeLayer: {},//ae渲染层
-        aeStage: {},//ae渲染舞台
+        bitmaps   : {},//ae原生位图序列
+        aeBitmaps : {},//ae位图对象序列
+        aeLayer   : {},//ae渲染层
+        aeStage   : {},//ae渲染舞台
         aeTimeLine: {},//ae时间线
 
         totalLoad: [],//应用要加载的图片总数组
@@ -232,8 +232,10 @@
     SLeasy.touchScroll = function (scroll) {
         if (!scroll) {
             document.addEventListener("touchmove", stopDefaultScroll, false);
+            SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
             document.removeEventListener("touchmove", stopDefaultScroll, false);
+            SLeasy.hammerObj().get('swipe').set({enable: false});
         }
     }
 
@@ -276,7 +278,7 @@
     SLeasy.shake = function (start, callback) {
         var myShakeEvent = new Shake({
             threshold: 15, // optional shake strength threshold
-            timeout: 1000 // optional, determines the frequency of event generation
+            timeout  : 1000 // optional, determines the frequency of event generation
         });
 
         if (start == 'start') {
