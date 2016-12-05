@@ -1,5 +1,6 @@
 /*!
 SLeasy 3.5.0 by 宇文互动 庄宇 2016-12-03 email：30755405@qq.com
+3.5.5(2016-12-05):添加幻灯页scroll模式，修正子动画时间为0时，开始时间定位错误的bug;
 3.5.0(2016-12-03):重构子动画timeline开始时间为绝对时间值,添加loaderMsg模块;
 3.4.0(2016-09-25):子动画队列播放重构为与场景切换动效前置对齐的模式，添加audio、video、iframe等内置元素;
 3.3.1(2016-08-14):添加传统click事件支持,方便兼容某些广告监测代码,shadownBt添加name属性,以及debug模式下的对比阴影;
@@ -1149,18 +1150,24 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
     //禁止触摸默认滚动
-    function stopDefaultScroll(e) {
-        e.preventDefault();
-        e.stopPropagation();
-    }
-
-    SLeasy.touchScroll = function (scroll) {
-        if (!scroll) {
+    SLeasy.touchScroll = function (alowTouchmove, alowSwipe) {
+        //触摸滑动默认行为
+        if (alowTouchmove) {
+            document.removeEventListener("touchmove", stopDefaultScroll, false);
+        } else {
             document.addEventListener("touchmove", stopDefaultScroll, false);
+        }
+
+        //幻灯全局swipe
+        if (alowSwipe) {
             SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
-            document.removeEventListener("touchmove", stopDefaultScroll, false);
             SLeasy.hammerObj().get('swipe').set({enable: false});
+        }
+
+        function stopDefaultScroll(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
     }
 
@@ -2332,7 +2339,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll) {
-                    SLeasy.touchScroll(true);
+                    SLeasy.touchScroll(true,false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
                         var scrollTop    = e.target.scrollTop,
@@ -2342,7 +2349,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                         scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
                     })
                 }else{
-                    SLeasy.touchScroll(false);
+                    SLeasy.touchScroll(false,true);
                     console.log('can swipe~!')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
@@ -2464,14 +2471,13 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
             _in      = $.extend(motionFX.in, {display: 'block'}),
             _show    = $.extend(motionFX.show, {
-                onStart: function (e) {
+                onStart   : function (e) {
                     detail.onStart && detail.onStart();
-                    SLeasy.hammerObj().get('swipe').set({enable: false});//禁止slider滑动手势
-                    SLeasy.touchScroll(false);//禁止触摸默认滚动
+                    SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
-                onComplete:function (e) {
+                onComplete: function (e) {
                     detail.onComplete && detail.onComplete();
                 }
             }),
@@ -2479,9 +2485,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
         return {
-            in: _in,
+            in  : _in,
             show: _show,
-            set: _set
+            set : _set
         }
 
     }
@@ -2545,8 +2551,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 onComplete: function () {
                     console.log(dom);
                     dom.data['onClose'] && dom.data['onClose']();//回调hack
-                    //启用slider滑动手势/恢复触摸默认滚动
-                    $config.stageMode != 'scroll' ? SLeasy.hammerObj().get('swipe').set({enable: true}) : SLeasy.touchScroll(true);
+                    //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
+                    ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
                     T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
                     T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                     $scope.isDetail = 0;//详情页已关闭
@@ -3202,17 +3208,17 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": $config.viewport + 'px',
-            "height": $scope.fixHeight + 'px',
-            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
-            "background-color": $config.bgColor || 'transparent',
-            "background-size": "100% auto",
+            "width"            : $config.viewport + 'px',
+            "height"           : $scope.fixHeight + 'px',
+            "background-image" : $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-color" : $config.bgColor || 'transparent',
+            "background-size"  : "100% auto",
             "background-repeat": "no-repeat",
-            "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
-            "position": "relative",
-            "margin": "0 auto",
-            "display": "none"
-        }).fadeIn($config.motionTime*1000);
+            "overflow"         : $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
+            "position"         : "relative",
+            "margin"           : "0 auto",
+            "display"          : "none"
+        }).fadeIn($config.motionTime * 1000);
 
         //loading资源加载
         return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
@@ -3234,8 +3240,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                     if (typeof $config.sliders[i].bg == 'string') {
                         totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg));
                     } else {
-                        for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
-                            totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
+                        if ($config.sliders[i].bg) {
+                            for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
+                                $config.sliders[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
+                            }
                         }
                     }
                 }
@@ -3249,8 +3257,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 if (typeof $config.details[i].bg == 'string') {
                     totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
                 } else {
-                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
-                        totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                    if ($config.details[i].bg) {
+                        for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
+                            $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                        }
                     }
                 }
 
