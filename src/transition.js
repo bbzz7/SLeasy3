@@ -142,10 +142,26 @@
 
         //show
         _show = $.extend({//show FX
-            onStart: function () {
+            onStart   : function () {
                 var currentSlider    = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
+                var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
+                //如果下一页是scroll模式
+                if ($config.sliders[nextIndex].scroll) {
+                    SLeasy.touchScroll(true);
+                    nextSlider.scroll(function (e) {
+                        //console.log(e);
+                        var scrollTop    = e.target.scrollTop,
+                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
+                        //console.log(scrollTop + ':' + scrollTopMax);
+                        scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
+                        scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
+                    })
+                }else{
+                    SLeasy.touchScroll(false);
+                    console.log('can swipe~!')
+                }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
 
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
@@ -171,10 +187,10 @@
 
 
         return {
-            in: _in,
+            in  : _in,
             show: _show,
-            out: _out,
-            set: _set
+            out : _out,
+            set : _set
         }
 
     }
@@ -210,7 +226,7 @@
         var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
-            T.to(currentSlider, motionTime, $.extend({display:'block'},FX.show));
+            T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion
              var subMotionArr=$config.sliders[nextIndex].subMotion;
