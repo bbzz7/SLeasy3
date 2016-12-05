@@ -24,14 +24,13 @@
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
             _in      = $.extend(motionFX.in, {display: 'block'}),
             _show    = $.extend(motionFX.show, {
-                onStart: function (e) {
+                onStart   : function (e) {
                     detail.onStart && detail.onStart();
-                    SLeasy.hammerObj().get('swipe').set({enable: false});//禁止slider滑动手势
-                    SLeasy.touchScroll(false);//禁止触摸默认滚动
+                    SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
-                onComplete:function (e) {
+                onComplete: function (e) {
                     detail.onComplete && detail.onComplete();
                 }
             }),
@@ -39,9 +38,9 @@
 
 
         return {
-            in: _in,
+            in  : _in,
             show: _show,
-            set: _set
+            set : _set
         }
 
     }
@@ -105,8 +104,8 @@
                 onComplete: function () {
                     console.log(dom);
                     dom.data['onClose'] && dom.data['onClose']();//回调hack
-                    //启用slider滑动手势/恢复触摸默认滚动
-                    $config.stageMode != 'scroll' ? SLeasy.hammerObj().get('swipe').set({enable: true}) : SLeasy.touchScroll(true);
+                    //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
+                    ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
                     T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
                     T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                     $scope.isDetail = 0;//详情页已关闭
