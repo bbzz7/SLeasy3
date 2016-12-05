@@ -929,48 +929,48 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
     //scope
     var $scope = {//全域变量
-        title: $config.title,//当前title
-        body: $('body'),//body标签dom
+        title    : $config.title,//当前title
+        body     : $('body'),//body标签dom
         viewScale: $config.viewport / $config.width,//幻灯缩放比例因子
         fixHeight: 0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
-        eventArr: [],//需要绑定的事件及元素数据数组
+        eventArr : [],//需要绑定的事件及元素数据数组
         sliderBox: null,//幻灯框架dom缓存变量
-        swipe: 1,//是否允许滑动幻灯
+        swipe    : 1,//是否允许滑动幻灯
 
-        sliders: null,//幻灯dom缓存变量
+        sliders    : null,//幻灯dom缓存变量
         sliderIndex: 0,//幻灯当前索引
-        subMotion: null,//幻灯子动画元素dom缓存变量
+        subMotion  : null,//幻灯子动画元素dom缓存变量
 
-        details: null,//详情页dom缓存变量
-        detailIndex: 0,//当前详情页索引
+        details     : null,//详情页dom缓存变量
+        detailIndex : 0,//当前详情页索引
         detailMotion: null,//详情页子动画元素dom缓存变量
 
         loader: null,//loading dom元素缓存变量
         floats: null,//浮动元素dom缓存变量
         canvas: null,//画布元素dom缓存变量
 
-        isMusic: 0,//音乐状态
-        isAnim: 0,//当前幻灯切换状态
-        isDetail: 0,//详情页是否打开
-        isSubMotion: 0,//当前子动画完成状态
+        isMusic       : 0,//音乐状态
+        isAnim        : 0,//当前幻灯切换状态
+        isDetail      : 0,//详情页是否打开
+        isSubMotion   : 0,//当前子动画完成状态
         isDetailMotion: 0,//当前详情页子动画完成状态
 
-        timeLine: null,//子动画时间线
+        timeLine   : null,//子动画时间线
         fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
-        clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
+        clearProps : 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
         labelHash: {},//标签哈希表
-        router: {},//路由
-        preHash: '',//上一路由哈希值
+        router   : {},//路由
+        preHash  : '',//上一路由哈希值
 
-        userData: {},//用户自定义数据
+        userData  : {},//用户自定义数据
         pluginList: [],//插件初始化函数列表
 
-        bitmaps: {},//ae原生位图序列
-        aeBitmaps: {},//ae位图对象序列
-        aeLayer: {},//ae渲染层
-        aeStage: {},//ae渲染舞台
+        bitmaps   : {},//ae原生位图序列
+        aeBitmaps : {},//ae位图对象序列
+        aeLayer   : {},//ae渲染层
+        aeStage   : {},//ae渲染舞台
         aeTimeLine: {},//ae时间线
 
         totalLoad: [],//应用要加载的图片总数组
@@ -1157,8 +1157,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     SLeasy.touchScroll = function (scroll) {
         if (!scroll) {
             document.addEventListener("touchmove", stopDefaultScroll, false);
+            SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
             document.removeEventListener("touchmove", stopDefaultScroll, false);
+            SLeasy.hammerObj().get('swipe').set({enable: false});
         }
     }
 
@@ -1201,7 +1203,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     SLeasy.shake = function (start, callback) {
         var myShakeEvent = new Shake({
             threshold: 15, // optional shake strength threshold
-            timeout: 1000 // optional, determines the frequency of event generation
+            timeout  : 1000 // optional, determines the frequency of event generation
         });
 
         if (start == 'start') {
@@ -1386,10 +1388,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //背景对齐策略
         var bgAlign = {
-            "top": 'center ' + $config.alignOffset + 'px',
+            "top"   : 'center ' + $config.alignOffset + 'px',
             "center": 'center ' + (($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset) + 'px',
             "bottom": 'center ' + ($scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset) + 'px',
-            "photo": 'center center'
+            "photo" : 'center center'
         }
 
         //slider label hash
@@ -1408,8 +1410,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 			background-size:100% auto;\
 			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
-			overflow:' + ($config.positionMode == "absolute" ? "hidden" : "visible") + ';\
+			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
 			position:absolute; display:none;\
+			-webkit-overflow-scrolling:touch;\
 			">';
 
         function sliderBg() {
@@ -1439,12 +1442,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            "floats": 'floatElement'
+            "floats" : 'floatElement'
         }
 
         //不同类型子动画元素生成策略
         var subElement = {
-            "img": function (opt) {
+            "img"      : function (opt) {
                 //img to div
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1462,7 +1465,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
 				</div>';
             },
-            "dom": function (opt) {
+            "dom"      : function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1470,7 +1473,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				<div id="' + opt.dom + '"></div>\
 				</div>';
             },
-            "html": function (opt) {
+            "html"     : function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1478,7 +1481,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				' + opt.html + '\
 				</div>';
             },
-            "svg": function (opt) {
+            "svg"      : function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1486,7 +1489,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
 				</div>';
             },
-            "canvas": function (opt) {
+            "canvas"   : function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1494,7 +1497,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				<canvas id="' + opt.canvas[0] + '" class="SLeasy_canvas" width="' + opt.canvas[1] + '" height="' + opt.canvas[2] + '" style="position:absolute;top:0px;left:0px;width:' + opt.canvas[1] * $scope.viewScale + 'px;height:' + opt.canvas[2] * $scope.viewScale + 'px"></canvas>\
 				</div>';
             },
-            "text": function (opt) {
+            "text"     : function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_text SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1502,7 +1505,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				' + opt.text + '\
 				</div>';
             },
-            'audio': function (opt) {
+            'audio'    : function (opt) {
                 return '<audio\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1510,7 +1513,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				src="' + $config.host + opt.audio + '" preload="auto">\
 				</audio>';
             },
-            'video': function (opt) {
+            'video'    : function (opt) {
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1518,7 +1521,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				src="' + $config.host + opt.video + '" type="video/mp4" webkit-playsinline playsinline>\
 				</video>';
             },
-            'iframe': function (opt) {
+            'iframe'   : function (opt) {
                 return '<iframe\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_iframe SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1526,10 +1529,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				src="' + opt.iframe + '" frameborder="0">\
 				</iframe>';
             },
-            "input": function (opt) {
+            "input"    : function (opt) {
                 //
                 var inputHtml = {
-                    'text': function () {
+                    'text'    : function () {
                         return '<input type="' + opt.input + '"\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -1545,7 +1548,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 						style="border:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
 						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"></textArea>';
                     },
-                    'select': function () {
+                    'select'  : function () {
                         var opitionHtml = '';
                         for (var i = 0; i < opt.opition.length; i++) {
                             var row = '<option value="' + opt.opition[i][1] + '">' + opt.opition[i][0] + '</option>';
@@ -1561,7 +1564,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
                 return inputHtml[opt.input]();
             },
-            "plugin": function (opt) {
+            "plugin"   : function (opt) {
                 var id = 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index;
                 //把插件初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
                 $scope.pluginList.push([opt.plugin[0], $.extend(opt.plugin[1], {node: id}), opt.plugin[2]]);
@@ -1570,7 +1573,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				</div>';
             },
-            "ae": function (opt) {
+            "ae"       : function (opt) {
                 //添加ae渲染层
                 SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit) {
                     SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
@@ -1612,11 +1615,11 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                         TweenMax.to(aeOpt.aeLayer, time,
                             {
                                 roundProps: "frame",
-                                frame: aeOpt.end,
-                                ease: SteppedEase.config(frame),
-                                repeat: aeOpt.repeat,
-                                onStart: aeOpt.onStart,
-                                onUpdate: aeOpt.onUpdate,
+                                frame     : aeOpt.end,
+                                ease      : SteppedEase.config(frame),
+                                repeat    : aeOpt.repeat,
+                                onStart   : aeOpt.onStart,
+                                onUpdate  : aeOpt.onUpdate,
                                 onComplete: aeOpt.onComplete,
                             }
                         ), '+=' + (aeOpt.offsetTime || 0)
@@ -1625,12 +1628,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
                 var config = {
-                    stage: '_stage_',
-                    width: '640',
+                    stage : '_stage_',
+                    width : '640',
                     height: '1136',
-                    fps: 25,
+                    fps   : 25,
                     repeat: 1,
-                    layer: [],
+                    layer : [],
                     onInit: function () {
                     }
                 }
@@ -1662,11 +1665,11 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
                         $scope.aeLayer[layerName].time = time;
                         $scope.aeLayer[layerName].tweenData = {
-                            frame: frame,
+                            frame     : frame,
                             roundProps: "frame",
-                            ease: SteppedEase.config(frame),
-                            repeat: aeOpt.repeat,
-                            onUpdate: function () {
+                            ease      : SteppedEase.config(frame),
+                            repeat    : aeOpt.repeat,
+                            onUpdate  : function () {
                                 //console.log(this.target.frame);
                             }
                         }
@@ -1724,8 +1727,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
             if (subMotion['event']) {
                 var info = {
-                    id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                    event: subMotion.event,
+                    id     : 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                    event  : subMotion.event,
                     onEvent: subMotion.onEvent,
                 }
                 $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
@@ -1951,13 +1954,26 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 preSubMotion = subMotionArr[i - 1],//上一子动画
                 $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
                 time         = subMotion.time || 0,//time
-                preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0;
-            totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : time,
-                startTime = preSubMotion ? (startTime + (typeof subMotion.start != 'undefined' ? subMotion.start : preTime)) : $config.motionTime,
-                // offsetTime   = preSubMotion ? (typeof subMotion.start != 'undefined' ? preSubMotion.time - subMotion.start : 0) : (typeof subMotion.start != 'undefined' ? -subMotion.start : -$config.motionTime),//和上个子动画之间的间隔时间
-                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
-                set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+                preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0,
+                /*
+                 如果是第一个子动画，则当前子动画总时间累加值为，当前子动画时间，
+                 如果不是第一个子动画，则当前子动画总时间累加值为，当前子动画时间:
+                    如果当前子动画有设置start值:
+                        如果preTime - subMotion.start > subMotion.time，累加0
+                        否则累加subMotion.time - (preTime - subMotion.start)
+                    如果当前子动画没有设置start值，则累加上一子动画的运动时间
+                 */
+                totalTime    = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : subMotion.time,
+                /*
+                 如果是第一个子动画，则子动画开始时间为幻灯页运动完成的时间，
+                 如果不是第一个子动画，则之前累加的startTime，加上当前的start值:
+                    如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
+                    如果当前子动画没有设置运动时间time，则直接加0
+                 */
+                startTime    = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
+                subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
+                subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -2309,10 +2325,26 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
         //show
         _show = $.extend({//show FX
-            onStart: function () {
+            onStart   : function () {
                 var currentSlider    = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
+                var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
+                //如果下一页是scroll模式
+                if ($config.sliders[nextIndex].scroll) {
+                    SLeasy.touchScroll(true);
+                    nextSlider.scroll(function (e) {
+                        //console.log(e);
+                        var scrollTop    = e.target.scrollTop,
+                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
+                        //console.log(scrollTop + ':' + scrollTopMax);
+                        scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
+                        scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
+                    })
+                }else{
+                    SLeasy.touchScroll(false);
+                    console.log('can swipe~!')
+                }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
 
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
@@ -2338,10 +2370,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
         return {
-            in: _in,
+            in  : _in,
             show: _show,
-            out: _out,
-            set: _set
+            out : _out,
+            set : _set
         }
 
     }
@@ -2377,7 +2409,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
-            T.to(currentSlider, motionTime, $.extend({display:'block'},FX.show));
+            T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion
              var subMotionArr=$config.sliders[nextIndex].subMotion;
@@ -2561,11 +2593,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
     //event bind
     SLeasy.eventBind = function () {
+        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+        sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
+
         //禁止触摸默认行为
         SLeasy.touchScroll(false);
 
-        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
-        sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
         if ($config.stageMode == 'scroll') {
             SLeasy.touchScroll(true);
             sliderBox.get('swipe').set({enable: false});
