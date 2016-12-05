@@ -20,17 +20,17 @@
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": $config.viewport + 'px',
-            "height": $scope.fixHeight + 'px',
-            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
-            "background-color": $config.bgColor || 'transparent',
-            "background-size": "100% auto",
+            "width"            : $config.viewport + 'px',
+            "height"           : $scope.fixHeight + 'px',
+            "background-image" : $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-color" : $config.bgColor || 'transparent',
+            "background-size"  : "100% auto",
             "background-repeat": "no-repeat",
-            "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
-            "position": "relative",
-            "margin": "0 auto",
-            "display": "none"
-        }).fadeIn($config.motionTime*1000);
+            "overflow"         : $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
+            "position"         : "relative",
+            "margin"           : "0 auto",
+            "display"          : "none"
+        }).fadeIn($config.motionTime * 1000);
 
         //loading资源加载
         return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
@@ -52,8 +52,10 @@
                     if (typeof $config.sliders[i].bg == 'string') {
                         totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg));
                     } else {
-                        for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
-                            totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
+                        if ($config.sliders[i].bg) {
+                            for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
+                                $config.sliders[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
+                            }
                         }
                     }
                 }
@@ -67,8 +69,10 @@
                 if (typeof $config.details[i].bg == 'string') {
                     totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
                 } else {
-                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
-                        totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                    if ($config.details[i].bg) {
+                        for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
+                            $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                        }
                     }
                 }
 
