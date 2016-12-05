@@ -149,7 +149,7 @@
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll) {
-                    SLeasy.touchScroll(true);
+                    SLeasy.touchScroll(true,false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
                         var scrollTop    = e.target.scrollTop,
@@ -159,7 +159,7 @@
                         scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
                     })
                 }else{
-                    SLeasy.touchScroll(false);
+                    SLeasy.touchScroll(false,true);
                     console.log('can swipe~!')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
