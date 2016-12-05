@@ -11,11 +11,12 @@
 
     //event bind
     SLeasy.eventBind = function () {
+        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+        sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
+
         //禁止触摸默认行为
         SLeasy.touchScroll(false);
 
-        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
-        sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
         if ($config.stageMode == 'scroll') {
             SLeasy.touchScroll(true);
             sliderBox.get('swipe').set({enable: false});
