@@ -215,9 +215,13 @@
     //获取url参数
     SLeasy.getRequest = function (name, debug) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        //参数查找
         var r = window.location.search.substr(1).match(reg);
-        //console.log(r);
-        if (r != null) return r[2];
+        if (r != null)return r[2];
+        //哈希查找
+        var h = window.location.hash.substr(1).match(reg);
+        if (h != null)return h[2];
+        //调试返回时间错字符串
         if (debug) return ('test' + $.now());
         return '';
     }
