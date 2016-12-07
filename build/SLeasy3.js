@@ -983,16 +983,17 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     }
 
     //get label
-    SLeasy.label = function (key, getSliderIndex) {//参数getSliderIndex为true:则如果是幻灯label,返回幻灯索引值,false返回幻灯dom
+    SLeasy.label = function (key, sliderOrDetail) {//参数getSliderIndex为true:则如果是幻灯label,返回幻灯索引值,false返回幻灯dom
         if (key) {
             var value = typeof $scope.labelHash[key] != 'undefined' ? $scope.labelHash[key] : null;
             if (typeof value == 'string') {
                 return $(value);
             } else {
-                if (getSliderIndex) {
-                    return value;
+                if (sliderOrDetail) {
+                    if(sliderOrDetail=='slider' || sliderOrDetail=='sliders') return $scope.sliders.eq(value);
+                    if(sliderOrDetail=='detail' || sliderOrDetail=='details') return $scope.details.eq(value);
                 } else {
-                    return $scope.sliders.eq(value);
+                    return value;
                 }
 
             }
@@ -1153,7 +1154,12 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     }
 
 
+
     //禁止触摸默认滚动
+    function stopDefaultScroll(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
     SLeasy.touchScroll = function (alowTouchmove, alowSwipe) {
         //触摸滑动默认行为
         if (alowTouchmove) {
@@ -1167,11 +1173,6 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
             SLeasy.hammerObj().get('swipe').set({enable: false});
-        }
-
-        function stopDefaultScroll(e) {
-            e.preventDefault();
-            e.stopPropagation();
         }
     }
 
@@ -1417,7 +1418,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 			width:' + $config.viewport + 'px;\
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
 			background-image:' + sliderBg() + ';\
-			background-repeat:no-repeat;\
+			background-repeat:'+(opt.bgRepeat || "no-repeat")+';\
 			background-size:100% auto;\
 			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
@@ -2210,7 +2211,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
     SLeasy.nextIndex = function (index) {
         //如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
-        var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index, true);
+        var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total      = totalIndex + 1,//幻灯总数
@@ -2349,8 +2350,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                         var scrollTop    = e.target.scrollTop,
                             scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
                         //console.log(scrollTop + ':' + scrollTopMax);
-                        scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
-                        scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
+                        //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
+                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) && scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
+                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) && scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
                     })
                 }else{
                     SLeasy.touchScroll(false,true);
@@ -2466,7 +2468,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     }
 
     SLeasy.nextDetailIndex = function (index) {
-        return index = (typeof index == 'number') ? index : SLeasy.label(index, true);//如果是label标签，则获取标签对应的索引值
+        return index = (typeof index == 'number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
     }
 
     SLeasy.detailFX = function (index) {
@@ -2477,7 +2479,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             _show    = $.extend(motionFX.show, {
                 onStart   : function (e) {
                     detail.onStart && detail.onStart();
-                    SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
+                    detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
