@@ -15,7 +15,7 @@
     }
 
     SLeasy.nextDetailIndex = function (index) {
-        return index = (typeof index == 'number') ? index : SLeasy.label(index, true);//如果是label标签，则获取标签对应的索引值
+        return index = (typeof index == 'number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
     }
 
     SLeasy.detailFX = function (index) {
@@ -26,7 +26,7 @@
             _show    = $.extend(motionFX.show, {
                 onStart   : function (e) {
                     detail.onStart && detail.onStart();
-                    SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
+                    detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
