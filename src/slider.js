@@ -26,7 +26,7 @@
 			width:' + $config.viewport + 'px;\
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
 			background-image:' + sliderBg() + ';\
-			background-repeat:no-repeat;\
+			background-repeat:'+(opt.bgRepeat || "no-repeat")+';\
 			background-size:100% auto;\
 			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
