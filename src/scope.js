@@ -57,16 +57,17 @@
     }
 
     //get label
-    SLeasy.label = function (key, getSliderIndex) {//参数getSliderIndex为true:则如果是幻灯label,返回幻灯索引值,false返回幻灯dom
+    SLeasy.label = function (key, sliderOrDetail) {//参数getSliderIndex为true:则如果是幻灯label,返回幻灯索引值,false返回幻灯dom
         if (key) {
             var value = typeof $scope.labelHash[key] != 'undefined' ? $scope.labelHash[key] : null;
             if (typeof value == 'string') {
                 return $(value);
             } else {
-                if (getSliderIndex) {
-                    return value;
+                if (sliderOrDetail) {
+                    if(sliderOrDetail=='slider' || sliderOrDetail=='sliders') return $scope.sliders.eq(value);
+                    if(sliderOrDetail=='detail' || sliderOrDetail=='details') return $scope.details.eq(value);
                 } else {
-                    return $scope.sliders.eq(value);
+                    return value;
                 }
 
             }
@@ -227,7 +228,12 @@
     }
 
 
+
     //禁止触摸默认滚动
+    function stopDefaultScroll(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
     SLeasy.touchScroll = function (alowTouchmove, alowSwipe) {
         //触摸滑动默认行为
         if (alowTouchmove) {
@@ -241,11 +247,6 @@
             SLeasy.hammerObj().get('swipe').set({enable: true});
         } else {
             SLeasy.hammerObj().get('swipe').set({enable: false});
-        }
-
-        function stopDefaultScroll(e) {
-            e.preventDefault();
-            e.stopPropagation();
         }
     }
 
