@@ -16,7 +16,7 @@
 
     SLeasy.nextIndex = function (index) {
         //如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
-        var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index, true);
+        var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total      = totalIndex + 1,//幻灯总数
@@ -155,8 +155,9 @@
                         var scrollTop    = e.target.scrollTop,
                             scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
                         //console.log(scrollTop + ':' + scrollTopMax);
-                        scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
-                        scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
+                        //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
+                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) && scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
+                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) && scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
                     })
                 }else{
                     SLeasy.touchScroll(false,true);
