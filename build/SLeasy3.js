@@ -1418,7 +1418,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 			width:' + $config.viewport + 'px;\
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
 			background-image:' + sliderBg() + ';\
-			background-repeat:'+(opt.bgRepeat || "no-repeat")+';\
+			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\
 			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
@@ -1530,7 +1530,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + $config.host + opt.video + '" type="video/mp4" webkit-playsinline playsinline>\
+				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" controls webkit-playsinline playsinline>\
 				</video>';
             },
             'iframe'   : function (opt) {
@@ -1681,9 +1681,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                             roundProps: "frame",
                             ease      : SteppedEase.config(frame),
                             repeat    : aeOpt.repeat,
-                            onUpdate  : function () {
-                                //console.log(this.target.frame);
-                            }
+                            onStart   : aeOpt.onStart,
+                            onUpdate  : aeOpt.onUpdate,
+                            onComplete: aeOpt.onComplete
                         }
                     }
 
