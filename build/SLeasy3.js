@@ -2743,6 +2743,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            document.removeEventListener('touchstart',SLeasy.music.play);
         })
 
         setTimeout(function () {//不支持自动播放情况
@@ -2754,6 +2755,9 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             }
         }, 50)
     }
+
+    //auto playHack
+    document.addEventListener('touchstart',SLeasy.music.play,false);
 
     //pause
     SLeasy.music.pause = function () {
