@@ -1371,7 +1371,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
-        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="' + _content + '">');
+        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="' + _content + '"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
         if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function () {
                 $config.reloadMode && window.location.reload();
