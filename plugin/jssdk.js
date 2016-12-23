@@ -121,7 +121,7 @@
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数
-                $config.cancle();
+                $config.cancel();
             }
         });
 
@@ -139,7 +139,7 @@
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数
-                $config.cancle();
+                $config.cancel();
             }
         });
 
@@ -155,7 +155,7 @@
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数
-                $config.cancle();
+                $config.cancel();
             }
         });
 
@@ -171,7 +171,7 @@
             },
             cancel: function () {
                 // 用户取消分享后执行的回调函数
-                $config.cancle();
+                $config.cancel();
             }
         });
 
