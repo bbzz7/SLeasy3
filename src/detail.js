@@ -25,8 +25,8 @@
             _in      = $.extend(motionFX.in, {display: 'block'}),
             _show    = $.extend(motionFX.show, {
                 onStart   : function (e) {
-                    detail.onStart && detail.onStart();
                     detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
+                    detail.onStart && detail.onStart();
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
