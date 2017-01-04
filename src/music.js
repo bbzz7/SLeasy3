@@ -29,6 +29,9 @@
     }
 
 
+    //isPlaying
+    SLeasy.music.isPlaying=false;
+
     //play
     SLeasy.music.play = function () {
         if ($("#SLeasy_music").length) {
@@ -41,6 +44,7 @@
         //兼容安卓
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
+            SLeasy.music.isPlaying=true;
             T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
             document.removeEventListener('touchstart',SLeasy.music.play);
         })
@@ -64,6 +68,7 @@
         //兼容安卓
         $("#SLeasy_music").on('pause', function () {
             $scope.isMusic = 0;
+            SLeasy.music.isPlaying=false;
             T.to($("#SLeasy_musicBt"), 0.5, {
                 backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                 ease: Power4.easeOut
