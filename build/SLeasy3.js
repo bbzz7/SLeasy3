@@ -977,7 +977,6 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
         totalLoad: [],//应用要加载的图片总数组
     }
 
-
     SLeasy.scope = function () {
         return $scope;
     }
@@ -1349,7 +1348,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                     var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewHeight      = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
                         height          = viewHeight > minHeight ? viewHeight : minHeight,
-                        viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
+                        //viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
+                        viewportContent = 'width=' + height * ratio + ',user-scalable=no';
                     return viewportContent;
                 },
                 'auto': function () {
@@ -1365,6 +1365,10 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
                     // alert($config.width / threshold >= ratio)
                     var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
+                    return viewportContent;
+                },
+                'device-width':function () {
+                    viewportContent = 'width=device-width,user-scalable=no';
                     return viewportContent;
                 }
             };
@@ -1529,8 +1533,8 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" controls webkit-playsinline playsinline>\
+				style="background-image:url('+opt.poster+');background-size:100% auto;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" controls webkit-playsinline>\
 				</video>';
             },
             'iframe'   : function (opt) {
@@ -2663,14 +2667,55 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
             }
 
         }
-        
+
         //箭头事件绑定
-        if($config.arrowMode){
-            $("#SLeasy_arrow").css("cursor","pointer");
-            H($("#SLeasy_arrow")[0]).on('tap',function (e) {
+        if ($config.arrowMode) {
+            $("#SLeasy_arrow").css("cursor", "pointer");
+            H($("#SLeasy_arrow")[0]).on('tap', function (e) {
                 SLeasy.goSlider('+=1');
             })
         }
+
+        //安卓微信video全屏resize
+        /*var ow = window.innerWidth,
+            oh = window.innerHeight;
+        var videoSizeArr = [];
+
+        $("video").each(function () {
+            //videoSizeArr.push({width: $(this).css('width'), height: $(this).css('height')});
+            videoSizeArr.push(SLeasy.fixProps({width: 556, height: 312, x: 41, y: 162}));
+        });
+        console.log(ow + ':' + oh);
+        console.log(videoSizeArr);
+
+        function resetVideoSize() {
+            //alert(ow+':'+oh+'###'+window.innerWidth+':'+window.innerHeight);
+            if (window.innerWidth == ow && window.innerHeight == oh) {
+                $("video").each(function () {
+                    var index = $("video").index($(this));
+                    //alert(videoSizeArr[index].width + ':' + videoSizeArr[index].height);
+                    T.set($(this), {
+                        "width" : videoSizeArr[index].width + 'px',
+                        "height": videoSizeArr[index].height + 'px',
+                        "x"     : videoSizeArr[index].x,
+                        "y"     : videoSizeArr[index].y
+                    })
+                })
+            } else {
+                T.set($("video"), {
+                    "width"     : window.innerWidth + "px",
+                    "height"    : window.innerHeight + "px",
+                    "background": "#000",
+                    x           : 0,
+                    y           : 0
+                })
+            }
+        }
+
+        window.onresize = function () {
+            resetVideoSize();
+            //setTimeout(resetVideoSize, 50);
+        }*/
     }
 })(
     window.SLeasy = window.SLeasy || {},
@@ -3209,6 +3254,7 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
     SLeasy.init = function (opt) {
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
+        $scope.viewScale=$config.viewport / $config.width;//刷新幻灯缩放比例因子
         if (!SLeasy.isHttp()) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             $('head style').html($('head style').html() + debugStyle);
