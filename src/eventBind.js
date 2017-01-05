@@ -69,14 +69,55 @@
             }
 
         }
-        
+
         //箭头事件绑定
-        if($config.arrowMode){
-            $("#SLeasy_arrow").css("cursor","pointer");
-            H($("#SLeasy_arrow")[0]).on('tap',function (e) {
+        if ($config.arrowMode) {
+            $("#SLeasy_arrow").css("cursor", "pointer");
+            H($("#SLeasy_arrow")[0]).on('tap', function (e) {
                 SLeasy.goSlider('+=1');
             })
         }
+
+        //安卓微信video全屏resize
+        /*var ow = window.innerWidth,
+            oh = window.innerHeight;
+        var videoSizeArr = [];
+
+        $("video").each(function () {
+            //videoSizeArr.push({width: $(this).css('width'), height: $(this).css('height')});
+            videoSizeArr.push(SLeasy.fixProps({width: 556, height: 312, x: 41, y: 162}));
+        });
+        console.log(ow + ':' + oh);
+        console.log(videoSizeArr);
+
+        function resetVideoSize() {
+            //alert(ow+':'+oh+'###'+window.innerWidth+':'+window.innerHeight);
+            if (window.innerWidth == ow && window.innerHeight == oh) {
+                $("video").each(function () {
+                    var index = $("video").index($(this));
+                    //alert(videoSizeArr[index].width + ':' + videoSizeArr[index].height);
+                    T.set($(this), {
+                        "width" : videoSizeArr[index].width + 'px',
+                        "height": videoSizeArr[index].height + 'px',
+                        "x"     : videoSizeArr[index].x,
+                        "y"     : videoSizeArr[index].y
+                    })
+                })
+            } else {
+                T.set($("video"), {
+                    "width"     : window.innerWidth + "px",
+                    "height"    : window.innerHeight + "px",
+                    "background": "#000",
+                    x           : 0,
+                    y           : 0
+                })
+            }
+        }
+
+        window.onresize = function () {
+            resetVideoSize();
+            //setTimeout(resetVideoSize, 50);
+        }*/
     }
 })(
     window.SLeasy = window.SLeasy || {},
