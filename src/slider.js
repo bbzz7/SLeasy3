@@ -137,8 +137,8 @@
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" controls webkit-playsinline playsinline>\
+				style="background-image:url('+opt.poster+');background-size:100% auto;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" controls webkit-playsinline>\
 				</video>';
             },
             'iframe'   : function (opt) {
