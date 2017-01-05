@@ -22,7 +22,8 @@
                     var width           = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewHeight      = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
                         height          = viewHeight > minHeight ? viewHeight : minHeight,
-                        viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
+                        //viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
+                        viewportContent = 'width=' + height * ratio + ',user-scalable=no';
                     return viewportContent;
                 },
                 'auto': function () {
@@ -38,6 +39,10 @@
                 'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
                     // alert($config.width / threshold >= ratio)
                     var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
+                    return viewportContent;
+                },
+                'device-width':function () {
+                    viewportContent = 'width=device-width,user-scalable=no';
                     return viewportContent;
                 }
             };
