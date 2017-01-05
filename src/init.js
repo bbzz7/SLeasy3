@@ -6,6 +6,7 @@
     SLeasy.init = function (opt) {
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
+        $scope.viewScale=$config.viewport / $config.width;//刷新幻灯缩放比例因子
         if (!SLeasy.isHttp()) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             $('head style').html($('head style').html() + debugStyle);
