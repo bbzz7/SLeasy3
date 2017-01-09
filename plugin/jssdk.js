@@ -15,7 +15,7 @@
             debug: false,
             time: new Date().getTime(),
             // signUrl: 'http://www.zhuzhouzhixin.com/CI/index.php/jssdk',//签名后端
-            signUrl:'http://h5.lrbnews.com/CI/index.php/Jssdk'//签名后端
+            signUrl:'https://h5.lrbnews.com/CI/index.php/Jssdk'//签名后端
         };
         $.extend($config, myOpt);
         if (jssdk.isWechat() || $config.debug) {
@@ -218,7 +218,7 @@
     jssdk.uploadImage = function (opt) {
         var $config = {
             localId: '', // 需要上传的图片的本地ID，由chooseImage接口获得
-            apiUrl: 'http://h5.lrbnews.com/CI/index.php/weChatPic/'//图片上传地址
+            apiUrl: 'https://h5.lrbnews.com/CI/index.php/weChatPic/'//图片上传地址
         };
         $.extend($config, opt);
         return jssdk._uploadImage($config).then(function (serverId) {
