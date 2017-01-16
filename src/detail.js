@@ -82,17 +82,17 @@
 
 
     //closeDetail
-    SLeasy.closeDetail = function (index) {
+    SLeasy.closeDetail = function (index,callback) {
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             var sliderHash = $scope.router.getRoute(1)
             $scope.router.setRoute(1, 'html');//设置路由
         } else {
-            SLeasy.closeDetailTransit(nextIndex);
+            SLeasy.closeDetailTransit(nextIndex,callback);
         }
     }
 
-    SLeasy.closeDetailTransit = function (index) {
+    SLeasy.closeDetailTransit = function (index,callback) {
         //如果详情页处于打开状态未关闭，则return
         if (!$scope.isDetail) return;
         //索引边界检查
@@ -103,7 +103,7 @@
             onComplete = {
                 onComplete: function () {
                     console.log(dom);
-                    dom.data['onClose'] && dom.data['onClose']();//回调hack
+                    callback && callback();//回调hack
                     //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
                     ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
                     T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
