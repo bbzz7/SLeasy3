@@ -1528,15 +1528,15 @@ this._dash=b+d,this._offset=b-a[1]+d,this._addTween(this,"_offset",this._offset,
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + $config.host + opt.audio + '" preload="auto">\
+				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto">\
 				</audio>';
             },
             'video'    : function (opt) {
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="background-image:url('+opt.poster+');background-size:100% auto;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + opt.video + '" type="'+(opt.mediaType || 'video/mp4')+'" poster="'+opt.poster+'" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" '+(typeof opt.controls!='undefined' && !opt.controls ? '' : 'controls' )+(typeof opt.playsinline!='undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' )+'>\
+				style="background-image:url(' + opt.poster + ');background-size:100% auto;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + opt.video + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + opt.poster + '" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" ' + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' ) + '>\
 				</video>';
             },
             'iframe'   : function (opt) {
