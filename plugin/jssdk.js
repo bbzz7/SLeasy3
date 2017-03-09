@@ -243,6 +243,79 @@
         wx.hideMenuItems($config);
     }
 
+    //开始录音
+    jssdk.startRecord=wx.startRecord;
+
+    //停止录音
+    jssdk.stopRecord=function (translate) {
+        var dfd = $.Deferred();
+        wx.stopRecord({
+            success: function (res) {
+                var localId = res.localId;
+                if(translate){
+                    wx.translateVoice({
+                        localId: localId, // 需要识别的音频的本地Id，由录音相关接口获得
+                        isShowProgressTips: 1, // 默认为1，显示进度提示
+                        success: function (res) {
+                            dfd.resolve(res.translateResult); // 语音识别的结果
+                        }
+                    });
+                }else{
+                    dfd.resolve(localId);
+                }
+            }
+        });
+        return dfd.promise();
+    }
+
+    //播放语音
+    jssdk.playVoice=function (localId) {
+        wx.playVoice({
+            localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+        });
+    }
+
+    //暂停播放语音
+    jssdk.pauseVoice=function (localId) {
+        wx.pauseVoice({
+            localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+        });
+    }
+
+    //停止播放语音
+    jssdk.stopVoice=function (localId) {
+        wx.stopVoice({
+            localId: localId // 需要播放的音频的本地ID，由stopRecord接口获得
+        });
+    }
+
+    //录音自动停止事件
+    jssdk.onVoiceRecordEnd=function () {
+        var dfd = $.Deferred();
+        wx.onVoiceRecordEnd({
+            // 录音时间超过一分钟没有停止的时候会执行 complete 回调
+            complete: function (res) {
+                var localId = res.localId;
+                dfd.resolve(localId);
+            }
+        });
+        return dfd.promise();
+    }
+    
+    //语音播放完毕事件
+    jssdk.onVoicePlayEnd=function () {
+        var dfd = $.Deferred();
+        wx.onVoicePlayEnd({
+            success: function (res) {
+                var localId = res.localId; // 返回音频的本地ID
+                dfd.resolve(localId);
+            }
+        });
+        return dfd.promise();
+    }
+
+
+
 
 //
 })(window.jssdk = window.jssdk || {}, jQuery);
