@@ -239,7 +239,17 @@
 
             ] // 要隐藏的菜单项，只能隐藏“传播类”和“保护类”按钮，所有menu项见附录3
         };
-        $.extend($config,{menuList:itemArr});
+        if(itemArr=='strict'){
+            var strictMenu=[
+                'menuItem:share:qq',
+                'menuItem:share:weiboApp',
+                'menuItem:share:facebook',
+                'menuItem:share:QZone'
+            ];
+            $config.menuList=$config.menuList.concat(strictMenu);
+        }else{
+            $.extend($config,{menuList:itemArr});
+        }
         wx.hideMenuItems($config);
     }
 
@@ -301,7 +311,7 @@
         });
         return dfd.promise();
     }
-    
+
     //语音播放完毕事件
     jssdk.onVoicePlayEnd=function () {
         var dfd = $.Deferred();
@@ -313,7 +323,6 @@
         });
         return dfd.promise();
     }
-
 
 
 
