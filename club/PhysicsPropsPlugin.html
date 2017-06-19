@@ -29,7 +29,7 @@
   <div id="box3" class="box" style="top:240px">Drag and throw me</div>
 
 <script src="http://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
-<script src="http://115.29.102.189/lab/GSAP/1.16.1/src/minified/TweenMax.min.js"></script>
+ <script src="TweenMax.min.js"></script>
 <script src="PhysicsPropsPlugin.min.js"></script>
 <!--<script src="ClubPlugins.min.js"></script>-->
 <script>
@@ -37,10 +37,10 @@ $(function() {
 	//TweenMax.to('#box',  5, {bezier:[{x:100, y:250}, {x:300, y:0}, {x:500, y:400}], ease:Power1.easeInOut});
 	//TweenMax.to('#box',3, {physics2D:{velocity:300, angle:-60, acceleration:50, accelerationAngle:60,gravity:400}});
 	TweenMax.to('#box', 2, {physicsProps:{
-                                    x:{velocity:100, acceleration:200},
-                                    y:{velocity:200, friction:0.1}
-                                }
-                        });
+			x:{velocity:100, acceleration:200},
+        	y:{velocity:200, friction:0.1}
+     	}
+    });
 });
 </script>
 </body>

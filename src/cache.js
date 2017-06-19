@@ -51,7 +51,7 @@
             }
         ];
 
-        //策略执行OO
+        //策略执行
         return noCacheFuncs[vars]();
 
     }
