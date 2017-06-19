@@ -11,7 +11,7 @@
 
     //event bind
     SLeasy.eventBind = function () {
-        sliderBox = H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+        sliderBox = new H(document.getElementById($config.id) || document.getElementById('SLeasy'));
         sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
         //禁止触摸默认行为
@@ -52,7 +52,7 @@
             var el       = $scope.eventArr[i],
                 id       = el.id,
                 dom      = document.getElementById(id),
-                HDom     = H(dom),
+                HDom     = new H(dom),
                 e        = el.event,
                 callback = el.onEvent
                 ;
@@ -73,7 +73,7 @@
         //箭头事件绑定
         if ($config.arrowMode) {
             $("#SLeasy_arrow").css("cursor", "pointer");
-            H($("#SLeasy_arrow")[0]).on('tap', function (e) {
+            new H($("#SLeasy_arrow")[0]).on('tap', function (e) {
                 SLeasy.goSlider('+=1');
             })
         }
