@@ -75,8 +75,10 @@ gulp.task('js-min', ['js-publish'], function () {
             host + files[i] + '.js'
         ])
             .pipe($.uglify({
-                preserveComments: function (n, c) {
-                    if (c.value.indexOf('庄宇') != -1) return true
+                output: {
+                    comments: function (n, c) {
+                        if (c.value.indexOf('庄宇') != -1) return true
+                    }
                 }
             }))
             .pipe($.concat(files[i] + '.js'))
@@ -118,7 +120,7 @@ gulp.task('SLeasy-publish', ['build'], function () {
         .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
 })
 
-gulp.task('tinypng',function () {
+gulp.task('tinypng', function () {
     return gulp.src('images/*.png')
         .pipe($.tinypng('_m2Wv-QqrVpEh3pZaAdBJMBOXHS-wcqS'))
         .pipe(gulp.dest(LocalPath + 'images/'))
