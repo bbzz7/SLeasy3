@@ -113,5 +113,5 @@
     window.SLeasy = window.SLeasy || {},
     jQuery,
     Hammer,
-    TweenMax || TweenLite
+    TweenMax
 );

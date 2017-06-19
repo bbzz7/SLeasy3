@@ -6,8 +6,8 @@ var gulp = require('gulp'),
 gulp.task('build', function () {
     return gulp.src([
         'src/version.js',
-        'lib/GSAP/club.js',
-        'lib/Hammer.min.js',
+        // 'lib/GSAP/Club.js',
+        'lib/Hammer.js',
         'lib/director.js',
         'lib/store.js',
         'lib/jquery.cookie.js',

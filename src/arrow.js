@@ -48,7 +48,7 @@
         }
     }
 })(
-    window.SLeasy = window.SLeasy,
+    window.SLeasy = window.SLeasy || {},
     jQuery,
     TweenMax || TweenLite
 );
