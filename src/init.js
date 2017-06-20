@@ -6,7 +6,7 @@
     SLeasy.init = function (opt) {
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
-        $scope.viewScale=$config.viewport / $config.width;//刷新幻灯缩放比例因子
+        $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
         if (!SLeasy.isHttp()) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             $('head style').html($('head style').html() + debugStyle);
@@ -21,16 +21,16 @@
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body');//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width"            : $config.viewport + 'px',
-            "height"           : $scope.fixHeight + 'px',
-            "background-image" : $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
-            "background-color" : $config.bgColor || 'transparent',
-            "background-size"  : "100% auto",
+            "width": $config.viewport + 'px',
+            "height": $scope.fixHeight + 'px',
+            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-color": $config.bgColor || 'transparent',
+            "background-size": "100% auto",
             "background-repeat": "no-repeat",
-            "overflow"         : $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
-            "position"         : "relative",
-            "margin"           : "0 auto",
-            "display"          : "none"
+            "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
+            "position": "relative",
+            "margin": "0 auto",
+            "display": "none"
         }).fadeIn($config.motionTime * 1000);
 
         //loading资源加载
@@ -62,6 +62,15 @@
                 }
                 for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                     $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
+                    //ae序列帧
+                    var ae = $config.sliders[i].subMotion[k].ae;
+                    if (ae) {
+                        for (var n = 0; n < ae.layer.length; n++) {
+                            var layerOpt=ae.layer[n];
+                            var bitmapArr = SLeasy.addBitmaps('', layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                            totalArr.concat(bitmapArr);
+                        }
+                    }
                 }
             }
 
