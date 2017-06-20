@@ -44,8 +44,10 @@ gulp.task('build', function () {
         .pipe($.concat('SLeasy3.js'))
         .pipe(gulp.dest(SLeasyPath + 'build/'))
         .pipe($.uglify({
-            preserveComments: function (n, c) {
-                if (c.value.indexOf('庄宇') != -1) return true
+            output: {
+                comments: function (n, c) {
+                    if (c.value.indexOf('庄宇') != -1) return true
+                }
             }
         }))
         .pipe($.concat('SLeasy3.min.js'))
