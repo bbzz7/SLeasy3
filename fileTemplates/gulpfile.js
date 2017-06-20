@@ -13,7 +13,7 @@ $.tinypng = require(SLeasyPath + 'node_modules/gulp-tinypng');
 gulp.task('build', function () {
     return gulp.src([
         'src/version.js',
-        // 'lib/GSAP/Club.js',
+        // 'lib/GSAP/Club.min.js',
         'lib/Hammer.js',
         'lib/director.js',
         'lib/store.js',
