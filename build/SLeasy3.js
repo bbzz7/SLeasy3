@@ -1290,6 +1290,7 @@
                     fps   : 25,
                     repeat: 1,
                     layer : [],
+                    autoPlay : true,
                     onInit: function () {
                     }
                 }
@@ -1301,7 +1302,7 @@
                     //AE
                     var stage = $scope.aeStage[aeOpt.stage] = new createjs.Stage(aeOpt.node);
                     stage.sliderIndex = aeOpt.sliderIndex;
-                    stage.name = config.stage;
+                    stage.name = aeOpt.stage;
 
                     for (var i = 0; i < aeOpt.layer.length; i++) {
                         var layerArg  = aeOpt.layer[i],
@@ -1320,6 +1321,7 @@
 
 
                         $scope.aeLayer[layerName].time = time;
+                        $scope.aeLayer[layerName].autoPlay = aeOpt.autoPlay;
                         $scope.aeLayer[layerName].tweenData = {
                             frame     : frame,
                             roundProps: "frame",
@@ -1637,9 +1639,10 @@
                 $.extend(subShow, {
                     onStart: function () {
                         $.each($scope.aeLayer, function (index, aeLayer) {
+                            console.log(aeLayer);
                             if (aeLayer.sliderIndex == $scope.sliderIndex) {
                                 aeLayer.frame = 0;//重置帧时间线
-                                T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
+                                aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
                             }
                         });
                     }

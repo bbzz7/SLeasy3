@@ -1,17 +1,17 @@
 // SLeasy3-slider
 ;(function (SLeasy, $) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
     //html
     SLeasy.slider = function (opt) {
 
         //背景对齐策略
         var bgAlign = {
-            "top"   : 'center ' + $config.alignOffset + 'px',
+            "top": 'center ' + $config.alignOffset + 'px',
             "center": 'center ' + (($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset) + 'px',
             "bottom": 'center ' + ($scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset) + 'px',
-            "photo" : 'center center'
+            "photo": 'center center'
         }
 
         //slider label hash
@@ -62,12 +62,12 @@
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            "floats" : 'floatElement'
+            "floats": 'floatElement'
         }
 
         //不同类型子动画元素生成策略
         var subElement = {
-            "img"      : function (opt) {
+            "img": function (opt) {
                 //img to div
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -85,7 +85,7 @@
 				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
 				</div>';
             },
-            "dom"      : function (opt) {
+            "dom": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -93,7 +93,7 @@
 				<div id="' + opt.dom + '"></div>\
 				</div>';
             },
-            "html"     : function (opt) {
+            "html": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -101,7 +101,7 @@
 				' + opt.html + '\
 				</div>';
             },
-            "svg"      : function (opt) {
+            "svg": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -109,7 +109,7 @@
 				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
 				</div>';
             },
-            "canvas"   : function (opt) {
+            "canvas": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -117,7 +117,7 @@
 				<canvas id="' + opt.canvas[0] + '" class="SLeasy_canvas" width="' + opt.canvas[1] + '" height="' + opt.canvas[2] + '" style="position:absolute;top:0px;left:0px;width:' + opt.canvas[1] * $scope.viewScale + 'px;height:' + opt.canvas[2] * $scope.viewScale + 'px"></canvas>\
 				</div>';
             },
-            "text"     : function (opt) {
+            "text": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_text SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -125,7 +125,7 @@
 				' + opt.text + '\
 				</div>';
             },
-            'audio'    : function (opt) {
+            'audio': function (opt) {
                 return '<audio\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -133,7 +133,7 @@
 				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto">\
 				</audio>';
             },
-            'video'    : function (opt) {
+            'video': function (opt) {
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -141,7 +141,7 @@
 				src="' + opt.video + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + opt.poster + '" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" ' + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' ) + '>\
 				</video>';
             },
-            'iframe'   : function (opt) {
+            'iframe': function (opt) {
                 return '<iframe\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_iframe SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -149,10 +149,10 @@
 				src="' + opt.iframe + '" frameborder="0">\
 				</iframe>';
             },
-            "input"    : function (opt) {
+            "input": function (opt) {
                 //
                 var inputHtml = {
-                    'text'    : function () {
+                    'text': function () {
                         return '<input type="' + opt.input + '"\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
@@ -168,7 +168,7 @@
 						style="border:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
 						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"></textArea>';
                     },
-                    'select'  : function () {
+                    'select': function () {
                         var opitionHtml = '';
                         for (var i = 0; i < opt.opition.length; i++) {
                             var row = '<option value="' + opt.opition[i][1] + '">' + opt.opition[i][0] + '</option>';
@@ -184,7 +184,7 @@
 
                 return inputHtml[opt.input]();
             },
-            "plugin"   : function (opt) {
+            "plugin": function (opt) {
                 var id = 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index;
                 //把插件初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
                 $scope.pluginList.push([opt.plugin[0], $.extend(opt.plugin[1], {node: id}), opt.plugin[2]]);
@@ -193,7 +193,7 @@
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				</div>';
             },
-            "ae"       : function (opt) {
+            "ae": function (opt) {
                 //添加ae渲染层
                 SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit) {
                     SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
@@ -218,7 +218,14 @@
                     TweenMax.ticker.addEventListener("tick", function () {
                         $scope.aeLayer[layerName].removeAllChildren();
                         //根据当前序列容器的frame值添加相应索引值的位图对象
-                        $scope.aeLayer[layerName].addChild($scope.aeBitmaps[layerName][$scope.aeLayer[layerName].frame]);
+                        var frameIndex = Math.round($scope.aeLayer[layerName].frame);
+                        if (frameIndex <= start) {
+                            frameIndex = start;
+                        } else if (frameIndex >= end) {
+                            frameIndex = end;
+                        }
+                        var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
+                        $scope.aeLayer[layerName].addChild(aeFrame);
                     });
 
                     return $scope.aeLayer[layerName];
@@ -228,18 +235,18 @@
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     var frame = Math.abs(aeOpt.end - aeOpt.start),
-                        time  = frame / (aeOpt.fps || 25);
+                        time = frame / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
                     aeTl.add(
                         TweenMax.to(aeOpt.aeLayer, time,
                             {
                                 roundProps: "frame",
-                                frame     : aeOpt.end,
-                                ease      : SteppedEase.config(frame),
-                                repeat    : aeOpt.repeat,
-                                onStart   : aeOpt.onStart,
-                                onUpdate  : aeOpt.onUpdate,
+                                frame: aeOpt.end,
+                                ease: SteppedEase.config(frame),
+                                repeat: aeOpt.repeat,
+                                onStart: aeOpt.onStart,
+                                onUpdate: aeOpt.onUpdate,
                                 onComplete: aeOpt.onComplete,
                             }
                         ), '+=' + (aeOpt.offsetTime || 0)
@@ -248,12 +255,13 @@
 
 
                 var config = {
-                    stage : '_stage_',
-                    width : '640',
+                    stage: '_stage_',
+                    width: '640',
                     height: '1136',
-                    fps   : 25,
+                    fps: 25,
                     repeat: 1,
-                    layer : [],
+                    layer: [],
+                    autoPlay: true,
                     onInit: function () {
                     }
                 }
@@ -265,32 +273,33 @@
                     //AE
                     var stage = $scope.aeStage[aeOpt.stage] = new createjs.Stage(aeOpt.node);
                     stage.sliderIndex = aeOpt.sliderIndex;
-                    stage.name = config.stage;
+                    stage.name = aeOpt.stage;
 
                     for (var i = 0; i < aeOpt.layer.length; i++) {
-                        var layerArg  = aeOpt.layer[i],
+                        var layerArg = aeOpt.layer[i],
                             layerName = layerArg[0],
-                            addAt     = 'auto',
-                            prefix    = layerArg[1],
-                            start     = layerArg[2],
-                            end       = layerArg[3],
-                            suffix    = layerArg[4],
-                            bit       = layerArg[5];
+                            addAt = 'auto',
+                            prefix = layerArg[1],
+                            start = layerArg[2],
+                            end = layerArg[3],
+                            suffix = layerArg[4],
+                            bit = layerArg[5];
 
                         $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit);
 
                         var frame = end - start,
-                            time  = frame / (aeOpt.fps || 25);
+                            time = frame / (aeOpt.fps || 25);
 
 
                         $scope.aeLayer[layerName].time = time;
+                        $scope.aeLayer[layerName].autoPlay = aeOpt.autoPlay;
                         $scope.aeLayer[layerName].tweenData = {
-                            frame     : frame,
+                            frame: frame,
                             roundProps: "frame",
-                            ease      : SteppedEase.config(frame),
-                            repeat    : aeOpt.repeat,
-                            onStart   : aeOpt.onStart,
-                            onUpdate  : aeOpt.onUpdate,
+                            ease: SteppedEase.config(frame),
+                            repeat: aeOpt.repeat,
+                            onStart: aeOpt.onStart,
+                            onUpdate: aeOpt.onUpdate,
                             onComplete: aeOpt.onComplete
                         }
                     }
@@ -300,7 +309,7 @@
                         stage.update();
                     });
 
-                    //console.log(stage);
+                    console.log(stage);
                     return stage;
 
                 }
@@ -347,8 +356,8 @@
 
             if (subMotion['event']) {
                 var info = {
-                    id     : 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                    event  : subMotion.event,
+                    id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                    event: subMotion.event,
                     onEvent: subMotion.onEvent,
                 }
                 $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈

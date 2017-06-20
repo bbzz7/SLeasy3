@@ -45,6 +45,14 @@
 
 <script>
     $(function() {
+		TweenMax.to($('#box2'), 5, {
+			throwProps:{
+				x:{velocity:500, max:100, min:0}, 
+				y:{velocity:100, max:100, min:0}
+			},
+			ease:Expo.easeIn
+		});
+		
         //create the grid (feel free to tweak any of these numbers)
         var gridWidth = 200,
             gridHeight = 100,

@@ -77,9 +77,10 @@
                 $.extend(subShow, {
                     onStart: function () {
                         $.each($scope.aeLayer, function (index, aeLayer) {
+                            // console.log(aeLayer);
                             if (aeLayer.sliderIndex == $scope.sliderIndex) {
                                 aeLayer.frame = 0;//重置帧时间线
-                                T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
+                                aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
                             }
                         });
                     }
