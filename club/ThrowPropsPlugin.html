@@ -45,14 +45,7 @@
 
 <script>
     $(function() {
-		TweenMax.to($('#box2'), 5, {
-			throwProps:{
-				x:{velocity:500, max:100, min:0}, 
-				y:{velocity:100, max:100, min:0}
-			},
-			ease:Expo.easeIn
-		});
-		
+		ThrowPropsPlugin.to($("#box2"), 2, {throwProps:{x:{velocity:500, max:300, min:0}, y:{velocity:400, max:200, min:0}}});		
         //create the grid (feel free to tweak any of these numbers)
         var gridWidth = 200,
             gridHeight = 100,
@@ -82,7 +75,7 @@
 		var obj={f:0};
 		mc.on('swipeup',function(e){
 			console.log('v:'+e.velocityY);
-			var y=e.velocityY*30;
+			var y=e.velocityY*60;
 			ThrowPropsPlugin.to(obj, {throwProps:{f:{velocity:y}},onUpdate:function(){
 				if(obj.f>300){
 					obj.f=300;	
@@ -96,7 +89,7 @@
 		
 		mc.on('swipedown',function(e){
 			console.log(e.velocityY);
-			var y=e.velocityY*30;
+			var y=e.velocityY*60;
 			ThrowPropsPlugin.to(obj, {throwProps:{f:{velocity:y}},onUpdate:function(){
 				if(obj.f>300){
 					obj.f=300;	
