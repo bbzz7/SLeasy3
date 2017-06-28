@@ -121,7 +121,7 @@
     //load
     SLeasy.loader.load = function (loadArr) {
         var dfd = $.Deferred();
-        SLeasy.loader.show();
+        $config.preload && SLeasy.loader.show();
 
         var loaded = 0;
 
