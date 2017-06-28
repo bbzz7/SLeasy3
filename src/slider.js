@@ -205,6 +205,8 @@
                     }
                     $scope.aeLayer[layerName] = new createjs.Container();
                     $scope.aeLayer[layerName].frame = 0;
+                    $scope.aeLayer[layerName].start = start;
+                    $scope.aeLayer[layerName].end = end;
                     $scope.aeLayer[layerName].name = layerName;//设置该渲染层name,以便回调中获取
                     $scope.aeLayer[layerName].sliderIndex = stageObj.sliderIndex;
                     if (addAt == 'auto') {
@@ -219,10 +221,10 @@
                         $scope.aeLayer[layerName].removeAllChildren();
                         //根据当前序列容器的frame值添加相应索引值的位图对象
                         var frameIndex = Math.round($scope.aeLayer[layerName].frame);
-                        if (frameIndex <= start) {
-                            frameIndex = start;
-                        } else if (frameIndex >= end) {
-                            frameIndex = end;
+                        if (frameIndex < start) {
+                            frameIndex = $scope.aeLayer[layerName].frame = start;
+                        } else if (frameIndex > end) {
+                            frameIndex = $scope.aeLayer[layerName].frame = end;
                         }
                         var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
                         $scope.aeLayer[layerName].addChild(aeFrame);
@@ -256,8 +258,8 @@
 
                 var config = {
                     stage: '_stage_',
-                    width: '640',
-                    height: '1136',
+                    width: 640,
+                    height: 1136,
                     fps: 25,
                     repeat: 1,
                     layer: [],
@@ -320,6 +322,7 @@
                 config.sliderIndex = sliderIndex;//并入当前ae插件所在的幻灯索引值
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
+                console.log(config);
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_canvas SLeasy_' + (subName[opt.type] || opt.type) + '"\
