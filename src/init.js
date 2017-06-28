@@ -35,7 +35,7 @@
 
         //loading资源加载
         return SLeasy.loader.load(getLoadArr()).done(function () {//资源加载
-            console.log(getLoadArr());
+            console.log($scope.totalLoad);
             SLeasy.boot();
         });
 
@@ -43,7 +43,6 @@
         //获取预加载图片url
         function getLoadArr() {
             var totalArr = [];
-
             //幻灯容器背景
             if ($config.bg) totalArr.push(SLeasy.path($config.host, $config.bg));
 
@@ -66,9 +65,11 @@
                     var ae = $config.sliders[i].subMotion[k].ae;
                     if (ae) {
                         for (var n = 0; n < ae.layer.length; n++) {
-                            var layerOpt=ae.layer[n];
-                            var bitmapArr = SLeasy.addBitmaps('', layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                            totalArr.concat(bitmapArr);
+                            var layerOpt = ae.layer[n];
+                            console.log(layerOpt);
+                            var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                            // console.log(bitmapArr);
+                            totalArr = totalArr.concat(bitmapArr);
                         }
                     }
                 }
@@ -101,15 +102,11 @@
                 totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
             }
 
-            //位图序列
-            $.each($scope.bitmaps, function (index, value) {
-                totalArr = totalArr.concat($scope.bitmaps[index]);
-            })
 
             //return
             if (!$config.preload) {
                 $scope.totalLoad = totalArr;
-                return;//是否进行预加载
+                return null;//是否进行预加载
             } else {
                 //console.log(totalArr);
                 return totalArr;
