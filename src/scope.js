@@ -258,7 +258,7 @@
             picUrlArr.push(picUrl);
         }
 
-        //if (!layerName) return picUrlArr;
+        if (!layerName) return picUrlArr;
 
         //合并位图序列
         if ($scope.bitmaps[layerName] && $scope.bitmaps[layerName].length) {
