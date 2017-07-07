@@ -37,6 +37,7 @@
         //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
+            $scope[type+'TimeLine']=tl;
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeLine;
@@ -77,9 +78,10 @@
                 $.extend(subShow, {
                     onStart: function () {
                         $.each($scope.aeLayer, function (index, aeLayer) {
-                            // console.log(aeLayer);
+                            console.log(aeLayer.name);
                             if (aeLayer.sliderIndex == $scope.sliderIndex) {
                                 aeLayer.frame = 0;//重置帧时间线
+                                console.log(aeLayer)
                                 aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
                             }
                         });

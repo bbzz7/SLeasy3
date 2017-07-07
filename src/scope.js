@@ -234,20 +234,29 @@
         e.preventDefault();
         e.stopPropagation();
     }
-    SLeasy.touchScroll = function (alowTouchmove, alowSwipe) {
+    SLeasy.touchScroll = function (allowTouchmove, allowSwipe) {
         //触摸滑动默认行为
-        if (alowTouchmove) {
+        if (allowTouchmove) {
             document.removeEventListener("touchmove", stopDefaultScroll, false);
         } else {
             document.addEventListener("touchmove", stopDefaultScroll, false);
         }
 
         //幻灯全局swipe
-        if (alowSwipe) {
-            SLeasy.hammerObj().get('swipe').set({enable: true});
-        } else {
-            SLeasy.hammerObj().get('swipe').set({enable: false});
+        if($.isEmptyObject($config.loading)){
+            if (allowSwipe) {
+                SLeasy.hammerObj().get('swipe').set({enable: true});
+            } else {
+                SLeasy.hammerObj().get('swipe').set({enable: false});
+            }
+        }else if(!$.isEmptyObject($config.loading) && $scope.loadingReady){
+            if (allowSwipe) {
+                SLeasy.hammerObj().get('swipe').set({enable: true});
+            } else {
+                SLeasy.hammerObj().get('swipe').set({enable: false});
+            }
         }
+
     }
 
     //生成图片序列

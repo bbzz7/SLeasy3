@@ -1,5 +1,5 @@
 // SLeasy3-slider
-;(function (SLeasy, $) {
+;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
@@ -31,10 +31,9 @@
 			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			position:absolute; display:none;\
+			position:absolute; display:' + (opt.display || 'none') + ';\
 			-webkit-overflow-scrolling:touch;\
 			">';
-
         function sliderBg() {
             if (!opt.bg) return 'none';
             if (typeof opt.bg == 'string') {
@@ -137,8 +136,8 @@
                 return '<video\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="background-image:url(' + opt.poster + ');background-size:100% auto;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + opt.video + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + opt.poster + '" x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait" ' + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' ) + '>\
+				style="' + (opt.poster ? 'background-image:url(' + opt.poster + ');background-size:100% auto;' : '') + 'position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
+				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + opt.poster + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' ) + ' preload="' + (opt.preload || 'auto') + '">\
 				</video>';
             },
             'iframe': function (opt) {
@@ -240,19 +239,27 @@
                         time = frame / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
-                    aeTl.add(
-                        TweenMax.to(aeOpt.aeLayer, time,
-                            {
-                                roundProps: "frame",
-                                frame: aeOpt.end,
-                                ease: SteppedEase.config(frame),
-                                repeat: aeOpt.repeat,
-                                onStart: aeOpt.onStart,
-                                onUpdate: aeOpt.onUpdate,
-                                onComplete: aeOpt.onComplete,
-                            }
-                        ), '+=' + (aeOpt.offsetTime || 0)
+                    aeTl.fromTo(
+                        aeOpt.aeLayer, time,
+                        {
+                            frame: aeOpt.start
+                        },
+                        {
+                            roundProps: "frame",
+                            frame: aeOpt.end,
+                            ease: SteppedEase.config(frame),
+                            repeat: aeOpt.repeat,
+                            onStart: aeOpt.onStart,
+                            onUpdate: aeOpt.onUpdate,
+                            onComplete: aeOpt.onComplete,
+                        },
+                        '+=' + (aeOpt.offsetTime || 0)
                     );
+                }
+
+                //停止渲染层
+                SLeasy.stopAeLayer = function (name) {
+                    T.killTweensOf($scope.aeLayer[name]);
                 }
 
 
@@ -291,7 +298,6 @@
 
                         var frame = end - start,
                             time = frame / (aeOpt.fps || 25);
-
 
                         $scope.aeLayer[layerName].time = time;
                         $scope.aeLayer[layerName].autoPlay = aeOpt.autoPlay;
@@ -373,5 +379,6 @@
 
 })(
     window.SLeasy = window.SLeasy || {},
-    jQuery
+    jQuery,
+    TweenMax || TweenLite
 );

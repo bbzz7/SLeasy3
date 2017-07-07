@@ -119,9 +119,10 @@
     }
 
     //load
-    SLeasy.loader.load = function (loadArr) {
+    SLeasy.loader.load = function (loadArr, showLoading) {
         var dfd = $.Deferred();
-        $config.preload && SLeasy.loader.show();
+        var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
+        _showLoading && SLeasy.loader.show();
 
         var loaded = 0;
 
@@ -139,7 +140,11 @@
                 $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                 dfd.notify(SLeasy.loader.percent);
                 if (SLeasy.loader.percent >= 100) {
-                    $config.on['loaded'](); //预加载完毕回调
+                    if ($scope.loadingReady) {
+                        $config.loading.onLoaded();//自定义预加载完毕回调
+                    } else {
+                        $config.on['loaded'](); //预加载完毕回调
+                    }
                     dfd.resolve($config, $scope);
                 } else {
                     _load(loadArr);
