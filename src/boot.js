@@ -22,6 +22,7 @@
             //音乐初始化
             musicHtml = SLeasy.music.init();
             $scope.sliderBox.html($scope.sliderBox.html() + loadingHtml + musicHtml);
+            SLeasy.float();//浮动元素初始化
             $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
 
             SLeasy.fixPosition([$config.loading]);
@@ -64,7 +65,7 @@
             $scope.sliderBox.append(sliderHtml + detailHtml + musicHtml);
 
             SLeasy.loader.hidden();//隐藏loading
-            SLeasy.float();//浮动元素初始化
+            $.isEmptyObject($config.loading) && SLeasy.float();//浮动元素初始化
             SLeasy.arrow.init($config.arrowColor);//箭头初始化
             $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
 

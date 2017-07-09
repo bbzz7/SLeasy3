@@ -119,35 +119,67 @@
     }
 
     //load
-    SLeasy.loader.load = function (loadArr, showLoading) {
+    SLeasy.loader.load = function (urlArr, loadType, showLoading) {
+        var stime = new Date().getTime();
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
+        var _loadType = loadType || 'sq';
         _showLoading && SLeasy.loader.show();
 
         var loaded = 0;
 
-        (loadArr && loadArr.length) ? _load(loadArr) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
+        (urlArr && urlArr.length) ? ((loadType == 'multi' && ($.isEmptyObject($config.loading) || $scope.loadingReady)) ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
         function _load(loadArr) {
             var img = new Image();
             img.src = loadArr[loaded];
-            console.log('开始加载：' + img.src);
+            console.log(':::::开始加载：' + img.src);
             img.onload = function () {
-                loaded++;
-                //console.log(loaded);
-                SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
-                SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
-                $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                dfd.notify(SLeasy.loader.percent);
-                if (SLeasy.loader.percent >= 100) {
-                    if ($scope.loadingReady) {
-                        $config.loading.onLoaded();//自定义预加载完毕回调
+                setTimeout(function () {
+                    loaded++;
+                    //console.log(loaded);
+                    SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
+                    SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                    $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
+                    dfd.notify(SLeasy.loader.percent);
+                    if (SLeasy.loader.percent >= 100) {
+                        console.log((new Date().getTime() - stime) / 1000)
+                        if ($scope.loadingReady) {
+                            $config.loading.onLoaded();//自定义预加载完毕回调
+                        } else {
+                            $config.on['loaded'](); //预加载完毕回调
+                        }
+                        dfd.resolve($config, $scope);
                     } else {
-                        $config.on['loaded'](); //预加载完毕回调
+                        _load(loadArr);
                     }
-                    dfd.resolve($config, $scope);
-                } else {
-                    _load(loadArr);
+                }, 1)
+            }
+        }
+
+        function _multiLoad(loadArr) {
+            for (var i = 0; i < loadArr.length; i++) {
+                var img = new Image();
+                img.src = loadArr[i];
+                console.log(':::::开始加载：' + img.src);
+                img.onload = function () {
+                    setTimeout(function () {
+                        loaded++;
+                        //console.log(loaded);
+                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
+                        SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                        $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
+                        dfd.notify(SLeasy.loader.percent);
+                        if (SLeasy.loader.percent >= 100) {
+                            console.log((new Date().getTime() - stime) / 1000 + '秒');
+                            if ($scope.loadingReady) {
+                                $config.loading.onLoaded();//自定义预加载完毕回调
+                            } else {
+                                $config.on['loaded'](); //预加载完毕回调
+                            }
+                            dfd.resolve($config, $scope);
+                        }
+                    }, 1)
                 }
             }
         }

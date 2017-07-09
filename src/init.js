@@ -34,7 +34,7 @@
         }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
 
         //loading资源加载
-        return SLeasy.loader.load(SLeasy.getLoadArr($config)).progress(function (percent) {
+        return SLeasy.loader.load(SLeasy.getLoadArr($config),$config.loader.loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
@@ -55,7 +55,7 @@
             SLeasy.boot();
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.init($config);
-                $config.loading.onStartLoad();
+                $config.loading.onStartLoad && $config.loading.onStartLoad();
             }
         });
     }
