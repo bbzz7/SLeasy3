@@ -128,7 +128,7 @@
 
         var loaded = 0;
 
-        (urlArr && urlArr.length) ? ((loadType == 'multi' && ($.isEmptyObject($config.loading) || $scope.loadingReady)) ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
+        (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
         function _load(loadArr) {
             var img = new Image();
@@ -138,7 +138,7 @@
                 setTimeout(function () {
                     loaded++;
                     //console.log(loaded);
-                    SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
+                    SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
                     SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
                     $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                     dfd.notify(SLeasy.loader.percent);
@@ -166,7 +166,7 @@
                     setTimeout(function () {
                         loaded++;
                         //console.log(loaded);
-                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ($config.loader.endAt / 100));
+                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
                         SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
                         $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                         dfd.notify(SLeasy.loader.percent);

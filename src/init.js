@@ -54,8 +54,8 @@
             console.log($scope.totalLoad);
             SLeasy.boot();
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                SLeasy.init($config);
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
+                SLeasy.init($config);
             }
         });
     }
