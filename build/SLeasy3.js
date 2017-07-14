@@ -526,7 +526,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
             style: 0,//loading内置式样索引或自定义html
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
-            loadType:'sq',
+            loadType:'multi',
             loadedTips:false
         },
 
@@ -1146,7 +1146,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' ' + (typeof opt.toDiv != 'undefined' && !opt.toDiv ? 'noDiv' : 'toDiv') + '"\
-				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';-webkit-overflow-scrolling:touch">\
 				<img src="' + SLeasy.path($config.host, opt.img) + '">\
 				</div>';
             },
@@ -1212,7 +1212,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="' + (opt.poster ? 'background-image:url(' + opt.poster + ');background-size:100% auto;' : '') + 'position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + opt.poster + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline' ) + ' preload="' + (opt.preload || 'auto') + '">\
+				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (opt.poster || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline="true" playsinline="true"' ) + ' preload="' + (opt.preload || 'auto') + '">\
 				</video>';
             },
             'iframe': function (opt) {
@@ -1619,7 +1619,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 // SLeasy3-subMotion
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
 
     //subMotion,参数:为单个slider/detail配置对象数据
@@ -1631,7 +1631,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            'floats' : 'floatElement',
+            'floats': 'floatElement',
         }
 
 
@@ -1645,7 +1645,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
             "details": function () {
                 $config.on['detailMotion']($scope.detailIndex)
             },//详情页子元素动画开始回调
-            'floats' : ''
+            'floats': ''
         }
 
         //console.log(subMotionArr);
@@ -1655,7 +1655,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
         //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
-            $scope[type+'TimeLine']=tl;
+            $scope[type + 'TimeLine'] = tl;
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeLine;
@@ -1665,45 +1665,51 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 
         var totalTime = 0, startTime = 0;
         for (var i = 0; i < count; i++) {
-            var subMotion    = subMotionArr[i],//当前子动画
+            var subMotion = subMotionArr[i],//当前子动画
                 preSubMotion = subMotionArr[i - 1],//上一子动画
-                $dom         = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
-                time         = subMotion.time || 0,//time
-                preTime      = preSubMotion && preSubMotion.time ? preSubMotion.time : 0,
+                $dom = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
+                time = subMotion.time || 0,//time
+                preTime = preSubMotion && preSubMotion.time ? preSubMotion.time : 0,
                 /*
                  如果是第一个子动画，则当前子动画总时间累加值为，当前子动画时间，
                  如果不是第一个子动画，则当前子动画总时间累加值为，当前子动画时间:
-                    如果当前子动画有设置start值:
-                        如果preTime - subMotion.start > subMotion.time，累加0
-                        否则累加subMotion.time - (preTime - subMotion.start)
-                    如果当前子动画没有设置start值，则累加上一子动画的运动时间
+                 如果当前子动画有设置start值:
+                 如果preTime - subMotion.start > subMotion.time，累加0
+                 否则累加subMotion.time - (preTime - subMotion.start)
+                 如果当前子动画没有设置start值，则累加上一子动画的运动时间
                  */
-                totalTime    = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : subMotion.time,
+                totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : subMotion.time,
                 /*
                  如果是第一个子动画，则子动画开始时间为幻灯页运动完成的时间，
                  如果不是第一个子动画，则之前累加的startTime，加上当前的start值:
-                    如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
-                    如果当前子动画没有设置运动时间time，则直接加0
+                 如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
+                 如果当前子动画没有设置运动时间time，则直接加0
                  */
-                startTime    = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
-                subIn        = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow      = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
-                set          = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
+                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
+                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
                 //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
                 $.extend(subShow, {
-                    onStart: function () {
-                        $.each($scope.aeLayer, function (index, aeLayer) {
-                            console.log(aeLayer.name);
-                            if (aeLayer.sliderIndex == $scope.sliderIndex) {
-                                aeLayer.frame = 0;//重置帧时间线
-                                console.log(aeLayer)
-                                aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
-                            }
-                        });
-                    }
+                    onStart: (function (_$dom,_subMotion) {
+                        return function () {
+                            console.log(_$dom);
+                            console.log(_subMotion);
+                            $.each(_subMotion.ae.layer, function (index, layer) {
+                                console.log(layer);
+                                var layerName = layer[0];
+                                var aeLayer = $scope.aeLayer[layerName];
+                                if (aeLayer.sliderIndex == $scope.sliderIndex) {
+                                    aeLayer.frame = 0;//重置帧时间线
+                                    console.log(aeLayer)
+                                    aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
+                                }
+                            });
+                        }
+                    })($dom,subMotion)
                 })
             }
 
@@ -1731,11 +1737,11 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
             if (subMotion.to) {
                 for (
                     var j = 0; j < subMotion.to.length; j++) {
-                    var to         = $.extend({force3D: true}, subMotion.to[j]),
-                        preTo      = subMotion.to[j - 1] || {},
-                        time       = to.time || 0.4,
+                    var to = $.extend({force3D: true}, subMotion.to[j]),
+                        preTo = subMotion.to[j - 1] || {},
+                        time = to.time || 0.4,
                         offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间
-                        ;
+                    ;
 
                     var dom = $(SLeasy.label(to.el));
                     //console.log('===========================');
@@ -2193,7 +2199,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                 }
             }),
             _set     = $.extend({zIndex: 1}, detail.set) || {};
-
+        console.log(detail);
 
         return {
             in  : _in,
@@ -2216,7 +2222,6 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
             FX     = SLeasy.detailFX(index),
             time   = detail.time || $config.motionTime
             ;
-
         //详情页打开回调
         $config.on['detailOpen'](index);
 
@@ -2516,7 +2521,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 
     //musicBt:[1,'http://xxx/musicBt.png',60,60,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
     SLeasy.music.bt = function () {
-        if($("#SLeasy_musicBt").length()) return;
+        if($("#SLeasy_musicBt").length) return;
 
         var base64 = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAABYCAYAAACONxXWAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNi1jMTExIDc5LjE1ODMyNSwgMjAxNS8wOS8xMC0wMToxMDoyMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTUgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NEUxQUE2RjlFODUyMTFFNThCQzNDMkEyRUVFRkQxNUQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NEUxQUE2RkFFODUyMTFFNThCQzNDMkEyRUVFRkQxNUQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo0RTFBQTZGN0U4NTIxMUU1OEJDM0MyQTJFRUVGRDE1RCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo0RTFBQTZGOEU4NTIxMUU1OEJDM0MyQTJFRUVGRDE1RCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PjjeU1sAAAcmSURBVHja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',
             imgUrl = $config.musicBt[1] || base64;
