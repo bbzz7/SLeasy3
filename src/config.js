@@ -49,7 +49,7 @@
             style: 0,//loading内置式样索引或自定义html
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
-            loadType:'sq',
+            loadType:'multi',
             loadedTips:false
         },
 
