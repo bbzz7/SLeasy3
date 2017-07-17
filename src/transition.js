@@ -44,12 +44,16 @@
                     } else if (_arr[0] == '+') {
                         nextIndex = ($scope.sliderIndex + parseInt(_arr[1]) > totalIndex) ? totalIndex : $scope.sliderIndex + parseInt(_arr[1]);
                     } else {
-                        return alert('幻灯跳转索引值错误！');
+                        SLeasy.goSlider(0);
+                        return console.warn('幻灯跳转索引值错误！');
                     }
                 },
             }
 
-            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
+            if (typeof indexType[(typeof index)] == 'undefined'){
+                SLeasy.goSlider(0);
+                return console.warn('幻灯索引参数错误~！');
+            }
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -67,12 +71,15 @@
                     } else if (_arr[0] == '+') {
                         nextIndex = ($scope.sliderIndex + parseInt(_arr[1])) % total;
                     } else {
-                        return alert('幻灯跳转索引值错误！');
+                        SLeasy.goSlider(0);
+                        return console.warn('幻灯跳转索引值错误！');
                     }
                 },
             }
-            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
-            ;
+            if (typeof indexType[(typeof index)] == 'undefined'){
+                SLeasy.goSlider(0);
+                return console.warn('幻灯索引参数错误~！');
+            };
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;

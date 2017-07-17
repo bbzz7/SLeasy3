@@ -1950,12 +1950,16 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                     } else if (_arr[0] == '+') {
                         nextIndex = ($scope.sliderIndex + parseInt(_arr[1]) > totalIndex) ? totalIndex : $scope.sliderIndex + parseInt(_arr[1]);
                     } else {
-                        return alert('幻灯跳转索引值错误！');
+                        SLeasy.goSlider(0);
+                        return console.warn('幻灯跳转索引值错误！');
                     }
                 },
             }
 
-            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
+            if (typeof indexType[(typeof index)] == 'undefined'){
+                SLeasy.goSlider(0);
+                return console.warn('幻灯索引参数错误~！');
+            }
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -1973,12 +1977,15 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                     } else if (_arr[0] == '+') {
                         nextIndex = ($scope.sliderIndex + parseInt(_arr[1])) % total;
                     } else {
-                        return alert('幻灯跳转索引值错误！');
+                        SLeasy.goSlider(0);
+                        return console.warn('幻灯跳转索引值错误！');
                     }
                 },
             }
-            if (typeof indexType[(typeof index)] == 'undefined') return alert('幻灯索引参数错误~！');
-            ;
+            if (typeof indexType[(typeof index)] == 'undefined'){
+                SLeasy.goSlider(0);
+                return console.warn('幻灯索引参数错误~！');
+            };
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -2165,7 +2172,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 // SLeasy3-detail
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
 
     //goDetail
@@ -2183,12 +2190,12 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
     }
 
     SLeasy.detailFX = function (index) {
-        var detail   = $config.details[index] || (alert('详情页索引参数错误~！')),
+        var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
             motionFX = detail.motionFX || null,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
-            _in      = $.extend(motionFX.in, {display: 'block'}),
-            _show    = $.extend(motionFX.show, {
-                onStart   : function (e) {
+            _in = $.extend(motionFX.in, {display: 'block'}),
+            _show = $.extend(motionFX.show, {
+                onStart: function (e) {
                     detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
                     detail.onStart && detail.onStart();
                     SLeasy.subMotion(detail.subMotion, 'details');
@@ -2198,30 +2205,31 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                     detail.onComplete && detail.onComplete();
                 }
             }),
-            _set     = $.extend({zIndex: 1}, detail.set) || {};
-        console.log(detail);
+            _set = $.extend({zIndex: 1}, detail.set) || {};
+
 
         return {
-            in  : _in,
+            in: _in,
             show: _show,
-            set : _set
+            set: _set
         }
 
     }
 
     SLeasy.detailTransit = function (index) {
         //如果详情页处于打开状态未关闭，则return
-        if ($scope.isDetail) return;
+        if ($scope.isDetail || !$config.details[index]) return SLeasy.goSlider(0);
         //索引边界检查
         if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
 
         $scope.detailIndex = index;
 
         var detail = $config.details[index],
-            dom    = $scope.details.eq(index),
-            FX     = SLeasy.detailFX(index),
-            time   = detail.time || $config.motionTime
-            ;
+            dom = $scope.details.eq(index),
+            FX = SLeasy.detailFX(index),
+            time = detail.time || $config.motionTime
+        ;
+
         //详情页打开回调
         $config.on['detailOpen'](index);
 
@@ -2245,24 +2253,24 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 
 
     //closeDetail
-    SLeasy.closeDetail = function (index,callback) {
+    SLeasy.closeDetail = function (index, callback) {
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             var sliderHash = $scope.router.getRoute(1)
             $scope.router.setRoute(1, 'html');//设置路由
         } else {
-            SLeasy.closeDetailTransit(nextIndex,callback);
+            SLeasy.closeDetailTransit(nextIndex, callback);
         }
     }
 
-    SLeasy.closeDetailTransit = function (index,callback) {
+    SLeasy.closeDetailTransit = function (index, callback) {
         //如果详情页处于打开状态未关闭，则return
         if (!$scope.isDetail) return;
         //索引边界检查
         if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
 
-        var detail     = $config.details[index],
-            dom        = $scope.details.eq(index),
+        var detail = $config.details[index],
+            dom = $scope.details.eq(index),
             onComplete = {
                 onComplete: function () {
                     console.log(dom);
@@ -2276,9 +2284,9 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
                 }
             },
-            FX         = SLeasy.detailFX(index),
-            time       = detail.time || $config.motionTime
-            ;
+            FX = SLeasy.detailFX(index),
+            time = detail.time || $config.motionTime
+        ;
 
         //详情页关闭回调
         $config.on['detailClose'](index);
@@ -2960,7 +2968,6 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 
                 //如果详情索引为'html'，则关闭详情页
                 if (detailIndex == 'html') {
-
                     console.log('当前幻灯索引：' + sliderIndex);
                     console.log('当前详情页索引：' + detailIndex);
                     var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
@@ -2972,8 +2979,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                 } else {
                     console.log('当前幻灯索引：' + sliderIndex);
                     console.log('当前详情页索引：' + detailIndex);
-
-                    if (typeof detailIndex == 'undefined') $scope.router.setRoute(1, 'html');//设置路由
+                    if (typeof detailIndex == 'undefined' || detailIndex==='') $scope.router.setRoute(1, 'html');//设置路由
 
 
                     //如果子动画状态为未完成，则执行幻灯切换+子动画（刷新的情况）
@@ -2993,6 +2999,10 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
         var cfg = {
             on: function () {
                 console.log('router action~~~');
+            },
+            notfound:function () {
+                console.log('no router match~~~');
+                SLeasy.goSlider(0);
             }
         }
         var router = new Router($.extend(def, {}));

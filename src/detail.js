@@ -19,7 +19,7 @@
     }
 
     SLeasy.detailFX = function (index) {
-        var detail = $config.details[index] || (alert('详情页索引参数错误~！')),
+        var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
             motionFX = detail.motionFX || null,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
             _in = $.extend(motionFX.in, {display: 'block'}),
@@ -47,7 +47,7 @@
 
     SLeasy.detailTransit = function (index) {
         //如果详情页处于打开状态未关闭，则return
-        if ($scope.isDetail) return;
+        if ($scope.isDetail || !$config.details[index]) return SLeasy.goSlider(0);
         //索引边界检查
         if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
 
