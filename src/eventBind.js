@@ -67,7 +67,7 @@
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
                 } else {
-                    HDom.on(e, callback);//事件绑定
+                    HDom.off(e).on(e, callback);//事件绑定
                 }
 
             }
@@ -102,7 +102,7 @@
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
                 } else {
-                    HDom.on(e, callback);//事件绑定
+                    HDom.off(e).on(e, callback);//事件绑定
                 }
 
             }

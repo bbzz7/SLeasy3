@@ -32,7 +32,7 @@
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
 
-            SLeasy.eventBind(false);//事件绑定
+            // SLeasy.eventBind(false);//事件绑定
 
             SLeasy.subMotion($config.loading.subMotion, 'loading');
 
