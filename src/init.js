@@ -16,7 +16,9 @@
             };//设置console.log输出
         }
         console.log($config);
-        SLeasy.viewport();//设置视口
+        if($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)){
+            SLeasy.viewport();//设置视口
+        }
 
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body'), $config.id = 'SLeasy';//slide容器dom引用缓存
