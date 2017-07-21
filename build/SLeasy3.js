@@ -328,11 +328,19 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
     };
 
     device.portrait = function () {
-        return (window.innerHeight / window.innerWidth) > 1;
+        if (typeof window.orientation != 'undefined') {
+            return Math.abs(window.orientation)===0;
+        }else{
+            return (window.innerHeight / window.innerWidth) > 1;
+        }
     };
 
     device.landscape = function () {
-        return (window.innerHeight / window.innerWidth) < 1;
+        if (typeof window.orientation != 'undefined') {
+            return Math.abs(window.orientation)===90;
+        }else{
+            return (window.innerHeight / window.innerWidth) < 1;
+        }
     };
 
     // Public Utility Functions
@@ -437,11 +445,11 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
         if (device.landscape()) {
             removeClass("portrait");
             addClass("landscape");
-            window.SLeasy && SLeasy.onResize && SLeasy.onResize();
+            window.SLeasy && SLeasy.onResize && SLeasy.onResize('横屏');
         } else {
             removeClass("landscape");
             addClass("portrait");
-            window.SLeasy && SLeasy.onResize && SLeasy.onResize();
+            window.SLeasy && SLeasy.onResize && SLeasy.onResize('竖屏');
         }
     };
 
@@ -462,7 +470,7 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
         window[orientationEvent] = handleOrientation;
     }
 
-    handleOrientation();
+    // handleOrientation();
 
     if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
         define(function () {
@@ -1011,27 +1019,27 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
     SLeasy.viewport = function (sliderBoxHeight) {
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
-
+        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
         //适配策略
         var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
             ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
+                    alert('宽度模式')
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewportContent = 'width=' + width + ',user-scalable=no';
+                        viewportContent = 'width='+width+',user-scalable=no';
                     return viewportContent;
                 },
                 'height': function (thresholdHeight) {
+
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewHeight = (thresholdHeight || $config.height) * ($config.viewport / $config.width),
+                        viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
                         height = viewHeight > minHeight ? viewHeight : minHeight,
-                        //viewportContent = 'height=' + height + ',width=' + height * ratio + ',user-scalable=no';
                         viewportContent = 'width=' + height * ratio + ',user-scalable=no';
                     return viewportContent;
                 },
                 'auto': function () {
-                    // ratio = $(window).width() / $(window).height();//刷新当前宽高比
                     var viewportContent = $config.width / $config.height >= ratio ? viewport.width() : viewport.height();
                     return viewportContent;
                 },
@@ -1041,7 +1049,6 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
                     return viewportContent;
                 },
                 'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
-                    // alert($config.width / threshold >= ratio)
                     var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
                     return viewportContent;
                 },
@@ -1053,10 +1060,11 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
 
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
-        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="' + _content + '"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        $("#SLeasy_viewport").attr('content',_content);
         if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
-            SLeasy.onResize = function () {
+            SLeasy.onResize = function (Omode) {
                 $config.reloadMode && window.location.reload();
+                device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~')
             }
         }
 
@@ -3036,7 +3044,9 @@ this.createjs=this.createjs||{},createjs.extend=function(a,b){"use strict";funct
             };//设置console.log输出
         }
         console.log($config);
-        SLeasy.viewport();//设置视口
+        if($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)){
+            SLeasy.viewport();//设置视口
+        }
 
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body'), $config.id = 'SLeasy';//slide容器dom引用缓存
