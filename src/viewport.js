@@ -14,7 +14,6 @@
             ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
-                    alert('宽度模式')
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width='+width+',user-scalable=no';
                     return viewportContent;
