@@ -218,10 +218,10 @@
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         //参数查找
         var r = window.location.search.substr(1).match(reg);
-        if (r != null)return r[2];
+        if (r != null) return r[2];
         //哈希查找
         var h = window.location.hash.substr(1).match(reg);
-        if (h != null)return h[2];
+        if (h != null) return h[2];
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
         return '';
@@ -230,16 +230,20 @@
 
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        // console.log(e.target)
+        if ($(e.target).hasClass('SLeasy_sliders') || $(e.target).hasClass('SLeasy_detail')) {
+            e.preventDefault();
+        } else {
+            e.stopPropagation();
+        }
     }
 
     SLeasy.touchScroll = function (allowTouchmove, allowSwipe) {
         //触摸滑动默认行为
         if (allowTouchmove) {
-            document.removeEventListener("touchmove", stopDefaultScroll, false);
+            window.removeEventListener("touchmove", stopDefaultScroll, false);
         } else {
-            document.addEventListener("touchmove", stopDefaultScroll, false);
+            window.addEventListener("touchmove", stopDefaultScroll, false);
         }
 
         //幻灯全局swipe

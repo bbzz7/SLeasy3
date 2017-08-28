@@ -163,8 +163,21 @@
                             scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
                         //console.log(scrollTop + ':' + scrollTopMax);
                         //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
-                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) && scrollTop<=0 && SLeasy.goSlider(nextIndex-1);
-                        (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) && scrollTop>=scrollTopMax && SLeasy.goSlider(nextIndex+1);
+                        if(scrollTop<=0){
+                            $scope.isAtTop=true;
+                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]){
+                                SLeasy.goSlider(nextIndex-1);
+                                $scope.isAtTop=false;
+                            }
+                        }else if(scrollTop>=scrollTopMax){
+                            $scope.isAtBottom=true;
+                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]){
+                                SLeasy.goSlider(nextIndex+1);
+                                $scope.isAtBottom=false;
+                            }
+                        }else{
+                            $scope.scrollEdge=false;
+                        }
                     })
                 }else{
                     SLeasy.touchScroll(false,true);
