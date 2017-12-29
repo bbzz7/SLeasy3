@@ -23,7 +23,7 @@
                     opacity: 0,
                     x: '+=10',
                     repeat: -1,
-                    zIndex: 10,
+                    // zIndex: 10,
                     ease: Power3.easeOut,
                     delay: 1
                 });
@@ -40,7 +40,7 @@
                     opacity: 0,
                     y: '+=10',
                     repeat: -1,
-                    zIndex: 10,
+                    // zIndex: 10,
                     ease: Power3.easeOut,
                     delay: 1
                 });
