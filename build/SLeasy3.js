@@ -1094,6 +1094,7 @@
 			position:absolute; display:' + (opt.display || 'none') + ';\
 			-webkit-overflow-scrolling:touch;\
 			">';
+
         function sliderBg() {
             if (!opt.bg) return 'none';
             if (typeof opt.bg == 'string') {
@@ -1193,12 +1194,13 @@
 				</audio>';
             },
             'video': function (opt) {
-                return '<video\
-				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
-				class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="' + (opt.poster ? 'background-image:url(' + opt.poster + ');background-size:100% auto;' : '') + 'position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (opt.poster || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls' ) + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline x5-playsinline' ) + ' preload="' + (opt.preload || 'auto') + '">\
-				</video>';
+                return '<div\
+                id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+                class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
+                \<video\
+				style="' + (opt.poster ? 'background-image:url(' + opt.poster + ');background-size:100% auto;' : '') + ';" \
+				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (opt.poster || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				</video></div>';
             },
             'iframe': function (opt) {
                 return '<iframe\
@@ -2590,7 +2592,7 @@
                     opacity: 0,
                     x: '+=10',
                     repeat: -1,
-                    zIndex: 10,
+                    // zIndex: 10,
                     ease: Power3.easeOut,
                     delay: 1
                 });
@@ -2607,7 +2609,7 @@
                     opacity: 0,
                     y: '+=10',
                     repeat: -1,
-                    zIndex: 10,
+                    // zIndex: 10,
                     ease: Power3.easeOut,
                     delay: 1
                 });
