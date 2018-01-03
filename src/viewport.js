@@ -48,12 +48,13 @@
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         $("#SLeasy_viewport").attr('content',_content);
-        if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
+        // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function (Omode) {
                 $config.reloadMode && window.location.reload();
                 device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~')
+                // alert('您已进入'+Omode+'模式观看~')
             }
-        }
+        //}
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         //$scope.fixHeight=$(window).height();//设置自适应全屏高度
