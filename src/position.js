@@ -43,9 +43,9 @@
                 }
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                if (subIn.y) subIn.y += yOffset[$config.alignMode];
-                if (subShow.y) subShow.y += yOffset[$config.alignMode];
-                if (subSet.y) subSet.y += yOffset[$config.alignMode];
+                if (subIn.y || subIn.y===0) subIn.y += yOffset[$config.alignMode];
+                if (subShow.y || subShow.y===0) subShow.y += yOffset[$config.alignMode];
+                if (subSet.y || subSet.y===0) subSet.y += yOffset[$config.alignMode];
                 if (subTo.length) {
                     for (var l = 0; l < subTo.length; l++) {
                         if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
