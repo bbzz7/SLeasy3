@@ -1,14 +1,14 @@
 // SLeasy3-fix
 ;(function (SLeasy) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
 
     //子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
     SLeasy.fixPosition = function (opt) {
         //console.log(opt)
         //背景对齐模式导致的子元素y轴偏移策略
-        var yOffset = {
+        var yOffset = $scope.yOffset = {
                 "top": $config.alignOffset,
                 "center": ($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset,
                 "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
@@ -26,10 +26,10 @@
                     subMotions[j].set = $.extend({x: bt[2], y: bt[3]}, subMotions[j].set);
                 }
 
-                var subIn   = subMotions[j].in || {},
+                var subIn = subMotions[j].in || {},
                     subShow = subMotions[j].show || {},
-                    subSet  = subMotions[j].set || {},
-                    subTo   = subMotions[j].to || [];
+                    subSet = subMotions[j].set || {},
+                    subTo = subMotions[j].to || [];
 
                 SLeasy.fixProps(subIn);
                 SLeasy.fixProps(subShow);
@@ -43,14 +43,26 @@
                 }
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                if (subIn.y || subIn.y===0) subIn.y += yOffset[$config.alignMode];
-                if (subShow.y || subShow.y===0) subShow.y += yOffset[$config.alignMode];
-                if (subSet.y || subSet.y===0) subSet.y += yOffset[$config.alignMode];
-                if (subTo.length) {
-                    for (var l = 0; l < subTo.length; l++) {
-                        if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
+                if(subMotions[j].alignMode){
+                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[subMotions[j].alignMode];
+                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[subMotions[j].alignMode];
+                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[subMotions[j].alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
+                        }
+                    }
+                }else{
+                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
+                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
+                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[$config.alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
+                        }
                     }
                 }
+
             }
         }
     }
