@@ -97,7 +97,8 @@
 			background-image:url(' + imgUrl + ');\
 			background-repeat:no-repeat;\
 			background-position:center 0px;\
-			background-size:100% auto">\
+			background-size:100% auto;\
+			z-index:1">\
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 

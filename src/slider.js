@@ -178,7 +178,7 @@
                         return '<select\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
-						style="-webkit-appearance:none;appearance:none;border:0px solid;background:transparent;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+						style="text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none;border:0px solid;background:transparent;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 						' + opitionHtml + '</select>';
                     }
                 }
