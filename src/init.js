@@ -14,6 +14,8 @@
         if (!$config.debugMode) {
             console.log = function () {
             };//设置console.log输出
+        }else{
+            var vConsole = window.VConsole && new VConsole();
         }
         console.log($config);
         if($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)){
