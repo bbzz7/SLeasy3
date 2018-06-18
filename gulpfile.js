@@ -86,6 +86,7 @@ gulp.task('replace', function () {
 
     return gulp.src('../*.html')
         .pipe($.replace(origin, replace))
+        .pipe($.replace('app.js', 'app.js?'+(new Date).getTime()))
         .pipe(gulp.dest('../@publish/'))
 })
 
