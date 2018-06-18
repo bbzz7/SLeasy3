@@ -2375,7 +2375,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.detailFX = function (index) {
         var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
             motionFX = detail.motionFX || null,
-            motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1]) : SLeasy.getMotionFX('leftRight', 0),
+            motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1], motionFX[2]) : SLeasy.getMotionFX('leftRight', 0),
             _in = $.extend(motionFX.in, {display: 'block'}),
             _show = $.extend(motionFX.show, {
                 onStart: function (e) {
@@ -2389,7 +2389,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
             }),
             _set = $.extend({zIndex: 1}, detail.set) || {};
-
 
         return {
             in: _in,
