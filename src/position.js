@@ -23,7 +23,7 @@
                     var bt = subMotions[j].shadownBt;
                     //subMotions[j].in={x:bt[2],y:bt[3]};
                     //subMotions[j].show={x:bt[2],y:bt[3]};
-                    subMotions[j].set = $.extend({x: bt[2], y: bt[3]}, subMotions[j].set);
+                    subMotions[j].set = $.extend((typeof bt[3]=='number' ? {x: bt[2], y: bt[3]} : {x: bt[2]}), subMotions[j].set);
                 }
 
                 var subIn = subMotions[j].in || {},
