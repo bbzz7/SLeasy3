@@ -1684,7 +1684,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     var bt = subMotions[j].shadownBt;
                     //subMotions[j].in={x:bt[2],y:bt[3]};
                     //subMotions[j].show={x:bt[2],y:bt[3]};
-                    subMotions[j].set = $.extend({x: bt[2], y: bt[3]}, subMotions[j].set);
+                    subMotions[j].set = $.extend((typeof bt[3]=='number' ? {x: bt[2], y: bt[3]} : {x: bt[2]}), subMotions[j].set);
                 }
 
                 var subIn = subMotions[j].in || {},
@@ -2394,7 +2394,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
-        _out = $.extend({force3D: $config.force3D}, _out);
         _show = $.extend({force3D: $config.force3D}, _show);
 
         return {
@@ -3216,18 +3215,19 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
-        if (!SLeasy.isHttp()) {//debug模式
+        if (!SLeasy.isHttp() || $config.debugMode) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
-            $('head style').html($('head style').html() + debugStyle);
+            var $defaultStyle = $('head style').eq(0);
+            $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
         if (!$config.debugMode) {
             console.log = function () {
             };//设置console.log输出
-        }else{
-            var vConsole = window.VConsole && new VConsole();
+        } else {
+            var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         console.log($config);
-        if($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)){
+        if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {
             SLeasy.viewport();//设置视口
         }
 
@@ -3247,7 +3247,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
 
         //loading资源加载
-        return SLeasy.loader.load(SLeasy.getLoadArr($config),$config.loader.loadType).progress(function (percent) {
+        return SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
@@ -3257,7 +3257,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     //查找百分比dom，并缓存
                     for (var i = 0; i < $config.loading.subMotion.length; i++) {
                         if ($config.loading.subMotion[i].percent && $config.loading.subMotion[i].label) {
-                            $scope.exLoadingPercent=SLeasy.label($config.loading.subMotion[i].label);
+                            $scope.exLoadingPercent = SLeasy.label($config.loading.subMotion[i].label);
                         }
                     }
                 }
