@@ -13,6 +13,7 @@
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
+        force3D: 'auto',//
         loopMode: 0,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: 1,//路由开启模式
@@ -49,8 +50,8 @@
             style: 0,//loading内置式样索引或自定义html
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
-            loadType:'multi',
-            loadedTips:false
+            loadType: 'multi',
+            loadedTips: false
         },
 
         //其他----------------------------------------------

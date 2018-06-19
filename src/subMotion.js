@@ -68,15 +68,15 @@
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
                 startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
-                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
+                subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
                 //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
                 $.extend(subShow, {
-                    onStart: (function (_$dom,_subMotion) {
+                    onStart: (function (_$dom, _subMotion) {
                         return function () {
                             console.log(_$dom);
                             console.log(_subMotion);
@@ -91,7 +91,7 @@
                                 }
                             });
                         }
-                    })($dom,subMotion)
+                    })($dom, subMotion)
                 })
             }
 
@@ -119,7 +119,7 @@
             if (subMotion.to) {
                 for (
                     var j = 0; j < subMotion.to.length; j++) {
-                    var to = $.extend({force3D: true}, subMotion.to[j]),
+                    var to = $.extend({force3D: $config.force3D}, subMotion.to[j]),
                         preTo = subMotion.to[j - 1] || {},
                         time = to.time || 0.4,
                         offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间

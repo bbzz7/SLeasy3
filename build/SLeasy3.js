@@ -642,6 +642,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
+        force3D: 'auto',//
         loopMode: 0,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: 1,//路由开启模式
@@ -678,8 +679,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             style: 0,//loading内置式样索引或自定义html
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
-            loadType:'multi',
-            loadedTips:false
+            loadType: 'multi',
+            loadedTips: false
         },
 
         //其他----------------------------------------------
@@ -1856,15 +1857,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
                 startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
-                subIn = $.extend({force3D: true}, subMotion.in || {}),//in
-                subShow = $.extend({display: 'block', force3D: true}, subMotion.show || {}),//show
+                subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
+                subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
                 //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
                 $.extend(subShow, {
-                    onStart: (function (_$dom,_subMotion) {
+                    onStart: (function (_$dom, _subMotion) {
                         return function () {
                             console.log(_$dom);
                             console.log(_subMotion);
@@ -1879,7 +1880,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                                 }
                             });
                         }
-                    })($dom,subMotion)
+                    })($dom, subMotion)
                 })
             }
 
@@ -1907,7 +1908,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             if (subMotion.to) {
                 for (
                     var j = 0; j < subMotion.to.length; j++) {
-                    var to = $.extend({force3D: true}, subMotion.to[j]),
+                    var to = $.extend({force3D: $config.force3D}, subMotion.to[j]),
                         preTo = subMotion.to[j - 1] || {},
                         time = to.time || 0.4,
                         offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间
@@ -2077,7 +2078,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 // SLeasy3-transition
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
     //go slider
     SLeasy.goSlider = function (index) {
@@ -2095,9 +2096,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
-            total      = totalIndex + 1,//幻灯总数
+            total = totalIndex + 1,//幻灯总数
             nextIndex
-            ;
+        ;
 
         if (!$config.loopMode) {//非循环模式
             //不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
@@ -2126,7 +2127,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 },
             }
 
-            if (typeof indexType[(typeof index)] == 'undefined'){
+            if (typeof indexType[(typeof index)] == 'undefined') {
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
             }
@@ -2152,10 +2153,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     }
                 },
             }
-            if (typeof indexType[(typeof index)] == 'undefined'){
+            if (typeof indexType[(typeof index)] == 'undefined') {
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
-            };
+            }
+            ;
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -2170,7 +2172,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             _set,
             motionFX = SLeasy.getMotionFX(),//获取全局配置切换效果
             customFX
-            ;
+        ;
 
         //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
         console.log($scope.sliderIndex + ':' + nextIndex);
@@ -2225,38 +2227,38 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         //show
         _show = $.extend({//show FX
-            onStart   : function () {
-                var currentSlider    = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
+            onStart: function () {
+                var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll) {
-                    SLeasy.touchScroll(true,false);
+                    SLeasy.touchScroll(true, false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
-                        var scrollTop    = e.target.scrollTop,
-                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
+                        var scrollTop = e.target.scrollTop,
+                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight - $scope.fixHeight);
                         //console.log(scrollTop + ':' + scrollTopMax);
                         //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
-                        if(scrollTop<=0){
-                            $scope.isAtTop=true;
-                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]){
-                                SLeasy.goSlider(nextIndex-1);
-                                $scope.isAtTop=false;
+                        if (scrollTop <= 0) {
+                            $scope.isAtTop = true;
+                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) {
+                                SLeasy.goSlider(nextIndex - 1);
+                                $scope.isAtTop = false;
                             }
-                        }else if(scrollTop>=scrollTopMax){
-                            $scope.isAtBottom=true;
-                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]){
-                                SLeasy.goSlider(nextIndex+1);
-                                $scope.isAtBottom=false;
+                        } else if (scrollTop >= scrollTopMax) {
+                            $scope.isAtBottom = true;
+                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) {
+                                SLeasy.goSlider(nextIndex + 1);
+                                $scope.isAtBottom = false;
                             }
-                        }else{
-                            $scope.scrollEdge=false;
+                        } else {
+                            $scope.scrollEdge = false;
                         }
                     })
-                }else{
-                    SLeasy.touchScroll(false,true);
+                } else {
+                    SLeasy.touchScroll(false, true);
                     console.log('can swipe~!')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
@@ -2278,16 +2280,16 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         _set = customFX.set || motionFX.set;
 
         //force3D
-        _in = $.extend({force3D: true}, _in);
-        _out = $.extend({force3D: true}, _out);
-        _show = $.extend({force3D: true}, _show);
+        _in = $.extend({force3D: $config.force3D}, _in);
+        _out = $.extend({force3D: $config.force3D}, _out);
+        _show = $.extend({force3D: $config.force3D}, _show);
 
 
         return {
-            in  : _in,
+            in: _in,
             show: _show,
-            out : _out,
-            set : _set
+            out: _out,
+            set: _set
         }
 
     }
@@ -2299,9 +2301,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
-            nextSlider    = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX            = SLeasy.transitFX(nextIndex)//切换效果
-            ;
+            nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
+            FX = SLeasy.transitFX(nextIndex)//切换效果
+        ;
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
         if (title && title != $scope.title) {
@@ -2389,6 +2391,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
             }),
             _set = $.extend({zIndex: 1}, detail.set) || {};
+
+        //force3D
+        _in = $.extend({force3D: $config.force3D}, _in);
+        _out = $.extend({force3D: $config.force3D}, _out);
+        _show = $.extend({force3D: $config.force3D}, _show);
 
         return {
             in: _in,
@@ -2479,7 +2486,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.title(title);
             $scope.title = title;
         }
-
 
         delete FX.show.onComplete;
         $.extend(FX.in, onComplete);

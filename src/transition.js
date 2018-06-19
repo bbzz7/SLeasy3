@@ -1,7 +1,7 @@
 // SLeasy3-transition
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
     //go slider
     SLeasy.goSlider = function (index) {
@@ -19,9 +19,9 @@
         var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
-            total      = totalIndex + 1,//幻灯总数
+            total = totalIndex + 1,//幻灯总数
             nextIndex
-            ;
+        ;
 
         if (!$config.loopMode) {//非循环模式
             //不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
@@ -50,7 +50,7 @@
                 },
             }
 
-            if (typeof indexType[(typeof index)] == 'undefined'){
+            if (typeof indexType[(typeof index)] == 'undefined') {
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
             }
@@ -76,10 +76,11 @@
                     }
                 },
             }
-            if (typeof indexType[(typeof index)] == 'undefined'){
+            if (typeof indexType[(typeof index)] == 'undefined') {
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
-            };
+            }
+            ;
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -94,7 +95,7 @@
             _set,
             motionFX = SLeasy.getMotionFX(),//获取全局配置切换效果
             customFX
-            ;
+        ;
 
         //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
         console.log($scope.sliderIndex + ':' + nextIndex);
@@ -149,38 +150,38 @@
 
         //show
         _show = $.extend({//show FX
-            onStart   : function () {
-                var currentSlider    = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
+            onStart: function () {
+                var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll) {
-                    SLeasy.touchScroll(true,false);
+                    SLeasy.touchScroll(true, false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
-                        var scrollTop    = e.target.scrollTop,
-                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight-$scope.fixHeight);
+                        var scrollTop = e.target.scrollTop,
+                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight - $scope.fixHeight);
                         //console.log(scrollTop + ':' + scrollTopMax);
                         //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
-                        if(scrollTop<=0){
-                            $scope.isAtTop=true;
-                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]){
-                                SLeasy.goSlider(nextIndex-1);
-                                $scope.isAtTop=false;
+                        if (scrollTop <= 0) {
+                            $scope.isAtTop = true;
+                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) {
+                                SLeasy.goSlider(nextIndex - 1);
+                                $scope.isAtTop = false;
                             }
-                        }else if(scrollTop>=scrollTopMax){
-                            $scope.isAtBottom=true;
-                            if(!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]){
-                                SLeasy.goSlider(nextIndex+1);
-                                $scope.isAtBottom=false;
+                        } else if (scrollTop >= scrollTopMax) {
+                            $scope.isAtBottom = true;
+                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) {
+                                SLeasy.goSlider(nextIndex + 1);
+                                $scope.isAtBottom = false;
                             }
-                        }else{
-                            $scope.scrollEdge=false;
+                        } else {
+                            $scope.scrollEdge = false;
                         }
                     })
-                }else{
-                    SLeasy.touchScroll(false,true);
+                } else {
+                    SLeasy.touchScroll(false, true);
                     console.log('can swipe~!')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
@@ -202,16 +203,16 @@
         _set = customFX.set || motionFX.set;
 
         //force3D
-        _in = $.extend({force3D: true}, _in);
-        _out = $.extend({force3D: true}, _out);
-        _show = $.extend({force3D: true}, _show);
+        _in = $.extend({force3D: $config.force3D}, _in);
+        _out = $.extend({force3D: $config.force3D}, _out);
+        _show = $.extend({force3D: $config.force3D}, _show);
 
 
         return {
-            in  : _in,
+            in: _in,
             show: _show,
-            out : _out,
-            set : _set
+            out: _out,
+            set: _set
         }
 
     }
@@ -223,9 +224,9 @@
 
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
-            nextSlider    = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX            = SLeasy.transitFX(nextIndex)//切换效果
-            ;
+            nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
+            FX = SLeasy.transitFX(nextIndex)//切换效果
+        ;
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
         if (title && title != $scope.title) {
