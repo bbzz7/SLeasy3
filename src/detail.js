@@ -38,7 +38,6 @@
 
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
-        _out = $.extend({force3D: $config.force3D}, _out);
         _show = $.extend({force3D: $config.force3D}, _show);
 
         return {
