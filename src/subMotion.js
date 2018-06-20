@@ -81,7 +81,7 @@
                             console.log(_$dom);
                             console.log(_subMotion);
                             $.each(_subMotion.ae.layer, function (index, layer) {
-                                console.log(layer);
+                                console.log('AELayer:' + layer);
                                 var layerName = layer[0];
                                 var aeLayer = $scope.aeLayer[layerName];
                                 if (aeLayer.sliderIndex == $scope.sliderIndex) {
@@ -92,10 +92,11 @@
                             });
                         }
                     })($dom, subMotion)
-                })
+                });
+                if (typeof subMotion.set.y == 'undefined') subMotion.set.y = 0;
             }
 
-            //console.log(subMotion);
+            // console.log($dom);
             //set
             subMotion.set && T.set($dom, subMotion.set);
 

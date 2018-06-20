@@ -85,7 +85,7 @@
             $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
             $config.on['domReady']();//SLeasy dom初始化完毕回调
 
-            $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
+            // $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {

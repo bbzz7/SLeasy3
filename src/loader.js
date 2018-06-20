@@ -176,9 +176,8 @@
                                 $config.loading.onLoaded();//自定义预加载完毕回调
                             } else {
                                 $config.on['loaded'](); //预加载完毕回调
-                                dfd.resolve($config, $scope);
                             }
-
+                            dfd.resolve($config, $scope);
                         }
                     }, 1)
                 }
