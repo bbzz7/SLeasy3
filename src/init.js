@@ -44,7 +44,7 @@
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
-                    return $scope.exLoadingPercent.text(percent)
+                    return $scope.exLoadingPercent.text(percent+'%')
                 } else {
                     //查找百分比dom，并缓存
                     for (var i = 0; i < $config.loading.subMotion.length; i++) {
