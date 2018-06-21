@@ -218,7 +218,7 @@
 
 
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", function () {
+                    $scope.aeLayer[layerName].flash = function () {
                         $scope.aeLayer[layerName].removeAllChildren();
                         //根据当前序列容器的frame值添加相应索引值的位图对象
                         var frameIndex = Math.round($scope.aeLayer[layerName].frame);
@@ -229,7 +229,8 @@
                         }
                         var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
                         $scope.aeLayer[layerName].addChild(aeFrame);
-                    });
+                    }
+                    TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
 
                     return $scope.aeLayer[layerName];
                 }
@@ -261,7 +262,17 @@
 
                 //停止渲染层
                 SLeasy.stopAeLayer = function (name) {
-                    T.killTweensOf($scope.aeLayer[name]);
+                    if (name) {
+                        T.killTweensOf($scope.aeLayer[name]);
+                    } else {
+                        for (n in $scope.aeStage){
+                            TweenMax.ticker.removeEventListener("tick", $scope.aeStage[n].update);
+                        }
+                        for (n in $scope.aeLayer) {
+                            T.killTweensOf($scope.aeLayer[n]);
+                            TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[n].flash);
+                        }
+                    }
                 }
 
 
@@ -313,11 +324,8 @@
                             onComplete: aeOpt.onComplete
                         }
                     }
-
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", function () {
-                        stage.update();
-                    });
+                    TweenMax.ticker.addEventListener("tick", stage.update, stage);
 
                     console.log(stage);
                     return stage;
@@ -331,6 +339,7 @@
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
                 console.log(config);
+
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_canvas SLeasy_' + (subName[opt.type] || opt.type) + '"\
