@@ -44,7 +44,6 @@
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
-
         var totalTime = 0, startTime = 0;
         for (var i = 0; i < count; i++) {
             var subMotion = subMotionArr[i],//当前子动画
@@ -74,6 +73,7 @@
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
+                console.log($dom);
                 //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
                 $.extend(subShow, {
                     onStart: (function (_$dom, _subMotion) {
@@ -84,7 +84,7 @@
                                 console.log('AELayer:' + layer);
                                 var layerName = layer[0];
                                 var aeLayer = $scope.aeLayer[layerName];
-                                if (aeLayer.sliderIndex == $scope.sliderIndex) {
+                                if (aeLayer.sliderIndex == $scope.sliderIndex || $dom.find('.SLeasy_loading')) {
                                     aeLayer.frame = 0;//重置帧时间线
                                     console.log(aeLayer)
                                     aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
