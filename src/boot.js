@@ -32,6 +32,18 @@
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
 
+            //插件初始化
+            for (var j = 0; j < $scope.pluginList.length; j++) {
+                //console.log($scope.pluginList[j]);
+                var SLeasyPlugin = $scope.pluginList[j][0],
+                    //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
+                    pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
+                    pluginInitCallback = $scope.pluginList[j][2],//插件初始化回调
+                    pluginObj = SLeasyPlugin(pluginArg);//执行插件初始化
+
+                pluginInitCallback(pluginObj);//执行插件初始化后的回调
+            }
+
             // SLeasy.eventBind(false);//事件绑定
 
             SLeasy.subMotion($config.loading.subMotion, 'loading');
@@ -39,7 +51,7 @@
             $(".SLeasy_loading").fadeIn(300);
 
             $scope.loadingReady = true;
-
+            console.log($scope.aeLayer)
         } else {
             //幻灯初始化
             sliderHtml = pageInit($config.sliders, 'sliders');
