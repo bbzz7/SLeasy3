@@ -51,7 +51,11 @@
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function (Omode) {
                 $config.reloadMode && window.location.reload();
-                device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~')
+                if($config.on['resize']){
+                    $config.on['resize'](Omode);
+                }else{
+                    device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~');
+                };//横竖屏回调
                 // alert('您已进入'+Omode+'模式观看~')
             }
         //}
