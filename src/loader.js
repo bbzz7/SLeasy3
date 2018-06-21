@@ -173,7 +173,7 @@
                         if (SLeasy.loader.percent >= 100) {
                             console.log((new Date().getTime() - stime) / 1000 + '秒');
                             if ($scope.loadingReady) {
-                                $config.loading.onLoaded();//自定义预加载完毕回调
+                                $config.loading.onLoaded && $config.loading.onLoaded();//自定义预加载完毕回调
                             } else {
                                 $config.on['loaded'](); //预加载完毕回调
                             }
