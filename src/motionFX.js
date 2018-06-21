@@ -49,6 +49,11 @@
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
                     out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone}
                 },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                },
             ],
             upDown: [//上下
                 {
@@ -90,7 +95,12 @@
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
                     out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone}
-                }
+                },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                },
             ]
         };
 
