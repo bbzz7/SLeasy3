@@ -1213,7 +1213,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function (Omode) {
                 $config.reloadMode && window.location.reload();
-                device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~')
+                if($config.on['resize']){
+                    $config.on['resize'](Omode);
+                }else{
+                    device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~');
+                };//横竖屏回调
                 // alert('您已进入'+Omode+'模式观看~')
             }
         //}
@@ -1451,7 +1455,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", function () {
+                    $scope.aeLayer[layerName].flash = function () {
                         $scope.aeLayer[layerName].removeAllChildren();
                         //根据当前序列容器的frame值添加相应索引值的位图对象
                         var frameIndex = Math.round($scope.aeLayer[layerName].frame);
@@ -1462,7 +1466,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         }
                         var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
                         $scope.aeLayer[layerName].addChild(aeFrame);
-                    });
+                    }
+                    TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
 
                     return $scope.aeLayer[layerName];
                 }
@@ -1494,7 +1499,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                 //停止渲染层
                 SLeasy.stopAeLayer = function (name) {
-                    T.killTweensOf($scope.aeLayer[name]);
+                    if (name) {
+                        T.killTweensOf($scope.aeLayer[name]);
+                    } else {
+                        for (n in $scope.aeStage){
+                            TweenMax.ticker.removeEventListener("tick", $scope.aeStage[n].update);
+                        }
+                        for (n in $scope.aeLayer) {
+                            T.killTweensOf($scope.aeLayer[n]);
+                            TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[n].flash);
+                        }
+                    }
                 }
 
 
@@ -1546,11 +1561,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             onComplete: aeOpt.onComplete
                         }
                     }
-
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", function () {
-                        stage.update();
-                    });
+                    TweenMax.ticker.addEventListener("tick", stage.update, stage);
 
                     console.log(stage);
                     return stage;
@@ -1564,11 +1576,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
                 console.log(config);
+
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_canvas SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
-				<canvas id="' + config.stage + '" class="SLeasy_canvas SLeasy_ae" width="' + config.width + '" height="' + config.height + '" style="position:absolute;top:0px;left:0px;width:' + config.width * $scope.viewScale + 'px;height:' + config.height * $scope.viewScale + 'px"></canvas>\
+				<canvas id="' + config.stage + '" class="SLeasy_canvas SLeasy_ae" width="' + config.width + '" height="' + config.height + '" style="width:' + config.width * $scope.viewScale + 'px;height:' + config.height * $scope.viewScale + 'px"></canvas>\
 				</div>';
             },
         }
@@ -1834,7 +1847,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
-
         var totalTime = 0, startTime = 0;
         for (var i = 0; i < count; i++) {
             var subMotion = subMotionArr[i],//当前子动画
@@ -1864,6 +1876,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
+                console.log($dom);
                 //如果渲染层所属的sliderIndex等于当前幻灯索引,则在子元素动画开始时播放ae渲染层时间线
                 $.extend(subShow, {
                     onStart: (function (_$dom, _subMotion) {
@@ -1871,10 +1884,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             console.log(_$dom);
                             console.log(_subMotion);
                             $.each(_subMotion.ae.layer, function (index, layer) {
-                                console.log(layer);
+                                console.log('AELayer:' + layer);
                                 var layerName = layer[0];
                                 var aeLayer = $scope.aeLayer[layerName];
-                                if (aeLayer.sliderIndex == $scope.sliderIndex) {
+                                if (aeLayer.sliderIndex == $scope.sliderIndex || $dom.find('.SLeasy_loading')) {
                                     aeLayer.frame = 0;//重置帧时间线
                                     console.log(aeLayer)
                                     aeLayer.autoPlay && T.to(aeLayer, aeLayer.time, aeLayer.tweenData);
@@ -1882,10 +1895,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             });
                         }
                     })($dom, subMotion)
-                })
+                });
+                if (typeof subMotion.set.y == 'undefined') subMotion.set.y = 0;
             }
 
-            //console.log(subMotion);
+            // console.log($dom);
             //set
             subMotion.set && T.set($dom, subMotion.set);
 
@@ -2009,6 +2023,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
                     out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone}
                 },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                },
             ],
             upDown: [//上下
                 {
@@ -2050,7 +2069,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
                     out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone}
-                }
+                },
+                {
+                    in: {autoAlpha: 0, ease: Linear.easeNone},
+                    show: {autoAlpha: 1, ease: Linear.easeNone},
+                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                },
             ]
         };
 
@@ -2844,6 +2868,18 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
 
+            //插件初始化
+            for (var j = 0; j < $scope.pluginList.length; j++) {
+                //console.log($scope.pluginList[j]);
+                var SLeasyPlugin = $scope.pluginList[j][0],
+                    //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
+                    pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
+                    pluginInitCallback = $scope.pluginList[j][2],//插件初始化回调
+                    pluginObj = SLeasyPlugin(pluginArg);//执行插件初始化
+
+                pluginInitCallback(pluginObj);//执行插件初始化后的回调
+            }
+
             // SLeasy.eventBind(false);//事件绑定
 
             SLeasy.subMotion($config.loading.subMotion, 'loading');
@@ -2851,7 +2887,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $(".SLeasy_loading").fadeIn(300);
 
             $scope.loadingReady = true;
-
+            console.log($scope.aeLayer)
         } else {
             //幻灯初始化
             sliderHtml = pageInit($config.sliders, 'sliders');
@@ -2897,7 +2933,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
             $config.on['domReady']();//SLeasy dom初始化完毕回调
 
-            $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
+            // $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
@@ -3115,7 +3151,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         if (SLeasy.loader.percent >= 100) {
                             console.log((new Date().getTime() - stime) / 1000 + '秒');
                             if ($scope.loadingReady) {
-                                $config.loading.onLoaded();//自定义预加载完毕回调
+                                $config.loading.onLoaded && $config.loading.onLoaded();//自定义预加载完毕回调
                             } else {
                                 $config.on['loaded'](); //预加载完毕回调
                             }
@@ -3253,7 +3289,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
-                    return $scope.exLoadingPercent.text(percent)
+                    return $scope.exLoadingPercent.text(percent+'%')
                 } else {
                     //查找百分比dom，并缓存
                     for (var i = 0; i < $config.loading.subMotion.length; i++) {
