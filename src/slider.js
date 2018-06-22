@@ -272,6 +272,9 @@
                             T.killTweensOf($scope.aeLayer[n]);
                             TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[n].flash);
                         }
+                        for (n in $scope.aeTimeLine){
+                            $scope.aeTimeLine[n].clear();
+                        }
                     }
                 }
 
