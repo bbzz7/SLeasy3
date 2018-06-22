@@ -59,6 +59,7 @@
                     callback = el.onEvent
                 ;
 
+                if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
                 //console.log(document.getElementById(id));
                 if (e == 'click') {//点击事件,方便某些广告监测代码
