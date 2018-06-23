@@ -1502,9 +1502,18 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 SLeasy.stopAeLayer = function (name) {
                     if (name) {
                         T.killTweensOf($scope.aeLayer[name]);
+                        TweenMax.ticker.removeEventListener("tick", $scope.aeStage[name].update);
+                        TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[name].flash);
+                        $scope.aeStage[name].removeAllChildren();
+                        $scope.aeStage[name].removeAllEventListeners();
+                        $scope.aeStage[name].clear();
+                        $scope.aeTimeLine[name].clear();
                     } else {
                         for (n in $scope.aeStage){
                             TweenMax.ticker.removeEventListener("tick", $scope.aeStage[n].update);
+                            $scope.aeStage[n].removeAllChildren();
+                            $scope.aeStage[n].removeAllEventListeners();
+                            $scope.aeStage[n].clear();
                         }
                         for (n in $scope.aeLayer) {
                             T.killTweensOf($scope.aeLayer[n]);
