@@ -2120,6 +2120,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //go slider
     SLeasy.goSlider = function (index) {
+        // alert(index);
         var nextIndex = SLeasy.nextIndex(index);
         if ($config.routerMode) {
             //var detailHash=$scope.router.getRoute(1);
@@ -2444,7 +2445,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.detailTransit = function (index) {
         //如果详情页处于打开状态未关闭，则return
-        if ($scope.isDetail || !$config.details[index]) return SLeasy.goSlider(0);
+        if ($scope.isDetail || !$config.details[index]) return;
         //索引边界检查
         if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
 
