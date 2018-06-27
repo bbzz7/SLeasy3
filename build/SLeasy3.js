@@ -1541,10 +1541,7 @@
                     var bt = subMotions[j].shadownBt;
                     //subMotions[j].in={x:bt[2],y:bt[3]};
                     //subMotions[j].show={x:bt[2],y:bt[3]};
-                    subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
-                        x: bt[2],
-                        y: bt[3]
-                    } : {x: bt[2]}), subMotions[j].set);
+                    subMotions[j].set = $.extend((typeof bt[3]=='number' ? {x: bt[2], y: bt[3]} : {x: bt[2]}), subMotions[j].set);
                 }
 
                 var subIn = subMotions[j].in || {},
@@ -1564,7 +1561,7 @@
                 }
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                if (subMotions[j].alignMode) {
+                if(subMotions[j].alignMode){
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[subMotions[j].alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[subMotions[j].alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[subMotions[j].alignMode];
@@ -1573,7 +1570,7 @@
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
                         }
                     }
-                } else {
+                }else{
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[$config.alignMode];

@@ -95,6 +95,7 @@ gulp.task('replace', function () {
     return gulp.src(LocalPath + '*.html')
         .pipe($.replace(origin, replace))
         .pipe($.replace(SLeasyPath, 'SLeasy3/'))
+        .pipe($.replace('app.js', 'app.js?'+(new Date).getTime()))
         .pipe(gulp.dest(LocalPath + '@publish/'))
 })
 
