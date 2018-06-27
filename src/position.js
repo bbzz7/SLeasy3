@@ -70,7 +70,9 @@
     //属性缩放变换
     SLeasy.fixProps = function fixProps(transObj) {
         var addPX = {//需要添加px单位的属性
-            'lineHeight': true
+            'lineHeight': true,
+            'backgroundPositionX': true,
+            'backgroundPositionY': true
         }
         //console.log(transObj);
         for (var i = 0; i < $scope.fixPropsArr.length; i++) {
