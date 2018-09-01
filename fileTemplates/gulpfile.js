@@ -1,6 +1,7 @@
-var SLeasyPath = '../@GitHub/SLeasy3/',
+var gulp = require('gulp'),
+    // SLeasyPath = '../@GitHub/SLeasy3/',
+    SLeasyPath = './',
     LocalPath = '',
-    gulp = require('gulp'),
     del = require(SLeasyPath + 'node_modules/del'),
     $ = {};
 
