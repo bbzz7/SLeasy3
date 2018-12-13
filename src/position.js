@@ -43,7 +43,7 @@
                 }
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                if(subMotions[j].alignMode){
+                if(subMotions[j].alignMode || sliders[i].alignMode){
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[subMotions[j].alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[subMotions[j].alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[subMotions[j].alignMode];
