@@ -1,7 +1,7 @@
 // SLeasy3-arrow
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),//全局配置
-        $scope  = SLeasy.scope()
+        $scope = SLeasy.scope()
 
 
     SLeasy.arrow = SLeasy.arrow || {};
@@ -46,6 +46,16 @@
                 });
             }
         }
+    }
+
+    //show
+    SLeasy.arrow.show = function () {
+        T.set($("#SLeasy_arrow"), {autoAlpha: 0.8});
+    }
+
+    //hide
+    SLeasy.arrow.hide = function () {
+        T.set($("#SLeasy_arrow"), {autoAlpha: 0});
     }
 })(
     window.SLeasy = window.SLeasy || {},
