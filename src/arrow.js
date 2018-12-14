@@ -50,12 +50,12 @@
 
     //show
     SLeasy.arrow.show = function () {
-        T.set($("#SLeasy_arrow"), {autoAlpha: 0.8});
+        $("#SLeasy_arrow").show();
     }
 
     //hide
     SLeasy.arrow.hide = function () {
-        T.set($("#SLeasy_arrow"), {autoAlpha: 0});
+        $("#SLeasy_arrow").hide();
     }
 })(
     window.SLeasy = window.SLeasy || {},
