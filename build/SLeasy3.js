@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.7.1 by 宇文互动 庄宇 2018-06-21 email：30755405@qq.com
+ SLeasy 3.7.3 by 宇文互动 庄宇 2018-12-13 email：30755405@qq.com
+ 3.7.3(2018-12-13):支持单页幻灯alignMode参数;
  3.7.2(2018-06-21):大幅优化ae插件资源释放效果，支持自定义loading自动播放ae序列，添加横竖屏旋转回调等;
  3.7.1(2018-06-19):优化debug模式，force3D全局配置，修复alignMode相关定位bug等;
  3.7.0(2017-07-19):更新高级自定义loading功能模块;
@@ -1541,7 +1542,10 @@
                     var bt = subMotions[j].shadownBt;
                     //subMotions[j].in={x:bt[2],y:bt[3]};
                     //subMotions[j].show={x:bt[2],y:bt[3]};
-                    subMotions[j].set = $.extend((typeof bt[3]=='number' ? {x: bt[2], y: bt[3]} : {x: bt[2]}), subMotions[j].set);
+                    subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
+                        x: bt[2],
+                        y: bt[3]
+                    } : {x: bt[2]}), subMotions[j].set);
                 }
 
                 var subIn = subMotions[j].in || {},
@@ -1561,16 +1565,17 @@
                 }
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                if(subMotions[j].alignMode || sliders[i].alignMode){
-                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[subMotions[j].alignMode];
-                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[subMotions[j].alignMode];
-                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[subMotions[j].alignMode];
+                var alignMode = subMotions[j].alignMode || sliders[i].alignMode;
+                if (alignMode) {
+                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
+                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
+                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
                     if (subTo.length) {
                         for (var l = 0; l < subTo.length; l++) {
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
                         }
                     }
-                }else{
+                } else {
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[$config.alignMode];
@@ -2636,7 +2641,7 @@
 
     //init
     SLeasy.arrow.init = function (color) {
-        var arrowColor = color || '#fff';//箭头颜色
+        var arrowColor = color || $config.arrowColor || '#fff';//箭头颜色
 
         if ($config.arrowMode) {
             if ($config.swipeMode == 'x') {
