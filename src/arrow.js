@@ -18,9 +18,9 @@
 				</svg>';
 
                 $(arrowHtml).appendTo('#' + ($config.id || 'SLeasy'));
-                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', opacity: 0.8});
+                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', autoAlpha: 0.8});
                 T.from($("#SLeasy_arrow"), 1.5, {
-                    opacity: 0,
+                    autoAlpha: 0,
                     x: '+=10',
                     repeat: -1,
                     // zIndex: 10,
@@ -35,9 +35,9 @@
 				</svg>';
                 var arrowBox = $config.stageMode == 'scroll' ? 'body' : '#' + ($config.id || 'SLeasy');
                 $(arrowHtml).appendTo(arrowBox);
-                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', opacity: 0.8});
+                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', autoAlpha: 0.8});
                 T.from($("#SLeasy_arrow"), 1.5, {
-                    opacity: 0,
+                    autoAlpha: 0,
                     y: '+=10',
                     repeat: -1,
                     // zIndex: 10,
