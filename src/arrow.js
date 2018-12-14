@@ -8,7 +8,7 @@
 
     //init
     SLeasy.arrow.init = function (color) {
-        var arrowColor = color || '#fff';//箭头颜色
+        var arrowColor = color || $config.arrowColor || '#fff';//箭头颜色
 
         if ($config.arrowMode) {
             if ($config.swipeMode == 'x') {
