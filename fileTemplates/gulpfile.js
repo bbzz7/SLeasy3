@@ -1,4 +1,4 @@
-var SLeasyPath = '../@GitHub/SLeasy3/',
+var SLeasyPath = '.',
     LocalPath = './',
     gulp = require('gulp'),
     del = require(SLeasyPath + 'node_modules/del'),
@@ -54,6 +54,12 @@ gulp.task('build', function () {
         .pipe(gulp.dest(SLeasyPath + 'build/'))
 })
 
+gulp.task('SLeasy-publish', function () {
+    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/physics/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
+        return SLeasyPath + item;
+    }))
+        .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
+});
 
 gulp.task('clean', function (done) {
     //return del.sync(['../@publish/*'],{force:true});
@@ -83,19 +89,7 @@ gulp.task('font-publish', function () {
         .pipe(gulp.dest(LocalPath + '@publish/font/'));
 });
 
-gulp.task('SLeasy-publish', gulp.series('build', function () {
-    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/physics/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
-        return SLeasyPath + item;
-    }))
-        .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
-}));
-
-gulp.task('js-publish', function () {
-    return gulp.src([LocalPath + 'js/*'])
-        .pipe(gulp.dest(LocalPath + '@publish/js/'));
-});
-
-gulp.task('js-min', gulp.series('js-publish'), function () {
+gulp.task('js-min', function (done) {
     var host = LocalPath + 'js/',
         dest = LocalPath + '@publish/js/',
         files = [
@@ -116,8 +110,14 @@ gulp.task('js-min', gulp.series('js-publish'), function () {
             .pipe($.concat(files[i] + '.js'))
             .pipe(gulp.dest(dest))
     }
+    ;
+    done();
 });
 
+gulp.task('js-publish', function () {
+    return gulp.src([LocalPath + 'js/*'])
+        .pipe(gulp.dest(LocalPath + '@publish/js/'));
+});
 
 gulp.task('tinypng', function () {
     return gulp.src('images/*.png')
@@ -125,7 +125,10 @@ gulp.task('tinypng', function () {
         .pipe(gulp.dest(LocalPath + 'images/'))
 });
 
-gulp.task('publish', gulp.series('clean', 'replace', 'img-publish', 'font-publish', 'SLeasy-publish', 'js-min', function (done) {
+gulp.task('endReport', function (done) {
     console.log('======================== 报告老板,项目构建发布成功~! ========================');
     done();
-}));
+});
+
+gulp.task('js-build', gulp.series('js-min', 'js-publish'));
+gulp.task('publish', gulp.series('clean', 'replace', 'img-publish', 'font-publish', 'build', 'SLeasy-publish', 'js-build', 'endReport'));
