@@ -1,4 +1,4 @@
-var SLeasyPath = '../@GitHub/SLeasy3/',
+var SLeasyPath = './',
     LocalPath = '',
     gulp = require('gulp'),
     del = require(SLeasyPath + 'node_modules/del'),
