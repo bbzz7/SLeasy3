@@ -49,12 +49,20 @@
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         $("#SLeasy_viewport").attr('content',_content);
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
-            SLeasy.onResize = function (Omode) {
+            SLeasy.onResize = function (oMode) {
                 $config.reloadMode && window.location.reload();
                 if($config.on['resize']){
-                    $config.on['resize'](Omode);
+                    $config.on['resize'](oMode);
                 }else{
-                    device.ios() && SLeasy.isWechat() && alert('您已进入'+Omode+'模式观看~');
+                    if(device.ios() && SLeasy.isWechat()){
+                        if(oMode=='横屏'){
+                            $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
+                        }else{
+                            setTimeout(function () {
+                                $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
+                            },100)
+                        }
+                    } ;
                 };//横竖屏回调
                 // alert('您已进入'+Omode+'模式观看~')
             }
