@@ -51,20 +51,18 @@
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function (oMode) {
                 $config.reloadMode && window.location.reload();
-                if($config.on['resize']){
-                    $config.on['resize'](oMode);
-                }else{
-                    if(device.ios() && SLeasy.isWechat()){
-                        if(oMode=='横屏'){
-                            $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
-                        }else{
-                            setTimeout(function () {
-                                $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
-                            },100)
-                        }
-                    } ;
-                };//横竖屏回调
-                // alert('您已进入'+Omode+'模式观看~')
+                //横竖屏回调
+                if($config.on['resize']){$config.on['resize'](oMode);}
+                //hack ios微信下横竖屏切换布局显示不能复位
+                if(device.ios() && SLeasy.isWechat()){
+                    if(oMode=='横屏'){
+                        $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
+                    }else{
+                        setTimeout(function () {
+                            $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
+                        },100)
+                    }
+                } ;
             }
         //}
 
