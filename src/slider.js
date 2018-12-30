@@ -216,30 +216,30 @@
                         stageObj.addChildAt($scope.aeLayer[layerName], addAt);
                     }
 
-
-                    //ticker
-                    $scope.aeLayer[layerName].flash = function () {
-                        $scope.aeLayer[layerName].removeAllChildren();
-                        //根据当前序列容器的frame值添加相应索引值的位图对象
-                        var frameIndex = Math.round($scope.aeLayer[layerName].frame);
-                        if (frameIndex < start) {
-                            frameIndex = $scope.aeLayer[layerName].frame = start;
-                        } else if (frameIndex > end) {
-                            frameIndex = $scope.aeLayer[layerName].frame = end;
-                        }
-                        var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
-                        $scope.aeLayer[layerName].addChild(aeFrame);
-                    }
-                    TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
-
+                    // TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
                     return $scope.aeLayer[layerName];
                 }
+
+                //帧刷新
+                SLeasy.flashAeLayer= function (aeLayer) {
+                    aeLayer.removeAllChildren();
+                        //根据当前序列容器的frame值添加相应索引值的位图对象
+                        var frameIndex = Math.round(aeLayer.frame);
+                        if (frameIndex < aeLayer.start) {
+                            frameIndex = aeLayer.frame = aeLayer.start;
+                        } else if (frameIndex > aeLayer.end) {
+                            frameIndex = aeLayer.frame = end;
+                        }
+                        var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                        aeLayer.addChild(aeFrame);
+                    }
 
 
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
-                    var frame = Math.abs(aeOpt.end - aeOpt.start),
-                        time = frame / (aeOpt.fps || 25);
+                    TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
+                    var frameCount = Math.abs(aeOpt.end - aeOpt.start),
+                        time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
                     aeTl.fromTo(
@@ -250,10 +250,14 @@
                         {
                             roundProps: "frame",
                             frame: aeOpt.end,
-                            ease: SteppedEase.config(frame),
+                            ease: SteppedEase.config(frameCount),
                             repeat: aeOpt.repeat,
                             onStart: aeOpt.onStart,
-                            onUpdate: aeOpt.onUpdate,
+                            onUpdate: function () {
+                                SLeasy.flashAeLayer(aeOpt.aeLayer);
+                                aeOpt.aeLayer.parent.update();
+                                aeOpt.onUpdate && aeOpt.onUpdate();
+                            },
                             onComplete: aeOpt.onComplete,
                         },
                         '+=' + (aeOpt.offsetTime || 0)
@@ -271,7 +275,7 @@
                         $scope.aeStage[name].clear();
                         $scope.aeTimeLine[name].clear();
                     } else {
-                        for (n in $scope.aeStage){
+                        for (n in $scope.aeStage) {
                             TweenMax.ticker.removeEventListener("tick", $scope.aeStage[n].update);
                             $scope.aeStage[n].removeAllChildren();
                             $scope.aeStage[n].removeAllEventListeners();
@@ -281,7 +285,7 @@
                             T.killTweensOf($scope.aeLayer[n]);
                             TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[n].flash);
                         }
-                        for (n in $scope.aeTimeLine){
+                        for (n in $scope.aeTimeLine) {
                             $scope.aeTimeLine[n].clear();
                         }
                     }
@@ -332,13 +336,16 @@
                             ease: SteppedEase.config(frame),
                             repeat: aeOpt.repeat,
                             onStart: aeOpt.onStart,
-                            onUpdate: aeOpt.onUpdate,
+                            onUpdate: function () {
+                                SLeasy.flashAeLayer($scope.aeLayer[layerName]);
+                                stage.update();
+                                aeOpt.onUpdate && aeOpt.onUpdate();
+                            },
                             onComplete: aeOpt.onComplete
                         }
                     }
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", stage.update, stage);
-
+                    // TweenMax.ticker.addEventListener("tick", stage.update, stage);
                     console.log(stage);
                     return stage;
 

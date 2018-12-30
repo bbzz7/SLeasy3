@@ -1,5 +1,6 @@
 /*!
  SLeasy 3.7.3 by 宇文互动 庄宇 2018-12-13 email：30755405@qq.com
+ 3.7.4(2018-12-29):解决ios微信中，横竖屏切换导致布局尺寸异常不能复位的问题;
  3.7.3(2018-12-13):支持单页幻灯alignMode参数;
  3.7.2(2018-06-21):大幅优化ae插件资源释放效果，支持自定义loading自动播放ae序列，添加横竖屏旋转回调等;
  3.7.1(2018-06-19):优化debug模式，force3D全局配置，修复alignMode相关定位bug等;
@@ -1205,20 +1206,18 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
             SLeasy.onResize = function (oMode) {
                 $config.reloadMode && window.location.reload();
-                if($config.on['resize']){
-                    $config.on['resize'](oMode);
-                }else{
-                    if(device.ios() && SLeasy.isWechat()){
-                        if(oMode=='横屏'){
-                            $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
-                        }else{
-                            setTimeout(function () {
-                                $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
-                            },100)
-                        }
-                    } ;
-                };//横竖屏回调
-                // alert('您已进入'+Omode+'模式观看~')
+                //横竖屏回调
+                if($config.on['resize']){$config.on['resize'](oMode);}
+                //hack ios微信下横竖屏切换布局显示不能复位
+                if(device.ios() && SLeasy.isWechat()){
+                    if(oMode=='横屏'){
+                        $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
+                    }else{
+                        setTimeout(function () {
+                            $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
+                        },100)
+                    }
+                } ;
             }
         //}
 
@@ -1453,30 +1452,30 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         stageObj.addChildAt($scope.aeLayer[layerName], addAt);
                     }
 
-
-                    //ticker
-                    $scope.aeLayer[layerName].flash = function () {
-                        $scope.aeLayer[layerName].removeAllChildren();
-                        //根据当前序列容器的frame值添加相应索引值的位图对象
-                        var frameIndex = Math.round($scope.aeLayer[layerName].frame);
-                        if (frameIndex < start) {
-                            frameIndex = $scope.aeLayer[layerName].frame = start;
-                        } else if (frameIndex > end) {
-                            frameIndex = $scope.aeLayer[layerName].frame = end;
-                        }
-                        var aeFrame = $scope.aeBitmaps[layerName][frameIndex];
-                        $scope.aeLayer[layerName].addChild(aeFrame);
-                    }
-                    TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
-
+                    // TweenMax.ticker.addEventListener("tick", $scope.aeLayer[layerName].flash);
                     return $scope.aeLayer[layerName];
                 }
+
+                //帧刷新
+                SLeasy.flashAeLayer= function (aeLayer) {
+                    aeLayer.removeAllChildren();
+                        //根据当前序列容器的frame值添加相应索引值的位图对象
+                        var frameIndex = Math.round(aeLayer.frame);
+                        if (frameIndex < aeLayer.start) {
+                            frameIndex = aeLayer.frame = aeLayer.start;
+                        } else if (frameIndex > aeLayer.end) {
+                            frameIndex = aeLayer.frame = end;
+                        }
+                        var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                        aeLayer.addChild(aeFrame);
+                    }
 
 
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
-                    var frame = Math.abs(aeOpt.end - aeOpt.start),
-                        time = frame / (aeOpt.fps || 25);
+                    TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
+                    var frameCount = Math.abs(aeOpt.end - aeOpt.start),
+                        time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
 
                     aeTl.fromTo(
@@ -1487,10 +1486,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         {
                             roundProps: "frame",
                             frame: aeOpt.end,
-                            ease: SteppedEase.config(frame),
+                            ease: SteppedEase.config(frameCount),
                             repeat: aeOpt.repeat,
                             onStart: aeOpt.onStart,
-                            onUpdate: aeOpt.onUpdate,
+                            onUpdate: function () {
+                                SLeasy.flashAeLayer(aeOpt.aeLayer);
+                                aeOpt.aeLayer.parent.update();
+                                aeOpt.onUpdate && aeOpt.onUpdate();
+                            },
                             onComplete: aeOpt.onComplete,
                         },
                         '+=' + (aeOpt.offsetTime || 0)
@@ -1508,7 +1511,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         $scope.aeStage[name].clear();
                         $scope.aeTimeLine[name].clear();
                     } else {
-                        for (n in $scope.aeStage){
+                        for (n in $scope.aeStage) {
                             TweenMax.ticker.removeEventListener("tick", $scope.aeStage[n].update);
                             $scope.aeStage[n].removeAllChildren();
                             $scope.aeStage[n].removeAllEventListeners();
@@ -1518,7 +1521,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             T.killTweensOf($scope.aeLayer[n]);
                             TweenMax.ticker.removeEventListener("tick", $scope.aeLayer[n].flash);
                         }
-                        for (n in $scope.aeTimeLine){
+                        for (n in $scope.aeTimeLine) {
                             $scope.aeTimeLine[n].clear();
                         }
                     }
@@ -1569,13 +1572,16 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             ease: SteppedEase.config(frame),
                             repeat: aeOpt.repeat,
                             onStart: aeOpt.onStart,
-                            onUpdate: aeOpt.onUpdate,
+                            onUpdate: function () {
+                                SLeasy.flashAeLayer($scope.aeLayer[layerName]);
+                                stage.update();
+                                aeOpt.onUpdate && aeOpt.onUpdate();
+                            },
                             onComplete: aeOpt.onComplete
                         }
                     }
                     //ticker
-                    TweenMax.ticker.addEventListener("tick", stage.update, stage);
-
+                    // TweenMax.ticker.addEventListener("tick", stage.update, stage);
                     console.log(stage);
                     return stage;
 
