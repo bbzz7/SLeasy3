@@ -56,6 +56,14 @@
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
                         }
                     }
+                    if (typeof subIn.top == 'number') subIn.top += yOffset[alignMode];
+                    if (typeof subShow.top == 'number') subShow.top += yOffset[alignMode];
+                    if (typeof subSet.top == 'number') subSet.top += yOffset[alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[subMotions[j].alignMode];
+                        }
+                    }
                 } else {
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
@@ -63,6 +71,14 @@
                     if (subTo.length) {
                         for (var l = 0; l < subTo.length; l++) {
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
+                        }
+                    }
+                    if (typeof subIn.top == 'number') subIn.top += yOffset[$config.alignMode];
+                    if (typeof subShow.top == 'number') subShow.top += yOffset[$config.alignMode];
+                    if (typeof subSet.top == 'number') subSet.top += yOffset[$config.alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[$config.alignMode];
                         }
                     }
                 }
