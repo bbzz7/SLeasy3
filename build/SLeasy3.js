@@ -1458,47 +1458,46 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
 
                 //帧刷新
-                SLeasy.flashAeLayer= function (aeLayer) {
+                SLeasy.flashAeLayer = function (aeLayer) {
                     aeLayer.removeAllChildren();
-                        //根据当前序列容器的frame值添加相应索引值的位图对象
-                        var frameIndex = Math.round(aeLayer.frame);
-                        if (frameIndex < aeLayer.start) {
-                            frameIndex = aeLayer.frame = aeLayer.start;
-                        } else if (frameIndex > aeLayer.end) {
-                            frameIndex = aeLayer.frame = end;
-                        }
-                        var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
-                        aeLayer.addChild(aeFrame);
+                    //根据当前序列容器的frame值添加相应索引值的位图对象
+                    var frameIndex = Math.round(aeLayer.frame);
+                    if (frameIndex < aeLayer.start) {
+                        frameIndex = aeLayer.frame = aeLayer.start;
+                    } else if (frameIndex > aeLayer.end) {
+                        frameIndex = aeLayer.frame = aeLayer.end;
                     }
+                    var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                    aeLayer.addChild(aeFrame);
+                }
 
 
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
-                    var frameCount = Math.abs(aeOpt.end - aeOpt.start),
+                    var frameCount = Math.abs(aeOpt.end - (typeof aeOpt.start != 'undefined' ? aeOpt.start : aeOpt.aeLayer.frame)),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                    var tweenData = {
+                        roundProps: "frame",
+                        frame: aeOpt.end,
+                        ease: SteppedEase.config(frameCount),
+                        repeat: aeOpt.repeat,
+                        yoyo: !!aeOpt.yoyo,
+                        onStart: aeOpt.onStart,
+                        onUpdate: function () {
+                            SLeasy.flashAeLayer(aeOpt.aeLayer);
+                            aeOpt.aeLayer.parent.update();
+                            aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
+                        },
+                        onComplete: aeOpt.onComplete,
+                    };
 
-                    aeTl.fromTo(
-                        aeOpt.aeLayer, time,
-                        {
-                            frame: aeOpt.start
-                        },
-                        {
-                            roundProps: "frame",
-                            frame: aeOpt.end,
-                            ease: SteppedEase.config(frameCount),
-                            repeat: aeOpt.repeat,
-                            onStart: aeOpt.onStart,
-                            onUpdate: function () {
-                                SLeasy.flashAeLayer(aeOpt.aeLayer);
-                                aeOpt.aeLayer.parent.update();
-                                aeOpt.onUpdate && aeOpt.onUpdate();
-                            },
-                            onComplete: aeOpt.onComplete,
-                        },
-                        '+=' + (aeOpt.offsetTime || 0)
-                    );
+                    if (typeof aeOpt.start != 'undefined') {
+                        aeTl.fromTo(aeOpt.aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                    } else {
+                        aeTl.to(aeOpt.aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                    }
                 }
 
                 //停止渲染层
@@ -1572,11 +1571,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             roundProps: "frame",
                             ease: SteppedEase.config(frame),
                             repeat: aeOpt.repeat,
+                            yoyo: !!aeOpt.yoyo,
                             onStart: aeOpt.onStart,
                             onUpdate: function () {
                                 SLeasy.flashAeLayer($scope.aeLayer[layerName]);
                                 stage.update();
-                                aeOpt.onUpdate && aeOpt.onUpdate();
+                                aeOpt.onUpdate && aeOpt.onUpdate($scope.aeLayer[layerName].frame);
                             },
                             onComplete: aeOpt.onComplete
                         }
@@ -1750,6 +1750,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
                         }
                     }
+                    if (typeof subIn.top == 'number') subIn.top += yOffset[alignMode];
+                    if (typeof subShow.top == 'number') subShow.top += yOffset[alignMode];
+                    if (typeof subSet.top == 'number') subSet.top += yOffset[alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[subMotions[j].alignMode];
+                        }
+                    }
                 } else {
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
@@ -1757,6 +1765,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     if (subTo.length) {
                         for (var l = 0; l < subTo.length; l++) {
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
+                        }
+                    }
+                    if (typeof subIn.top == 'number') subIn.top += yOffset[$config.alignMode];
+                    if (typeof subShow.top == 'number') subShow.top += yOffset[$config.alignMode];
+                    if (typeof subSet.top == 'number') subSet.top += yOffset[$config.alignMode];
+                    if (subTo.length) {
+                        for (var l = 0; l < subTo.length; l++) {
+                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[$config.alignMode];
                         }
                     }
                 }
