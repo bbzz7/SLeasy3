@@ -221,47 +221,46 @@
                 }
 
                 //帧刷新
-                SLeasy.flashAeLayer= function (aeLayer) {
+                SLeasy.flashAeLayer = function (aeLayer) {
                     aeLayer.removeAllChildren();
-                        //根据当前序列容器的frame值添加相应索引值的位图对象
-                        var frameIndex = Math.round(aeLayer.frame);
-                        if (frameIndex < aeLayer.start) {
-                            frameIndex = aeLayer.frame = aeLayer.start;
-                        } else if (frameIndex > aeLayer.end) {
-                            frameIndex = aeLayer.frame = end;
-                        }
-                        var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
-                        aeLayer.addChild(aeFrame);
+                    //根据当前序列容器的frame值添加相应索引值的位图对象
+                    var frameIndex = Math.round(aeLayer.frame);
+                    if (frameIndex < aeLayer.start) {
+                        frameIndex = aeLayer.frame = aeLayer.start;
+                    } else if (frameIndex > aeLayer.end) {
+                        frameIndex = aeLayer.frame = aeLayer.end;
                     }
+                    var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                    aeLayer.addChild(aeFrame);
+                }
 
 
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
-                    var frameCount = Math.abs(aeOpt.end - aeOpt.start),
+                    var frameCount = Math.abs(aeOpt.end - (typeof aeOpt.start != 'undefined' ? aeOpt.start : aeOpt.aeLayer.frame)),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                    var tweenData = {
+                        roundProps: "frame",
+                        frame: aeOpt.end,
+                        ease: SteppedEase.config(frameCount),
+                        repeat: aeOpt.repeat,
+                        yoyo: !!aeOpt.yoyo,
+                        onStart: aeOpt.onStart,
+                        onUpdate: function () {
+                            SLeasy.flashAeLayer(aeOpt.aeLayer);
+                            aeOpt.aeLayer.parent.update();
+                            aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
+                        },
+                        onComplete: aeOpt.onComplete,
+                    };
 
-                    aeTl.fromTo(
-                        aeOpt.aeLayer, time,
-                        {
-                            frame: aeOpt.start
-                        },
-                        {
-                            roundProps: "frame",
-                            frame: aeOpt.end,
-                            ease: SteppedEase.config(frameCount),
-                            repeat: aeOpt.repeat,
-                            onStart: aeOpt.onStart,
-                            onUpdate: function () {
-                                SLeasy.flashAeLayer(aeOpt.aeLayer);
-                                aeOpt.aeLayer.parent.update();
-                                aeOpt.onUpdate && aeOpt.onUpdate();
-                            },
-                            onComplete: aeOpt.onComplete,
-                        },
-                        '+=' + (aeOpt.offsetTime || 0)
-                    );
+                    if (typeof aeOpt.start != 'undefined') {
+                        aeTl.fromTo(aeOpt.aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                    } else {
+                        aeTl.to(aeOpt.aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                    }
                 }
 
                 //停止渲染层
@@ -335,11 +334,12 @@
                             roundProps: "frame",
                             ease: SteppedEase.config(frame),
                             repeat: aeOpt.repeat,
+                            yoyo: !!aeOpt.yoyo,
                             onStart: aeOpt.onStart,
                             onUpdate: function () {
                                 SLeasy.flashAeLayer($scope.aeLayer[layerName]);
                                 stage.update();
-                                aeOpt.onUpdate && aeOpt.onUpdate();
+                                aeOpt.onUpdate && aeOpt.onUpdate($scope.aeLayer[layerName].frame);
                             },
                             onComplete: aeOpt.onComplete
                         }
