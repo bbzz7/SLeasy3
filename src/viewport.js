@@ -60,7 +60,7 @@
                     }else{
                         setTimeout(function () {
                             $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
-                        },100)
+                        },150)
                     }
                 } ;
             }
