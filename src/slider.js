@@ -239,9 +239,11 @@
                 //播放渲染层
                 SLeasy.playAeLayer = function (aeOpt) {
                     TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
-                    var frameCount = Math.abs(aeOpt.end - (typeof aeOpt.start != 'undefined' ? aeOpt.start : aeOpt.aeLayer.frame)),
+                    var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
+                    var frameCount = Math.abs(aeOpt.end - startFrame),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                    aeOpt.aeLayer.preFrame = startFrame;
                     var tweenData = {
                         roundProps: "frame",
                         frame: aeOpt.end,
@@ -250,6 +252,11 @@
                         yoyo: !!aeOpt.yoyo,
                         onStart: aeOpt.onStart,
                         onUpdate: function () {
+                            // if (aeOpt.aeLayer.preFrame != aeOpt.aeLayer.frame) {
+                            //     console.info(aeOpt.aeLayer.frame);
+                            //     SLeasy.flashAeLayer(aeOpt.aeLayer);
+                            //     aeOpt.aeLayer.preFrame = aeOpt.aeLayer.frame;
+                            // }
                             SLeasy.flashAeLayer(aeOpt.aeLayer);
                             aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
                         },
