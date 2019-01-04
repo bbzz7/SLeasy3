@@ -232,6 +232,7 @@
                     }
                     var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
                     aeLayer.addChild(aeFrame);
+                    aeLayer.parent.update();
                 }
 
 
@@ -250,7 +251,6 @@
                         onStart: aeOpt.onStart,
                         onUpdate: function () {
                             SLeasy.flashAeLayer(aeOpt.aeLayer);
-                            aeOpt.aeLayer.parent.update();
                             aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
                         },
                         onComplete: aeOpt.onComplete,
@@ -338,7 +338,6 @@
                             onStart: aeOpt.onStart,
                             onUpdate: function () {
                                 SLeasy.flashAeLayer($scope.aeLayer[layerName]);
-                                stage.update();
                                 aeOpt.onUpdate && aeOpt.onUpdate($scope.aeLayer[layerName].frame);
                             },
                             onComplete: aeOpt.onComplete
