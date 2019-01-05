@@ -113,8 +113,12 @@
 
 
     //check http
-    SLeasy.isHttp = function () {
-        return (location.href.indexOf('http') == 0) ? true : false;
+    SLeasy.isHttp = function (url) {
+        if (url) {
+            return (url.indexOf('http') == 0) ? true : false;
+        } else {
+            return (location.href.indexOf('http') == 0) ? true : false;
+        }
     }
 
     //SLeasy 检测函数,检测支持见:https://github.com/matthewhudson/device.js
@@ -206,7 +210,9 @@
 
     //资源路径拼接
     SLeasy.path = function (host, url) {
-        if (url.search(/^\/\//) == -1) {
+        if (SLeasy.isHttp(url)) {
+            return url;
+        } else if (url.search(/^\/\//) == -1) {
             return host + url;
         } else {
             return url.replace(/^\/\//, '');
