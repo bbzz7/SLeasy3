@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.7.6 by 宇文互动 庄宇 2019-01-05 email：30755405@qq.com
+ SLeasy 3.7.7 by 宇文互动 庄宇 2019-01-05 email：30755405@qq.com
+ 3.7.7(2019-01-06):更新真·SLeasy.init().done();
  3.7.6(2019-01-05):修正musicBt图片地址没经过SLeasy.path处理的问题，更新SLeasy.isHttp()函数和SLeasy.path()函数;
  3.7.5(2018-12-30):重构内置ae插件，提升性能;
  3.7.4(2018-12-29):解决ios微信中，横竖屏切换导致布局尺寸异常不能复位的问题;
@@ -2636,7 +2637,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     dom = document.getElementById(id),
                     HDom = new H(dom),
                     e = el.event,
-                    callback = el.onEvent
+                    callback = el.onEvent.bind(SLeasy);
                 ;
 
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
@@ -3357,9 +3358,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
         if (!$config.debugMode) {
-            console.log = function () {
-            };//设置console.log输出
-        } else {
+            console.log = function () {};//设置console.log输出
+        }else{
+            var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
+        }
+        if($config.VConsole){
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         console.log($config);
