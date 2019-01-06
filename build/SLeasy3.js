@@ -1669,6 +1669,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.imgToDiv = function ($myDom) {
         var $dom = $myDom || $scope.sliderBox;
+        var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
+            transformedCount = 0;
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
             $(this).load(function (e) {
@@ -1684,6 +1686,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                 $(this).parent().css(style);
                 $(this).remove();
+                transformedCount++;
+                if($scope.initReady && transformedCount==transformTotal){
+                    $config.on['domReady']();//SLeasy dom初始化完毕回调
+                }
             });
         });
         //no to div
@@ -3032,7 +3038,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $scope.loader = $("#SLeasy_loader");//loading元素dom缓存
             $scope.floats = $(".SLeasy_floatElement");//浮动元素dom缓存
             $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
-            $config.on['domReady']();//SLeasy dom初始化完毕回调
+            // $config.on['domReady']();//SLeasy dom初始化完毕回调
 
             // $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
 
