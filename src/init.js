@@ -14,9 +14,11 @@
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
         if (!$config.debugMode) {
-            console.log = function () {
-            };//设置console.log输出
-        } else {
+            console.log = function () {};//设置console.log输出
+        }else{
+            var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
+        }
+        if($config.VConsole){
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         console.log($config);
