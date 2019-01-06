@@ -5,6 +5,8 @@
 
     SLeasy.imgToDiv = function ($myDom) {
         var $dom = $myDom || $scope.sliderBox;
+        var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
+            transformedCount = 0;
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
             $(this).load(function (e) {
@@ -20,6 +22,10 @@
 
                 $(this).parent().css(style);
                 $(this).remove();
+                transformedCount++;
+                if($scope.initReady && transformedCount==transformTotal){
+                    $config.on['domReady']();//SLeasy dom初始化完毕回调
+                }
             });
         });
         //no to div
