@@ -3,7 +3,7 @@
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
-    SLeasy.imgToDiv = function ($myDom) {
+    SLeasy.imgToDiv = function ($myDom,dfd) {
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
             transformedCount = 0;
@@ -24,7 +24,7 @@
                 $(this).remove();
                 transformedCount++;
                 if($scope.initReady && transformedCount==transformTotal){
-                    $config.on['domReady']();//SLeasy dom初始化完毕回调
+                    dfd.resolve();//初始化完毕
                 }
             });
         });
@@ -42,7 +42,6 @@
             });
         });
     }
-
 })(
     window.SLeasy = window.SLeasy || {},
     jQuery

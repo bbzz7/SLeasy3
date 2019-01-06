@@ -692,9 +692,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             'loaded': function () {//预加载完毕回调
                 console.log('======================================加载完毕~！');
             },
-            'domReady': function () {
-                console.log('SLeasy dom init over~~~~');
-            },
             'sliderChange': function (sliderIndex) {//幻灯切换回调
                 console.log('切换到第' + (sliderIndex + 1) + '张幻灯~！')
             },
@@ -1667,7 +1664,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
-    SLeasy.imgToDiv = function ($myDom) {
+    SLeasy.imgToDiv = function ($myDom,dfd) {
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
             transformedCount = 0;
@@ -1688,7 +1685,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $(this).remove();
                 transformedCount++;
                 if($scope.initReady && transformedCount==transformTotal){
-                    $config.on['domReady']();//SLeasy dom初始化完毕回调
+                    dfd.resolve();//初始化完毕
                 }
             });
         });
@@ -1706,7 +1703,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             });
         });
     }
-
 })(
     window.SLeasy = window.SLeasy || {},
     jQuery
@@ -2948,9 +2944,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
     //boot
-    SLeasy.boot = function () {
-        //var dfd=$.Deferred();
-
+    SLeasy.boot = function (dfd) {
         var loadingHtml = '',
             sliderHtml = '',
             detailHtml = '',
@@ -3028,7 +3022,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
 
             //img to div
-            SLeasy.imgToDiv();
+            SLeasy.imgToDiv($scope.sliderBox,dfd);
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
@@ -3068,14 +3062,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
-            //dfd.resolve();//初始化完毕
-
 
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
             $config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
-            //return dfd.promise();
             $scope.initReady = true;
         }
     }
@@ -3356,6 +3347,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //init
     SLeasy.init = function (opt) {
+        var dfd=$.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
@@ -3391,7 +3383,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
 
         //loading资源加载
-        return SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
+        SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
@@ -3409,12 +3401,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }).done(function () {//资源加载
             console.log('loading end -----------------------------');
             console.log($scope.totalLoad);
-            SLeasy.boot();
+            SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config);
             }
         });
+        return dfd.promise();
     }
 
 

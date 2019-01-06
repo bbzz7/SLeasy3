@@ -4,6 +4,7 @@
 
     //init
     SLeasy.init = function (opt) {
+        var dfd=$.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
@@ -39,7 +40,7 @@
         }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
 
         //loading资源加载
-        return SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
+        SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
@@ -57,12 +58,13 @@
         }).done(function () {//资源加载
             console.log('loading end -----------------------------');
             console.log($scope.totalLoad);
-            SLeasy.boot();
+            SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config);
             }
         });
+        return dfd.promise();
     }
 
 

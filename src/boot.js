@@ -5,9 +5,7 @@
 
 
     //boot
-    SLeasy.boot = function () {
-        //var dfd=$.Deferred();
-
+    SLeasy.boot = function (dfd) {
         var loadingHtml = '',
             sliderHtml = '',
             detailHtml = '',
@@ -85,7 +83,7 @@
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
 
             //img to div
-            SLeasy.imgToDiv();
+            SLeasy.imgToDiv($scope.sliderBox,dfd);
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
@@ -125,14 +123,11 @@
 
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
-            //dfd.resolve();//初始化完毕
-
 
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
             $config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
-            //return dfd.promise();
             $scope.initReady = true;
         }
     }

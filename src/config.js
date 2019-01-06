@@ -67,9 +67,6 @@
             'loaded': function () {//预加载完毕回调
                 console.log('======================================加载完毕~！');
             },
-            'domReady': function () {
-                console.log('SLeasy dom init over~~~~');
-            },
             'sliderChange': function (sliderIndex) {//幻灯切换回调
                 console.log('切换到第' + (sliderIndex + 1) + '张幻灯~！')
             },
