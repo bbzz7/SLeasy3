@@ -56,7 +56,7 @@
                     dom = document.getElementById(id),
                     HDom = new H(dom),
                     e = el.event,
-                    callback = el.onEvent
+                    callback = el.onEvent.bind(SLeasy);
                 ;
 
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
