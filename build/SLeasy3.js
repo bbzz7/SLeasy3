@@ -1484,6 +1484,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         },
                         'img': function () {
                             //渲染层初始化
+                            $scope.aeBitmaps[layerName] = [];
+                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                var bitmap = new Image();
+                                bitmap.src = $scope.bitmaps[layerName][i]
+                                $scope.aeBitmaps[layerName].push(bitmap);
+                            }
+                            //渲染层初始化
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
                             aeLayer.style.width = '100%';
@@ -1520,7 +1527,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             app.renderer.render(stage);
                         },
                         'img': function () {
-                            aeLayer.src = $scope.bitmaps[aeLayer.name][frameIndex]
+                            // aeLayer.src = $scope.bitmaps[aeLayer.name][frameIndex]
+                            aeLayer.src = $scope.aeBitmaps[aeLayer.name][frameIndex].src;
                         }
                     }
                     return engineMode[aeLayer.engine || 'easel']();
@@ -1680,7 +1688,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             stage.css({
                                 'width': aeOpt.width * $scope.viewScale,
                                 'height': aeOpt.height * $scope.viewScale
-                        })
+                            })
                             return stage;
                         }
                     }
