@@ -195,16 +195,10 @@
 				</div>';
             },
             "ae": function (opt) {
-                //添加ae渲染层
-                SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit) {
+                //添加ae渲染层 --------------------------------------------
+                SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit, engine) {
                     SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
-                    //渲染层初始化
-                    $scope.aeBitmaps[layerName] = [];
-                    for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
-                        var _bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
-                        $scope.aeBitmaps[layerName].push(_bitmap);
-                    }
-                    $scope.aeLayer[layerName] = new createjs.Container();
+                    $scope.aeLayer[layerName] = createAeLayer(layerName, engine);
                     $scope.aeLayer[layerName].frame = 0;
                     $scope.aeLayer[layerName].start = start;
                     $scope.aeLayer[layerName].end = end;
@@ -220,9 +214,44 @@
                     return $scope.aeLayer[layerName];
                 }
 
-                //帧刷新
+                //ae层初始化
+                function createAeLayer(layerName, engine) {
+                    var layerMode = {
+                        'easel': function () {
+                            //渲染层初始化
+                            $scope.aeBitmaps[layerName] = [];
+                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                var bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
+                                $scope.aeBitmaps[layerName].push(bitmap);
+                            }
+                            var aeLayer = new createjs.Container();
+                            aeLayer.engine = 'easel';
+                            return aeLayer;
+                        },
+                        'pixi': function () {
+                            //渲染层初始化
+                            $scope.aeBitmaps[layerName] = [];
+                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
+                                $scope.aeBitmaps[layerName].push(bitmap);
+                            }
+                            var aeLayer = new PIXI.Container();
+                            aeLayer.engine = 'pixi';
+                            return aeLayer;
+                        },
+                        'img': function () {
+                            //渲染层初始化
+                            var aeLayer = new Image();
+                            aeLayer.engine = 'img';
+                            aeLayer.style.width = '100%';
+                            return aeLayer;
+                        }
+                    }
+                    return layerMode[engine || 'easel']();
+                }
+
+                //帧刷新 -------------------------------------------------------
                 SLeasy.flashAeLayer = function (aeLayer) {
-                    aeLayer.removeAllChildren();
                     //根据当前序列容器的frame值添加相应索引值的位图对象
                     var frameIndex = Math.round(aeLayer.frame);
                     if (frameIndex < aeLayer.start) {
@@ -230,13 +259,32 @@
                     } else if (frameIndex > aeLayer.end) {
                         frameIndex = aeLayer.frame = aeLayer.end;
                     }
-                    var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
-                    aeLayer.addChild(aeFrame);
-                    aeLayer.parent.update();
+                    var imgUrl = $scope.bitmaps[aeLayer.name][frameIndex];
+
+                    var engineMode = {
+                        'easel': function () {
+                            aeLayer.removeAllChildren();
+                            var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                            aeLayer.addChild(aeFrame);
+                            aeLayer.parent.update();
+                        },
+                        'pixi': function () {
+                            aeLayer.removeChildren();
+                            var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
+                            aeLayer.addChild(aeFrame);
+                            var stage = aeLayer.parent;
+                            var app = stage.parent;
+                            app.renderer.render(stage);
+                        },
+                        'img': function () {
+                            aeLayer.src = $scope.bitmaps[aeLayer.name][frameIndex]
+                        }
+                    }
+                    return engineMode[aeLayer.engine || 'easel']();
                 }
 
 
-                //播放渲染层
+                //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
                     TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
                     var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
@@ -270,7 +318,7 @@
                     }
                 }
 
-                //停止渲染层
+                //停止渲染层 -----------------------------------------------------
                 SLeasy.stopAeLayer = function (name) {
                     if (name) {
                         T.killTweensOf($scope.aeLayer[name]);
@@ -312,12 +360,14 @@
                 $.extend(config, opt.ae);
 
 
-                //内置ae插件初始化函数
+                //内置ae插件初始化函数 -----------------------------------------------------
                 function aeMotion(aeOpt) {
                     //AE
-                    var stage = $scope.aeStage[aeOpt.stage] = new createjs.Stage(aeOpt.node);
+                    var stage = $scope.aeStage[aeOpt.stage] = createStage(aeOpt);
                     stage.sliderIndex = aeOpt.sliderIndex;
                     stage.name = aeOpt.stage;
+
+                    var engine = aeOpt.engine;
 
                     for (var i = 0; i < aeOpt.layer.length; i++) {
                         var layerArg = aeOpt.layer[i],
@@ -329,7 +379,7 @@
                             suffix = layerArg[4],
                             bit = layerArg[5];
 
-                        $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit);
+                        $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit, engine);
 
                         var frame = end - start,
                             time = frame / (aeOpt.fps || 25);
@@ -357,13 +407,51 @@
 
                 }
 
+                //舞台初始化
+                function createStage(aeOpt) {
+                    var stageMode = {
+                        'easel': function () {
+                            return new createjs.Stage(aeOpt.node);
+                        },
+                        'pixi': function () {
+                            var app = new PIXI.Application({
+                                view: $('#' + aeOpt.node)[0],
+                                forceCanvas: true,
+                                width: aeOpt.width,
+                                height: aeOpt.width
+                            })
+                            app.ticker.stop();
+                            app.stage.parent = app;
+                            return app.stage;
+                        },
+                        'img': function () {
+                            var stage = $('#' + aeOpt.node).parent();
+                            stage.html('');
+                            stage.addChild = function (child) {
+                                stage.html(child);
+                            }
+                            stage.addChildAt = function (child, zIndex) {
+                                stage.html(child);
+                                $(child).css('zIndex', zIndex);
+                            }
+                            stage.css({
+                                'width': aeOpt.width * $scope.viewScale,
+                                'height': aeOpt.height * $scope.viewScale
+                        })
+                            return stage;
+                        }
+                    }
+                    return stageMode[aeOpt.engine || 'easel']();
+                }
 
+
+                // -----------------------------------------------------
                 //把ae内置插件,初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
                 config.node = config.stage;
                 config.sliderIndex = sliderIndex;//并入当前ae插件所在的幻灯索引值
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
-                console.log(config);
+                console.info(config);
 
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -371,6 +459,7 @@
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				<canvas id="' + config.stage + '" class="SLeasy_canvas SLeasy_ae" width="' + config.width + '" height="' + config.height + '" style="width:' + config.width * $scope.viewScale + 'px;height:' + config.height * $scope.viewScale + 'px"></canvas>\
 				</div>';
+                // -----------------------------------------------------
             },
         }
 
