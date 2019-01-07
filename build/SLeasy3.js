@@ -1497,7 +1497,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             return aeLayer;
                         }
                     }
-                    return layerMode[engine || 'easel']();
+                    return layerMode[engine || 'img']();
                 }
 
                 //帧刷新 -------------------------------------------------------
@@ -1531,7 +1531,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             aeLayer.src = $scope.aeBitmaps[aeLayer.name][frameIndex].src;
                         }
                     }
-                    return engineMode[aeLayer.engine || 'easel']();
+                    return engineMode[aeLayer.engine || 'img']();
                 }
 
 
@@ -1692,7 +1692,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             return stage;
                         }
                     }
-                    return stageMode[aeOpt.engine || 'easel']();
+                    return stageMode[aeOpt.engine || 'img']();
                 }
 
 

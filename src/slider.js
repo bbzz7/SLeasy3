@@ -254,7 +254,7 @@
                             return aeLayer;
                         }
                     }
-                    return layerMode[engine || 'easel']();
+                    return layerMode[engine || 'img']();
                 }
 
                 //帧刷新 -------------------------------------------------------
@@ -288,7 +288,7 @@
                             aeLayer.src = $scope.aeBitmaps[aeLayer.name][frameIndex].src;
                         }
                     }
-                    return engineMode[aeLayer.engine || 'easel']();
+                    return engineMode[aeLayer.engine || 'img']();
                 }
 
 
@@ -449,7 +449,7 @@
                             return stage;
                         }
                     }
-                    return stageMode[aeOpt.engine || 'easel']();
+                    return stageMode[aeOpt.engine || 'img']();
                 }
 
 
