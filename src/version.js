@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.0 by 宇文互动 庄宇 2019-01-07 email:30755405@qq.com
+ SLeasy 3.8.1 by 宇文互动 庄宇 2019-01-07 email:30755405@qq.com
+ 3.8.1(2019-01-08):更新有自定义loading选项，SLeasy二次初始化时，最外层SLeasy.init().done()回调触发失效的问题;
  3.8.0(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
  3.7.7(2019-01-06):更新真·SLeasy.init().done();
  3.7.6(2019-01-05):修正musicBt图片地址没经过SLeasy.path处理的问题，更新SLeasy.isHttp()函数和SLeasy.path()函数;
