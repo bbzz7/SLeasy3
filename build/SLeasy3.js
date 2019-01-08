@@ -3492,6 +3492,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
+                //自定义loading的onProgress回调
+                $config.loading.onProgress && $config.loading.onProgress();
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
                     return $scope.exLoadingPercent.text(percent + '%')
