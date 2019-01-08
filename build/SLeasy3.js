@@ -3493,7 +3493,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //自定义loading的onProgress回调
-                $config.loading.onProgress && $config.loading.onProgress();
+                $config.loading.onProgress && $config.loading.onProgress(percent);
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
                     return $scope.exLoadingPercent.text(percent + '%')
