@@ -4,7 +4,7 @@
 
     //init
     SLeasy.init = function (opt) {
-        var dfd=$.Deferred();
+        var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
@@ -14,11 +14,12 @@
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
         if (!$config.debugMode) {
-            console.log = function () {};//设置console.log输出
-        }else{
+            console.log = function () {
+            };//设置console.log输出
+        } else {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
-        if($config.VConsole){
+        if ($config.VConsole) {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         console.log($config);
@@ -47,7 +48,7 @@
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
-                    return $scope.exLoadingPercent.text(percent+'%')
+                    return $scope.exLoadingPercent.text(percent + '%')
                 } else {
                     //查找百分比dom，并缓存
                     for (var i = 0; i < $config.loading.subMotion.length; i++) {
@@ -63,7 +64,9 @@
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
-                SLeasy.init($config);
+                SLeasy.init($config).done(function () {
+                    dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
+                });
             }
         });
         return dfd.promise();

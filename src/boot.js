@@ -25,7 +25,7 @@
 
             SLeasy.fixPosition([$config.loading]);
             //img to div
-            SLeasy.imgToDiv();
+            SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
@@ -83,7 +83,7 @@
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
 
             //img to div
-            SLeasy.imgToDiv($scope.sliderBox,dfd);
+            SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存

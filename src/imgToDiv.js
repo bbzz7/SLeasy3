@@ -3,7 +3,7 @@
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
-    SLeasy.imgToDiv = function ($myDom,dfd) {
+    SLeasy.imgToDiv = function ($myDom, dfd) {
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
             transformedCount = 0;
@@ -23,7 +23,7 @@
                 $(this).parent().css(style);
                 $(this).remove();
                 transformedCount++;
-                if($scope.initReady && transformedCount==transformTotal){
+                if ($scope.initReady && transformedCount == transformTotal) {
                     dfd.resolve();//初始化完毕
                 }
             });
