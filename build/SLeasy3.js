@@ -1,6 +1,6 @@
 /*!
- SLeasy 3.8.0 by 宇文互动 庄宇 2019-01-07 email:30755405@qq.com
- 3.8.0(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
+ SLeasy 3.8.1 by 宇文互动 庄宇 2019-01-07 email:30755405@qq.com
+ 3.8.1(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
  3.7.7(2019-01-06):更新真·SLeasy.init().done();
  3.7.6(2019-01-05):修正musicBt图片地址没经过SLeasy.path处理的问题，更新SLeasy.isHttp()函数和SLeasy.path()函数;
  3.7.5(2018-12-30):重构内置ae插件，提升性能;
@@ -1764,7 +1764,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
-    SLeasy.imgToDiv = function ($myDom,dfd) {
+    SLeasy.imgToDiv = function ($myDom, dfd) {
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.length : $scope.sliderBox.length,
             transformedCount = 0;
@@ -1784,7 +1784,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $(this).parent().css(style);
                 $(this).remove();
                 transformedCount++;
-                if($scope.initReady && transformedCount==transformTotal){
+                if ($scope.initReady && transformedCount == transformTotal) {
                     dfd.resolve();//初始化完毕
                 }
             });
@@ -3064,7 +3064,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
             SLeasy.fixPosition([$config.loading]);
             //img to div
-            SLeasy.imgToDiv();
+            SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
@@ -3122,7 +3122,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
 
             //img to div
-            SLeasy.imgToDiv($scope.sliderBox,dfd);
+            SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
@@ -3447,7 +3447,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //init
     SLeasy.init = function (opt) {
-        var dfd=$.Deferred();
+        var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
@@ -3457,11 +3457,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
         if (!$config.debugMode) {
-            console.log = function () {};//设置console.log输出
-        }else{
+            console.log = function () {
+            };//设置console.log输出
+        } else {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
-        if($config.VConsole){
+        if ($config.VConsole) {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         console.log($config);
@@ -3490,7 +3491,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
-                    return $scope.exLoadingPercent.text(percent+'%')
+                    return $scope.exLoadingPercent.text(percent + '%')
                 } else {
                     //查找百分比dom，并缓存
                     for (var i = 0; i < $config.loading.subMotion.length; i++) {
@@ -3506,7 +3507,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
-                SLeasy.init($config);
+                SLeasy.init($config).done(function () {
+                    dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
+                });
             }
         });
         return dfd.promise();
