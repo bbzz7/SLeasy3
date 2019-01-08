@@ -1,6 +1,7 @@
 /*!
- SLeasy 3.8.1 by 宇文互动 庄宇 2019-01-07 email:30755405@qq.com
- 3.8.1(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
+ SLeasy 3.8.1 by 宇文互动 庄宇 2019-01-08 email:30755405@qq.com
+ 3.8.1(2019-01-08):更新有自定义loading选项，SLeasy二次初始化时，最外层SLeasy.init().done()回调触发失效的问题;
+ 3.8.0(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
  3.7.7(2019-01-06):更新真·SLeasy.init().done();
  3.7.6(2019-01-05):修正musicBt图片地址没经过SLeasy.path处理的问题，更新SLeasy.isHttp()函数和SLeasy.path()函数;
  3.7.5(2018-12-30):重构内置ae插件，提升性能;
@@ -1178,7 +1179,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             viewport = {
                 'width': function () {
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewportContent = 'width='+width+',user-scalable=no';
+                        viewportContent = 'width=' + width + ',user-scalable=no';
                     return viewportContent;
                 },
                 'height': function (thresholdHeight) {
@@ -1210,28 +1211,30 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
-        $("#SLeasy_viewport").attr('content',_content);
+        $("#SLeasy_viewport").attr('content', _content);
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
-            SLeasy.onResize = function (oMode) {
-                $config.reloadMode && window.location.reload();
-                //横竖屏回调
-                if($config.on['resize']){$config.on['resize'](oMode);}
-                //hack ios微信下横竖屏切换布局显示不能复位
-                if(device.ios() && SLeasy.isWechat()){
-                    if(oMode=='横屏'){
-                        $('#SLeasy_viewport').attr('content','width='+$scope.fixHeight+',user-scalable=no');
-                    }else{
-                        setTimeout(function () {
-                            $('#SLeasy_viewport').attr('content','width='+$config.viewport+',user-scalable=no');
-                        },150)
-                    }
-                } ;
+        SLeasy.onResize = function (oMode) {
+            $config.reloadMode && window.location.reload();
+            //横竖屏回调
+            if ($config.on['resize']) {
+                $config.on['resize'](oMode);
             }
+            //hack ios微信下横竖屏切换布局显示不能复位
+            if (device.ios() && SLeasy.isWechat()) {
+                if (oMode == '横屏') {
+                    $('#SLeasy_viewport').attr('content', 'width=' + $scope.fixHeight + ',user-scalable=no');
+                } else {
+                    setTimeout(function () {
+                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
+                    }, 150)
+                }
+            }
+        }
         //}
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        //$scope.fixHeight=$(window).height();//设置自适应全屏高度
-        $scope.fixHeight = $(window).height() > sliderBoxHeight ? sliderBoxHeight : $(window).height();//设置自适应全屏高度
+        //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
+        $scope.fixHeight = $(window).height() > sliderBoxHeight ? sliderBoxHeight : $(window).height() + 1;
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
