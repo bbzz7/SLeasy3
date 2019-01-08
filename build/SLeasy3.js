@@ -794,6 +794,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
 
+    SLeasy.$scope = $scope;//全局状态
     SLeasy.scope = function () {
         return $scope;
     }

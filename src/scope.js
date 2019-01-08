@@ -52,6 +52,7 @@
     }
 
 
+    SLeasy.$scope = $scope;//全局状态
     SLeasy.scope = function () {
         return $scope;
     }
