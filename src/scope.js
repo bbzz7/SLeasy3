@@ -322,6 +322,37 @@
     }
 
 
+    //显示元素
+    SLeasy.show = function (el, time, onComplete) {
+        if (time) {
+            TweenMax.to(el, time, {
+                autoAlpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
+                })
+            });
+        } else {
+            TweenMax.set(el, {autoAlpha: 1});
+        }
+        return SLeasy;
+    }
+    //隐藏元素
+    SLeasy.hide = function (el, time, onComplete) {
+        if (time) {
+            TweenMax.to(el, time, {
+                autoAlpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
+                })
+            });
+        } else {
+            TweenMax.set(el, {autoAlpha: 0});
+        }
+        return SLeasy;
+    }
+
+    //kill元素Tween
+    SLeasy.kill = function (el) {
+        TweenMax.killTweensOf(el);
+        return SLeasy;
+    }
+
     //时间线控制,用于'时间轴模式'下
     SLeasy.play = function () {
         $scope.timeLine.play();
