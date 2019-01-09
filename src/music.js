@@ -100,7 +100,7 @@
             return $config.musicUrl.pause();
         }
         //audio
-        $("#SLeasy_music")[0].pause();
+        $("#SLeasy_music").length && $("#SLeasy_music")[0].pause();
         //兼容安卓
         $("#SLeasy_music").on('pause', function () {
             $scope.isMusic = 0;
