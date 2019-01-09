@@ -3322,11 +3322,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                     dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
-                        console.log((new Date().getTime() - stime) / 1000)
+                        console.log(('加载共::>>>>>【' + new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady) {
-                            $config.loading.onLoaded();//自定义预加载完毕回调
-                        } else {
                             $config.on['loaded'](); //预加载完毕回调
+                        } else {
+                            $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
                         }
                         dfd.resolve($config, $scope);
                     } else {
@@ -3350,11 +3350,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                         dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
-                            console.log((new Date().getTime() - stime) / 1000 + '秒');
+                            console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                             if ($scope.loadingReady) {
-                                $config.loading.onLoaded && $config.loading.onLoaded();//自定义预加载完毕回调
-                            } else {
                                 $config.on['loaded'](); //预加载完毕回调
+                            } else {
+                                $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
                             }
                             dfd.resolve($config, $scope);
                         }
@@ -3493,6 +3493,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //自定义loading的onProgress回调
+                // console.log('========================='+percent+'========================')
                 $config.loading.onProgress && $config.loading.onProgress(percent);
                 //如果百分比dom已缓存
                 if ($scope.exLoadingPercent) {
@@ -3507,13 +3508,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
             }
         }).done(function () {//资源加载
-            console.log('loading end -----------------------------');
+            console.log('loading end ----------------------------------------------');
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
+                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                    $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                 });
             }
         });

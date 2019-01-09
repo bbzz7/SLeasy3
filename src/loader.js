@@ -143,11 +143,11 @@
                     $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                     dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
-                        console.log((new Date().getTime() - stime) / 1000)
+                        console.log(('加载共::>>>>>【' + new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady) {
-                            $config.loading.onLoaded();//自定义预加载完毕回调
-                        } else {
                             $config.on['loaded'](); //预加载完毕回调
+                        } else {
+                            $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
                         }
                         dfd.resolve($config, $scope);
                     } else {
@@ -171,11 +171,11 @@
                         $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                         dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
-                            console.log((new Date().getTime() - stime) / 1000 + '秒');
+                            console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                             if ($scope.loadingReady) {
-                                $config.loading.onLoaded && $config.loading.onLoaded();//自定义预加载完毕回调
-                            } else {
                                 $config.on['loaded'](); //预加载完毕回调
+                            } else {
+                                $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
                             }
                             dfd.resolve($config, $scope);
                         }
