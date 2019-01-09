@@ -325,7 +325,7 @@
     //显示元素
     SLeasy.show = function (el, time, onComplete) {
         if (time) {
-            TweenMax.to(el, time, {
+            TweenMax.to(el, time > 1 ? time / 1000 : time, {
                 autoAlpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 })
             });
@@ -337,7 +337,7 @@
     //隐藏元素
     SLeasy.hide = function (el, time, onComplete) {
         if (time) {
-            TweenMax.to(el, time, {
+            TweenMax.to(el, time > 1 ? time / 1000 : time, {
                 autoAlpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 })
             });
