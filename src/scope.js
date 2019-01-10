@@ -211,6 +211,7 @@
 
     //资源路径拼接
     SLeasy.path = function (host, url) {
+        if(!url) return '';
         if (SLeasy.isHttp(url)) {
             return url;
         } else if (url.search(/^\/\//) == -1) {
