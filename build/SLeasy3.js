@@ -1417,8 +1417,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : '') + '" \
-				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || $config.viewport) + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + '" \
+				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             'iframe': function (opt) {
@@ -3341,7 +3341,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         if ($scope.loadingReady) {
                             $config.on['loaded'](); //预加载完毕回调
                         } else {
-                            $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
+                            //自定义loading自身加载完毕回调
+                            $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                         }
                         dfd.resolve($config, $scope);
                     } else {
@@ -3369,7 +3370,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             if ($scope.loadingReady) {
                                 $config.on['loaded'](); //预加载完毕回调
                             } else {
-                                $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
+                                //自定义loading自身加载完毕回调
+                                $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                             }
                             dfd.resolve($config, $scope);
                         }
