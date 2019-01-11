@@ -147,7 +147,8 @@
                         if ($scope.loadingReady) {
                             $config.on['loaded'](); //预加载完毕回调
                         } else {
-                            $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
+                            //自定义loading自身加载完毕回调
+                            $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                         }
                         dfd.resolve($config, $scope);
                     } else {
@@ -175,7 +176,8 @@
                             if ($scope.loadingReady) {
                                 $config.on['loaded'](); //预加载完毕回调
                             } else {
-                                $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();//自定义loading自身加载完毕回调
+                                //自定义loading自身加载完毕回调
+                                $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                             }
                             dfd.resolve($config, $scope);
                         }
