@@ -8,6 +8,9 @@
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
+        if ($config.debugMode == 'auto') {
+            $config.debugMode = SLeasy.isHttp() ? 0 : 1;
+        }
         if (!SLeasy.isHttp() || $config.debugMode) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             var $defaultStyle = $('head style').eq(0);
