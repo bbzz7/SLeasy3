@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.1 by 宇文互动 庄宇 2019-01-08 email:30755405@qq.com
+ SLeasy 3.8.2 by 宇文互动 庄宇 2019-01-16 email:30755405@qq.com
+ 3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
  3.8.1(2019-01-08):更新有自定义loading选项，SLeasy二次初始化时，最外层SLeasy.init().done()回调触发失效的问题;
  3.8.0(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
  3.7.7(2019-01-06):更新真·SLeasy.init().done();
@@ -1784,7 +1785,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.imgToDiv = function ($myDom, dfd) {
         var $dom = $myDom || $scope.sliderBox;
-        var transformTotal = $myDom ? $myDom.find('img').length : $scope.sliderBox.find(img).length,
+        var transformTotal = $myDom ? $myDom.find('.toDiv img').length : $scope.sliderBox.find('.toDiv img').length,
             transformedCount = 0;
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
@@ -1804,7 +1805,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 transformedCount++;
                 // console.log('============'+w+':'+h+'==============');
                 if ($scope.initReady && transformedCount == transformTotal) {
-                    console.info('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                     dfd.resolve();//初始化完毕
                 }
             });
@@ -3473,6 +3474,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
         $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
+        if ($config.debugMode == 'auto') {
+            $config.debugMode = SLeasy.isHttp() ? 0 : 1;
+        }
         if (!SLeasy.isHttp() || $config.debugMode) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             var $defaultStyle = $('head style').eq(0);

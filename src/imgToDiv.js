@@ -5,7 +5,7 @@
 
     SLeasy.imgToDiv = function ($myDom, dfd) {
         var $dom = $myDom || $scope.sliderBox;
-        var transformTotal = $myDom ? $myDom.find('img').length : $scope.sliderBox.find(img).length,
+        var transformTotal = $myDom ? $myDom.find('.toDiv img').length : $scope.sliderBox.find('.toDiv img').length,
             transformedCount = 0;
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
@@ -25,7 +25,7 @@
                 transformedCount++;
                 // console.log('============'+w+':'+h+'==============');
                 if ($scope.initReady && transformedCount == transformTotal) {
-                    console.info('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                     dfd.resolve();//初始化完毕
                 }
             });
