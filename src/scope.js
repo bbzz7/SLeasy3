@@ -211,11 +211,14 @@
 
     //资源路径拼接
     SLeasy.path = function (host, url) {
-        if(!url) return '';
+        if (!url) return '';
+        var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
+        console.log($config)
+        console.log($config.timeStamp)
         if (SLeasy.isHttp(url)) {
-            return url;
+            return url + timeStamp;
         } else if (url.search(/^\/\//) == -1) {
-            return host + url;
+            return host + url + timeStamp;
         } else {
             return url.replace(/^\/\//, '');
         }

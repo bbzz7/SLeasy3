@@ -657,6 +657,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         reloadMode: 0,//屏幕旋转自动刷新页面重新适配
         stageMode: 'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         positionMode: 'absolute',//舞台子元素position模式
+        timeStamp: window.SLeasyTimeStamp || null,
 
         //music-------------------------------------------
         musicUrl: '',//背景音乐url
@@ -955,11 +956,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //资源路径拼接
     SLeasy.path = function (host, url) {
-        if(!url) return '';
+        if (!url) return '';
+        var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
+        console.log($config)
+        console.log($config.timeStamp)
         if (SLeasy.isHttp(url)) {
-            return url;
+            return url + timeStamp;
         } else if (url.search(/^\/\//) == -1) {
-            return host + url;
+            return host + url + timeStamp;
         } else {
             return url.replace(/^\/\//, '');
         }

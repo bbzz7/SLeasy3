@@ -1,9 +1,10 @@
 var SLeasyPath = '../@GitHub/SLeasy3/',
     LocalPath = './',
     gulp = require('gulp'),
-    del = require(SLeasyPath + 'node_modules/del'),
     $ = {};
 
+$.del = require(SLeasyPath + 'node_modules/del');
+$.rev = require(SLeasyPath + 'node_modules/gulp-rev-append');
 $.concat = require(SLeasyPath + 'node_modules/gulp-concat');
 $.uglify = require(SLeasyPath + 'node_modules/gulp-uglify');
 $.replace = require(SLeasyPath + 'node_modules/gulp-replace');
@@ -61,16 +62,19 @@ gulp.task('SLeasy-publish', function () {
         .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
 });
 
-gulp.task('clean', function (done) {
-    //return del.sync(['../@publish/*'],{force:true});
-    done();
+gulp.task('clean', function () {
+    return $.del([LocalPath + '@publish/index.html']);
 });
 
 gulp.task('replace', function () {
     var origin = /<!--SLeasy3-->\n(.*\n)*<!--SLeasy3 end-->/,
         replace = '<script src="SLeasy3/build/SLeasy3.min.js" charset="utf-8"></script>';
 
+    var oldTime = /<!--timeStamp-->/,
+        newTime = '<script>window.SLeasyTimeStamp=' + (new Date).getTime() + '</script>';
+
     return gulp.src(LocalPath + '*.html')
+        .pipe($.replace(oldTime, newTime))
         .pipe($.replace(origin, replace))
         .pipe($.replace(SLeasyPath, 'SLeasy3/'))
         .pipe($.replace('app.js', 'app.js?' + (new Date).getTime()))

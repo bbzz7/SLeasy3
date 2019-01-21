@@ -17,6 +17,7 @@
     "gulp-jsfuck": "^0.2.1",
     "gulp-load-plugins": "^1.5.0",
     "gulp-obfuscate": "^0.2.9",
+    "gulp-rev-append": "^0.1.8",
     "gulp-tinypng": "^1.0.2",
     "gulp-uglify": "^3.0.1"
   },
