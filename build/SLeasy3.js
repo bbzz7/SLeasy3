@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.2 by 宇文互动 庄宇 2019-01-16 email:30755405@qq.com
+ SLeasy 3.8.3 by 宇文互动 庄宇 2019-01-21 email:30755405@qq.com
+ 3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
  3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
  3.8.1(2019-01-08):更新有自定义loading选项，SLeasy二次初始化时，最外层SLeasy.init().done()回调触发失效的问题;
  3.8.0(2019-01-07):内置ae插件重大升级，重构新增为3种渲染引擎(easel、pixi、img);
@@ -1604,9 +1605,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo(aeOpt.aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
-                        aeTl.to(aeOpt.aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.to((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                 }
 
@@ -1619,6 +1620,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             T.killTweensOf($scope.aeLayer[n]);
                         }
                     }
+                }
+
+                //gotoAndPlay渲染层 -----------------------------------------------------
+                SLeasy.gotoAeLayer = function (name, frame) {
+                    var aeLayer = $scope.aeLayer[name];
+                    TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
+                    TweenMax.set(aeLayer, {
+                        frame: frame, onComplete: function () {
+                            SLeasy.flashAeLayer(aeLayer);
+                        }
+                    })
                 }
 
                 var config = {

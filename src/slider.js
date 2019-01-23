@@ -320,9 +320,9 @@
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo(aeOpt.aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
-                        aeTl.to(aeOpt.aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.to((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                 }
 
@@ -335,6 +335,17 @@
                             T.killTweensOf($scope.aeLayer[n]);
                         }
                     }
+                }
+
+                //gotoAndPlay渲染层 -----------------------------------------------------
+                SLeasy.gotoAeLayer = function (name, frame) {
+                    var aeLayer = $scope.aeLayer[name];
+                    TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
+                    TweenMax.set(aeLayer, {
+                        frame: frame, onComplete: function () {
+                            SLeasy.flashAeLayer(aeLayer);
+                        }
+                    })
                 }
 
                 var config = {
