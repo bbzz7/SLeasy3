@@ -1,5 +1,5 @@
 /*!
- SLeasy 3.8.4 by 宇文互动 庄宇 2019-01-21 email:30755405@qq.com
+ SLeasy 3.8.4 by 宇文互动 庄宇 2019-01-23 email:30755405@qq.com
  3.8.4(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
  3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
  3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
