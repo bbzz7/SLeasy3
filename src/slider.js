@@ -251,6 +251,7 @@
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
                             aeLayer.style.width = '100%';
+                            aeLayer.className='SLeasy_ae';
                             return aeLayer;
                         }
                     }
@@ -299,7 +300,8 @@
                     var frameCount = Math.abs(aeOpt.end - startFrame),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
-                    aeOpt.aeLayer.preFrame = startFrame;
+                    var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
+                    aeLayer.preFrame = startFrame;
                     var tweenData = {
                         roundProps: "frame",
                         frame: aeOpt.end,
@@ -308,21 +310,21 @@
                         yoyo: !!aeOpt.yoyo,
                         onStart: aeOpt.onStart,
                         onUpdate: function () {
-                            // if (aeOpt.aeLayer.preFrame != aeOpt.aeLayer.frame) {
-                            //     console.info(aeOpt.aeLayer.frame);
-                            //     SLeasy.flashAeLayer(aeOpt.aeLayer);
-                            //     aeOpt.aeLayer.preFrame = aeOpt.aeLayer.frame;
+                            // if (aeLayer.preFrame != aeLayer.frame) {
+                            //     console.info(aeLayer.frame);
+                            //     SLeasy.flashAeLayer(aeLayer);
+                            //     aeLayer.preFrame = aeLayer.frame;
                             // }
-                            SLeasy.flashAeLayer(aeOpt.aeLayer);
-                            aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
+                            SLeasy.flashAeLayer(aeLayer);
+                            aeOpt.onUpdate && aeOpt.onUpdate(aeLayer.frame);
                         },
                         onComplete: aeOpt.onComplete,
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
-                        aeTl.to((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                 }
 
