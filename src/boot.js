@@ -40,6 +40,7 @@
                     pluginObj = SLeasyPlugin(pluginArg);//执行插件初始化
 
                 pluginInitCallback(pluginObj);//执行插件初始化后的回调
+                $scope.pluginList[j].push('loadingPlugin');
             }
 
             // SLeasy.eventBind(false);//事件绑定
@@ -94,12 +95,12 @@
             $scope.floats = $(".SLeasy_floatElement");//浮动元素dom缓存
             $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
             // $config.on['domReady']();//SLeasy dom初始化完毕回调
-
             // $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
                 //console.log($scope.pluginList[j]);
+                if($scope.pluginList[j][$scope.pluginList[j].length-1]=='loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
                 var SLeasyPlugin = $scope.pluginList[j][0],
                     //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
                     pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
