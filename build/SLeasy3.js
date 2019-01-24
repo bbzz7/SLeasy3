@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.3 by 宇文互动 庄宇 2019-01-21 email:30755405@qq.com
+ SLeasy 3.8.4 by 宇文互动 庄宇 2019-01-21 email:30755405@qq.com
+ 3.8.4(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
  3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
  3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
  3.8.1(2019-01-08):更新有自定义loading选项，SLeasy二次初始化时，最外层SLeasy.init().done()回调触发失效的问题;
@@ -959,8 +960,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.path = function (host, url) {
         if (!url) return '';
         var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
-        console.log($config)
-        console.log($config.timeStamp)
         if (SLeasy.isHttp(url)) {
             return url + timeStamp;
         } else if (url.search(/^\/\//) == -1) {
@@ -1536,6 +1535,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
                             aeLayer.style.width = '100%';
+                            aeLayer.className='SLeasy_ae';
                             return aeLayer;
                         }
                     }
@@ -1584,7 +1584,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     var frameCount = Math.abs(aeOpt.end - startFrame),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
-                    aeOpt.aeLayer.preFrame = startFrame;
+                    var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
+                    aeLayer.preFrame = startFrame;
                     var tweenData = {
                         roundProps: "frame",
                         frame: aeOpt.end,
@@ -1593,21 +1594,21 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         yoyo: !!aeOpt.yoyo,
                         onStart: aeOpt.onStart,
                         onUpdate: function () {
-                            // if (aeOpt.aeLayer.preFrame != aeOpt.aeLayer.frame) {
-                            //     console.info(aeOpt.aeLayer.frame);
-                            //     SLeasy.flashAeLayer(aeOpt.aeLayer);
-                            //     aeOpt.aeLayer.preFrame = aeOpt.aeLayer.frame;
+                            // if (aeLayer.preFrame != aeLayer.frame) {
+                            //     console.info(aeLayer.frame);
+                            //     SLeasy.flashAeLayer(aeLayer);
+                            //     aeLayer.preFrame = aeLayer.frame;
                             // }
-                            SLeasy.flashAeLayer(aeOpt.aeLayer);
-                            aeOpt.onUpdate && aeOpt.onUpdate(aeOpt.aeLayer.frame);
+                            SLeasy.flashAeLayer(aeLayer);
+                            aeOpt.onUpdate && aeOpt.onUpdate(aeLayer.frame);
                         },
                         onComplete: aeOpt.onComplete,
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
-                        aeTl.to((aeOpt.aeLayer || $scope.aeLayer[aeOpt.name]), time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                 }
 
@@ -3116,6 +3117,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     pluginObj = SLeasyPlugin(pluginArg);//执行插件初始化
 
                 pluginInitCallback(pluginObj);//执行插件初始化后的回调
+                $scope.pluginList[j].push('loadingPlugin');
             }
 
             // SLeasy.eventBind(false);//事件绑定
@@ -3170,12 +3172,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $scope.floats = $(".SLeasy_floatElement");//浮动元素dom缓存
             $scope.canvas = $(".SLeasy_canvas");//画布元素dom缓存
             // $config.on['domReady']();//SLeasy dom初始化完毕回调
-
             // $scope.canvas.length && TweenMax.set($scope.canvas.parent(), {y: 0});//修正安卓下,画布元素默认不左上对齐的bug
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
                 //console.log($scope.pluginList[j]);
+                if($scope.pluginList[j][$scope.pluginList[j].length-1]=='loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
                 var SLeasyPlugin = $scope.pluginList[j][0],
                     //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
                     pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),

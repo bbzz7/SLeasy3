@@ -213,8 +213,6 @@
     SLeasy.path = function (host, url) {
         if (!url) return '';
         var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
-        console.log($config)
-        console.log($config.timeStamp)
         if (SLeasy.isHttp(url)) {
             return url + timeStamp;
         } else if (url.search(/^\/\//) == -1) {
