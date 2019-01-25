@@ -2572,7 +2572,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     jQuery,
     TweenMax || TweenLite
 );
-zz
 // SLeasy3-detail
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
