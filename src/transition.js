@@ -245,7 +245,7 @@
         if (currentSlider[0] != nextSlider[0]) $scope.timeLine.clear();
 
         //动画切换执行
-        var motionTime = $config.sliders[nextIndex].time || $config.motionTime;
+        var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
@@ -276,3 +276,4 @@
     jQuery,
     TweenMax || TweenLite
 );
+zz
