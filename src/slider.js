@@ -455,7 +455,7 @@
                 config.sliderIndex = sliderIndex;//并入当前ae插件所在的幻灯索引值
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
-                console.info(config);
+                // console.info(config);
 
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
