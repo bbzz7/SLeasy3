@@ -1,5 +1,5 @@
 /*!
- SLeasy 3.8.4 by 宇文互动 庄宇 2019-01-21 email:30755405@qq.com
+ SLeasy 3.8.4 by 宇文互动 庄宇 2019-01-23 email:30755405@qq.com
  3.8.4(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
  3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
  3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
@@ -3530,7 +3530,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
 
         //loading资源加载
-        SLeasy.loader.load(SLeasy.getLoadArr($config), $config.loader.loadType).progress(function (percent) {
+        var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
+        SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).progress(function (percent) {
             //自定义loading百分比显示
             if (!$.isEmptyObject($config.loading) && $scope.loadingReady) {
                 //自定义loading的onProgress回调
