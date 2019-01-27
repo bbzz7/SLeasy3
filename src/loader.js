@@ -127,6 +127,7 @@
         _showLoading && SLeasy.loader.show();
 
         var loaded = 0;
+        var hasCustomLoading=!$.isEmptyObject($config.loading);//是否有自定义loading
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
@@ -141,7 +142,12 @@
                     SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
                     SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
                     $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                    dfd.notify(SLeasy.loader.percent);
+                    if (hasCustomLoading && $scope.loadingReady) {
+                        //自定义loading的onProgress回调
+                        // console.log('========================='+percent+'========================')
+                        $config.loading.onProgress && $config.loading.onProgress(percent);
+                    }
+                    // dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
                         console.log(('加载共::>>>>>【' + new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady) {
@@ -170,7 +176,13 @@
                         SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
                         SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
                         $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                        dfd.notify(SLeasy.loader.percent);
+                        //自定义loading百分比显示
+                        if (hasCustomLoading && $scope.loadingReady) {
+                            //自定义loading的onProgress回调
+                            // console.log('========================='+percent+'========================')
+                            $config.loading.onProgress && $config.loading.onProgress(percent);
+                        }
+                        // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
                             console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                             if ($scope.loadingReady) {
@@ -181,7 +193,7 @@
                             }
                             dfd.resolve($config, $scope);
                         }
-                    }, 1)
+                    }, 1000/60)
                 }
             }
         }
