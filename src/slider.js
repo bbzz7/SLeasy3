@@ -130,7 +130,7 @@
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto">\
+				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto" '+(opt.loop ? 'loop="loop"' : '')+'>\
 				</audio>';
             },
             'video': function (opt) {
