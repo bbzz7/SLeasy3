@@ -957,13 +957,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //资源路径拼接
-    SLeasy.path = function (host, url) {
+    SLeasy.path = function (host, url, addTimeStamp) {
         if (!url) return '';
         var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
         if (SLeasy.isHttp(url)) {
-            return url + timeStamp;
+            return url + (addTimeStamp === false ? '' : timeStamp);
         } else if (url.search(/^\/\//) == -1) {
-            return host + url + timeStamp;
+            return host + url + (addTimeStamp === false ? '' : timeStamp);
         } else {
             return url.replace(/^\/\//, '');
         }
@@ -1414,7 +1414,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_audio SLeasy_' + (subName[opt.type] || opt.type) + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';" \
-				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto" '+(opt.loop ? 'loop="loop"' : '')+'>\
+				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto" ' + (opt.loop ? 'loop="loop"' : '') + '>\
 				</audio>';
             },
             'video': function (opt) {
@@ -1423,7 +1423,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
 				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + '" \
-				src="' + SLeasy.path($config.host, opt.video) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline')+' preload="' + (opt.preload || 'auto') + '">\
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             'iframe': function (opt) {
@@ -1535,7 +1535,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
                             aeLayer.style.width = '100%';
-                            aeLayer.className='SLeasy_ae';
+                            aeLayer.className = 'SLeasy_ae';
                             return aeLayer;
                         }
                     }
@@ -1903,14 +1903,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
                         }
                     }
-                    if (typeof subIn.top == 'number') subIn.top += yOffset[alignMode];
-                    if (typeof subShow.top == 'number') subShow.top += yOffset[alignMode];
-                    if (typeof subSet.top == 'number') subSet.top += yOffset[alignMode];
-                    if (subTo.length) {
-                        for (var l = 0; l < subTo.length; l++) {
-                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[subMotions[j].alignMode];
-                        }
-                    }
+                    // if (typeof subIn.top == 'number') subIn.top += yOffset[alignMode];
+                    // if (typeof subShow.top == 'number') subShow.top += yOffset[alignMode];
+                    // if (typeof subSet.top == 'number') subSet.top += yOffset[alignMode];
+                    // if (subTo.length) {
+                    //     for (var l = 0; l < subTo.length; l++) {
+                    //         if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[subMotions[j].alignMode];
+                    //     }
+                    // }
                 } else {
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
@@ -1920,14 +1920,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
                         }
                     }
-                    if (typeof subIn.top == 'number') subIn.top += yOffset[$config.alignMode];
-                    if (typeof subShow.top == 'number') subShow.top += yOffset[$config.alignMode];
-                    if (typeof subSet.top == 'number') subSet.top += yOffset[$config.alignMode];
-                    if (subTo.length) {
-                        for (var l = 0; l < subTo.length; l++) {
-                            if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[$config.alignMode];
-                        }
-                    }
+                    // if (typeof subIn.top == 'number') subIn.top += yOffset[$config.alignMode];
+                    // if (typeof subShow.top == 'number') subShow.top += yOffset[$config.alignMode];
+                    // if (typeof subSet.top == 'number') subSet.top += yOffset[$config.alignMode];
+                    // if (subTo.length) {
+                    //     for (var l = 0; l < subTo.length; l++) {
+                    //         if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[$config.alignMode];
+                    //     }
+                    // }
                 }
 
             }
