@@ -210,13 +210,13 @@
     }
 
     //资源路径拼接
-    SLeasy.path = function (host, url) {
+    SLeasy.path = function (host, url, addTimeStamp) {
         if (!url) return '';
         var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
         if (SLeasy.isHttp(url)) {
-            return url + timeStamp;
+            return url + (addTimeStamp === false ? '' : timeStamp);
         } else if (url.search(/^\/\//) == -1) {
-            return host + url + timeStamp;
+            return host + url + (addTimeStamp === false ? '' : timeStamp);
         } else {
             return url.replace(/^\/\//, '');
         }
