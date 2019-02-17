@@ -5,7 +5,7 @@
 
 
     //subMotion,参数:为单个slider/detail配置对象数据
-    SLeasy.subMotion = function (subMotionArr, type) {
+    SLeasy.subMotion = function (subMotionArr, type, motionTime) {
         console.log('subMotion~~~');
         if (!subMotionArr || !subMotionArr.length) return;
 
@@ -13,7 +13,8 @@
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            'floats': 'floatElement',
+            "floats": 'floatElement',
+            "loading": 'loadingElement'
         }
 
 
@@ -66,7 +67,7 @@
                  如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
-                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime || $config.motionTime,
                 subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
@@ -108,6 +109,11 @@
 
             //add motion
             tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            // console.log($dom)
+            // console.log(time)
+            // console.log(subIn)
+            // console.log(subShow)
+            // console.log(startTime)
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
