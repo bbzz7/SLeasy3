@@ -1,6 +1,7 @@
 /*!
- SLeasy 3.8.5 by 宇文互动 庄宇 2019-01-29 email:30755405@qq.com
- 3.8.5(2019-01-29):修复top值错误计算的问题;
+ SLeasy 3.8.7 by 宇文互动 庄宇 2019-02-17 email:30755405@qq.com
+ 3.8.7(2019-02-17):更新;
+ 3.8.6(2019-01-29):修复top值错误计算的问题;
  3.8.5(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
  3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
  3.8.2(2019-01-16):修复更新SLeasy初始化回调（元素imgToDiv）计数错误的问题;
@@ -1347,7 +1348,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            "floats": 'floatElement'
+            "floats": 'floatElement',
+            "loading": 'loadingElement'
         }
 
         //不同类型子动画元素生成策略
@@ -1805,6 +1807,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.find('.toDiv img').length : $scope.sliderBox.find('.toDiv img').length,
             transformedCount = 0;
+
+        //no any subImg
+        if($scope.loadingReady && transformTotal==0){
+            setTimeout(function () {
+                console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                dfd.resolve();//初始化完毕
+            },0)
+        }
+
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
             $(this).load(function (e) {
@@ -2003,7 +2014,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
     //subMotion,参数:为单个slider/detail配置对象数据
-    SLeasy.subMotion = function (subMotionArr, type) {
+    SLeasy.subMotion = function (subMotionArr, type, motionTime) {
         console.log('subMotion~~~');
         if (!subMotionArr || !subMotionArr.length) return;
 
@@ -2011,7 +2022,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            'floats': 'floatElement',
+            "floats": 'floatElement',
+            "loading": 'loadingElement'
         }
 
 
@@ -2064,7 +2076,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                  如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
-                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : $config.motionTime,
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime || $config.motionTime,
                 subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
@@ -2106,6 +2118,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
             //add motion
             tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            // console.log($dom)
+            // console.log(time)
+            // console.log(subIn)
+            // console.log(subShow)
+            // console.log(startTime)
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
@@ -2317,10 +2334,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total = totalIndex + 1,//幻灯总数
-            nextIndex
-        ;
+            nextIndex;
 
-        if (!$config.loopMode) {//非循环模式
+        //非循环模式
+        if (!$config.loopMode) {
             //不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
             var indexType = {
                 "number": function () {
@@ -2355,7 +2372,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
 
-        } else {//循环模式
+        } else {
+            //循环模式
             var indexType = {
                 "number": function () {
                     nextIndex = index % total >= 0 ? index % total : total + index % total;
@@ -2377,7 +2395,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
             }
-            ;
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -2489,7 +2506,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
-                SLeasy.subMotion(subMotionArr, 'sliders');
+                var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+                SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
             },
             onComplete: function () {
                 if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
@@ -2545,6 +2563,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
+            // $(currentSlider).fadeIn(300);
+            // T.to(currentSlider, motionTime, FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion
@@ -3121,13 +3141,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             }
 
             // SLeasy.eventBind(false);//事件绑定
-
-            SLeasy.subMotion($config.loading.subMotion, 'loading');
-
-            $(".SLeasy_loading").fadeIn(300);
-
             $scope.loadingReady = true;
-            console.log($scope.aeLayer)
         } else {
             //幻灯初始化
             sliderHtml = pageInit($config.sliders, 'sliders');
@@ -3538,8 +3552,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",
-            "display": "none"
-        }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
+        });
 
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
@@ -3548,10 +3561,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
+                $(".SLeasy_loading").fadeIn(300);
+                SLeasy.subMotion(SLeasy.config().loading.subMotion, 'loadingElement');
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
-                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
                     $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                 });
             }

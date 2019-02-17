@@ -20,10 +20,10 @@
         console.log(index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total = totalIndex + 1,//幻灯总数
-            nextIndex
-        ;
+            nextIndex;
 
-        if (!$config.loopMode) {//非循环模式
+        //非循环模式
+        if (!$config.loopMode) {
             //不同参数类型策略，获取下一页索引，int或者string,如：‘+=1，-=1’
             var indexType = {
                 "number": function () {
@@ -58,7 +58,8 @@
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
 
-        } else {//循环模式
+        } else {
+            //循环模式
             var indexType = {
                 "number": function () {
                     nextIndex = index % total >= 0 ? index % total : total + index % total;
@@ -80,7 +81,6 @@
                 SLeasy.goSlider(0);
                 return console.warn('幻灯索引参数错误~！');
             }
-            ;
             indexType[(typeof index)]();//策略执行
             //$scope.sliderIndex=nextIndex;//更新当前slider索引
             return nextIndex;
@@ -192,7 +192,8 @@
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
-                SLeasy.subMotion(subMotionArr, 'sliders');
+                var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+                SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
             },
             onComplete: function () {
                 if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
@@ -248,6 +249,8 @@
         var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
+            // $(currentSlider).fadeIn(300);
+            // T.to(currentSlider, motionTime, FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
             /*currentSlider.fadeIn($config.motionTime*1000,function(){
              //sub motion

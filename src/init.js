@@ -42,8 +42,7 @@
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",
-            "display": "none"
-        }).fadeIn($config.noFade ? 0 : $config.motionTime * 1000);
+        });
 
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
@@ -52,10 +51,12 @@
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
+                $(".SLeasy_loading").fadeIn(300);
+                SLeasy.subMotion(SLeasy.config().loading.subMotion, 'loadingElement');
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
-                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
                     $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                 });
             }
