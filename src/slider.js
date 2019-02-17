@@ -62,7 +62,8 @@
         var subName = {
             "sliders": "subMotion",
             "details": "detailMotion",
-            "floats": 'floatElement'
+            "floats": 'floatElement',
+            "loading": 'loadingElement'
         }
 
         //不同类型子动画元素生成策略
