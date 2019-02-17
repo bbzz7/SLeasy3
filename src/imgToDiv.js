@@ -7,6 +7,15 @@
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.find('.toDiv img').length : $scope.sliderBox.find('.toDiv img').length,
             transformedCount = 0;
+
+        //no any subImg
+        if($scope.loadingReady && transformTotal==0){
+            setTimeout(function () {
+                console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                dfd.resolve();//初始化完毕
+            },0)
+        }
+
         //to div
         $dom.find(".toDiv img").each(function (index, element) {//获取所有图片宽度
             $(this).load(function (e) {
