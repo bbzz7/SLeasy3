@@ -145,7 +145,7 @@
                     if (hasCustomLoading && $scope.loadingReady) {
                         //自定义loading的onProgress回调
                         // console.log('========================='+percent+'========================')
-                        $config.loading.onProgress && $config.loading.onProgress(percent);
+                        $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
                     }
                     // dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
@@ -180,7 +180,7 @@
                         if (hasCustomLoading && $scope.loadingReady) {
                             //自定义loading的onProgress回调
                             // console.log('========================='+percent+'========================')
-                            $config.loading.onProgress && $config.loading.onProgress(percent);
+                            $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
                         }
                         // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
