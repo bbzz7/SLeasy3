@@ -251,6 +251,9 @@
                             //渲染层初始化
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
+                            aeLayer.style.position = 'absolute';
+                            aeLayer.style.left = 0;
+                            aeLayer.style.top = 0;
                             aeLayer.style.width = '100%';
                             aeLayer.className = 'SLeasy_ae';
                             return aeLayer;
@@ -292,7 +295,6 @@
                     }
                     return engineMode[aeLayer.engine || 'img']();
                 }
-
 
                 //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
@@ -433,10 +435,10 @@
                             var stage = $('#' + aeOpt.node).parent();
                             stage.html('');
                             stage.addChild = function (child) {
-                                stage.html(child);
+                                stage.append(child);
                             }
                             stage.addChildAt = function (child, zIndex) {
-                                stage.html(child);
+                                stage.append(child);
                                 $(child).css('zIndex', zIndex);
                             }
                             stage.css({

@@ -1,6 +1,6 @@
 /*!
  SLeasy 3.8.7 by 宇文互动 庄宇 2019-02-17 email:30755405@qq.com
- 3.8.7(2019-02-17):更新;
+ 3.8.7(2019-02-17):进一步完善更新自定义loading模块，移除noFade，autoStart参数相关控制逻辑;
  3.8.6(2019-01-29):修复top值错误计算的问题;
  3.8.5(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
  3.8.3(2019-01-21):更新添加文件timeStamp时间戳以刷新cdn缓存;
@@ -1537,6 +1537,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             //渲染层初始化
                             var aeLayer = new Image();
                             aeLayer.engine = 'img';
+                            aeLayer.style.position = 'absolute';
+                            aeLayer.style.left = 0;
+                            aeLayer.style.top = 0;
                             aeLayer.style.width = '100%';
                             aeLayer.className = 'SLeasy_ae';
                             return aeLayer;
@@ -1578,7 +1581,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     }
                     return engineMode[aeLayer.engine || 'img']();
                 }
-
 
                 //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
@@ -1719,10 +1721,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             var stage = $('#' + aeOpt.node).parent();
                             stage.html('');
                             stage.addChild = function (child) {
-                                stage.html(child);
+                                stage.append(child);
                             }
                             stage.addChildAt = function (child, zIndex) {
-                                stage.html(child);
+                                stage.append(child);
                                 $(child).css('zIndex', zIndex);
                             }
                             stage.css({
@@ -3219,7 +3221,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-            $config.autoStart && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+            !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
             $scope.initReady = true;
         }
     }
