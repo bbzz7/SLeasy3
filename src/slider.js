@@ -329,6 +329,7 @@
                     } else {
                         aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
+                    return SLeasy;
                 }
 
                 //停止渲染层 -----------------------------------------------------
@@ -340,6 +341,7 @@
                             T.killTweensOf($scope.aeLayer[n]);
                         }
                     }
+                    return SLeasy;
                 }
 
                 //gotoAndPlay渲染层 -----------------------------------------------------
@@ -350,7 +352,8 @@
                         frame: frame, onComplete: function () {
                             SLeasy.flashAeLayer(aeLayer);
                         }
-                    })
+                    });
+                    return SLeasy;
                 }
 
                 var config = {
