@@ -110,10 +110,10 @@
             //add motion
             tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
-            // console.log(time)
+            // console.log('time:'+time)
             // console.log(subIn)
             // console.log(subShow)
-            // console.log(startTime)
+            // console.log('startTime:'+startTime)
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态

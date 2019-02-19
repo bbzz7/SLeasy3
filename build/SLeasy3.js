@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.7 by 宇文互动 庄宇 2019-02-17 email:30755405@qq.com
+ SLeasy 3.8.8 by 宇文互动 庄宇 2019-02-19 email:30755405@qq.com
+ 3.8.8(2019-02-19):更新完善内置ae插件img渲染引擎，支持多层aeLayer;
  3.8.7(2019-02-17):进一步完善更新自定义loading模块，移除noFade，autoStart参数相关控制逻辑;
  3.8.6(2019-01-29):修复top值错误计算的问题;
  3.8.5(2019-01-23):内置ae插件增加SLeasy.gotoAeLayer功能;
@@ -1076,8 +1077,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //显示元素
     SLeasy.show = function (el, time, onComplete) {
         if (time) {
-            TweenMax.to(el, time > 1 ? time / 1000 : time, {
-                autoAlpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
+            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+                autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 })
             });
         } else {
@@ -1088,8 +1089,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //隐藏元素
     SLeasy.hide = function (el, time, onComplete) {
         if (time) {
-            TweenMax.to(el, time > 1 ? time / 1000 : time, {
-                autoAlpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
+            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+                autoAlpha: 0, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 })
             });
         } else {
@@ -1615,6 +1616,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     } else {
                         aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
+                    return SLeasy;
                 }
 
                 //停止渲染层 -----------------------------------------------------
@@ -1626,6 +1628,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             T.killTweensOf($scope.aeLayer[n]);
                         }
                     }
+                    return SLeasy;
                 }
 
                 //gotoAndPlay渲染层 -----------------------------------------------------
@@ -1636,7 +1639,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         frame: frame, onComplete: function () {
                             SLeasy.flashAeLayer(aeLayer);
                         }
-                    })
+                    });
+                    return SLeasy;
                 }
 
                 var config = {
@@ -2121,10 +2125,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //add motion
             tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
-            // console.log(time)
+            // console.log('time:'+time)
             // console.log(subIn)
             // console.log(subShow)
-            // console.log(startTime)
+            // console.log('startTime:'+startTime)
 
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
