@@ -1543,6 +1543,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             aeLayer.style.top = 0;
                             aeLayer.style.width = '100%';
                             aeLayer.className = 'SLeasy_ae';
+                            aeLayer.removeAllChildren = function () {
+                                aeLayer.src = '';
+                            }
                             return aeLayer;
                         }
                     }
@@ -1576,7 +1579,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             app.renderer.render(stage);
                         },
                         'img': function () {
-                            // aeLayer.src = $scope.bitmaps[aeLayer.name][frameIndex]
                             aeLayer.src = $scope.aeBitmaps[aeLayer.name][frameIndex].src;
                         }
                     }
@@ -1585,12 +1587,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                 //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
-                    TweenMax.killTweensOf(aeOpt.aeLayer);//清除当前层所有tween
+                    var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
+                    TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
                     var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
                     var frameCount = Math.abs(aeOpt.end - startFrame),
                         time = frameCount / (aeOpt.fps || 25);
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
-                    var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
                     aeLayer.preFrame = startFrame;
                     var tweenData = {
                         roundProps: "frame",
@@ -1620,12 +1622,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
 
                 //停止渲染层 -----------------------------------------------------
-                SLeasy.stopAeLayer = function (name) {
-                    if (name) {
+                SLeasy.stopAeLayer = function (name, clear) {
+                    if (name && name != 'all') {
                         T.killTweensOf($scope.aeLayer[name]);
+                        clear && $scope.aeLayer[name].removeAllChildren();
                     } else {
                         for (n in $scope.aeLayer) {
                             T.killTweensOf($scope.aeLayer[n]);
+                            clear && $scope.aeLayer[n].removeAllChildren();
                         }
                     }
                     return SLeasy;
