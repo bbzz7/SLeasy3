@@ -332,7 +332,7 @@
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 1, alpha: 1});
+            TweenMax.set(el, {autoAlpha: 1});
         }
         return SLeasy;
     }
@@ -344,7 +344,7 @@
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 0, alpha: 0});
+            TweenMax.set(el, {autoAlpha: 0});
         }
         return SLeasy;
     }
@@ -358,32 +358,26 @@
     //时间线控制,用于'时间轴模式'下
     SLeasy.play = function () {
         $scope.timeLine.play();
-        return $scope.timeLine;
     }
 
     SLeasy.pause = function () {
         $scope.timeLine.pause();
-        return $scope.timeLine;
     }
 
     SLeasy.resume = function () {
-        $scope.timeLine.resume();
-        return $scope.timeLine;
+        $scope.timeLine.resume()
     }
 
     SLeasy.reverse = function () {
         $scope.timeLine.reverse();
-        return $scope.timeLine;
     }
 
     SLeasy.tweenTo = function () {
         $scope.timeLine.tweenTo();
-        return $scope.timeLine;
     }
 
     SLeasy.tweenFromTo = function () {
         $scope.timeLine.tweenFromTo();
-        return $scope.timeLine;
     }
 
 
