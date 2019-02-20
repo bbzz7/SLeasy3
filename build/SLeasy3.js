@@ -1595,6 +1595,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
                     aeLayer.preFrame = startFrame;
                     var tweenData = {
+                        alpha: 1,
+                        autoAlpha: 1,
                         roundProps: "frame",
                         frame: aeOpt.end,
                         ease: SteppedEase.config(frameCount),
@@ -1614,8 +1616,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start,autoAlpha: 1,alpha: 1}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
+                        aeTl.set(aeLayer,{autoAlpha: 1,alpha: 1});
                         aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                     return SLeasy;
