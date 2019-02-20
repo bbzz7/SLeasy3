@@ -1082,7 +1082,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 1, alpha: 1});
+            TweenMax.set(el, {autoAlpha: 1});
         }
         return SLeasy;
     }
@@ -1094,7 +1094,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 0, alpha: 0});
+            TweenMax.set(el, {autoAlpha: 0});
         }
         return SLeasy;
     }
@@ -1108,32 +1108,26 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //时间线控制,用于'时间轴模式'下
     SLeasy.play = function () {
         $scope.timeLine.play();
-        return $scope.timeLine;
     }
 
     SLeasy.pause = function () {
         $scope.timeLine.pause();
-        return $scope.timeLine;
     }
 
     SLeasy.resume = function () {
-        $scope.timeLine.resume();
-        return $scope.timeLine;
+        $scope.timeLine.resume()
     }
 
     SLeasy.reverse = function () {
         $scope.timeLine.reverse();
-        return $scope.timeLine;
     }
 
     SLeasy.tweenTo = function () {
         $scope.timeLine.tweenTo();
-        return $scope.timeLine;
     }
 
     SLeasy.tweenFromTo = function () {
         $scope.timeLine.tweenFromTo();
-        return $scope.timeLine;
     }
 
 
@@ -1601,8 +1595,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
                     aeLayer.preFrame = startFrame;
                     var tweenData = {
-                        alpha: 1,
-                        autoAlpha: 1,
                         roundProps: "frame",
                         frame: aeOpt.end,
                         ease: SteppedEase.config(frameCount),
@@ -1622,9 +1614,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     };
 
                     if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start,autoAlpha: 1,alpha: 1}, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start}, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     } else {
-                        aeTl.set(aeLayer,{autoAlpha: 1,alpha: 1});
                         aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                     }
                     return SLeasy;
