@@ -284,6 +284,7 @@
 
         //合并位图序列
         if ($scope.bitmaps[layerName] && $scope.bitmaps[layerName].length) {
+            $scope.bitmaps[layerName]=$scope.bitmaps[layerName].concat(picUrlArr);
             return $scope.bitmaps[layerName];
         } else {
             $scope.bitmaps[layerName] = picUrlArr;
@@ -332,7 +333,7 @@
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 1});
+            TweenMax.set(el, {autoAlpha: 1, alpha: 1});
         }
         return SLeasy;
     }
@@ -344,7 +345,7 @@
                 })
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 0});
+            TweenMax.set(el, {autoAlpha: 0, alpha: 0});
         }
         return SLeasy;
     }
