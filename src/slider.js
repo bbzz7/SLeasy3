@@ -201,7 +201,7 @@
                     SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
                     $scope.aeLayer[layerName] = createAeLayer(layerName, engine);
                     $scope.aeLayer[layerName].frame = 0;
-                    $scope.aeLayer[layerName].start = start;
+                    $scope.aeLayer[layerName].start = $scope.aeLayer[layerName] ? 0 : start;
                     $scope.aeLayer[layerName].end = end;
                     $scope.aeLayer[layerName].name = layerName;//设置该渲染层name,以便回调中获取
                     $scope.aeLayer[layerName].sliderIndex = stageObj.sliderIndex;
@@ -300,39 +300,93 @@
 
                 //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
-                    var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
-                    TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                    var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
-                    var frameCount = Math.abs(aeOpt.end - startFrame),
-                        time = frameCount / (aeOpt.fps || 25);
-                    var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
-                    aeLayer.preFrame = startFrame;
-                    var tweenData = {
-                        alpha: 1,
-                        autoAlpha: 1,
-                        roundProps: "frame",
-                        frame: aeOpt.end,
-                        ease: SteppedEase.config(frameCount),
-                        repeat: aeOpt.repeat,
-                        yoyo: !!aeOpt.yoyo,
-                        onStart: aeOpt.onStart,
-                        onUpdate: function () {
-                            // if (aeLayer.preFrame != aeLayer.frame) {
-                            //     console.info(aeLayer.frame);
-                            //     SLeasy.flashAeLayer(aeLayer);
-                            //     aeLayer.preFrame = aeLayer.frame;
-                            // }
-                            SLeasy.flashAeLayer(aeLayer);
-                            aeOpt.onUpdate && aeOpt.onUpdate(aeLayer.frame);
-                        },
-                        onComplete: aeOpt.onComplete,
-                    };
+                    //单个tween
+                    if (!aeOpt.length) {
+                        var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
+                        TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
+                        var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
+                        var frameCount = Math.abs(aeOpt.end - startFrame),
+                            time = frameCount / (aeOpt.fps || 25);
+                        var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                        aeLayer.preFrame = startFrame;
+                        var tweenData = {
+                            alpha: 1,
+                            autoAlpha: 1,
+                            roundProps: "frame",
+                            frame: aeOpt.end,
+                            ease: SteppedEase.config(frameCount),
+                            repeat: aeOpt.repeat,
+                            yoyo: !!aeOpt.yoyo,
+                            onStart: aeOpt.onStart,
+                            onUpdate: function () {
+                                // if (aeLayer.preFrame != aeLayer.frame) {
+                                //     console.info(aeLayer.frame);
+                                //     SLeasy.flashAeLayer(aeLayer);
+                                //     aeLayer.preFrame = aeLayer.frame;
+                                // }
+                                SLeasy.flashAeLayer(aeLayer);
+                                aeOpt.onUpdate && aeOpt.onUpdate(aeLayer.frame);
+                            },
+                            onComplete: aeOpt.onComplete,
+                        };
 
-                    if (typeof aeOpt.start != 'undefined') {
-                        aeTl.fromTo(aeLayer, time, {frame: aeOpt.start,autoAlpha: 1,alpha: 1}, tweenData, '+=' + (aeOpt.offsetTime || 0));
-                    } else {
-                        aeTl.set(aeLayer,{autoAlpha: 1,alpha: 1});
-                        aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        if (typeof aeOpt.start != 'undefined') {
+                            aeTl.fromTo(aeLayer, time, {
+                                frame: aeOpt.start,
+                                autoAlpha: 1,
+                                alpha: 1
+                            }, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        } else {
+                            aeTl.set(aeLayer, {autoAlpha: 1, alpha: 1});
+                            aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
+                        }
+                        //多个tween
+                    } else if (aeOpt.length && aeOpt.length > 0) {
+                        var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                        //清除当前层所有tween
+                        for (var i = 0; i < aeOpt.length; i++) {
+                            TweenMax.killTweensOf(aeLayer);
+                        }
+                        //add所有tween
+                        var renderNow = false;
+                        for (var i = 0; i < aeOpt.length; i++) {
+                            var $aeOpt = aeOpt[i];
+                            var aeLayer = $aeOpt.aeLayer || $scope.aeLayer[$aeOpt.name];
+                            // TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
+                            var startFrame = (typeof $aeOpt.start != 'undefined') ? $aeOpt.start : $aeOpt.aeLayer.frame;
+                            var frameCount = Math.abs($aeOpt.end - startFrame),
+                                time = frameCount / ($aeOpt.fps || 25);
+                            aeLayer.preFrame = startFrame;
+                            var tweenData = {
+                                alpha: 1,
+                                autoAlpha: 1,
+                                roundProps: "frame",
+                                frame: $aeOpt.end,
+                                ease: SteppedEase.config(frameCount),
+                                repeat: $aeOpt.repeat,
+                                yoyo: !!$aeOpt.yoyo,
+                                onStart: $aeOpt.onStart,
+                                onUpdate: function () {
+                                    renderNow && SLeasy.flashAeLayer(aeLayer);
+                                    $aeOpt.onUpdate && $aeOpt.onUpdate(aeLayer.frame);
+                                    // console.warn((aeLayer.frame));
+                                },
+                                onComplete: $aeOpt.onComplete,
+                            };
+                            if (typeof $aeOpt.start != 'undefined') {
+                                aeTl.add(TweenMax.fromTo(aeLayer, time, {
+                                    immediateRender: false,//防止立即刷新frame值
+                                    frame: $aeOpt.start,
+                                    autoAlpha: 1,
+                                    alpha: 1
+                                }, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
+                                // console.warn(tweenData);
+                            } else {
+                                aeTl.set(aeLayer, {autoAlpha: 1, alpha: 1});
+                                aeTl.add(TweenMax.to(aeLayer, time, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
+                            }
+                        }
+                        renderNow = true;
                     }
                     return SLeasy;
                 }
@@ -460,7 +514,6 @@
                     }
                     return stageMode[aeOpt.engine || 'img']();
                 }
-
 
                 // -----------------------------------------------------
                 //把ae内置插件,初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
