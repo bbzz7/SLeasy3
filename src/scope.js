@@ -284,7 +284,7 @@
 
         //合并位图序列
         if ($scope.bitmaps[layerName] && $scope.bitmaps[layerName].length) {
-            $scope.bitmaps[layerName]=$scope.bitmaps[layerName].concat(picUrlArr);
+            $scope.bitmaps[layerName] = $scope.bitmaps[layerName].concat(picUrlArr);
             return $scope.bitmaps[layerName];
         } else {
             $scope.bitmaps[layerName] = picUrlArr;
@@ -326,11 +326,11 @@
 
 
     //显示元素
-    SLeasy.show = function (el, time, onComplete) {
+    SLeasy.show = function (el, time, onComplete, onUpdate) {
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                })
+                }), onUpdate: (onUpdate || function () {})
             });
         } else {
             TweenMax.set(el, {autoAlpha: 1, alpha: 1});
@@ -338,11 +338,11 @@
         return SLeasy;
     }
     //隐藏元素
-    SLeasy.hide = function (el, time, onComplete) {
+    SLeasy.hide = function (el, time, onComplete, onUpdate) {
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                })
+                }), onUpdate: (onUpdate || function () {})
             });
         } else {
             TweenMax.set(el, {autoAlpha: 0, alpha: 0});
