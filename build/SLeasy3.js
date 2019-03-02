@@ -1429,7 +1429,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
 				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + '" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width || '100%') + '" ' + (opt.height ? 'height="' + opt.height + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             'iframe': function (opt) {
@@ -1877,7 +1877,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             transformedCount = 0;
 
         //no any subImg
-        if($scope.loadingReady && transformTotal==0){
+        if($.isEmptyObject($config.loading) ? (transformTotal==0) : ($scope.loadingReady && transformTotal==0)){
             setTimeout(function () {
                 console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                 dfd.resolve();//初始化完毕
@@ -1959,57 +1959,19 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 var subIn = subMotions[j].in || {},
                     subShow = subMotions[j].show || {},
                     subSet = subMotions[j].set || {},
-                    subTo = subMotions[j].to || [];
+                    subTo = subMotions[j].to || {};
 
                 SLeasy.fixProps(subIn);
                 SLeasy.fixProps(subShow);
                 SLeasy.fixProps(subSet);
-
-                if (subTo.length) {
-                    for (var k = 0; k < subTo.length; k++) {
-                        SLeasy.fixProps(subTo[k].to);
-
-                    }
-                }
+                SLeasy.fixProps(subTo);
 
                 //根据幻灯对齐方式参数，进行y轴自适应修正
-                var alignMode = subMotions[j].alignMode || sliders[i].alignMode;
-                if (alignMode) {
-                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
-                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
-                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
-                    if (subTo.length) {
-                        for (var l = 0; l < subTo.length; l++) {
-                            if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[subMotions[j].alignMode];
-                        }
-                    }
-                    // if (typeof subIn.top == 'number') subIn.top += yOffset[alignMode];
-                    // if (typeof subShow.top == 'number') subShow.top += yOffset[alignMode];
-                    // if (typeof subSet.top == 'number') subSet.top += yOffset[alignMode];
-                    // if (subTo.length) {
-                    //     for (var l = 0; l < subTo.length; l++) {
-                    //         if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[subMotions[j].alignMode];
-                    //     }
-                    // }
-                } else {
-                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[$config.alignMode];
-                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[$config.alignMode];
-                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[$config.alignMode];
-                    if (subTo.length) {
-                        for (var l = 0; l < subTo.length; l++) {
-                            if (subTo[l].to && typeof subTo[l].to.y != 'undefined') subTo[l].to.y += yOffset[$config.alignMode];
-                        }
-                    }
-                    // if (typeof subIn.top == 'number') subIn.top += yOffset[$config.alignMode];
-                    // if (typeof subShow.top == 'number') subShow.top += yOffset[$config.alignMode];
-                    // if (typeof subSet.top == 'number') subSet.top += yOffset[$config.alignMode];
-                    // if (subTo.length) {
-                    //     for (var l = 0; l < subTo.length; l++) {
-                    //         if (subTo[l].to && typeof subTo[l].to.y == 'number') subTo[l].to.top += yOffset[$config.alignMode];
-                    //     }
-                    // }
-                }
-
+                var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
+                if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
+                if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
+                if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
+                if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
             }
         }
     }
@@ -2050,6 +2012,20 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         transObj[$scope.fixPropsArr[i]] = props + postfix;//按照viewScale等比缩放
                         continue;
                     }
+                    //+=
+                    if (props.lastIndexOf('+=') != -1) {
+                        props = parseInt(props.replace('+=', ''));//去掉%后缀
+                        postfix = '+=';//确定后缀值
+                        transObj[$scope.fixPropsArr[i]] = postfix + props * $scope.viewScale;//按照viewScale等比缩放
+                        continue;
+                    }
+                    //-=
+                    if (props.lastIndexOf('-=') != -1) {
+                        props = parseInt(props.replace('-=', ''));//去掉%后缀
+                        postfix = '-=';//确定后缀值
+                        transObj[$scope.fixPropsArr[i]] = postfix + props * $scope.viewScale;//按照viewScale等比缩放
+                        continue;
+                    }
                 } else {
                     props = parseInt(props);
                     postfix = addPX[$scope.fixPropsArr[i]] ? 'px' : 0;//确定后缀值
@@ -2070,7 +2046,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             return $scope.fixPropsArr;
         }
     }
-
 
 })(
     window.SLeasy = window.SLeasy || {}
@@ -2144,10 +2119,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                  如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
-                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime || $config.motionTime,
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime,
                 subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+
+            // console.warn(preSubMotion);
+            // console.warn(motionTime);
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -2185,38 +2163,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             subMotion.pause && tl.addPause();
 
             //add motion
-            tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            subMotion.to ? tl.add(T.to($(subMotion.el), time, subMotion.to), startTime) : tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
             // console.log('time:'+time)
             // console.log(subIn)
             // console.log(subShow)
             // console.log('startTime:'+startTime)
 
-
             $scope.isSubMotion = 1;//子动画是否正在播放状态
-
 
             //add pause to
             subMotion.pauseTo && tl.addPause();
-
-            //to
-            if (subMotion.to) {
-                for (
-                    var j = 0; j < subMotion.to.length; j++) {
-                    var to = $.extend({force3D: $config.force3D}, subMotion.to[j]),
-                        preTo = subMotion.to[j - 1] || {},
-                        time = to.time || 0.4,
-                        offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间
-                    ;
-
-                    var dom = $(SLeasy.label(to.el));
-                    //console.log('===========================');
-                    //console.log(dom);
-                    tl.add(T.to(dom, time, to.to), '-=' + offsetTime);
-                }
-            }
-
-
         }
 
         //relative模式处理
@@ -2230,10 +2187,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }
 
         //play
-        //tl.progress(0.999).progress(0);
         tl.play();
-
-
     }
 
     //play
@@ -2299,14 +2253,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 },
                 {
                     set: {},
-                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone}
-                },
-                {
-                    in: {autoAlpha: 0, ease: Linear.easeNone},
-                    show: {autoAlpha: 1, ease: Linear.easeNone},
-                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
                 },
             ],
             upDown: [//上下
@@ -2346,14 +2295,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 },
                 {
                     set: {},
-                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone}
-                },
-                {
-                    in: {autoAlpha: 0, ease: Linear.easeNone},
-                    show: {autoAlpha: 1, ease: Linear.easeNone},
-                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut}
                 },
             ]
         };
@@ -2571,10 +2515,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
                 T.set(currentSubMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                 T.set(currentSlider, {clearProps: $scope.clearProps});
+                T.set(currentSlider, $config.sliders[nextIndex].set || {});
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+                if($scope.sliderIndex==0) motionTime=0;//第一页情况
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
             },
             onComplete: function () {
@@ -2619,8 +2565,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
         //set
-        T.set(currentSlider, FX.set);
-        T.set(nextSlider, $.extend(FX.set, $config.sliders[nextIndex].set));
+        // T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}));
+        T.set(nextSlider, $.extend(FX.set, $config.sliders[nextIndex].set || {}));
         $config.on['sliderChange'](nextIndex);//幻灯切换回调
 
 
@@ -2634,14 +2580,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             // $(currentSlider).fadeIn(300);
             // T.to(currentSlider, motionTime, FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
-            /*currentSlider.fadeIn($config.motionTime*1000,function(){
-             //sub motion
-             var subMotionArr=$config.sliders[nextIndex].subMotion;
-             //如果正在关闭详情页则不播放子动画
-             console.log($scope.isSubMotion);
-             if(!$scope.isSubMotion) SLeasy.subMotion(subMotionArr,'sliders');
-             $scope.isAnim=0;//重置运动状态
-             });*/
         } else {
             //清除所有ae渲染层tween
             $.each($scope.aeLayer, function (index, aeLayer) {
@@ -2649,7 +2587,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             })
 
             //slider切换
-            T.to(currentSlider, motionTime, FX.out);
+            preFXAguments = $config.sliders[$scope.sliderIndex].motionFX || null;
+            //自定义切换效果
+            preFX = customFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : {};
+            preMotionTime = $config.sliders[$scope.sliderIndex].motionTime || $config.sliders[$scope.sliderIndex].time;
+            T.set(currentSlider,$config.sliders[$scope.sliderIndex].set || {});
+            T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
         }
         //更新当前slider索引
@@ -3287,6 +3230,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //默认显示渲染
             $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0),{autoAlpha:0});
             !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
             $scope.initReady = true;
         }
@@ -3421,7 +3365,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
         var _loadType = loadType || 'sq';
-        _showLoading && SLeasy.loader.show();
+        _showLoading && $config.loader.show!==false && SLeasy.loader.show();
 
         var loaded = 0;
         var hasCustomLoading=!$.isEmptyObject($config.loading);//是否有自定义loading
