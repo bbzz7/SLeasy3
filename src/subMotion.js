@@ -67,10 +67,13 @@
                  如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
                  如果当前子动画没有设置运动时间time，则直接加0
                  */
-                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime || $config.motionTime,
+                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime,
                 subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
+
+            // console.warn(preSubMotion);
+            // console.warn(motionTime);
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -108,38 +111,17 @@
             subMotion.pause && tl.addPause();
 
             //add motion
-            tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            subMotion.to ? tl.add(T.to($(subMotion.el), time, subMotion.to), startTime) : tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
             // console.log('time:'+time)
             // console.log(subIn)
             // console.log(subShow)
             // console.log('startTime:'+startTime)
 
-
             $scope.isSubMotion = 1;//子动画是否正在播放状态
-
 
             //add pause to
             subMotion.pauseTo && tl.addPause();
-
-            //to
-            if (subMotion.to) {
-                for (
-                    var j = 0; j < subMotion.to.length; j++) {
-                    var to = $.extend({force3D: $config.force3D}, subMotion.to[j]),
-                        preTo = subMotion.to[j - 1] || {},
-                        time = to.time || 0.4,
-                        offsetTime = preTo && (preTo.time - to.start) || 0//和上个子动画之间的间隔时间
-                    ;
-
-                    var dom = $(SLeasy.label(to.el));
-                    //console.log('===========================');
-                    //console.log(dom);
-                    tl.add(T.to(dom, time, to.to), '-=' + offsetTime);
-                }
-            }
-
-
         }
 
         //relative模式处理
@@ -153,10 +135,7 @@
         }
 
         //play
-        //tl.progress(0.999).progress(0);
         tl.play();
-
-
     }
 
     //play
