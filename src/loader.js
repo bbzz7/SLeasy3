@@ -124,7 +124,7 @@
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
         var _loadType = loadType || 'sq';
-        _showLoading && SLeasy.loader.show();
+        _showLoading && $config.loader.show!==false && SLeasy.loader.show();
 
         var loaded = 0;
         var hasCustomLoading=!$.isEmptyObject($config.loading);//是否有自定义loading
