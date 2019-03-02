@@ -9,7 +9,7 @@
             transformedCount = 0;
 
         //no any subImg
-        if($scope.loadingReady && transformTotal==0){
+        if($.isEmptyObject($config.loading) ? (transformTotal==0) : ($scope.loadingReady && transformTotal==0)){
             setTimeout(function () {
                 console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                 dfd.resolve();//初始化完毕
