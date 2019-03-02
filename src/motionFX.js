@@ -45,14 +45,9 @@
                 },
                 {
                     set: {},
-                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Linear.easeNone}
-                },
-                {
-                    in: {autoAlpha: 0, ease: Linear.easeNone},
-                    show: {autoAlpha: 1, ease: Linear.easeNone},
-                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
                 },
             ],
             upDown: [//上下
@@ -92,14 +87,9 @@
                 },
                 {
                     set: {},
-                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Linear.easeNone}
-                },
-                {
-                    in: {autoAlpha: 0, ease: Linear.easeNone},
-                    show: {autoAlpha: 1, ease: Linear.easeNone},
-                    out: {autoAlpha: 1, ease: Linear.easeNone}
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut}
                 },
             ]
         };
