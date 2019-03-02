@@ -189,10 +189,12 @@
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
                 T.set(currentSubMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                 T.set(currentSlider, {clearProps: $scope.clearProps});
+                T.set(currentSlider, $config.sliders[nextIndex].set || {});
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+                if($scope.sliderIndex==0) motionTime=0;//第一页情况
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
             },
             onComplete: function () {
@@ -237,8 +239,8 @@
 
 
         //set
-        T.set(currentSlider, FX.set);
-        T.set(nextSlider, $.extend(FX.set, $config.sliders[nextIndex].set));
+        // T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}));
+        T.set(nextSlider, $.extend(FX.set, $config.sliders[nextIndex].set || {}));
         $config.on['sliderChange'](nextIndex);//幻灯切换回调
 
 
@@ -252,14 +254,6 @@
             // $(currentSlider).fadeIn(300);
             // T.to(currentSlider, motionTime, FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
-            /*currentSlider.fadeIn($config.motionTime*1000,function(){
-             //sub motion
-             var subMotionArr=$config.sliders[nextIndex].subMotion;
-             //如果正在关闭详情页则不播放子动画
-             console.log($scope.isSubMotion);
-             if(!$scope.isSubMotion) SLeasy.subMotion(subMotionArr,'sliders');
-             $scope.isAnim=0;//重置运动状态
-             });*/
         } else {
             //清除所有ae渲染层tween
             $.each($scope.aeLayer, function (index, aeLayer) {
@@ -267,7 +261,12 @@
             })
 
             //slider切换
-            T.to(currentSlider, motionTime, FX.out);
+            preFXAguments = $config.sliders[$scope.sliderIndex].motionFX || null;
+            //自定义切换效果
+            preFX = customFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : {};
+            preMotionTime = $config.sliders[$scope.sliderIndex].motionTime || $config.sliders[$scope.sliderIndex].time;
+            T.set(currentSlider,$config.sliders[$scope.sliderIndex].set || {});
+            T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
         }
         //更新当前slider索引
