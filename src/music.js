@@ -45,7 +45,7 @@
                 wav: 'audio/wav'
             }
             var tmpHtml = '\
-			<audio id="SLeasy_music" preload="auto" loop="loop">\
+			<audio id="SLeasy_music" preload="auto" ' + ($config.musicLoop ? 'loop="loop"' : '') + '>\
 			<source src="' + SLeasy.path($config.host, $config.musicUrl) + '" type="' + mediaTypes[$config.musicUrl.split('.')[1]] + '">\
 			</audio>';
 
@@ -91,7 +91,7 @@
     }
 
     //auto playHack
-    document.addEventListener('touchstart', SLeasy.music.play, false);
+    $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
 
     //pause
     SLeasy.music.pause = function () {
