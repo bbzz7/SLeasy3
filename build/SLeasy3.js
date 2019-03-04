@@ -669,6 +669,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //music-------------------------------------------
         musicUrl: '',//背景音乐url
         musicAutoPlay: 1,//背景音乐自动播放
+        musicTouchPlay: true,//触摸自动播放(仅1次)
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //slider------------------------------------------
@@ -2934,7 +2935,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 wav: 'audio/wav'
             }
             var tmpHtml = '\
-			<audio id="SLeasy_music" preload="auto" loop="loop">\
+			<audio id="SLeasy_music" preload="auto" ' + ($config.musicLoop ? 'loop="loop"' : '') + '>\
 			<source src="' + SLeasy.path($config.host, $config.musicUrl) + '" type="' + mediaTypes[$config.musicUrl.split('.')[1]] + '">\
 			</audio>';
 
@@ -2980,7 +2981,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //auto playHack
-    document.addEventListener('touchstart', SLeasy.music.play, false);
+    $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
 
     //pause
     SLeasy.music.pause = function () {
