@@ -14,25 +14,25 @@
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
         force3D: 'auto',//
-        loopMode: 0,//启用首尾循环模式
+        loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
-        routerMode: 1,//路由开启模式
-        arrowMode: 1,//是否显示滑动指示箭头
+        routerMode: false,//路由开启模式
+        arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
         alignMode: 'top',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
-        preload: 1,//是否对素材预加载
-        autoStart: 1,//自动开始跳转默认幻灯
+        preload: true,//是否对素材预加载
+        autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
         debugMode: window.location.href.indexOf('http') == 0 ? 0 : 1,//默认仅当本地环境开启debug模式
-        reloadMode: 0,//屏幕旋转自动刷新页面重新适配
+        reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         positionMode: 'absolute',//舞台子元素position模式
         timeStamp: window.SLeasyTimeStamp || null,
-
         //music-------------------------------------------
         musicUrl: '',//背景音乐url
-        musicAutoPlay: 1,//背景音乐自动播放
+        musicLoop: true,//背景音乐是否循环
+        musicAutoPlay: true,//背景音乐自动播放
         musicTouchPlay: true,//触摸自动播放(仅1次)
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
