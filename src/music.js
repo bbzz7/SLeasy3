@@ -7,11 +7,9 @@
 
     //music
     SLeasy.music.init = function (opt) {
+        //auto playHack
+        $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
         if (window.Howl && $config.musicUrl instanceof Howl) {
-            document.addEventListener("WeixinJSBridgeReady", function () {
-                $config.musicUrl.play();
-            }, false);
-
             $config.musicUrl.off();
 
             $config.musicUrl.on('play', function () {
@@ -48,7 +46,6 @@
 			<audio id="SLeasy_music" preload="auto" ' + ($config.musicLoop ? 'loop="loop"' : '') + '>\
 			<source src="' + SLeasy.path($config.host, $config.musicUrl) + '" type="' + mediaTypes[$config.musicUrl.split('.')[1]] + '">\
 			</audio>';
-
             return tmpHtml;
         }
     }
@@ -89,9 +86,6 @@
             document.removeEventListener('touchstart', SLeasy.music.play);
         })
     }
-
-    //auto playHack
-    $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
 
     //pause
     SLeasy.music.pause = function () {
