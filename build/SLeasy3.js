@@ -686,6 +686,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             bg: 'none',//loading页背景
             size: [38, 38],//宽高
             style: 0,//loading内置式样索引或自定义html
+            color: '#fff',//loading svg颜色
+            bg: 'rgba(0,0,0,0.9)',//loading遮罩背景颜色
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
             loadType: 'multi',
@@ -3243,9 +3245,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.loader = SLeasy.loader || {}
 
-    //loading-style
-    var loaderStyle = [
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff" style="position: relative">\
+    //html
+    SLeasy.loader.html = function () {
+        //loading-style
+        var loaderColor = $config.loader.color;
+        var loaderBg = $config.loader.bg;
+        var loaderStyle = [
+            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: relative">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
                     <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
@@ -3262,14 +3268,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             </g>\
         </svg>',
 
-        //==================================================================================
+            //==================================================================================
 
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
-            <defs>\
-            <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
-                <stop stop-color="#fff" stop-opacity="0" offset="0%"/>\
-                <stop stop-color="#fff" stop-opacity=".631" offset="63.146%"/>\
-                <stop stop-color="#fff" offset="100%"/>\
+            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
+                <defs>\
+                <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
+                    <stop stop-color="' + loaderColor + '" stop-opacity="0" offset="0%"/>\
+                <stop stop-color="' + loaderColor + '" stop-opacity=".631" offset="63.146%"/>\
+                <stop stop-color="' + loaderColor + '" offset="100%"/>\
             </linearGradient>\
             </defs>\
             <g fill="none" fill-rule="evenodd">\
@@ -3296,12 +3302,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             </g>\
         </svg>'
 
-        //==================================================================================
-    ];
+            //==================================================================================
+        ];
 
-
-    //html
-    SLeasy.loader.html = function () {
         var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;' +
             'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
             'margin-top:' + -$config.loader.size[1] / 2 + 'px';
@@ -3321,7 +3324,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $config.loader.textStyle;
 
         var overLayStyle = 'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
-            'background:rgba(0,0,0,0.9);position:absolute;' +
+            'background:' + loaderBg + ';position:absolute;' +
             'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;top:-' + ($scope.fixHeight - $config.loader.size[1]) / 2 + 'px';
 
         var percentHtml = '<div id="SLeasy_loader_percent" style="' + percentStyle + '"></div>';
@@ -3361,10 +3364,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
         var _loadType = loadType || 'sq';
-        _showLoading && $config.loader.show!==false && SLeasy.loader.show();
+        _showLoading && $config.loader.show !== false && SLeasy.loader.show();
 
         var loaded = 0;
-        var hasCustomLoading=!$.isEmptyObject($config.loading);//是否有自定义loading
+        var hasCustomLoading = !$.isEmptyObject($config.loading);//是否有自定义loading
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
@@ -3430,7 +3433,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             }
                             dfd.resolve($config, $scope);
                         }
-                    }, 1000/60)
+                    }, 1000 / 60)
                 }
             }
         }
@@ -3553,10 +3556,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $scope.sliderBox.css({
             "width": $config.viewport + 'px',
             "height": $scope.fixHeight + 'px',
-            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",
             "background-repeat": "no-repeat",
+            "background-position": "center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",
