@@ -35,10 +35,11 @@
         $scope.sliderBox.css({
             "width": $config.viewport + 'px',
             "height": $scope.fixHeight + 'px',
-            "background-image": $config.bg ? 'url(' + $config.host + $config.bg + ')' : 'none',
+            "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",
             "background-repeat": "no-repeat",
+            "background-position": "center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",
