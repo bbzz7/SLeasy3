@@ -50,6 +50,8 @@
             bg: 'none',//loading页背景
             size: [38, 38],//宽高
             style: 0,//loading内置式样索引或自定义html
+            color: '#fff',//loading svg颜色
+            bg: 'rgba(0,0,0,0.9)',//loading遮罩背景颜色
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
             loadType: 'multi',

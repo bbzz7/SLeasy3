@@ -6,9 +6,13 @@
 
     SLeasy.loader = SLeasy.loader || {}
 
-    //loading-style
-    var loaderStyle = [
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#fff" style="position: relative">\
+    //html
+    SLeasy.loader.html = function () {
+        //loading-style
+        var loaderColor = $config.loader.color;
+        var loaderBg = $config.loader.bg;
+        var loaderStyle = [
+            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: relative">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
                     <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
@@ -25,14 +29,14 @@
             </g>\
         </svg>',
 
-        //==================================================================================
+            //==================================================================================
 
-        '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
-            <defs>\
-            <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
-                <stop stop-color="#fff" stop-opacity="0" offset="0%"/>\
-                <stop stop-color="#fff" stop-opacity=".631" offset="63.146%"/>\
-                <stop stop-color="#fff" offset="100%"/>\
+            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
+                <defs>\
+                <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
+                    <stop stop-color="' + loaderColor + '" stop-opacity="0" offset="0%"/>\
+                <stop stop-color="' + loaderColor + '" stop-opacity=".631" offset="63.146%"/>\
+                <stop stop-color="' + loaderColor + '" offset="100%"/>\
             </linearGradient>\
             </defs>\
             <g fill="none" fill-rule="evenodd">\
@@ -59,12 +63,9 @@
             </g>\
         </svg>'
 
-        //==================================================================================
-    ];
+            //==================================================================================
+        ];
 
-
-    //html
-    SLeasy.loader.html = function () {
         var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;' +
             'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
             'margin-top:' + -$config.loader.size[1] / 2 + 'px';
@@ -84,7 +85,7 @@
             $config.loader.textStyle;
 
         var overLayStyle = 'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
-            'background:rgba(0,0,0,0.9);position:absolute;' +
+            'background:' + loaderBg + ';position:absolute;' +
             'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;top:-' + ($scope.fixHeight - $config.loader.size[1]) / 2 + 'px';
 
         var percentHtml = '<div id="SLeasy_loader_percent" style="' + percentStyle + '"></div>';
@@ -124,10 +125,10 @@
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
         var _loadType = loadType || 'sq';
-        _showLoading && $config.loader.show!==false && SLeasy.loader.show();
+        _showLoading && $config.loader.show !== false && SLeasy.loader.show();
 
         var loaded = 0;
-        var hasCustomLoading=!$.isEmptyObject($config.loading);//是否有自定义loading
+        var hasCustomLoading = !$.isEmptyObject($config.loading);//是否有自定义loading
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
@@ -193,7 +194,7 @@
                             }
                             dfd.resolve($config, $scope);
                         }
-                    }, 1000/60)
+                    }, 1000 / 60)
                 }
             }
         }
