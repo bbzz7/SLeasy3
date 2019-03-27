@@ -114,9 +114,12 @@
             subMotion.to ? tl.add(T.to($(subMotion.el), time, subMotion.to), startTime) : tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
             // console.log('time:'+time)
+            // console.log('startTime:'+startTime)
             // console.log(subIn)
             // console.log(subShow)
-            // console.log('startTime:'+startTime)
+            // console.log(subMotion.to)
+            // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
 

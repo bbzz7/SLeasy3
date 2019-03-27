@@ -2170,9 +2170,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             subMotion.to ? tl.add(T.to($(subMotion.el), time, subMotion.to), startTime) : tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             // console.log($dom)
             // console.log('time:'+time)
+            // console.log('startTime:'+startTime)
             // console.log(subIn)
             // console.log(subShow)
-            // console.log('startTime:'+startTime)
+            // console.log(subMotion.to)
+            // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
 
@@ -3574,7 +3577,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 $(".SLeasy_loading").fadeIn(300);
-                SLeasy.subMotion(SLeasy.config().loading.subMotion, 'loadingElement');
+                SLeasy.subMotion(SLeasy.config().loading.subMotion, 'loadingElement',0.3);
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
