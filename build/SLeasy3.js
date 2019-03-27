@@ -2167,7 +2167,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             subMotion.pause && tl.addPause();
 
             //add motion
-            subMotion.to ? tl.add(T.to($(subMotion.el), time, subMotion.to), startTime) : tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            if(subMotion.to){
+                subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
+                tl.add(T.to($(subMotion.el), time, subMotion.to), startTime)
+            }else{
+                tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+            }
             // console.log($dom)
             // console.log('time:'+time)
             // console.log('startTime:'+startTime)
