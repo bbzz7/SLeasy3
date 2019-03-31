@@ -108,7 +108,7 @@
             subMotion.label && tl.addLabel(subMotion.label);
 
             //add pause
-            subMotion.pause && tl.addPause();
+            subMotion.pause && tl.addPause(startTime);
 
             //add motion
             if(subMotion.to){
