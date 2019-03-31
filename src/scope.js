@@ -330,7 +330,8 @@
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: (onUpdate || function () {})
+                }), onUpdate: (onUpdate || function () {
+                })
             });
         } else {
             TweenMax.set(el, {autoAlpha: 1, alpha: 1});
@@ -342,7 +343,8 @@
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: (onUpdate || function () {})
+                }), onUpdate: (onUpdate || function () {
+                })
             });
         } else {
             TweenMax.set(el, {autoAlpha: 0, alpha: 0});
@@ -356,31 +358,14 @@
         return SLeasy;
     }
 
-    //时间线控制,用于'时间轴模式'下
-    SLeasy.play = function () {
-        $scope.timeLine.play();
+    // 时间线控制,用于'时间轴模式'下
+    SLeasy.play = function (position) {
+        $scope.timeline.play(position);
     }
 
-    SLeasy.pause = function () {
-        $scope.timeLine.pause();
+    SLeasy.timeline = function (timelineName) {
+        return timelineName ? $scope[timelineName] : $scope.timeline;
     }
-
-    SLeasy.resume = function () {
-        $scope.timeLine.resume()
-    }
-
-    SLeasy.reverse = function () {
-        $scope.timeLine.reverse();
-    }
-
-    SLeasy.tweenTo = function () {
-        $scope.timeLine.tweenTo();
-    }
-
-    SLeasy.tweenFromTo = function () {
-        $scope.timeLine.tweenFromTo();
-    }
-
 
     //shadown button
     SLeasy.shadownBt = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTQ2MEFENzAxNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTQ2MEFENzExNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NDYwQUQ2RTE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NDYwQUQ2RjE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg+JIfMAAAAQSURBVHjaYvj//z8DQIABAAj8Av7bok0WAAAAAElFTkSuQmCC'

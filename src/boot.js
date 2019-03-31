@@ -107,7 +107,7 @@
             }
 
             //渲染启动
-            $scope.timeLine = new TimelineMax({//子动画主时间线初始化
+            $scope.timeline = new TimelineMax({//子动画主时间线初始化
                 autoRemoveChildren: $config.autoRemoveChildren,
                 paused: true,
                 onComplete: function () {
@@ -116,7 +116,7 @@
                     //$scope.isSubMotion=1;//子动画是否正在播放状态
                 }
             });
-            $config.on['timeline']($scope.timeLine);//子动画时间轴ready回调
+            $config.on['timeline']($scope.timeline);//子动画时间轴ready回调
 
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化

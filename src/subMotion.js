@@ -38,10 +38,10 @@
         //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
-            $scope[type + 'TimeLine'] = tl;
+            $scope[type + 'Timeline'] = tl;
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
-            var tl = $scope.timeLine;
+            var tl = $scope.timeline;
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
@@ -145,18 +145,6 @@
         //play
         tl.play();
     }
-
-    //play
-    SLeasy.play = function (from) {
-        $scope.timeLine.play(from);
-    }
-
-    //pause
-    SLeasy.pause = function (atTime) {
-        $scope.timeLine.pause(atTime);
-    }
-
-
 })(
     window.SLeasy = window.SLeasy || {},
     jQuery,
