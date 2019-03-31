@@ -2164,7 +2164,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             subMotion.label && tl.addLabel(subMotion.label);
 
             //add pause
-            subMotion.pause && tl.addPause();
+            subMotion.pause && tl.addPause(startTime);
 
             //add motion
             if(subMotion.to){
@@ -3581,8 +3581,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                $(".SLeasy_loading").fadeIn(300);
-                SLeasy.subMotion(SLeasy.config().loading.subMotion, 'loadingElement',0);
+                $(".SLeasy_loading").fadeIn(300,function () {
+                    $config.loading.onComplete && $config.loading.onComplete()
+                });
+                SLeasy.subMotion($config.loading.subMotion, 'loadingElement',0);
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
