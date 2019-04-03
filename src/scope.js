@@ -40,6 +40,7 @@
         preHash: '',//上一路由哈希值
 
         userData: {},//用户自定义数据
+        media: {},//用户初始化media dom缓存
         pluginList: [],//插件初始化函数列表
 
         bitmaps: {},//ae原生位图序列
@@ -77,7 +78,6 @@
         }
     }
 
-
     //check weChat
     SLeasy.isWechat = SLeasy.isWeixin = function () {
         var ua = window.navigator.userAgent.toLowerCase();
@@ -98,7 +98,6 @@
         }
     }
 
-
     //weChat share
     SLeasy.share = function (opt) {
         var imgHtml = '<img src="' + opt.imgUrl + '" width="300" height="300" style="position:absolute;top:-9999px">',
@@ -111,7 +110,6 @@
         $scope.referrer = opt.referrer;
         $scope.goLink = opt.link || location.href;
     }
-
 
     //check http
     SLeasy.isHttp = function (url) {
@@ -154,7 +152,6 @@
             }
         }
     });
-
 
     //goto url
     SLeasy.goUrl = function (url) {
@@ -236,7 +233,6 @@
         return '';
     }
 
-
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
         // console.log(e.target)
@@ -307,7 +303,6 @@
         }
     }
 
-
     //摇一摇事件封装
     SLeasy.shake = function (start, callback) {
         var myShakeEvent = new Shake({
@@ -323,7 +318,6 @@
             myShakeEvent.stop();
         }
     }
-
 
     //显示元素
     SLeasy.show = function (el, time, onComplete, onUpdate) {
@@ -356,6 +350,52 @@
     SLeasy.kill = function (el) {
         TweenMax.killTweensOf(el);
         return SLeasy;
+    }
+
+    //初始化media为可立即播放状态(暂停)
+    SLeasy.initMedia = function (mediaSelector, loopMode) {
+        $(mediaSelector).each(function (index, target) {
+            var $media = $(this)[0];
+            $media.play();
+            $(mediaSelector).off();
+            if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
+                $(mediaSelector).one('durationchange', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!')
+                })
+            } else if (device.ios() && SLeasy.isHttp()) {
+                $(mediaSelector).one('canplaythrough', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!')
+                })
+            } else {
+                $(mediaSelector).one('playing', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!');
+                })
+            }
+            //循环
+            if (loopMode) {
+                // $(mediaSelector).on('timeupdate', function () {
+                //     if(this.currentTime>=5){
+                //         $media.currentTime = 0;
+                //         console.log('🎵：::::::::::::::::::::::::::');
+                //     }else{
+                //         console.log(this.currentTime + ':' + this.duration);
+                //     }
+                // })
+                // $(mediaSelector).on('ended', function () {
+                //     console.log('🎵：media ended~!');
+                //     $media.currentTime = 0;
+                //     // $media.play();
+                // })
+            }
+        });
+    }
+
+    //获取meida
+    SLeasy.media = function (mediaSelector) {
+        return $(mediaSelector)[0];
     }
 
     // 时间线控制,用于'时间轴模式'下
