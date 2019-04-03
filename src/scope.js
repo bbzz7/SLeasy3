@@ -356,39 +356,57 @@
     SLeasy.initMedia = function (mediaSelector, loopMode) {
         $(mediaSelector).each(function (index, target) {
             var $media = $(this)[0];
+            $media.muted = true;
             $media.play();
             $(mediaSelector).off();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
-                $(mediaSelector).one('durationchange', function () {
+                $(this).one('durationchange', function () {
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!')
-                })
-            } else if (device.ios() && SLeasy.isHttp()) {
-                $(mediaSelector).one('canplaythrough', function () {
+                });
+                $(this).one('playing', function () {
                     $media.pause();
-                    console.log('🎵：media paused~!')
-                })
-            } else {
-                $(mediaSelector).one('playing', function () {
-                    $media.pause();
+                    $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
-                })
-            }
-            //循环
-            if (loopMode) {
-                // $(mediaSelector).on('timeupdate', function () {
-                //     if(this.currentTime>=5){
-                //         $media.currentTime = 0;
-                //         console.log('🎵：::::::::::::::::::::::::::');
-                //     }else{
-                //         console.log(this.currentTime + ':' + this.duration);
-                //     }
+                });
+                // $(this).on('loadstart', function () {
+                //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // });
+                // $(this).on('durationchange', function () {
+                //     console.warn('durationchange:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
                 // })
-                // $(mediaSelector).on('ended', function () {
-                //     console.log('🎵：media ended~!');
-                //     $media.currentTime = 0;
-                //     // $media.play();
+                // $(this).on('loadeddata', function () {
+                //     console.warn('loadeddata:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
                 // })
+                // $(this).on('progress', function () {
+                //     console.warn('progress:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('canplay', function () {
+                //     console.warn('canplay:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('canplaythrough', function () {
+                //     console.warn('canplaythrough:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('playing', function () {
+                //     console.warn('playing:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('timeupdate', function () {
+                //     console.warn('timeupdate:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+            } else if (device.ios() && SLeasy.isHttp()) {
+                $(this).one('canplaythrough', function () {
+                    $media.pause();
+                    $media.muted = false;
+                    console.log('🎵：media paused~!')
+                });
+            } else {
+                $(this).one('playing', function () {
+                    $media.pause();
+                    $media.muted = false;
+                    console.log('🎵：media paused~!');
+                });
             }
         });
     }

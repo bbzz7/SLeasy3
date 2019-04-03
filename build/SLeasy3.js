@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.11 by 宇文互动 庄宇 2019-03-31 email:30755405@qq.com
+ SLeasy 3.8.12 by 宇文互动 庄宇 2019-04-03 email:30755405@qq.com
+ 3.8.12(2019-04-03):添加SLeasy.intiMedia/media/pauseAeLayer/resumeAeLayer函数，修复SLeasy.playAeLayer函数参数为数组对象时，某些情况下跳帧的bug;
  3.8.11(2019-03-31):自定义loading添加onComplete钩子，更新修复subMotion中addPause()时间定位不准确的问题;
  3.8.10(2019-03-02):更新添加对subMotion.to的全功能支持,更新幻灯页可单独分别设置入场和出场的动画效果,以及对'+='、'-='相对值的自动缩放支持;
  3.8.9(2019-02-22):内置ae插件支持同一个aeLayer的多种不同格式序列合并，支持同时传递aeLayer播放对象数组参数;
@@ -1112,39 +1113,57 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.initMedia = function (mediaSelector, loopMode) {
         $(mediaSelector).each(function (index, target) {
             var $media = $(this)[0];
+            $media.muted = true;
             $media.play();
             $(mediaSelector).off();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
-                $(mediaSelector).one('durationchange', function () {
+                $(this).one('durationchange', function () {
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!')
-                })
-            } else if (device.ios() && SLeasy.isHttp()) {
-                $(mediaSelector).one('canplaythrough', function () {
+                });
+                $(this).one('playing', function () {
                     $media.pause();
-                    console.log('🎵：media paused~!')
-                })
-            } else {
-                $(mediaSelector).one('playing', function () {
-                    $media.pause();
+                    $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
-                })
-            }
-            //循环
-            if (loopMode) {
-                // $(mediaSelector).on('timeupdate', function () {
-                //     if(this.currentTime>=5){
-                //         $media.currentTime = 0;
-                //         console.log('🎵：::::::::::::::::::::::::::');
-                //     }else{
-                //         console.log(this.currentTime + ':' + this.duration);
-                //     }
+                });
+                // $(this).on('loadstart', function () {
+                //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // });
+                // $(this).on('durationchange', function () {
+                //     console.warn('durationchange:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
                 // })
-                // $(mediaSelector).on('ended', function () {
-                //     console.log('🎵：media ended~!');
-                //     $media.currentTime = 0;
-                //     // $media.play();
+                // $(this).on('loadeddata', function () {
+                //     console.warn('loadeddata:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
                 // })
+                // $(this).on('progress', function () {
+                //     console.warn('progress:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('canplay', function () {
+                //     console.warn('canplay:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('canplaythrough', function () {
+                //     console.warn('canplaythrough:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('playing', function () {
+                //     console.warn('playing:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+                // $(this).on('timeupdate', function () {
+                //     console.warn('timeupdate:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+                // })
+            } else if (device.ios() && SLeasy.isHttp()) {
+                $(this).one('canplaythrough', function () {
+                    $media.pause();
+                    $media.muted = false;
+                    console.log('🎵：media paused~!')
+                });
+            } else {
+                $(this).one('playing', function () {
+                    $media.pause();
+                    $media.muted = false;
+                    console.log('🎵：media paused~!');
+                });
             }
         });
     }
