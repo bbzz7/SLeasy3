@@ -304,7 +304,7 @@
                     if (!aeOpt.length) {
                         var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
                         TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                        var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
+                        var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeLayer.frame;
                         var frameCount = Math.abs(aeOpt.end - startFrame),
                             time = frameCount / (aeOpt.fps || 25);
                         var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
@@ -342,18 +342,17 @@
                         }
                         //多个tween
                     } else if (aeOpt.length && aeOpt.length > 0) {
-                        var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                        var aeTl = $scope.aeTimeLine[aeOpt[0].timeline] = $scope.aeTimeLine[aeOpt[0].timeline] || new TimelineMax();
                         //清除当前层所有tween
                         for (var i = 0; i < aeOpt.length; i++) {
-                            TweenMax.killTweensOf(aeLayer);
+                            var aeLayer = aeOpt[i].aeLayer || $scope.aeLayer[aeOpt[i].name];
+                            TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
                         }
                         //add所有tween
-                        var renderNow = false;
                         for (var i = 0; i < aeOpt.length; i++) {
                             var $aeOpt = aeOpt[i];
                             var aeLayer = $aeOpt.aeLayer || $scope.aeLayer[$aeOpt.name];
-                            // TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                            var startFrame = (typeof $aeOpt.start != 'undefined') ? $aeOpt.start : $aeOpt.aeLayer.frame;
+                            var startFrame = (typeof $aeOpt.start != 'undefined') ? $aeOpt.start : aeLayer.frame;
                             var frameCount = Math.abs($aeOpt.end - startFrame),
                                 time = frameCount / ($aeOpt.fps || 25);
                             aeLayer.preFrame = startFrame;
@@ -367,7 +366,7 @@
                                 yoyo: !!$aeOpt.yoyo,
                                 onStart: $aeOpt.onStart,
                                 onUpdate: function () {
-                                    renderNow && SLeasy.flashAeLayer(aeLayer);
+                                    SLeasy.flashAeLayer(aeLayer);
                                     $aeOpt.onUpdate && $aeOpt.onUpdate(aeLayer.frame);
                                     // console.warn((aeLayer.frame));
                                 },
@@ -386,7 +385,38 @@
                                 aeTl.add(TweenMax.to(aeLayer, time, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
                             }
                         }
-                        renderNow = true;
+                    }
+                    return SLeasy;
+                }
+
+                //暂停渲染层 -----------------------------------------------------
+                SLeasy.pauseAeLayer = function (name) {
+                    if (name && name != 'all') {
+                        $(TweenMax.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
+                            tween.pause();
+                        })
+                    } else {
+                        for (n in $scope.aeLayer) {
+                            $(TweenMax.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
+                                tween.pause();
+                            })
+                        }
+                    }
+                    return SLeasy;
+                }
+
+                //恢复播放渲染层 -----------------------------------------------------
+                SLeasy.resumeAeLayer = function (name) {
+                    if (name && name != 'all') {
+                        $(TweenMax.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
+                            tween.resume();
+                        })
+                    } else {
+                        for (n in $scope.aeLayer) {
+                            $(TweenMax.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
+                                tween.resume();
+                            })
+                        }
                     }
                     return SLeasy;
                 }
@@ -395,11 +425,17 @@
                 SLeasy.stopAeLayer = function (name, clear) {
                     if (name && name != 'all') {
                         T.killTweensOf($scope.aeLayer[name]);
-                        clear && $scope.aeLayer[name].removeAllChildren();
+                        if (clear) {
+                            $scope.aeLayer[name].removeAllChildren();
+                            $scope.aeLayer[name].parent && $scope.aeLayer[name].parent.update();
+                        }
                     } else {
                         for (n in $scope.aeLayer) {
                             T.killTweensOf($scope.aeLayer[n]);
-                            clear && $scope.aeLayer[n].removeAllChildren();
+                            if (clear) {
+                                $scope.aeLayer[n].removeAllChildren()
+                                $scope.aeLayer[n].parent && $scope.aeLayer[n].parent.update();
+                            }
                         }
                     }
                     return SLeasy;
