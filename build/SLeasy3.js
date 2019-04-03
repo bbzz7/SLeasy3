@@ -796,6 +796,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         preHash: '',//上一路由哈希值
 
         userData: {},//用户自定义数据
+        media: {},//用户初始化media dom缓存
         pluginList: [],//插件初始化函数列表
 
         bitmaps: {},//ae原生位图序列
@@ -833,7 +834,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }
     }
 
-
     //check weChat
     SLeasy.isWechat = SLeasy.isWeixin = function () {
         var ua = window.navigator.userAgent.toLowerCase();
@@ -854,7 +854,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }
     }
 
-
     //weChat share
     SLeasy.share = function (opt) {
         var imgHtml = '<img src="' + opt.imgUrl + '" width="300" height="300" style="position:absolute;top:-9999px">',
@@ -867,7 +866,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $scope.referrer = opt.referrer;
         $scope.goLink = opt.link || location.href;
     }
-
 
     //check http
     SLeasy.isHttp = function (url) {
@@ -910,7 +908,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             }
         }
     });
-
 
     //goto url
     SLeasy.goUrl = function (url) {
@@ -992,7 +989,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         return '';
     }
 
-
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
         // console.log(e.target)
@@ -1063,7 +1059,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }
     }
 
-
     //摇一摇事件封装
     SLeasy.shake = function (start, callback) {
         var myShakeEvent = new Shake({
@@ -1079,7 +1074,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             myShakeEvent.stop();
         }
     }
-
 
     //显示元素
     SLeasy.show = function (el, time, onComplete, onUpdate) {
@@ -1112,6 +1106,52 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.kill = function (el) {
         TweenMax.killTweensOf(el);
         return SLeasy;
+    }
+
+    //初始化media为可立即播放状态(暂停)
+    SLeasy.initMedia = function (mediaSelector, loopMode) {
+        $(mediaSelector).each(function (index, target) {
+            var $media = $(this)[0];
+            $media.play();
+            $(mediaSelector).off();
+            if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
+                $(mediaSelector).one('durationchange', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!')
+                })
+            } else if (device.ios() && SLeasy.isHttp()) {
+                $(mediaSelector).one('canplaythrough', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!')
+                })
+            } else {
+                $(mediaSelector).one('playing', function () {
+                    $media.pause();
+                    console.log('🎵：media paused~!');
+                })
+            }
+            //循环
+            if (loopMode) {
+                // $(mediaSelector).on('timeupdate', function () {
+                //     if(this.currentTime>=5){
+                //         $media.currentTime = 0;
+                //         console.log('🎵：::::::::::::::::::::::::::');
+                //     }else{
+                //         console.log(this.currentTime + ':' + this.duration);
+                //     }
+                // })
+                // $(mediaSelector).on('ended', function () {
+                //     console.log('🎵：media ended~!');
+                //     $media.currentTime = 0;
+                //     // $media.play();
+                // })
+            }
+        });
+    }
+
+    //获取meida
+    SLeasy.media = function (mediaSelector) {
+        return $(mediaSelector)[0];
     }
 
     // 时间线控制,用于'时间轴模式'下
@@ -1583,7 +1623,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     if (!aeOpt.length) {
                         var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
                         TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                        var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeOpt.aeLayer.frame;
+                        var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeLayer.frame;
                         var frameCount = Math.abs(aeOpt.end - startFrame),
                             time = frameCount / (aeOpt.fps || 25);
                         var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
@@ -1621,18 +1661,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         }
                         //多个tween
                     } else if (aeOpt.length && aeOpt.length > 0) {
-                        var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                        var aeTl = $scope.aeTimeLine[aeOpt[0].timeline] = $scope.aeTimeLine[aeOpt[0].timeline] || new TimelineMax();
                         //清除当前层所有tween
                         for (var i = 0; i < aeOpt.length; i++) {
-                            TweenMax.killTweensOf(aeLayer);
+                            var aeLayer = aeOpt[i].aeLayer || $scope.aeLayer[aeOpt[i].name];
+                            TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
                         }
                         //add所有tween
-                        var renderNow = false;
                         for (var i = 0; i < aeOpt.length; i++) {
                             var $aeOpt = aeOpt[i];
                             var aeLayer = $aeOpt.aeLayer || $scope.aeLayer[$aeOpt.name];
-                            // TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                            var startFrame = (typeof $aeOpt.start != 'undefined') ? $aeOpt.start : $aeOpt.aeLayer.frame;
+                            var startFrame = (typeof $aeOpt.start != 'undefined') ? $aeOpt.start : aeLayer.frame;
                             var frameCount = Math.abs($aeOpt.end - startFrame),
                                 time = frameCount / ($aeOpt.fps || 25);
                             aeLayer.preFrame = startFrame;
@@ -1646,7 +1685,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                                 yoyo: !!$aeOpt.yoyo,
                                 onStart: $aeOpt.onStart,
                                 onUpdate: function () {
-                                    renderNow && SLeasy.flashAeLayer(aeLayer);
+                                    SLeasy.flashAeLayer(aeLayer);
                                     $aeOpt.onUpdate && $aeOpt.onUpdate(aeLayer.frame);
                                     // console.warn((aeLayer.frame));
                                 },
@@ -1665,7 +1704,38 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                                 aeTl.add(TweenMax.to(aeLayer, time, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
                             }
                         }
-                        renderNow = true;
+                    }
+                    return SLeasy;
+                }
+
+                //暂停渲染层 -----------------------------------------------------
+                SLeasy.pauseAeLayer = function (name) {
+                    if (name && name != 'all') {
+                        $(TweenMax.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
+                            tween.pause();
+                        })
+                    } else {
+                        for (n in $scope.aeLayer) {
+                            $(TweenMax.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
+                                tween.pause();
+                            })
+                        }
+                    }
+                    return SLeasy;
+                }
+
+                //恢复播放渲染层 -----------------------------------------------------
+                SLeasy.resumeAeLayer = function (name) {
+                    if (name && name != 'all') {
+                        $(TweenMax.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
+                            tween.resume();
+                        })
+                    } else {
+                        for (n in $scope.aeLayer) {
+                            $(TweenMax.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
+                                tween.resume();
+                            })
+                        }
                     }
                     return SLeasy;
                 }
@@ -1674,11 +1744,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 SLeasy.stopAeLayer = function (name, clear) {
                     if (name && name != 'all') {
                         T.killTweensOf($scope.aeLayer[name]);
-                        clear && $scope.aeLayer[name].removeAllChildren();
+                        if (clear) {
+                            $scope.aeLayer[name].removeAllChildren();
+                            $scope.aeLayer[name].parent && $scope.aeLayer[name].parent.update();
+                        }
                     } else {
                         for (n in $scope.aeLayer) {
                             T.killTweensOf($scope.aeLayer[n]);
-                            clear && $scope.aeLayer[n].removeAllChildren();
+                            if (clear) {
+                                $scope.aeLayer[n].removeAllChildren()
+                                $scope.aeLayer[n].parent && $scope.aeLayer[n].parent.update();
+                            }
                         }
                     }
                     return SLeasy;
