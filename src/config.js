@@ -8,8 +8,8 @@
         bg: '',//幻灯容器背景图片
         bgColor: '',//幻灯容器背景颜色
         host: 'images/',//资源目录url
-        width: 640,//幻灯宽度
-        height: 1008,//幻灯高度
+        width: 750,//幻灯宽度
+        height: 1500,//幻灯高度
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
@@ -19,14 +19,14 @@
         routerMode: false,//路由开启模式
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
-        alignMode: 'top',//幻灯背景对齐方式
+        alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
         preload: true,//是否对素材预加载
         autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
         debugMode: window.location.href.indexOf('http') == 0 ? 0 : 1,//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
-        stageMode: 'auto',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
+        stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         positionMode: 'absolute',//舞台子元素position模式
         timeStamp: window.SLeasyTimeStamp || null,
         //music-------------------------------------------
