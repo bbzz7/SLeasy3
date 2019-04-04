@@ -9,11 +9,11 @@
             transformedCount = 0;
 
         //no any subImg
-        if($.isEmptyObject($config.loading) ? (transformTotal==0) : ($scope.loadingReady && transformTotal==0)){
+        if ($.isEmptyObject($config.loading) ? (transformTotal == 0) : ($scope.loadingReady && transformTotal == 0)) {
             setTimeout(function () {
                 console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                 dfd.resolve();//初始化完毕
-            },0)
+            }, 0)
         }
 
         //to div
@@ -46,7 +46,8 @@
                     h = $(this)[0].height,
                     style = {
                         'width': w * $scope.viewScale + 'px',
-                        'height': h * $scope.viewScale + 'px'
+                        'height': h * $scope.viewScale + 'px',
+                        'display': 'block'
                     }
                 // console.log('============'+w+':'+h+'==============');
                 $(this).css(style);
