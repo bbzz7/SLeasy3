@@ -111,10 +111,10 @@
             subMotion.pause && tl.addPause(startTime);
 
             //add motion
-            if(subMotion.to){
+            if (subMotion.to) {
                 subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
-                tl.add(T.to($(subMotion.el), time, subMotion.to), startTime)
-            }else{
+                tl.add(T.to($(subMotion.el), time, subMotion.to), startTime);
+            } else {
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             }
             // console.log($dom)
@@ -124,7 +124,6 @@
             // console.log(subShow)
             // console.log(subMotion.to)
             // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
-
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
 
