@@ -355,10 +355,10 @@
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, loopMode) {
         $(mediaSelector).each(function (index, target) {
+            $(this).off();
             var $media = $(this)[0];
             $media.muted = true;
             $media.play();
-            $(mediaSelector).off();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 $(this).one('durationchange', function () {
                     $media.pause();
