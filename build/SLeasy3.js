@@ -1112,10 +1112,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, loopMode) {
         $(mediaSelector).each(function (index, target) {
+            $(this).off();
             var $media = $(this)[0];
             $media.muted = true;
             $media.play();
-            $(mediaSelector).off();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 $(this).one('durationchange', function () {
                     $media.pause();
@@ -1962,11 +1962,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             transformedCount = 0;
 
         //no any subImg
-        if($.isEmptyObject($config.loading) ? (transformTotal==0) : ($scope.loadingReady && transformTotal==0)){
+        if ($.isEmptyObject($config.loading) ? (transformTotal == 0) : ($scope.loadingReady && transformTotal == 0)) {
             setTimeout(function () {
                 console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                 dfd.resolve();//初始化完毕
-            },0)
+            }, 0)
         }
 
         //to div
@@ -1999,7 +1999,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     h = $(this)[0].height,
                     style = {
                         'width': w * $scope.viewScale + 'px',
-                        'height': h * $scope.viewScale + 'px'
+                        'height': h * $scope.viewScale + 'px',
+                        'display': 'block'
                     }
                 // console.log('============'+w+':'+h+'==============');
                 $(this).css(style);
@@ -2248,10 +2249,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             subMotion.pause && tl.addPause(startTime);
 
             //add motion
-            if(subMotion.to){
+            if (subMotion.to) {
                 subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
-                tl.add(T.to($(subMotion.el), time, subMotion.to), startTime)
-            }else{
+                tl.add(T.to($(subMotion.el), time, subMotion.to), startTime);
+                console.log($(subMotion.el))
+            } else {
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             }
             // console.log($dom)
@@ -2261,7 +2263,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             // console.log(subShow)
             // console.log(subMotion.to)
             // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
-
 
             $scope.isSubMotion = 1;//子动画是否正在播放状态
 
