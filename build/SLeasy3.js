@@ -1166,6 +1166,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 });
             }
         });
+        return SLeasy;
     }
 
     //获取meida
@@ -2252,7 +2253,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             if (subMotion.to) {
                 subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
                 tl.add(T.to($(subMotion.el), time, subMotion.to), startTime);
-                console.log($(subMotion.el))
             } else {
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
             }
