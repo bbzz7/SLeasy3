@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.12 by 宇文互动 庄宇 2019-04-03 email:30755405@qq.com
+ SLeasy 3.8.13 by 宇文互动 庄宇 2019-04-09 email:30755405@qq.com
+ 3.8.13(2019-04-09):添加sprite元素及相关功能函数;
  3.8.12(2019-04-03):添加SLeasy.intiMedia/media/pauseAeLayer/resumeAeLayer函数，修复SLeasy.playAeLayer函数参数为数组对象时，某些情况下跳帧的bug;
  3.8.11(2019-03-31):自定义loading添加onComplete钩子，更新修复subMotion中addPause()时间定位不准确的问题;
  3.8.10(2019-03-02):更新添加对subMotion.to的全功能支持,更新幻灯页可单独分别设置入场和出场的动画效果,以及对'+='、'-='相对值的自动缩放支持;
@@ -1407,6 +1408,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         //不同类型子动画元素生成策略
         var subElement = {
+            //img -------------------------------------------------------
             "img": function (opt) {
                 //img to div
                 return '<div\
@@ -1416,6 +1418,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				<img src="' + SLeasy.path($config.host, opt.img) + '">\
 				</div>';
             },
+            //shadownBt -------------------------------------------------
             "shadownBt": function (opt) {
                 return '<div\
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1425,6 +1428,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				<img src="' + SLeasy.shadownBt + '" width="' + opt.shadownBt[0] + '" height="' + opt.shadownBt[1] + ' ' + (opt.class || '') + '">\
 				</div>';
             },
+            //dom -------------------------------------------------------
             "dom": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1433,6 +1437,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				<div id="' + opt.dom + '"></div>\
 				</div>';
             },
+            //html ------------------------------------------------------
             "html": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1441,6 +1446,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				' + opt.html + '\
 				</div>';
             },
+            //svg -------------------------------------------------------
             "svg": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1449,6 +1455,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
 				</div>';
             },
+            //canvas ----------------------------------------------------
             "canvas": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1457,6 +1464,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				<canvas id="' + opt.canvas[0] + '" class="SLeasy_canvas" width="' + opt.canvas[1] + '" height="' + opt.canvas[2] + '" style="position:absolute;top:0px;left:0px;width:' + opt.canvas[1] * $scope.viewScale + 'px;height:' + opt.canvas[2] * $scope.viewScale + 'px"></canvas>\
 				</div>';
             },
+            //text ------------------------------------------------------
             "text": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1465,6 +1473,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				' + opt.text + '\
 				</div>';
             },
+            //audio -----------------------------------------------------
             'audio': function (opt) {
                 return '<audio\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1473,6 +1482,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				src="' + SLeasy.path($config.host, opt.audio) + '" preload="auto" ' + (opt.loop ? 'loop="loop"' : '') + '>\
 				</audio>';
             },
+            //video -----------------------------------------------------
             'video': function (opt) {
                 return '<div\
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1482,6 +1492,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
+            //iframe ----------------------------------------------------
             'iframe': function (opt) {
                 return '<iframe\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
@@ -1490,6 +1501,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				src="' + opt.iframe + '" frameborder="0">\
 				</iframe>';
             },
+            //input -----------------------------------------------------
             "input": function (opt) {
                 //
                 var inputHtml = {
@@ -1525,6 +1537,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                 return inputHtml[opt.input]();
             },
+            //plugin ----------------------------------------------------
             "plugin": function (opt) {
                 var id = 'SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index;
                 //把插件初始化函数以及挂载点id(node)以及插件初始化回调注入到$scope.pluginList,在SLeasy.domReady后统一初始化
@@ -1534,6 +1547,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				</div>';
             },
+            //ae --------------------------------------------------------
             "ae": function (opt) {
                 //添加ae渲染层 --------------------------------------------
                 SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit, engine) {
@@ -1906,6 +1920,103 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 				</div>';
                 // -----------------------------------------------------
             },
+            //sprite ----------------------------------------------------
+            "sprite": function (opt) {
+                var spriteHtml = {
+                    'img': function () {
+                        return '<div\
+				        id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+				        class="' + (opt.class || '') + ' SLeasy_sprite SLeasy_' + (subName[opt.type] || opt.type) + ' toDiv"\
+				        style="-webkit-overflow-scrolling:touch;position:' + $config.positionMode + ';display:' + (display || (opt.set && opt.set.display) || 'none') + ';width:' + (opt.sprite[1] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;height:' + (opt.sprite[2] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;overflow:hidden">\
+				<div class="SLeasy_spriteSheet"><img src="' + SLeasy.path($config.host, opt.sprite[0]) + '"></div>\
+				        </div>';
+                    }
+                }
+
+                //playSprite
+                SLeasy.playSprite = function (selector, opt) {
+                    var $sprite = $(selector)[0],
+                        $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0],
+                        spriteDetailStyle = window.getComputedStyle($(selector)[0]),
+                        spriteImgDetailStyle = window.getComputedStyle($spriteImg);
+
+                    TweenMax.killTweensOf($spriteImg);
+                    $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
+                    $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
+
+                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+                    var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && opt.start ? opt.start : 0));
+                    var duration = frameCount / (opt && opt.fps || 25);
+
+                    console.log($spriteImg);
+                    console.log(duration + '===' + $sprite.w + '/' + $sprite.h + '===' + j + '/' + k + '===' + frameCount);
+
+                    $spriteImg.frame = 0;
+                    //设置sprite padding
+                    TweenMax.set(selector, {
+                        width: $sprite.w - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
+                        height: $sprite.h - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
+                    });
+                    TweenMax.fromTo($spriteImg, duration,
+                        {
+                            frame: (opt && opt.start) || 0
+                        },
+                        {
+                            ease: SteppedEase.config(frameCount),
+                            roundProps: "frame",
+                            frame: frameCount,
+                            repeat: opt && opt.repeat,
+                            onUpdate: function () {
+                                TweenMax.set($spriteImg, {
+                                    x: -$sprite.w * ($spriteImg.frame % j),
+                                    force3D: true
+                                });
+                                TweenMax.set($spriteImg, {
+                                    y: -$sprite.h * Math.floor($spriteImg.frame / j),
+                                    force3D: true
+                                });
+                                opt && opt.onUpdate && opt.onUpdate();
+                                // console.log($spriteImg.frame + '::' + (-$sprite.w * ($spriteImg.frame % j)) + '/' + (-$sprite.h * Math.floor($spriteImg.frame / j)));
+
+                            },
+                            onStart: (opt && opt.onStart) || null,
+                            onComplete: (opt && opt.onComplete) || null
+                        });
+                    return SLeasy;
+                }
+
+                //gotoSprite
+                SLeasy.gotoSprite = function (selector, frame, paddingOrCrop) {
+                    var $sprite = $(selector)[0],
+                        $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0],
+                        spriteDetailStyle = window.getComputedStyle($(selector)[0]),
+                        spriteImgDetailStyle = window.getComputedStyle($spriteImg);
+
+                    TweenMax.killTweensOf($spriteImg);
+                    $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
+                    $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
+
+                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+
+                    if (!$spriteImg.frame) $spriteImg.frame = 0;
+                    //设置sprite padding
+                    TweenMax.set(selector, {
+                        width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
+                        height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                    });
+                    TweenMax.set($spriteImg, {
+                        x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
+                        y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
+                    });
+                    // console.log(spriteImgDetailStyle.width + '/' + $sprite.w + '=' + j);
+                    // console.log((frame || $spriteImg.frame) + '::' + $sprite.w * ((frame ? frame : $spriteImg.frame) % j) + '/' + $sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j));
+                    if (!frame) $spriteImg.frame++;
+                    return SLeasy;
+                }
+                return spriteHtml[opt.engine || 'img']();
+            }
         }
 
 
@@ -2005,6 +2116,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     }
                 // console.log('============'+w+':'+h+'==============');
                 $(this).css(style);
+                // $(this).parent().css(style);
             });
         });
     }

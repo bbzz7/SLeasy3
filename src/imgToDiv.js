@@ -51,6 +51,7 @@
                     }
                 // console.log('============'+w+':'+h+'==============');
                 $(this).css(style);
+                // $(this).parent().css(style);
             });
         });
     }
