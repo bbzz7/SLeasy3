@@ -609,7 +609,6 @@
                     var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && opt.start ? opt.start : 0));
                     var duration = frameCount / (opt && opt.fps || 25);
 
-                    console.log($spriteImg);
                     console.log(duration + '===' + $sprite.w + '/' + $sprite.h + '===' + j + '/' + k + '===' + frameCount);
 
                     $spriteImg.frame = 0;
