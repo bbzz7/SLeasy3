@@ -12,6 +12,7 @@
         } else {
             SLeasy.detailTransit(nextIndex);
         }
+        return SLeasy;
     }
 
     SLeasy.nextDetailIndex = function (index) {
@@ -93,6 +94,7 @@
         } else {
             SLeasy.closeDetailTransit(nextIndex, callback);
         }
+        return SLeasy;
     }
 
     SLeasy.closeDetailTransit = function (index, callback) {
