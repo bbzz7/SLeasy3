@@ -353,23 +353,30 @@
     }
 
     //初始化media为可立即播放状态(暂停)
-    SLeasy.initMedia = function (mediaSelector, loopMode) {
+    SLeasy.initMedia = function (mediaSelector, callback, muted) {
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            $media.muted = true;
+            // if (muted) $media.muted = true;
+            if(!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 $(this).one('durationchange', function () {
-                    $media.pause();
+                    console.log($media.paused)
+                    if ($media.paused) return;
                     $media.muted = false;
-                    console.log('🎵：media paused~!')
+                    $media.pause();
+                    console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
                 $(this).one('playing', function () {
-                    $media.pause();
+                    console.log($media.paused)
+                    if ($media.paused) return;
                     $media.muted = false;
+                    $media.pause();
                     $media.currentTime = 0;
                     console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
                 // $(this).on('loadstart', function () {
                 //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
@@ -397,15 +404,19 @@
                 // })
             } else if (device.ios() && SLeasy.isHttp()) {
                 $(this).one('canplaythrough', function () {
-                    $media.pause();
                     $media.muted = false;
-                    console.log('🎵：media paused~!')
+                    $media.pause();
+                    $media.currentTime = 0;
+                    console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
             } else {
                 $(this).one('playing', function () {
-                    $media.pause();
                     $media.muted = false;
+                    $media.pause();
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
             }
         });
@@ -415,6 +426,49 @@
     //获取meida
     SLeasy.media = function (mediaSelector) {
         return $(mediaSelector)[0];
+    }
+
+    //设置media
+    SLeasy.setMedia = function (mediaSelector, url, callback) {
+        SLeasy.media(mediaSelector).src = SLeasy.path($config.host, url);
+        setTimeout(function () {
+            SLeasy.initMedia(mediaSelector, callback);
+        }, 50);
+        return SLeasy;
+    }
+
+    //循环media
+    SLeasy.loopMedia = function (mediaSelector, loop, offset, delay) {
+        var $media = SLeasy.media(mediaSelector);
+        var total = $media.duration;
+        var buff = offset || 0.1;
+        $media.looper = 0;
+
+        TweenMax.to($media, $media.duration - buff, {
+            looper: $media.duration - buff, repeat: loop,
+            onRepeat: function () {
+                $media.currentTime = 0
+            },
+            onStart: function () {
+                $media.play();
+            },
+            delay: delay
+        });
+        return SLeasy;
+    }
+
+    SLeasy.noopMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        SLeasy.kill($media);
+        $media.pause();
+        return SLeasy;
+    }
+
+    SLeasy.playMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        // $media.currentTime = 0;
+        $media.play();
+        return SLeasy;
     }
 
     // 时间线控制,用于'时间轴模式'下
