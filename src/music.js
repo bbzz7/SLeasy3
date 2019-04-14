@@ -15,14 +15,14 @@
             $config.musicUrl.on('play', function () {
                 $scope.isMusic = 1;
                 SLeasy.music.isPlaying = true;
-                T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+                T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
                 document.removeEventListener('touchstart', SLeasy.music.play);
             });
 
             $config.musicUrl.on('pause', function () {
                 $scope.isMusic = 0;
                 SLeasy.music.isPlaying = false;
-                T.to($("#SLeasy_musicBt"), 0.5, {
+                T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
                 });
@@ -58,7 +58,7 @@
     SLeasy.music.play = function () {
         setTimeout(function () {//不支持自动播放情况
             if (!$scope.isMusic) {
-                T.to($("#SLeasy_musicBt"), 0.5, {
+                T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
                 });
@@ -82,7 +82,7 @@
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
             document.removeEventListener('touchstart', SLeasy.music.play);
         })
     }
@@ -99,7 +99,7 @@
         $("#SLeasy_music").on('pause', function () {
             $scope.isMusic = 0;
             SLeasy.music.isPlaying = false;
-            T.to($("#SLeasy_musicBt"), 0.5, {
+            T.set($("#SLeasy_musicBt"), {
                 backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                 ease: Power4.easeOut
             });
