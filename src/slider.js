@@ -110,7 +110,7 @@
             "svg": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
-				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + ' noDiv"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
 				</div>';
@@ -148,8 +148,8 @@
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + '" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:fill;" \
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -604,8 +604,8 @@
                     $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
                     $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
 
-                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
-                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+                    var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
                     var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && opt.start ? opt.start : 0));
                     var duration = frameCount / (opt && opt.fps || 25);
 
@@ -613,10 +613,12 @@
 
                     $spriteImg.frame = 0;
                     //设置sprite padding
-                    TweenMax.set(selector, {
-                        width: $sprite.w - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
-                        height: $sprite.h - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
-                    });
+                    if (paddingOrCrop) {
+                        $(selector).css({
+                            width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
+                            height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                        });
+                    }
                     TweenMax.fromTo($spriteImg, duration,
                         {
                             frame: (opt && opt.start) || 0
@@ -646,34 +648,112 @@
                 }
 
                 //gotoSprite
-                SLeasy.gotoSprite = function (selector, frame, paddingOrCrop) {
+                SLeasy.gotoSprite = function (selector, frame, motionTime, paddingOrCrop, scaleX, scaleY, onComplete) {
                     var $sprite = $(selector)[0],
                         $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0],
                         spriteDetailStyle = window.getComputedStyle($(selector)[0]),
                         spriteImgDetailStyle = window.getComputedStyle($spriteImg);
 
+                    var sx = scaleX || 1,
+                        sy = scaleY || 1;
+
                     TweenMax.killTweensOf($spriteImg);
-                    $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
-                    $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
+                    $sprite.w = ($sprite.w || parseFloat(spriteDetailStyle.width)) * sx;
+                    $sprite.h = ($sprite.h || parseFloat(spriteDetailStyle.height)) * sy;
 
-                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
-                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+                    var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
 
-                    if (!$spriteImg.frame) $spriteImg.frame = 0;
+                    if ($spriteImg.frame === undefined) $spriteImg.frame = 0;
                     //设置sprite padding
-                    TweenMax.set(selector, {
-                        width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
-                        height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
-                    });
-                    TweenMax.set($spriteImg, {
-                        x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
-                        y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
-                    });
+                    if (paddingOrCrop) {
+                        $(selector).css({
+                            width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
+                            height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                        });
+                        // console.warn($sprite.w - ($scope.viewScale * (paddingOrCrop || 0)));
+                        // console.warn($sprite.h - ($scope.viewScale * (paddingOrCrop || 0)));
+                    }
+                    if (motionTime) {
+                        TweenMax.to($spriteImg, motionTime, {
+                            x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
+                            y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
+                            force3D: true,
+                            onComplete: onComplete
+                        });
+                    } else {
+                        TweenMax.set($spriteImg, {
+                            x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
+                            y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
+                            onComplete: onComplete
+                        });
+                    }
+                    // console.warn(-$sprite.w * ((frame ? frame : $spriteImg.frame) % j));
+                    // console.warn(-$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j));
+                    // console.warn(-$sprite.h);
+                    // console.warn($spriteImg.frame);
+                    // console.warn(j);
                     // console.log(spriteImgDetailStyle.width + '/' + $sprite.w + '=' + j);
                     // console.log((frame || $spriteImg.frame) + '::' + $sprite.w * ((frame ? frame : $spriteImg.frame) % j) + '/' + $sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j));
-                    if (!frame) $spriteImg.frame++;
+                    if (frame === undefined) {
+                        $spriteImg.frame++
+                        if ($spriteImg.frame >= j * k) {
+                            $spriteImg.frame = 0;
+                        }
+                    }
                     return SLeasy;
                 }
+
+                //loopSprite
+                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, paddingOrCrop, scaleX, scaleY) {
+                    var $sprite = $(selector)[0];
+                    $sprite.loop = true;
+                    $sprite.frame = start;
+                    SLeasy.gotoSprite(selector, $sprite.frame, 0, paddingOrCrop, scaleX, scaleY);
+                    loop();
+
+                    function loop() {
+                        setTimeout(function () {
+                            if (end > start) {
+                                $sprite.frame++;
+                            } else {
+                                $sprite.frame--;
+                            }
+                            if ($sprite.frame == end) {
+                                var onComplete = function () {
+                                    SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                }
+                                SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop, 1, 1, onComplete);
+                                $sprite.frame = start;
+                            } else {
+                                SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
+                            }
+                            if ($sprite.loop) loop();
+                        }, delay * 1000);
+                    }
+
+                    return SLeasy;
+                }
+
+                //noopSprite
+                SLeasy.noopSprite = function (selector) {
+                    var $sprite = $(selector)[0];
+                    $sprite.loop = false;
+                    return SLeasy;
+                }
+
+                //spriteFrame
+                SLeasy.spriteFrame = function (selector, frame) {
+                    var $sprite = $(selector)[0],
+                        $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0];
+                    if (frame === undefined) {
+                        return $spriteImg.frame;
+                    } else {
+                        $spriteImg.frame = frame;
+                        return SLeasy;
+                    }
+                }
+
                 return spriteHtml[opt.engine || 'img']();
             }
         }
@@ -710,6 +790,16 @@
                     onEvent: subMotion.onEvent,
                 }
                 $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+            }
+            if (subMotion['on']) {
+                for (event in subMotion['on']) {
+                    var info = {
+                        id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                        event: event,
+                        onEvent: subMotion['on'][event],
+                    }
+                    $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                }
             }
 
         }
