@@ -1111,23 +1111,30 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //初始化media为可立即播放状态(暂停)
-    SLeasy.initMedia = function (mediaSelector, loopMode) {
+    SLeasy.initMedia = function (mediaSelector, callback, muted) {
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            $media.muted = true;
+            // if (muted) $media.muted = true;
+            if(!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 $(this).one('durationchange', function () {
-                    $media.pause();
+                    console.log($media.paused)
+                    if ($media.paused) return;
                     $media.muted = false;
-                    console.log('🎵：media paused~!')
+                    $media.pause();
+                    console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
                 $(this).one('playing', function () {
-                    $media.pause();
+                    console.log($media.paused)
+                    if ($media.paused) return;
                     $media.muted = false;
+                    $media.pause();
                     $media.currentTime = 0;
                     console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
                 // $(this).on('loadstart', function () {
                 //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
@@ -1155,15 +1162,19 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 // })
             } else if (device.ios() && SLeasy.isHttp()) {
                 $(this).one('canplaythrough', function () {
-                    $media.pause();
                     $media.muted = false;
-                    console.log('🎵：media paused~!')
+                    $media.pause();
+                    $media.currentTime = 0;
+                    console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
             } else {
                 $(this).one('playing', function () {
-                    $media.pause();
                     $media.muted = false;
+                    $media.pause();
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
+                    callback && callback($media);
                 });
             }
         });
@@ -1173,6 +1184,49 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //获取meida
     SLeasy.media = function (mediaSelector) {
         return $(mediaSelector)[0];
+    }
+
+    //设置media
+    SLeasy.setMedia = function (mediaSelector, url, callback) {
+        SLeasy.media(mediaSelector).src = SLeasy.path($config.host, url);
+        setTimeout(function () {
+            SLeasy.initMedia(mediaSelector, callback);
+        }, 50);
+        return SLeasy;
+    }
+
+    //循环media
+    SLeasy.loopMedia = function (mediaSelector, loop, offset, delay) {
+        var $media = SLeasy.media(mediaSelector);
+        var total = $media.duration;
+        var buff = offset || 0.1;
+        $media.looper = 0;
+
+        TweenMax.to($media, $media.duration - buff, {
+            looper: $media.duration - buff, repeat: loop,
+            onRepeat: function () {
+                $media.currentTime = 0
+            },
+            onStart: function () {
+                $media.play();
+            },
+            delay: delay
+        });
+        return SLeasy;
+    }
+
+    SLeasy.noopMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        SLeasy.kill($media);
+        $media.pause();
+        return SLeasy;
+    }
+
+    SLeasy.playMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        // $media.currentTime = 0;
+        $media.play();
+        return SLeasy;
     }
 
     // 时间线控制,用于'时间轴模式'下
@@ -1450,7 +1504,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             "svg": function (opt) {
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
-				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + '"\
+				class="' + (opt.class || '') + ' SLeasy_svg SLeasy_' + (subName[opt.type] || opt.type) + ' noDiv"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 				<img src="' + SLeasy.path($config.host, opt.svg) + '">\
 				</div>';
@@ -1488,8 +1542,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + '" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="false" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : ' webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:fill;" \
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -1944,8 +1998,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
                     $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
 
-                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
-                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+                    var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
                     var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && opt.start ? opt.start : 0));
                     var duration = frameCount / (opt && opt.fps || 25);
 
@@ -1953,10 +2007,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
                     $spriteImg.frame = 0;
                     //设置sprite padding
-                    TweenMax.set(selector, {
-                        width: $sprite.w - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
-                        height: $sprite.h - ($scope.viewScale * ((opt && opt.padding) || (opt && opt.crop) || 0)),
-                    });
+                    if (paddingOrCrop) {
+                        $(selector).css({
+                            width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
+                            height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                        });
+                    }
                     TweenMax.fromTo($spriteImg, duration,
                         {
                             frame: (opt && opt.start) || 0
@@ -1986,34 +2042,112 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
 
                 //gotoSprite
-                SLeasy.gotoSprite = function (selector, frame, paddingOrCrop) {
+                SLeasy.gotoSprite = function (selector, frame, motionTime, paddingOrCrop, scaleX, scaleY, onComplete) {
                     var $sprite = $(selector)[0],
                         $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0],
                         spriteDetailStyle = window.getComputedStyle($(selector)[0]),
                         spriteImgDetailStyle = window.getComputedStyle($spriteImg);
 
+                    var sx = scaleX || 1,
+                        sy = scaleY || 1;
+
                     TweenMax.killTweensOf($spriteImg);
-                    $sprite.w = $sprite.w || parseFloat(spriteDetailStyle.width);
-                    $sprite.h = $sprite.h || parseFloat(spriteDetailStyle.height);
+                    $sprite.w = ($sprite.w || parseFloat(spriteDetailStyle.width)) * sx;
+                    $sprite.h = ($sprite.h || parseFloat(spriteDetailStyle.height)) * sy;
 
-                    var j = Math.floor(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
-                        k = Math.floor(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
+                    var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
+                        k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
 
-                    if (!$spriteImg.frame) $spriteImg.frame = 0;
+                    if ($spriteImg.frame === undefined) $spriteImg.frame = 0;
                     //设置sprite padding
-                    TweenMax.set(selector, {
-                        width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
-                        height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
-                    });
-                    TweenMax.set($spriteImg, {
-                        x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
-                        y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
-                    });
+                    if (paddingOrCrop) {
+                        $(selector).css({
+                            width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
+                            height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                        });
+                        // console.warn($sprite.w - ($scope.viewScale * (paddingOrCrop || 0)));
+                        // console.warn($sprite.h - ($scope.viewScale * (paddingOrCrop || 0)));
+                    }
+                    if (motionTime) {
+                        TweenMax.to($spriteImg, motionTime, {
+                            x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
+                            y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
+                            force3D: true,
+                            onComplete: onComplete
+                        });
+                    } else {
+                        TweenMax.set($spriteImg, {
+                            x: -$sprite.w * ((frame ? frame : $spriteImg.frame) % j),
+                            y: -$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j),
+                            onComplete: onComplete
+                        });
+                    }
+                    // console.warn(-$sprite.w * ((frame ? frame : $spriteImg.frame) % j));
+                    // console.warn(-$sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j));
+                    // console.warn(-$sprite.h);
+                    // console.warn($spriteImg.frame);
+                    // console.warn(j);
                     // console.log(spriteImgDetailStyle.width + '/' + $sprite.w + '=' + j);
                     // console.log((frame || $spriteImg.frame) + '::' + $sprite.w * ((frame ? frame : $spriteImg.frame) % j) + '/' + $sprite.h * Math.floor((frame ? frame : $spriteImg.frame) / j));
-                    if (!frame) $spriteImg.frame++;
+                    if (frame === undefined) {
+                        $spriteImg.frame++
+                        if ($spriteImg.frame >= j * k) {
+                            $spriteImg.frame = 0;
+                        }
+                    }
                     return SLeasy;
                 }
+
+                //loopSprite
+                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, paddingOrCrop, scaleX, scaleY) {
+                    var $sprite = $(selector)[0];
+                    $sprite.loop = true;
+                    $sprite.frame = start;
+                    SLeasy.gotoSprite(selector, $sprite.frame, 0, paddingOrCrop, scaleX, scaleY);
+                    loop();
+
+                    function loop() {
+                        setTimeout(function () {
+                            if (end > start) {
+                                $sprite.frame++;
+                            } else {
+                                $sprite.frame--;
+                            }
+                            if ($sprite.frame == end) {
+                                var onComplete = function () {
+                                    SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                }
+                                SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop, 1, 1, onComplete);
+                                $sprite.frame = start;
+                            } else {
+                                SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
+                            }
+                            if ($sprite.loop) loop();
+                        }, delay * 1000);
+                    }
+
+                    return SLeasy;
+                }
+
+                //noopSprite
+                SLeasy.noopSprite = function (selector) {
+                    var $sprite = $(selector)[0];
+                    $sprite.loop = false;
+                    return SLeasy;
+                }
+
+                //spriteFrame
+                SLeasy.spriteFrame = function (selector, frame) {
+                    var $sprite = $(selector)[0],
+                        $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0];
+                    if (frame === undefined) {
+                        return $spriteImg.frame;
+                    } else {
+                        $spriteImg.frame = frame;
+                        return SLeasy;
+                    }
+                }
+
                 return spriteHtml[opt.engine || 'img']();
             }
         }
@@ -2050,6 +2184,16 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     onEvent: subMotion.onEvent,
                 }
                 $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+            }
+            if (subMotion['on']) {
+                for (event in subMotion['on']) {
+                    var info = {
+                        id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                        event: event,
+                        onEvent: subMotion['on'][event],
+                    }
+                    $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                }
             }
 
         }
@@ -2106,18 +2250,30 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //no to div
         $dom.find(".noDiv img").each(function (index, element) {//获取所有图片宽度
             $(this).one('load', function (e) {
-                var w = $(this)[0].width,
-                    h = $(this)[0].height,
+                //naturalWidth、naturalHeight图片原始尺寸
+                var w = $(this)[0].naturalWidth,
+                    h = $(this)[0].naturalHeight,
                     style = {
                         'width': w * $scope.viewScale + 'px',
                         'height': h * $scope.viewScale + 'px',
                         'display': 'block'
                     }
-                // console.log('============'+w+':'+h+'==============');
+                console.log('============' + w + ':' + h + '==============');
                 $(this).css(style);
                 // $(this).parent().css(style);
             });
         });
+        //svg
+        $dom.find('svg').each(function (index, element) {
+            var w = parseFloat($(this).attr('width')) || parseFloat($(this).width()),
+                h = parseFloat($(this).attr('height')) || parseFloat($(this).height());
+            $(this).attr({
+                // viewBox: '0 0 ' + w + ' ' + h,
+                width: Math.round(w * $scope.viewScale) + 'px',
+                height: Math.round(h * $scope.viewScale) + 'px',
+            }).css({display: 'block'});
+            if ($(this)[0].viewBox.baseVal.width == 0 && $(this)[0].viewBox.animVal.width == 0) alert('请设置svg的viewBox属性值~')
+        })
     }
 })(
     window.SLeasy = window.SLeasy || {},
@@ -2130,7 +2286,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
     //子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
-    SLeasy.fixPosition = function (opt) {
+    SLeasy.fixPosition = function (opt, offset) {
         //console.log(opt)
         //背景对齐模式导致的子元素y轴偏移策略
         var yOffset = $scope.yOffset = {
@@ -2531,6 +2687,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         } else {
             SLeasy.transit(nextIndex);
         }
+        return SLeasy;
     }
 
     SLeasy.nextIndex = function (index) {
@@ -2764,7 +2921,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
         //冻结并清除当前子动画
-        if (currentSlider[0] != nextSlider[0]) $scope.timeLine.clear();
+        if (currentSlider[0] != nextSlider[0]) $scope.timeline.clear();
 
         //动画切换执行
         var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
@@ -2811,6 +2968,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         } else {
             SLeasy.detailTransit(nextIndex);
         }
+        return SLeasy;
     }
 
     SLeasy.nextDetailIndex = function (index) {
@@ -2892,6 +3050,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         } else {
             SLeasy.closeDetailTransit(nextIndex, callback);
         }
+        return SLeasy;
     }
 
     SLeasy.closeDetailTransit = function (index, callback) {
@@ -2999,7 +3158,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     HDom = new H(dom),
                     e = el.event,
                     callback = el.onEvent.bind(SLeasy);
-                ;
 
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
@@ -3034,8 +3192,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     dom = document.getElementById(id),
                     HDom = new H(dom),
                     e = el.event,
-                    callback = el.onEvent
-                ;
+                    callback = el.onEvent;
 
                 dom.style.cursor = "pointer";//鼠标手势
                 //console.log(document.getElementById(id));
@@ -3096,14 +3253,14 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $config.musicUrl.on('play', function () {
                 $scope.isMusic = 1;
                 SLeasy.music.isPlaying = true;
-                T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+                T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
                 document.removeEventListener('touchstart', SLeasy.music.play);
             });
 
             $config.musicUrl.on('pause', function () {
                 $scope.isMusic = 0;
                 SLeasy.music.isPlaying = false;
-                T.to($("#SLeasy_musicBt"), 0.5, {
+                T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
                 });
@@ -3139,7 +3296,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.music.play = function () {
         setTimeout(function () {//不支持自动播放情况
             if (!$scope.isMusic) {
-                T.to($("#SLeasy_musicBt"), 0.5, {
+                T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
                 });
@@ -3163,7 +3320,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            T.to($("#SLeasy_musicBt"), 0.5, {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
             document.removeEventListener('touchstart', SLeasy.music.play);
         })
     }
@@ -3180,7 +3337,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $("#SLeasy_music").on('pause', function () {
             $scope.isMusic = 0;
             SLeasy.music.isPlaying = false;
-            T.to($("#SLeasy_musicBt"), 0.5, {
+            T.set($("#SLeasy_musicBt"), {
                 backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                 ease: Power4.easeOut
             });

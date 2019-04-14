@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.13 by 宇文互动 庄宇 2019-04-09 email:30755405@qq.com
+ SLeasy 3.8.14 by 宇文互动 庄宇 2019-04-14 email:30755405@qq.com
+ 3.8.14(2019-04-09):进一步强化sprite元素功能，及media系列功能函数;
  3.8.13(2019-04-09):添加sprite元素及相关功能函数;
  3.8.12(2019-04-03):添加SLeasy.intiMedia/media/pauseAeLayer/resumeAeLayer函数，修复SLeasy.playAeLayer函数参数为数组对象时，某些情况下跳帧的bug;
  3.8.11(2019-03-31):自定义loading添加onComplete钩子，更新修复subMotion中addPause()时间定位不准确的问题;
