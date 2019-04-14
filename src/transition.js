@@ -12,6 +12,7 @@
         } else {
             SLeasy.transit(nextIndex);
         }
+        return SLeasy;
     }
 
     SLeasy.nextIndex = function (index) {
@@ -245,7 +246,7 @@
 
 
         //冻结并清除当前子动画
-        if (currentSlider[0] != nextSlider[0]) $scope.timeLine.clear();
+        if (currentSlider[0] != nextSlider[0]) $scope.timeline.clear();
 
         //动画切换执行
         var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
