@@ -15,7 +15,8 @@
             debug: false,
             time: new Date().getTime(),
             // signUrl: 'http://www.zhuzhouzhixin.com/CI/index.php/jssdk',//签名后端
-            signUrl:'https://h5.lrbnews.com/CI/index.php/Jssdk'//签名后端
+            // signUrl:'https://h5.lrbnews.com/CI/index.php/Jssdk'//签名后端
+            signUrl:'https://h5.timaworks.com/CI/index.php/Jssdk'//签名后端
         };
         $.extend($config, myOpt);
         if (jssdk.isWechat() || $config.debug) {
