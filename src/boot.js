@@ -28,7 +28,7 @@
             SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
-            $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
+            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
@@ -80,7 +80,7 @@
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
             //默认显示渲染
-            $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
+            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
