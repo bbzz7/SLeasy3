@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.13 by 宇文互动 庄宇 2019-04-09 email:30755405@qq.com
+ SLeasy 3.8.14 by 宇文互动 庄宇 2019-04-14 email:30755405@qq.com
+ 3.8.14(2019-04-14):进一步强化sprite元素功能，及media系列功能函数;
  3.8.13(2019-04-09):添加sprite元素及相关功能函数;
  3.8.12(2019-04-03):添加SLeasy.intiMedia/media/pauseAeLayer/resumeAeLayer函数，修复SLeasy.playAeLayer函数参数为数组对象时，某些情况下跳帧的bug;
  3.8.11(2019-03-31):自定义loading添加onComplete钩子，更新修复subMotion中addPause()时间定位不准确的问题;
@@ -672,7 +673,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         musicUrl: '',//背景音乐url
         musicLoop: true,//背景音乐是否循环
         musicAutoPlay: true,//背景音乐自动播放
-        musicTouchPlay: true,//触摸自动播放(仅1次)
+        musicTouchPlay: false,//触摸自动播放(仅1次)
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //slider------------------------------------------
@@ -2286,7 +2287,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 
     //子元素视口缩放动画坐标变换,参数为需要变换的slider/detail配置对象数组
-    SLeasy.fixPosition = function (opt, offset) {
+    SLeasy.fixPosition = function (opt) {
         //console.log(opt)
         //背景对齐模式导致的子元素y轴偏移策略
         var yOffset = $scope.yOffset = {
@@ -3327,6 +3328,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //pause
     SLeasy.music.pause = function () {
+        T.set($("#SLeasy_musicBt"), {
+            backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
+            ease: Power4.easeOut
+        });
+
         //howler
         if (window.Howl && $config.musicUrl instanceof Howl) {
             return $config.musicUrl.pause();
@@ -3480,7 +3486,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
-            $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
+            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
@@ -3532,7 +3538,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
             //默认显示渲染
-            $config.musicAutoPlay && SLeasy.music.play();//播放背景音乐
+            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
