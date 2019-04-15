@@ -33,7 +33,7 @@
         musicUrl: '',//背景音乐url
         musicLoop: true,//背景音乐是否循环
         musicAutoPlay: true,//背景音乐自动播放
-        musicTouchPlay: true,//触摸自动播放(仅1次)
+        musicTouchPlay: false,//触摸自动播放(仅1次)
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //slider------------------------------------------
