@@ -89,6 +89,11 @@
 
     //pause
     SLeasy.music.pause = function () {
+        T.set($("#SLeasy_musicBt"), {
+            backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
+            ease: Power4.easeOut
+        });
+
         //howler
         if (window.Howl && $config.musicUrl instanceof Howl) {
             return $config.musicUrl.pause();
