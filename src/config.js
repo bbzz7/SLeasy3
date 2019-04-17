@@ -36,6 +36,9 @@
         musicTouchPlay: false,//触摸自动播放(仅1次)
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
+        //audios-------------------------------------------
+        audios:[],//webAudio+Howler
+
         //slider------------------------------------------
         sliders: [], //幻灯json数组
 

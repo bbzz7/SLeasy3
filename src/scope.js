@@ -48,6 +48,7 @@
         aeLayer: {},//ae渲染层
         aeStage: {},//ae渲染舞台
         aeTimeLine: {},//ae时间线
+        audios: {},//webAudio
 
         totalLoad: [],//应用要加载的图片总数组
     }
@@ -426,7 +427,13 @@
 
     //获取meida
     SLeasy.media = function (mediaSelector) {
-        return $(mediaSelector)[0];
+        if($(mediaSelector).length){
+            return $(mediaSelector)[0];
+        }else if($scope.audios[mediaSelector]){
+            return $scope.audios[mediaSelector];
+        }else{
+            alert('未找到对应音频节点~')
+        }
     }
 
     //设置media
