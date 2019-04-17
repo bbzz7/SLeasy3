@@ -1117,23 +1117,24 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             $(this).off();
             var $media = $(this)[0];
             // if (muted) $media.muted = true;
-            if(!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
+            if (!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 $(this).one('durationchange', function () {
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
+                    $media.currentTime = 0;
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
-                    $media.pause();
                     $media.currentTime = 0;
+                    $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1163,17 +1164,17 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 // })
             } else if (device.ios() && SLeasy.isHttp()) {
                 $(this).one('canplaythrough', function () {
-                    $media.muted = false;
-                    $media.pause();
                     $media.currentTime = 0;
+                    $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
             } else {
                 $(this).one('playing', function () {
-                    $media.muted = false;
-                    $media.pause();
                     $media.currentTime = 0;
+                    $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1225,7 +1226,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
-        // $media.currentTime = 0;
+        $media.currentTime = 0;
         $media.play();
         return SLeasy;
     }
