@@ -3258,7 +3258,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //music
     SLeasy.music.init = function (opt) {
-        if ($scope.audioInit) return;
+        if ($scope.audioInit) return '';//返回空html串
         $scope.audioInit = true;
         //webAudio初始化
         if (Object.keys($config.audios).length) {
