@@ -340,7 +340,9 @@
                                 SLeasy.flashAeLayer(aeLayer);
                                 aeOpt.onUpdate && aeOpt.onUpdate(aeLayer.frame);
                             },
-                            onComplete: aeOpt.onComplete,
+                            onComplete: function () {
+                                aeOpt.onComplete && aeOpt.onComplete();
+                            },
                         };
 
                         if (typeof aeOpt.start != 'undefined') {
@@ -378,13 +380,25 @@
                                 repeat: $aeOpt.repeat,
                                 yoyo: !!$aeOpt.yoyo,
                                 onStart: $aeOpt.onStart,
-                                onUpdate: function () {
-                                    SLeasy.flashAeLayer(aeLayer);
-                                    $aeOpt.onUpdate && $aeOpt.onUpdate(aeLayer.frame);
-                                    // console.warn((aeLayer.frame));
-                                },
-                                onComplete: $aeOpt.onComplete,
+                                onUpdate: (function (n) {
+                                    return function () {
+                                        var $aeOpt = aeOpt[n];
+                                        var aeLayer = $aeOpt.aeLayer || $scope.aeLayer[$aeOpt.name];
+                                        SLeasy.flashAeLayer(aeLayer);
+                                        $aeOpt.onUpdate && $aeOpt.onUpdate(aeLayer.frame);
+                                    }
+                                })(i),
+                                onComplete: (function (n) {
+                                    return function () {
+                                        var $aeOpt = aeOpt[n];
+                                        var aeLayer = $aeOpt.aeLayer || $scope.aeLayer[$aeOpt.name];
+                                        $aeOpt.onComplete && $aeOpt.onComplete();
+                                    }
+                                })(i),
                             };
+                            // aeTl.eventCallback('onComplete', function () {
+                            //     aeLayer.parent._updating = false;
+                            // })
                             if (typeof $aeOpt.start != 'undefined') {
                                 aeTl.add(TweenMax.fromTo(aeLayer, time, {
                                     immediateRender: false,//防止立即刷新frame值
@@ -392,7 +406,6 @@
                                     autoAlpha: 1,
                                     alpha: 1
                                 }, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
-                                // console.warn(tweenData);
                             } else {
                                 aeTl.set(aeLayer, {autoAlpha: 1, alpha: 1});
                                 aeTl.add(TweenMax.to(aeLayer, time, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
@@ -471,14 +484,13 @@
                     width: 640,
                     height: 1136,
                     fps: 25,
-                    repeat: 1,
+                    repeat: 0,
                     layer: [],
                     autoPlay: true,
                     onInit: function () {
                     }
                 }
                 $.extend(config, opt.ae);
-
 
                 //内置ae插件初始化函数 -----------------------------------------------------
                 function aeMotion(aeOpt) {
@@ -571,7 +583,6 @@
                 $scope.pluginList.push([aeMotion, config, config.onInit]);
 
                 // console.info(config);
-
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_canvas SLeasy_' + (subName[opt.type] || opt.type) + '"\
