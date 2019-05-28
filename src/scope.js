@@ -325,11 +325,29 @@
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: (onUpdate || function () {
-                })
+                }), onUpdate: function () {
+                    onUpdate && onUpdate();
+                    if (Object.prototype.toString.call(el) === '[object Array]') {
+                        $.each(el, function (index, target) {
+                            target.parent && target.parent.update && target.parent.update();
+                        })
+                    } else {
+                        el.parent && el.parent.update && el.parent.update();
+                    }
+                }
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 1, alpha: 1});
+            TweenMax.set(el, {
+                autoAlpha: 1, alpha: 1, onComplete: function () {
+                    if (Object.prototype.toString.call(el) === '[object Array]') {
+                        $.each(el, function (index, target) {
+                            target.parent && target.parent.update && target.parent.update();
+                        })
+                    } else {
+                        el.parent && el.parent.update && el.parent.update();
+                    }
+                }
+            });
         }
         return SLeasy;
     }
@@ -338,11 +356,29 @@
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: (onUpdate || function () {
-                })
+                }), onUpdate: function () {
+                    onUpdate && onUpdate();
+                    if (Object.prototype.toString.call(el) === '[object Array]') {
+                        $.each(el, function (index, target) {
+                            target.parent && target.parent.update && target.parent.update();
+                        })
+                    } else {
+                        el.parent && el.parent.update && el.parent.update();
+                    }
+                }
             });
         } else {
-            TweenMax.set(el, {autoAlpha: 0, alpha: 0});
+            TweenMax.set(el, {
+                autoAlpha: 0, alpha: 0, onComplete: function () {
+                    if (Object.prototype.toString.call(el) === '[object Array]') {
+                        $.each(el, function (index, target) {
+                            target.parent && target.parent.update && target.parent.update();
+                        })
+                    } else {
+                        el.parent && el.parent.update && el.parent.update();
+                    }
+                }
+            });
         }
         return SLeasy;
     }
@@ -427,11 +463,11 @@
 
     //获取meida
     SLeasy.media = function (mediaSelector) {
-        if($(mediaSelector).length){
+        if ($(mediaSelector).length) {
             return $(mediaSelector)[0];
-        }else if($scope.audios[mediaSelector]){
+        } else if ($scope.audios[mediaSelector]) {
             return $scope.audios[mediaSelector];
-        }else{
+        } else {
             alert('未找到对应音频节点~')
         }
     }
