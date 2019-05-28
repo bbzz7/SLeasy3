@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.15 by 宇文互动 庄宇 2019-04-17 email:30755405@qq.com
+ SLeasy 3.8.16 by 宇文互动 庄宇 2019-05-29 email:30755405@qq.com
+ 3.8.16(2019-05-29):进一步完善SLeasy.playAeLayer/show/hide()等系列函数;
  3.8.15(2019-04-17):初步集成webAudio/howler;
  3.8.14(2019-04-14):进一步强化sprite元素功能，及media系列功能函数;
  3.8.13(2019-04-09):添加sprite元素及相关功能函数;
