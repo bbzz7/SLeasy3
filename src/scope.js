@@ -468,7 +468,7 @@
         } else if ($scope.audios[mediaSelector]) {
             return $scope.audios[mediaSelector];
         } else {
-            alert('未找到对应音频节点~')
+            alert('未找到对应音频节点~::'+mediaSelector)
         }
     }
 
