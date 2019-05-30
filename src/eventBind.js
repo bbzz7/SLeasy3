@@ -106,7 +106,10 @@
                 } else if (e == 'press') {
                     HDom.get('press').set({time: 50});
                     HDom.off('press').on('press', callback);
-                } else {
+                } else if (e == 'pressup') {
+                    HDom.get('pressup').set({time: 50});
+                    HDom.off('pressup').on('pressup', callback);
+                }else {
                     HDom.off(e).on(e, callback);//事件绑定
                 }
 
