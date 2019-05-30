@@ -67,7 +67,7 @@
 
 
     //isPlaying
-    SLeasy.music.isPlaying = false;
+    SLeasy.music.playing = SLeasy.music.isPlaying = false;
 
     //play
     SLeasy.music.play = function () {
