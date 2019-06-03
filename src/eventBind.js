@@ -66,9 +66,6 @@
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
-                } else if (e == 'press') {
-                    HDom.get('press').set({time: 50});
-                    HDom.off('press').on('press', callback);
                 } else {
                     HDom.off(e).on(e, callback);//事件绑定
                 }
@@ -103,13 +100,7 @@
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
-                } else if (e == 'press') {
-                    HDom.get('press').set({time: 50});
-                    HDom.off('press').on('press', callback);
-                } else if (e == 'pressup') {
-                    HDom.get('pressup').set({time: 50});
-                    HDom.off('pressup').on('pressup', callback);
-                }else {
+                } else {
                     HDom.off(e).on(e, callback);//事件绑定
                 }
 
