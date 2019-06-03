@@ -95,7 +95,6 @@
         return '<div id="SLeasy_loader" style=' + loadingStyle + '>' + overLayHtml + (typeof $config.loader.style == 'number' ? loaderStyle[$config.loader.style] : $config.loader.style) + percentHtml + msgHtml + '</div>';
     }
 
-
     //percent
     SLeasy.loader.progress = function (percent) {
         $("#SLeasy_loader_percent").text(percent);
@@ -128,6 +127,7 @@
         _showLoading && $config.loader.show !== false && SLeasy.loader.show();
 
         var loaded = 0;
+        SLeasy.loader.percent = 0;
         var hasCustomLoading = !$.isEmptyObject($config.loading);//是否有自定义loading
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
@@ -152,7 +152,7 @@
                     }
                     // dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
-                        console.log(('加载共::>>>>>【' + new Date().getTime() - stime) / 1000 + '秒】')
+                        console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady) {
                             $config.on['loaded'](); //预加载完毕回调
                         } else {
