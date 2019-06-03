@@ -38,6 +38,7 @@
 
         //audios-------------------------------------------
         audios:[],//webAudio+Howler
+        audioType:'webAudio',
 
         //slider------------------------------------------
         sliders: [], //幻灯json数组
