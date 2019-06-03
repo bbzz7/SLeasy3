@@ -7,10 +7,12 @@
 
     //music
     SLeasy.music.init = function (opt) {
+        var musicHtml = '';
         if ($scope.audioInit) return '';//返回空html串
         $scope.audioInit = true;
+
         //webAudio初始化
-        if (Object.keys($config.audios).length) {
+        if (Object.keys($config.audios).length && $config.audioType == 'webAudio') {
             $.each($config.audios, function (index, audio) {
                 if (typeof audio == 'string') {
                     $scope.audios[index] = new Howl({src: SLeasy.path($config.host, audio)});
@@ -20,21 +22,30 @@
                 }
             });
             console.log($scope.$audios);
+        } else if (Object.keys($config.audios).length && $config.audioType == 'audio') {
+            $.each($config.audios, function (index, audio) {
+                if (typeof audio == 'string') {
+                    musicHtml += '<audio class="SLeasy_audio ' + index + '" preload="auto" src="' + SLeasy.path($config.host, audio) + '"></audio>'
+                } else {
+                    var loop = audio.loop ? 'loop="loop"' : '';
+                    musicHtml += '<audio class="SLeasy_audio ' + index + '" preload="auto" src="' + SLeasy.path($config.host, audio.src) + '" ' + loop + '></audio>';
+                }
+            });
         }
 
         //auto playHack
         $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
-        if (window.Howl && $config.musicUrl instanceof Howl) {
-            $config.musicUrl.off();
-
-            $config.musicUrl.on('play', function () {
+        if (typeof $config.musicUrl == 'object') {
+            $config.musicUrl.src = SLeasy.path($config.host, $config.musicUrl.src);
+            $scope.audios['bgm'] = new Howl($config.musicUrl);
+            $scope.audios['bgm'].off();
+            $scope.audios['bgm'].on('play', function () {
                 $scope.isMusic = 1;
                 SLeasy.music.isPlaying = true;
                 T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
                 document.removeEventListener('touchstart', SLeasy.music.play);
             });
-
-            $config.musicUrl.on('pause', function () {
+            $scope.audios['bgm'].on('pause', function () {
                 $scope.isMusic = 0;
                 SLeasy.music.isPlaying = false;
                 T.set($("#SLeasy_musicBt"), {
@@ -42,10 +53,7 @@
                     ease: Power4.easeOut
                 });
             });
-            return '';
-        } else {
-            if (!$config.musicUrl || $('#SLeasy_music').length) return '';
-
+        } else if ($config.musicUrl) {
             //=============微信webview背景音乐及视频行内播放======================================
             if ("wView" in window) {
                 window.wView.allowsInlineMediaPlayback = "YES";
@@ -57,12 +65,12 @@
                 ogg: 'audio/ogg',
                 wav: 'audio/wav'
             }
-            var tmpHtml = '\
-			<audio id="SLeasy_music" preload="auto" ' + ($config.musicLoop ? 'loop="loop"' : '') + '>\
+            musicHtml += '\
+			<audio id="SLeasy_music" class="music" preload="auto" ' + ($config.musicLoop ? 'loop="loop"' : '') + '>\
 			<source src="' + SLeasy.path($config.host, $config.musicUrl) + '" type="' + mediaTypes[$config.musicUrl.split('.')[1]] + '">\
 			</audio>';
-            return tmpHtml;
         }
+        return musicHtml;
     }
 
 
@@ -81,8 +89,8 @@
         }, 100)
 
         //howler
-        if (window.Howl && $config.musicUrl instanceof Howl) {
-            $config.musicUrl.play();
+        if (typeof $config.musicUrl == 'object') {
+            $scope.bgmID = $scope.audios['bgm'].play();
         }
 
         //audio
@@ -93,10 +101,15 @@
         //hack部分机型无法自动播放的bug
         document.addEventListener("WeixinJSBridgeReady", function () {
             //howler
-            if (window.Howl && $config.musicUrl instanceof Howl) {
-                $config.musicUrl.play();
+            if (typeof $config.musicUrl == 'object') {
+                if ($scope.bgmID) {
+                    $scope.audios['bgm'].play($scope.bgmID);
+                } else {
+                    $scope.bgmID = $scope.audios['bgm'].play();
+                }
+                console.log('howl BGM music play~')
             } else {
-                $("#SLeasy_music")[0].play();
+                $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
             }
         }, false);
 

@@ -467,8 +467,21 @@
             return $(mediaSelector)[0];
         } else if ($scope.audios[mediaSelector]) {
             return $scope.audios[mediaSelector];
+        } else if ($('.' + mediaSelector).length) {
+            $('.' + mediaSelector)[0].stop = $('.' + mediaSelector)[0].pause;
+            $('.' + mediaSelector)[0].playing = function () {
+                return !$('.' + mediaSelector)[0].paused;
+            };
+            if (Howler) {
+                Howler.mute = function (isMute) {
+                    $('audio').each(function () {
+                        $(this)[0].muted = isMute;
+                    });
+                }
+            }
+            return $('.' + mediaSelector)[0];
         } else {
-            alert('未找到对应音频节点~::'+mediaSelector)
+            alert('未找到对应音频节点~::' + mediaSelector)
         }
     }
 
