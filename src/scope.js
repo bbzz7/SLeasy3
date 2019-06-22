@@ -322,6 +322,12 @@
 
     //显示元素
     SLeasy.show = function (el, time, onComplete, onUpdate) {
+        //arr全部转换为jq $dom数组
+        if (Object.prototype.toString.call(el) === '[object Array]') {
+            el = el.map(function (item) {
+                return $(item);
+            });
+        }
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
@@ -353,6 +359,12 @@
     }
     //隐藏元素
     SLeasy.hide = function (el, time, onComplete, onUpdate) {
+        //arr全部转换为jq $dom数组
+        if (Object.prototype.toString.call(el) === '[object Array]') {
+            el = el.map(function (item) {
+                return $(item);
+            });
+        }
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
