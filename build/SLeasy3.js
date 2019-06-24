@@ -1094,7 +1094,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //arr全部转换为jq $dom数组
         if (Object.prototype.toString.call(el) === '[object Array]') {
             el = el.map(function (item) {
-                return $(item);
+                return (typeof item == 'string' ? $(item) : item);
             });
         }
         if (time) {
@@ -1131,7 +1131,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //arr全部转换为jq $dom数组
         if (Object.prototype.toString.call(el) === '[object Array]') {
             el = el.map(function (item) {
-                return $(item);
+                console.log(typeof item);
+                return (typeof item == 'string' ? $(item) : item);
             });
         }
         if (time) {
@@ -1720,7 +1721,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             //渲染层初始化
                             $scope.aeBitmaps[layerName] = [];
                             for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
-                                var bitmap = new PIXI.Texture.fromImage($scope.bitmaps[layerName][i]);
+                                var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
                                 $scope.aeBitmaps[layerName].push(bitmap);
                             }
                             var aeLayer = new PIXI.Container();
@@ -1771,11 +1772,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             aeLayer.parent.update();
                         },
                         'pixi': function () {
-                            console.log(aeLayer.children);
-                            if (aeLayer.children.length != 0) aeLayer.children[0].destroy(false);
                             aeLayer.removeChildren();
                             var aeFrame = $scope.aeBitmaps[aeLayer.name][frameIndex];
-                            aeLayer.addChild(new PIXI.Sprite(aeFrame));
+                            aeLayer.addChild(aeFrame);
                             var stage = aeLayer.parent;
                             var app = stage.parent;
                             app.renderer.render(stage);
@@ -2024,9 +2023,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         'pixi': function () {
                             var app = new PIXI.Application({
                                 view: $('#' + aeOpt.node)[0],
-                                // forceCanvas: true,
+                                forceCanvas: true,
                                 width: aeOpt.width,
-                                height: aeOpt.height
+                                height: aeOpt.width
                             })
                             app.ticker.stop();
                             app.stage.parent = app;

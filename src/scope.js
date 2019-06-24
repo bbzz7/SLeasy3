@@ -325,7 +325,7 @@
         //arr全部转换为jq $dom数组
         if (Object.prototype.toString.call(el) === '[object Array]') {
             el = el.map(function (item) {
-                return $(item);
+                return (typeof item == 'string' ? $(item) : item);
             });
         }
         if (time) {
@@ -362,7 +362,8 @@
         //arr全部转换为jq $dom数组
         if (Object.prototype.toString.call(el) === '[object Array]') {
             el = el.map(function (item) {
-                return $(item);
+                console.log(typeof item);
+                return (typeof item == 'string' ? $(item) : item);
             });
         }
         if (time) {
