@@ -14,12 +14,14 @@
         //webAudio初始化
         if (Object.keys($config.audios).length && $config.audioType == 'webAudio') {
             $.each($config.audios, function (index, audio) {
-                if (typeof audio == 'string') {
-                    $scope.audios[index] = new Howl({src: SLeasy.path($config.host, audio)});
-                } else {
-                    audio.src = SLeasy.path($config.host, audio.src);
-                    $scope.audios[index] = new Howl(audio);
-                }
+                setTimeout(function () {
+                    if (typeof audio == 'string') {
+                        $scope.audios[index] = new Howl({src: SLeasy.path($config.host, audio)});
+                    } else {
+                        audio.src = SLeasy.path($config.host, audio.src);
+                        $scope.audios[index] = new Howl(audio);
+                    }
+                }, index * 50);
             });
             console.log($scope.$audios);
         } else if (Object.keys($config.audios).length && $config.audioType == 'audio') {
