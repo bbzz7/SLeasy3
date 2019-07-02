@@ -4121,17 +4121,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             }
             for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
-                //ae序列帧
-                var ae = $config.sliders[i].subMotion[k].ae;
-                if (ae) {
-                    for (var n = 0; n < ae.layer.length; n++) {
-                        var layerOpt = ae.layer[n];
-                        console.log(layerOpt);
-                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                        // console.log(bitmapArr);
-                        totalArr = totalArr.concat(bitmapArr);
-                    }
-                }
             }
         }
 
@@ -4146,7 +4135,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     }
                 }
             }
-
             for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
                 $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
             }
@@ -4160,6 +4148,40 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //额外加载项
         for (var i = 0; i < $config.exLoadArr.length; i++) {
             totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
+        }
+
+        //幻灯ae
+        for (var i = 0; i < $config.sliders.length; i++) {
+            for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
+                //ae序列帧
+                var ae = $config.sliders[i].subMotion[k].ae;
+                if (ae) {
+                    for (var n = 0; n < ae.layer.length; n++) {
+                        var layerOpt = ae.layer[n];
+                        console.log(layerOpt);
+                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                        // console.log(bitmapArr);
+                        totalArr = totalArr.concat(bitmapArr);
+                    }
+                }
+            }
+        }
+
+        //幻灯ae
+        for (var i = 0; i < $config.details.length; i++) {
+            for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
+                //ae序列帧
+                var ae = $config.details[i].subMotion[k].ae;
+                if (ae) {
+                    for (var n = 0; n < ae.layer.length; n++) {
+                        var layerOpt = ae.layer[n];
+                        console.log(layerOpt);
+                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                        // console.log(bitmapArr);
+                        totalArr = totalArr.concat(bitmapArr);
+                    }
+                }
+            }
         }
 
 
