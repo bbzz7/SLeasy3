@@ -265,6 +265,7 @@
                     }
 
                     function createAeBitmaps(layerName, start, end) {
+                        if (!$scope.aeBitmaps[layerName]) $scope.aeBitmaps[layerName] = [];
                         var layerMode = {
                             'easel': function () {
                                 //渲染层初始化
@@ -291,6 +292,8 @@
                         }
                         return layerMode[$scope.aeLayer[layerName].engine]();
                     }
+
+                    return dfd.promise();
                 }
 
                 //ae层初始化
@@ -298,7 +301,7 @@
                     var layerMode = {
                         'easel': function () {
                             //序列初始化
-                            if(preload){
+                            if (preload) {
                                 $scope.aeBitmaps[layerName] = [];
                                 for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
                                     var bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
@@ -312,7 +315,7 @@
                         },
                         'pixi': function () {
                             //序列初始化
-                            if(preload){
+                            if (preload) {
                                 $scope.aeBitmaps[layerName] = [];
                                 for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
                                     var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
@@ -326,7 +329,7 @@
                         },
                         'img': function () {
                             ///序列初始化
-                            if(preload){
+                            if (preload) {
                                 $scope.aeBitmaps[layerName] = [];
                                 for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
                                     var bitmap = new Image();
@@ -583,7 +586,7 @@
                             end = layerArg[3],
                             suffix = layerArg[4],
                             bit = layerArg[5],
-                            preload = layerArg[6]===false ? false : true;
+                            preload = layerArg[6] === false ? false : true;
 
                         $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit, engine, preload);
 
