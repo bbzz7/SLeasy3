@@ -52,10 +52,10 @@
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                $(".SLeasy_loading").fadeIn(300,function () {
+                $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onComplete && $config.loading.onComplete()
                 });
-                SLeasy.subMotion($config.loading.subMotion, 'loadingElement',0);
+                SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onStartLoad && $config.loading.onStartLoad();
                 SLeasy.init($config).done(function () {
                     dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
@@ -152,6 +152,10 @@
                 if (ae) {
                     for (var n = 0; n < ae.layer.length; n++) {
                         var layerOpt = ae.layer[n];
+                        if (layerOpt[6] === false) {
+                            console.log('skip:' + ae.layer[n]);
+                            continue;
+                        }
                         console.log(layerOpt);
                         var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
                         // console.log(bitmapArr);
@@ -169,6 +173,10 @@
                 if (ae) {
                     for (var n = 0; n < ae.layer.length; n++) {
                         var layerOpt = ae.layer[n];
+                        if (layerOpt[6] === false) {
+                            console.log('skip:' + ae.layer[n]);
+                            continue;
+                        }
                         console.log(layerOpt);
                         var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
                         // console.log(bitmapArr);
@@ -184,7 +192,7 @@
             $scope.totalLoad = totalArr;
             return totalArr;//是否进行预加载
         } else {
-            //console.log(totalArr);
+            console.log(totalArr);
             $scope.totalLoad = totalArr;
             return totalArr;
         }

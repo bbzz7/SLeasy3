@@ -210,9 +210,9 @@
             //ae --------------------------------------------------------
             "ae": function (opt) {
                 //添加ae渲染层 --------------------------------------------
-                SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit, engine) {
+                SLeasy.addAeLayer = function (stageObj, layerName, addAt, prefix, start, end, suffix, bit, engine, preload) {
                     SLeasy.addBitmaps(layerName, prefix, start, end, suffix, bit);
-                    $scope.aeLayer[layerName] = createAeLayer(layerName, engine);
+                    $scope.aeLayer[layerName] = createAeLayer(layerName, engine, preload);
                     $scope.aeLayer[layerName].frame = 0;
                     $scope.aeLayer[layerName].start = $scope.aeLayer[layerName] ? 0 : start;
                     $scope.aeLayer[layerName].end = end;
@@ -228,38 +228,111 @@
                     return $scope.aeLayer[layerName];
                 }
 
+                //ae序列帧加载
+                SLeasy.loadAeLayer = function (layerName, start, end, thread) {
+                    var dfd = $.Deferred();
+                    var thread = thread || 10;
+                    var loaded = 0;
+                    var percent = 0;
+                    var imgs = $scope.bitmaps[layerName].slice(start, end + 1)
+
+                    loadImg(imgs);
+
+                    function loadImg(loadArr) {
+                        var threadLoaded = 0;
+                        for (var i = 0; i < thread; i++) {
+                            if (!loadArr[i + loaded]) return;
+                            var img = new Image();
+                            img.src = loadArr[i + loaded];
+                            console.log(':::::开始加载：' + img.src);
+                            img.onload = function () {
+                                loaded++;
+                                threadLoaded++;
+                                percent = Math.round(loaded * 100 / (end - start + 1));
+                                // console.log('float:' + loaded * 100 / (end - start + 1))
+                                // console.log('loaded:' + loaded)
+                                dfd.notify(percent);
+                                if (percent >= 100) {
+                                    console.log(layerName + '加载完毕~');
+                                    createAeBitmaps(layerName, start, end);
+                                    dfd.resolve(layerName);
+                                } else if (threadLoaded == thread) {
+                                    console.log('thread loaded~')
+                                    loadImg(loadArr);
+                                }
+                            }
+                        }
+                    }
+
+                    function createAeBitmaps(layerName, start, end) {
+                        var layerMode = {
+                            'easel': function () {
+                                //渲染层初始化
+                                for (var i = start; i <= end; i++) {
+                                    var bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
+                                    $scope.aeBitmaps[layerName][i] = bitmap;
+                                }
+                            },
+                            'pixi': function () {
+                                //渲染层初始化
+                                for (var i = start; i <= end; i++) {
+                                    var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
+                                    $scope.aeBitmaps[layerName][i] = bitmap;
+                                }
+                            },
+                            'img': function () {
+                                //渲染层初始化
+                                for (var i = start; i <= end; i++) {
+                                    var bitmap = new Image();
+                                    bitmap.src = $scope.bitmaps[layerName][i];
+                                    $scope.aeBitmaps[layerName][i] = bitmap;
+                                }
+                            }
+                        }
+                        return layerMode[$scope.aeLayer[layerName].engine]();
+                    }
+                }
+
                 //ae层初始化
-                function createAeLayer(layerName, engine) {
+                function createAeLayer(layerName, engine, preload) {
                     var layerMode = {
                         'easel': function () {
-                            //渲染层初始化
-                            $scope.aeBitmaps[layerName] = [];
-                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
-                                var bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
-                                $scope.aeBitmaps[layerName].push(bitmap);
+                            //序列初始化
+                            if(preload){
+                                $scope.aeBitmaps[layerName] = [];
+                                for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                    var bitmap = new createjs.Bitmap($scope.bitmaps[layerName][i]);
+                                    $scope.aeBitmaps[layerName].push(bitmap);
+                                }
                             }
+                            //渲染层初始化
                             var aeLayer = new createjs.Container();
                             aeLayer.engine = 'easel';
                             return aeLayer;
                         },
                         'pixi': function () {
-                            //渲染层初始化
-                            $scope.aeBitmaps[layerName] = [];
-                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
-                                var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
-                                $scope.aeBitmaps[layerName].push(bitmap);
+                            //序列初始化
+                            if(preload){
+                                $scope.aeBitmaps[layerName] = [];
+                                for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                    var bitmap = new PIXI.Sprite.fromImage($scope.bitmaps[layerName][i]);
+                                    $scope.aeBitmaps[layerName].push(bitmap);
+                                }
                             }
+                            //渲染层初始化
                             var aeLayer = new PIXI.Container();
                             aeLayer.engine = 'pixi';
                             return aeLayer;
                         },
                         'img': function () {
-                            //渲染层初始化
-                            $scope.aeBitmaps[layerName] = [];
-                            for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
-                                var bitmap = new Image();
-                                bitmap.src = $scope.bitmaps[layerName][i]
-                                $scope.aeBitmaps[layerName].push(bitmap);
+                            ///序列初始化
+                            if(preload){
+                                $scope.aeBitmaps[layerName] = [];
+                                for (var i = 0; i < $scope.bitmaps[layerName].length; i++) {
+                                    var bitmap = new Image();
+                                    bitmap.src = $scope.bitmaps[layerName][i]
+                                    $scope.aeBitmaps[layerName].push(bitmap);
+                                }
                             }
                             //渲染层初始化
                             var aeLayer = new Image();
@@ -509,9 +582,10 @@
                             start = layerArg[2],
                             end = layerArg[3],
                             suffix = layerArg[4],
-                            bit = layerArg[5];
+                            bit = layerArg[5],
+                            preload = layerArg[6]===false ? false : true;
 
-                        $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit, engine);
+                        $scope.aeLayer[layerName] = SLeasy.addAeLayer(stage, layerName, addAt, prefix, start, end, suffix, bit, engine, preload);
 
                         var frame = end - start,
                             time = frame / (aeOpt.fps || 25);
