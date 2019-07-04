@@ -135,6 +135,7 @@
         function _load(loadArr) {
             var threadLoaded = 0;
             for (var i = 0; i < loadType; i++) {
+                if (!loadArr[loaded + i]) return;
                 var img = new Image();
                 img.src = loadArr[loaded + i];
                 console.log(':::::开始加载：' + img.src);
