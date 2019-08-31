@@ -262,10 +262,10 @@
             })
 
             //slider切换
-            preFXAguments = $config.sliders[$scope.sliderIndex].motionFX || null;
+            preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
             //自定义切换效果
-            preFX = customFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : {};
-            preMotionTime = $config.sliders[$scope.sliderIndex].motionTime || $config.sliders[$scope.sliderIndex].time;
+            preFX = preFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : FX;
+            preMotionTime = motionTime;
             T.set(currentSlider,$config.sliders[$scope.sliderIndex].set || {});
             T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
