@@ -1185,18 +1185,18 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $(this).one('durationchange', function () {
                     console.log($media.paused)
                     if ($media.paused) return;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
-                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
                     console.log($media.paused)
                     if ($media.paused) return;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
-                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1278,6 +1278,12 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         return SLeasy;
     }
 
+    //播放media
+    SLeasy.playMedia = function (mediaSelector, muted) {
+        SLeasy.media(mediaSelector).play();
+        SLeasy.media(mediaSelector).muted = muted ? true : false;
+    }
+
     //循环media
     SLeasy.loopMedia = function (mediaSelector, loop, offset, delay) {
         var $media = SLeasy.media(mediaSelector);
@@ -1310,6 +1316,60 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $media.currentTime = 0;
         $media.play();
         return SLeasy;
+    }
+
+    //复制文字功能函数
+    // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
+    //  copyText('h5实现一键复制到粘贴板 兼容ios')
+    /*兼容性补充：
+     移动端：
+     安卓手机：微信（chrome）和几个手机浏览器都可以用。
+     苹果手机：微信里面和sarafi浏览器里也都可以，
+     PC:sarafi版本必须在10.2以上，其他浏览器可以.
+     兼容性测试网站：https://www.caniuse.com/*/
+    SLeasy.copyText = function (text, msg) {
+        // 数字没有 .length 不能执行selectText 需要转化成字符串
+        var textString = text.toString();
+        var input = document.querySelector('#copy-input');
+        if (!input) {
+            input = document.createElement('input');
+            input.id = "copy-input";
+            input.readOnly = "readOnly";        // 防止ios聚焦触发键盘事件
+            input.style.position = "absolute";
+            input.style.left = "-1000px";
+            input.style.zIndex = "-1000";
+            // document.body.appendChild(input)
+            if (document.querySelector('#SLeasy')) {
+                var $SLeasy = document.querySelector('#SLeasy');
+                $SLeasy.appendChild(input);
+            } else {
+                document.body.appendChild(input);
+            }
+        }
+        input.value = textString;
+        // ios必须先选中文字且不支持 input.select();
+        selectText(input, 0, textString.length);
+        if (document.execCommand('copy')) {
+            document.execCommand('copy');
+            msg ? alert(msg) : alert('已复制到粘贴板');
+        } else {
+            console.log('该机型不兼容复制函数，请手动复制~');
+        }
+        input.blur();
+        // input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法
+        // 选择文本。createTextRange(setSelectionRange)是input方法
+        function selectText(textbox, startIndex, stopIndex) {
+            if (textbox.createTextRange) {//ie
+                var range = textbox.createTextRange();
+                range.collapse(true);
+                range.moveStart('character', startIndex);//起始光标
+                range.moveEnd('character', stopIndex - startIndex);//结束光标
+                range.select();//不兼容苹果
+            } else {//firefox/chrome
+                textbox.setSelectionRange(startIndex, stopIndex);
+                textbox.focus();
+            }
+        }
     }
 
     // 时间线控制,用于'时间轴模式'下
@@ -1626,7 +1686,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
 				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:fill;" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -1649,6 +1709,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 						style="border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
 						value="' + (typeof opt.value != "undefined" ? opt.value : "") + '"\
                         placeholder="' + (opt.placeholder || '') + '"\
+                        maxlength="' + (opt.maxlength || '') + '"\
                         >';
                     },
                     'textArea': function () {
@@ -3108,10 +3169,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             })
 
             //slider切换
-            preFXAguments = $config.sliders[$scope.sliderIndex].motionFX || null;
+            preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
             //自定义切换效果
-            preFX = customFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : {};
-            preMotionTime = $config.sliders[$scope.sliderIndex].motionTime || $config.sliders[$scope.sliderIndex].time;
+            preFX = preFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : FX;
+            preMotionTime = motionTime;
             T.set(currentSlider,$config.sliders[$scope.sliderIndex].set || {});
             T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);

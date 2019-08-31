@@ -1,6 +1,7 @@
 /*!
- SLeasy 3.8.18 by 宇文互动 庄宇 2019-07-03 email:30755405@qq.com
- 3.8.17(2019-07-03):新增SLeasy.loadAelayer()，按需加载~;
+ SLeasy 3.8.19 by 宇文互动 庄宇 2019-08-31 email:30755405@qq.com
+ 3.8.19(2019-08-31):新增SLeasy.copyText()函数，修正video元素controls属性，幻灯页新增preMotionFX选项~;
+ 3.8.18(2019-07-03):新增SLeasy.loadAelayer()，按需加载~;
  3.8.17(2019-07-02):调整资源加载顺序，ae序列帧资源放置最后;
  3.8.16(2019-05-29):增加支持指定n线程下载，进一步完善SLeasy.playAeLayer/show/hide()等系列函数;
  3.8.15(2019-04-17):初步集成webAudio/howler;
