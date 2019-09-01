@@ -1,6 +1,7 @@
 /*!
- SLeasy 3.8.18 by 宇文互动 庄宇 2019-07-03 email:30755405@qq.com
- 3.8.17(2019-07-03):新增SLeasy.loadAelayer()，按需加载~;
+ SLeasy 3.8.19 by 宇文互动 庄宇 2019-08-31 email:30755405@qq.com
+ 3.8.19(2019-08-31):新增SLeasy.copyText()函数，修正video元素controls属性，幻灯页新增preMotionFX选项~;
+ 3.8.18(2019-07-03):新增SLeasy.loadAelayer()，按需加载~;
  3.8.17(2019-07-02):调整资源加载顺序，ae序列帧资源放置最后;
  3.8.16(2019-05-29):增加支持指定n线程下载，进一步完善SLeasy.playAeLayer/show/hide()等系列函数;
  3.8.15(2019-04-17):初步集成webAudio/howler;
@@ -2791,47 +2792,80 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 ;
 (function (SLeasy) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
     //getFX 参数为方向和风格索引，默认方向为scope中的FXDirection,风格为config中的motionStyle
     SLeasy.getMotionFX = function (direction, style, reverse) {
         //内置动画式样数组
         var motionFX = {
             leftRight: [//左右
+                // 0
                 {
                     set: {},
                     in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 1
                 {
-                    set: {transformPerspective: 400, backfaceVisibility: 'hidden'},
+                    set: {
+                        transformPerspective: 400,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
                     in: {rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 2
                 {
                     set: {transformOrigin: '50% 120%'},
                     in: {rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 3
                 {
                     set: {
                         transformOrigin: '50% 50% -' + $config.width * $scope.viewScale / 2,
                         transformPerspective: 400,
                         backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden'
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {rotationY: 90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
-                    show: {rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
-                    out: {rotationY: -90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'}
+                    in: {
+                        rotationY: 90,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
+                    show: {
+                        rotationY: 0,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
+                    out: {
+                        rotationY: -90,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden',
+                    }
                 },
+                // 4
                 {
                     in: {autoAlpha: 0, ease: Linear.easeNone},
                     show: {autoAlpha: 1, ease: Linear.easeNone},
                     out: {autoAlpha: 0, ease: Linear.easeNone}
                 },
+                // 5
                 {
                     set: {},
                     in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
@@ -2840,40 +2874,73 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 },
             ],
             upDown: [//上下
+                // 0
                 {
                     set: {},
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {x: 0, y: -$scope.fixHeight, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 1
                 {
-                    set: {transformPerspective: 400, backfaceVisibility: 'hidden'},
+                    set: {
+                        transformPerspective: 400,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
                     in: {rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 2
                 {
                     set: {transformOrigin: '120% 50%'},
                     in: {rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
                     show: {rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
                     out: {rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
+                // 3
                 {
                     set: {
                         transformOrigin: '50% 50% -' + $scope.fixHeight / 2,
                         transformPerspective: 400,
                         backfaceVisibility: 'hidden',
-                        WebkitBackfaceVisibility: 'hidden'
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {rotationX: -90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
-                    show: {rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'},
-                    out: {rotationX: 90, autoAlpha: 1, ease: Expo.easeInOut, backfaceVisibility: 'hidden'}
+                    in: {
+                        rotationX: -90,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
+                    show: {
+                        rotationX: 0,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    },
+                    out: {
+                        rotationX: 90,
+                        autoAlpha: 1,
+                        ease: Expo.easeInOut,
+                        backfaceVisibility: 'hidden',
+                        WebkitBackfaceVisibility: 'hidden',
+                        webkitBackfaceVisibility: 'hidden'
+                    }
                 },
+                // 4
                 {
                     in: {autoAlpha: 0, ease: Linear.easeNone},
                     show: {autoAlpha: 1, ease: Linear.easeNone},
                     out: {autoAlpha: 0, ease: Linear.easeNone}
                 },
+                // 5
                 {
                     set: {},
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut},
@@ -2889,15 +2956,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var FXDirection = direction || $scope.FXDirection;
 
         //反向动效
-        if(reverse){
-            var fx={};
-            fx.set=motionFX[FXDirection][FXIndex].set;
-            fx.in=motionFX[FXDirection][FXIndex].out;
-            fx.show=motionFX[FXDirection][FXIndex].show;
-            fx.out=motionFX[FXDirection][FXIndex].in;
+        if (reverse) {
+            var fx = {};
+            fx.set = motionFX[FXDirection][FXIndex].set;
+            fx.in = motionFX[FXDirection][FXIndex].out;
+            fx.show = motionFX[FXDirection][FXIndex].show;
+            fx.out = motionFX[FXDirection][FXIndex].in;
             console.log(fx);
             return fx;
-        }else{
+        } else {
             return motionFX[FXDirection][FXIndex];
         }
 
