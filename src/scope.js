@@ -411,7 +411,10 @@
             if (!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
+                var videoReady = false;
                 $(this).one('durationchange', function () {
+                    if(videoReady) return;
+                    videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
                     $media.muted = false;
@@ -421,6 +424,8 @@
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
+                    if(videoReady) return;
+                    videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
                     $media.muted = false;
@@ -429,32 +434,20 @@
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
-                // $(this).on('loadstart', function () {
-                //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // });
-                // $(this).on('durationchange', function () {
-                //     console.warn('durationchange:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('loadeddata', function () {
-                //     console.warn('loadeddata:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('progress', function () {
-                //     console.warn('progress:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('canplay', function () {
-                //     console.warn('canplay:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('canplaythrough', function () {
-                //     console.warn('canplaythrough:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('playing', function () {
-                //     console.warn('playing:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
-                // $(this).on('timeupdate', function () {
-                //     console.warn('timeupdate:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
-                // })
             } else if (device.ios() && SLeasy.isHttp()) {
+                var videoReady = false;
                 $(this).one('canplaythrough', function () {
+                    if(videoReady) return;
+                    videoReady = true;
+                    $media.currentTime = 0;
+                    $media.pause();
+                    $media.muted = false;
+                    console.log('🎵：media paused~!');
+                    callback && callback($media);
+                });
+                $(this).one('playing', function () {
+                    if(videoReady) return;
+                    videoReady = true;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
@@ -470,6 +463,30 @@
                     callback && callback($media);
                 });
             }
+            // $(this).on('loadstart', function () {
+            //     console.warn('loadstart:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // });
+            // $(this).on('durationchange', function () {
+            //     console.warn('durationchange:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('loadeddata', function () {
+            //     console.warn('loadeddata:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('progress', function () {
+            //     console.warn('progress:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('canplay', function () {
+            //     console.warn('canplay:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('canplaythrough', function () {
+            //     console.warn('canplaythrough:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('playing', function () {
+            //     console.warn('playing:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
+            // $(this).on('timeupdate', function () {
+            //     console.warn('timeupdate:' + $media.currentTime + '/' + $media.duration + '::' + $media.readyState);
+            // })
         });
         return SLeasy;
     }
