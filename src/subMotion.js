@@ -115,7 +115,12 @@
                 subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
                 tl.add(T.to($(subMotion.el), time, subMotion.to), startTime);
             } else {
+                if (set.display && set.display == 'none') subShow.display = 'none';
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
+                // console.log(subMotion.class)
+                // console.dir(set)
+                // console.log(subIn)
+                // console.log(subShow)
             }
             // console.log($dom)
             // console.log('time:'+time)
