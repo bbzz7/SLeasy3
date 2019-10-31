@@ -31,7 +31,7 @@
         isDetailMotion: 0,//当前详情页子动画完成状态
 
         timeLine: null,//子动画时间线
-        fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY'],//需要修正的属性
+        fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
@@ -273,7 +273,7 @@
     SLeasy.addBitmaps = function (layerName, prefix, start, end, suffix, bit) {
         var picUrlArr = [];
         for (var i = start; i <= end; i++) {
-            var picUrl = SLeasy.path($config.host, (prefix + bitConvent(i, bit) + suffix));
+            var picUrl = SLeasy.path($config.host, (prefix + SLeasy.bitConvent(i, bit) + suffix));
             picUrlArr.push(picUrl);
         }
 
@@ -287,20 +287,20 @@
             $scope.bitmaps[layerName] = picUrlArr;
             return picUrlArr;
         }
+    }
 
-        function bitConvent(num, bit) {
-            var numBit = num.toString().length;
-            var bits = '', numString;
-            for (var n = 0; n < bit - numBit; n++) {//前置填充'0'
-                bits += '0';
-                numString = bits + num;
-            }
-            //console.log(numString)
-            if (numString) {
-                return numString;
-            } else {
-                return num.toString();
-            }
+    SLeasy.bitConvent = function (num, bit) {
+        var numBit = num.toString().length;
+        var bits = '', numString;
+        for (var n = 0; n < bit - numBit; n++) {//前置填充'0'
+            bits += '0';
+            numString = bits + num;
+        }
+        //console.log(numString)
+        if (numString) {
+            return numString;
+        } else {
+            return num.toString();
         }
     }
 
@@ -413,7 +413,7 @@
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 var videoReady = false;
                 $(this).one('durationchange', function () {
-                    if(videoReady) return;
+                    if (videoReady) return;
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
@@ -424,7 +424,7 @@
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
-                    if(videoReady) return;
+                    if (videoReady) return;
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
@@ -437,7 +437,7 @@
             } else if (device.ios() && SLeasy.isHttp()) {
                 var videoReady = false;
                 $(this).one('canplaythrough', function () {
-                    if(videoReady) return;
+                    if (videoReady) return;
                     videoReady = true;
                     $media.currentTime = 0;
                     $media.pause();
@@ -446,7 +446,7 @@
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
-                    if(videoReady) return;
+                    if (videoReady) return;
                     videoReady = true;
                     $media.currentTime = 0;
                     $media.pause();
