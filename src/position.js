@@ -54,7 +54,8 @@
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
-            'backgroundPositionY': true
+            'backgroundPositionY': true,
+            'letterSpacing': true
         }
         //console.log(transObj);
         for (var i = 0; i < $scope.fixPropsArr.length; i++) {
