@@ -29,8 +29,10 @@
             var indexType = {
                 "number": function () {
                     if (index >= 0 && index <= totalIndex) {//索引边界内
+                        $scope.isSliderEdge = false;
                         nextIndex = index;
                     } else {//索引边界外
+                        $scope.isSliderEdge = true;
                         if (index > totalIndex) {
                             nextIndex = totalIndex;
                         } else {
@@ -42,8 +44,10 @@
                     var _arr = index.split('=');
                     if (_arr[0] == '-') {
                         nextIndex = ($scope.sliderIndex - parseInt(_arr[1]) < 0) ? 0 : $scope.sliderIndex - parseInt(_arr[1]);
+                        $scope.isSliderEdge = ($scope.sliderIndex - parseInt(_arr[1]) < 0) ? true : false;
                     } else if (_arr[0] == '+') {
                         nextIndex = ($scope.sliderIndex + parseInt(_arr[1]) > totalIndex) ? totalIndex : $scope.sliderIndex + parseInt(_arr[1]);
+                        $scope.isSliderEdge = ($scope.sliderIndex + parseInt(_arr[1]) > totalIndex) ? true : false;
                     } else {
                         SLeasy.goSlider(0);
                         return console.warn('幻灯跳转索引值错误！');
@@ -195,9 +199,13 @@
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
-                //如果有自定义loading，第一页子元素起始时间为0，不等待页面切换时间
-                if($scope.sliderIndex==0 && !$.isEmptyObject($config.loading)) motionTime=0;
+                //如果有自定义loading，第一页幻灯子元素起始时间为0，不等待页面切换时间
+                if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading)) motionTime = 0;
+                //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
+                if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
+
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
+                console.warn($scope.isSliderEdge)
             },
             onComplete: function () {
                 if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
@@ -270,7 +278,7 @@
             //自定义切换效果
             preFX = preFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : FX;
             preMotionTime = motionTime;
-            T.set(currentSlider,$config.sliders[$scope.sliderIndex].set || {});
+            T.set(currentSlider, $config.sliders[$scope.sliderIndex].set || {});
             T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
         }
