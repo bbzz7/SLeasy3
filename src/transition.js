@@ -195,7 +195,8 @@
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
-                if($scope.sliderIndex==0) motionTime=0;//第一页情况
+                //如果有自定义loading，第一页子元素起始时间为0，不等待页面切换时间
+                if($scope.sliderIndex==0 && !$.isEmptyObject($config.loading)) motionTime=0;
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
             },
             onComplete: function () {
@@ -231,6 +232,9 @@
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
             FX = SLeasy.transitFX(nextIndex)//切换效果
         ;
+        console.log(nextIndex);
+        console.log(FX);
+
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
         if (title && title != $scope.title) {
