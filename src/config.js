@@ -37,8 +37,8 @@
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //audios-------------------------------------------
-        audios:[],//webAudio+Howler
-        audioType:'webAudio',
+        audios: {},//webAudio+Howler
+        audioType: 'webAudio',
 
         //slider------------------------------------------
         sliders: [], //幻灯json数组
@@ -59,7 +59,8 @@
             textStyle: 'font-size:12px;color:#fff', //字体式样
             endAt: 100,
             loadType: 'multi',
-            loadedTips: false
+            loadedTips: false,
+            show: true//是否显示默认loading
         },
 
         //其他----------------------------------------------
