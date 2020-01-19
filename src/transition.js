@@ -93,7 +93,7 @@
 
     }
 
-    SLeasy.transitFX = function (nextIndex) {
+    SLeasy.transitFX = function (nextIndex, isRouteSlider) {
         var _in,
             _out,
             _show,
@@ -107,7 +107,7 @@
 
 
         //自定义切换效果
-        customFXAguments = $config.sliders[nextIndex].motionFX || null;
+        customFXAguments = $config.sliders[nextIndex].motionFX || $config.sliders[nextIndex].fx || $config.sliders[nextIndex].FX || null;
         customFX = customFXAguments ? SLeasy.getMotionFX(customFXAguments[0], customFXAguments[1], customFXAguments[2]) : {};
 
 
@@ -203,6 +203,8 @@
                 if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading)) motionTime = 0;
                 //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
+                //如果是通过路由标识进来
+                if (isRouteSlider) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn($scope.isSliderEdge)
@@ -220,7 +222,6 @@
         _out = $.extend({force3D: $config.force3D}, _out);
         _show = $.extend({force3D: $config.force3D}, _show);
 
-
         return {
             in: _in,
             show: _show,
@@ -230,7 +231,7 @@
 
     }
 
-    SLeasy.transit = function (nextIndex) {
+    SLeasy.transit = function (nextIndex, isRouteSlider) {
         if ($scope.sliders.length == 0) return alert('当前没有任何幻灯json数据~!');
         if ($scope.isAnim) return;
         $scope.isAnim = 1;//重置运动状态
@@ -238,10 +239,7 @@
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex)//切换效果
-        ;
-        console.log(nextIndex);
-        console.log(FX);
+            FX = SLeasy.transitFX(nextIndex, isRouteSlider);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;

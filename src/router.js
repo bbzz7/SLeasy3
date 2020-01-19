@@ -1,7 +1,7 @@
 // SLeasy3-router
 ;(function (SLeasy, Router, $) {
     var $config = SLeasy.config(),
-        $scope  = SLeasy.scope();
+        $scope = SLeasy.scope();
 
     //router
     SLeasy.router = function (opt) {
@@ -25,14 +25,14 @@
                     console.log('当前详情页索引：' + detailIndex);
                     var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
                     _index = SLeasy.nextIndex(_index);
-                    SLeasy.transit(_index);
+                    SLeasy.transit(_index, true);
                     console.log(_index + '------------------------------------------------------');
                     SLeasy.closeDetailTransit($scope.detailIndex);
 
                 } else {
                     console.log('当前幻灯索引：' + sliderIndex);
                     console.log('当前详情页索引：' + detailIndex);
-                    if (typeof detailIndex == 'undefined' || detailIndex==='') $scope.router.setRoute(1, 'html');//设置路由
+                    if (typeof detailIndex == 'undefined' || detailIndex === '') $scope.router.setRoute(1, 'html');//设置路由
 
 
                     //如果子动画状态为未完成，则执行幻灯切换+子动画（刷新的情况）
@@ -53,7 +53,7 @@
             on: function () {
                 console.log('router action~~~');
             },
-            notfound:function () {
+            notfound: function () {
                 console.log('no router match~~~');
                 SLeasy.goSlider(0);
             }
