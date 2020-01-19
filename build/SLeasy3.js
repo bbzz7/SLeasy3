@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.21 by 宇文互动 庄宇 2020-01-16 email:30755405@qq.com
+ SLeasy 3.8.22 by 宇文互动 庄宇 2020-01-19 email:30755405@qq.com
+ 3.8.22(2020-01-19):更新、添加、修复了一些……;
  3.8.21(2020-01-16):更新幻灯子元素起始时间为0的场景及边界判断，不等待页面切换时间;
  3.8.20(2019-10-31):新增letter-spacing属性缩放变换;单独提取SLeasy.bitConvent()函数;
  3.8.19(2019-08-31):新增SLeasy.copyText()函数，修正video元素controls属性，幻灯页新增preMotionFX选项~;
@@ -4068,9 +4069,10 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //show
-    SLeasy.loader.show = function (msg) {
+    SLeasy.loader.show = function (msg, overLayBg) {
         if ($("#SLeasy_loader").length) { //如果loader已初始化
             msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
+            overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg})
             $("#SLeasy_loader").fadeIn(300);
         } else {
             var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
