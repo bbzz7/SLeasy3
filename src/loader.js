@@ -12,7 +12,7 @@
         var loaderColor = $config.loader.color;
         var loaderBg = $config.loader.bg;
         var loaderStyle = [
-            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: relative">\
+            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: relative">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
                     <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
@@ -31,7 +31,7 @@
 
             //==================================================================================
 
-            '<svg width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
+            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
                 <defs>\
                 <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
                     <stop stop-color="' + loaderColor + '" stop-opacity="0" offset="0%"/>\
@@ -66,7 +66,8 @@
             //==================================================================================
         ];
 
-        var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;' +
+        var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;overflow:hidden' +
+            'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
             'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
             'margin-top:' + -$config.loader.size[1] / 2 + 'px';
 
@@ -154,7 +155,7 @@
                     // dfd.notify(SLeasy.loader.percent);
                     if (SLeasy.loader.percent >= 100) {
                         console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
-                        if ($scope.loadingReady) {
+                        if ($scope.loadingReady || (!hasCustomLoading)) {
                             $config.on['loaded'](); //预加载完毕回调
                         } else {
                             //自定义loading自身加载完毕回调
@@ -190,7 +191,7 @@
                             // dfd.notify(SLeasy.loader.percent);
                             if (SLeasy.loader.percent >= 100) {
                                 console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
-                                if ($scope.loadingReady) {
+                                if ($scope.loadingReady || (!hasCustomLoading)) {
                                     $config.on['loaded'](); //预加载完毕回调
                                 } else {
                                     //自定义loading自身加载完毕回调
