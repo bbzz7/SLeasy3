@@ -56,7 +56,7 @@
             });
         });
         //svg
-        $dom.find('svg').each(function (index, element) {
+        $dom.find('svg').not('.SLeasy_loadingSVG').each(function (index, element) {
             var w = parseFloat($(this).attr('width')) || parseFloat($(this).width()),
                 h = parseFloat($(this).attr('height')) || parseFloat($(this).height());
             $(this).attr({
