@@ -102,9 +102,10 @@
     }
 
     //show
-    SLeasy.loader.show = function (msg) {
+    SLeasy.loader.show = function (msg, overLayBg) {
         if ($("#SLeasy_loader").length) { //如果loader已初始化
             msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
+            overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg})
             $("#SLeasy_loader").fadeIn(300);
         } else {
             var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
