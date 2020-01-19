@@ -1,4 +1,4 @@
-//jssdk for wechat 1.0.0 by 庄宇 2015-01-25 email:30755405
+//jssdk for wechat 1.0.1 by 庄宇 2020-01-18 email:30755405
 ;(function (jssdk, $) {
 
     //check weChat
@@ -37,7 +37,6 @@
         }
         return dfd.promise();
     };
-
 
     //接口检测
     jssdk.check = function () {
@@ -90,7 +89,6 @@
             }
         });
     };
-
 
     //分享
     jssdk.share = function (opt) {
@@ -196,7 +194,6 @@
         return dfd.promise();
     };
 
-
     //上传图片
     jssdk._uploadImage = function (opt) {
         var dfd = $.Deferred();
@@ -214,7 +211,6 @@
         return dfd.promise();
     };
 
-
     //上传单张图片,并下载到本地服务器
     jssdk.uploadImage = function (opt) {
         var $config = {
@@ -226,7 +222,6 @@
             return $.get($config.apiUrl, {mediaId: serverId}, '', 'jsonp');
         })
     };
-
 
     //隐藏复制链接、用浏览器打开、阅读模式、邮件等菜单
     jssdk.hide = function (itemArr) {
@@ -258,7 +253,7 @@
     jssdk.startRecord=wx.startRecord;
 
     //停止录音
-    jssdk.stopRecord=function (translate) {
+    jssdk.stopRecord=function (translate,uploadVoice) {
         var dfd = $.Deferred();
         wx.stopRecord({
             success: function (res) {
@@ -269,6 +264,15 @@
                         isShowProgressTips: 1, // 默认为1，显示进度提示
                         success: function (res) {
                             dfd.resolve(res.translateResult); // 语音识别的结果
+                        }
+                    });
+                }else if(uploadVoice){
+                    wx.uploadVoice({
+                        localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+                        isShowProgressTips: 1, // 默认为1，显示进度提示
+                        success: function (res) {
+                            var serverId = res.serverId; // 返回音频的服务器端ID
+                            dfd.resolve(serverId);
                         }
                     });
                 }else{
@@ -300,6 +304,20 @@
         });
     }
 
+    //上传语音
+    jssdk.uploadVoice=function(localId,showProgress){
+        var dfd = $.Deferred();
+        wx.uploadVoice({
+            localId: localId, // 需要上传的音频的本地ID，由stopRecord接口获得
+            isShowProgressTips: (typeof showProgress == 'undefined') ? 1 : showProgress, // 默认为1，显示进度提示
+            success: function (res) {
+                var serverId = res.serverId; // 返回音频的服务器端ID
+                dfd.resolve(serverId);
+            }
+        });
+        return dfd.promise();
+    }
+
     //录音自动停止事件
     jssdk.onVoiceRecordEnd=function () {
         var dfd = $.Deferred();
@@ -324,9 +342,6 @@
         });
         return dfd.promise();
     }
-
-
-
 //
 })(window.jssdk = window.jssdk || {}, jQuery);
 
