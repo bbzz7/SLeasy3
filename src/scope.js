@@ -524,12 +524,6 @@
         return SLeasy;
     }
 
-    //播放media
-    SLeasy.playMedia = function (mediaSelector, muted) {
-        SLeasy.media(mediaSelector).play();
-        SLeasy.media(mediaSelector).muted = muted ? true : false;
-    }
-
     //循环media
     SLeasy.loopMedia = function (mediaSelector, loop, offset, delay) {
         var $media = SLeasy.media(mediaSelector);
@@ -560,8 +554,22 @@
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
-        $media.play();
-        return SLeasy;
+        return $media.play();
+    }
+
+    //安卓微信同层全屏resize
+    SLeasy.resize = function (callback) {
+        var oldWidth = window.innerWidth;
+        var oldHeight = window.innerHeight;
+        window.onresize = function () {
+            $('#SLeasy,.SLeasy_sliders').css({
+                width: window.innerWidth + 'px',
+                height: window.innerHeight + 'px'
+            });
+            var offsetX = (window.innerWidth - oldWidth) / 2;
+            var offsetY = (window.innerHeight - oldHeight) / 2;
+            callback(offsetX, offsetY);
+        }
     }
 
     //复制文字功能函数
