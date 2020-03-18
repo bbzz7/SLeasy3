@@ -1300,12 +1300,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         return SLeasy;
     }
 
-    //播放media
-    SLeasy.playMedia = function (mediaSelector, muted) {
-        SLeasy.media(mediaSelector).play();
-        SLeasy.media(mediaSelector).muted = muted ? true : false;
-    }
-
     //循环media
     SLeasy.loopMedia = function (mediaSelector, loop, offset, delay) {
         var $media = SLeasy.media(mediaSelector);
@@ -1336,8 +1330,22 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
-        $media.play();
-        return SLeasy;
+        return $media.play();
+    }
+
+    //安卓微信同层全屏resize
+    SLeasy.resize = function (callback) {
+        var oldWidth = window.innerWidth;
+        var oldHeight = window.innerHeight;
+        window.onresize = function () {
+            $('#SLeasy,.SLeasy_sliders').css({
+                width: window.innerWidth + 'px',
+                height: window.innerHeight + 'px'
+            });
+            var offsetX = (window.innerWidth - oldWidth) / 2;
+            var offsetY = (window.innerHeight - oldHeight) / 2;
+            callback(offsetX, offsetY);
+        }
     }
 
     //复制文字功能函数
@@ -1707,8 +1715,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:fill;" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:'+(opt.fit || 'cover')+';" \
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -2377,7 +2385,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
                             }
                             if ($sprite.loop) loop();
-                        }, delay * 1000);
+                        }, (delay || 1) * 1000);
                     }
 
                     return SLeasy;
@@ -3269,6 +3277,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //如果上下页是同一页，则只执行to动画及子动画
             // $(currentSlider).fadeIn(300);
             // T.to(currentSlider, motionTime, FX.show);
+            console.log(FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
         } else {
             //清除所有ae渲染层tween
