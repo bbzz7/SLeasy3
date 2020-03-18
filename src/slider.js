@@ -148,8 +148,8 @@
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:fill;" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:'+(opt.fit || 'cover')+';" \
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -818,7 +818,7 @@
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
                             }
                             if ($sprite.loop) loop();
-                        }, delay * 1000);
+                        }, (delay || 1) * 1000);
                     }
 
                     return SLeasy;
