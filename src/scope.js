@@ -407,8 +407,8 @@
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            // if (muted) $media.muted = true;
-            if (!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
+            $media.muted = muted || false;
+            if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 var videoReady = false;
@@ -420,6 +420,7 @@
                     $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -431,6 +432,7 @@
                     $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -439,6 +441,7 @@
                 $(this).one('canplaythrough', function () {
                     if (videoReady) return;
                     videoReady = true;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
@@ -448,6 +451,7 @@
                 $(this).one('playing', function () {
                     if (videoReady) return;
                     videoReady = true;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
@@ -456,6 +460,7 @@
                 });
             } else {
                 $(this).one('playing', function () {
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;

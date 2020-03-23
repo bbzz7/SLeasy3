@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.22 by 宇文互动 庄宇 2020-01-19 email:30755405@qq.com
+ SLeasy 3.8.23 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
+ 3.8.23(2020-03-18):添加SLeasy.resize()自适应x5同层模式，更新video元素object-fit默认为cover;
  3.8.22(2020-01-19):更新、添加、修复了一些……;
  3.8.21(2020-01-16):更新幻灯子元素起始时间为0的场景及边界判断，不等待页面切换时间;
  3.8.20(2019-10-31):新增letter-spacing属性缩放变换;单独提取SLeasy.bitConvent()函数;
@@ -1183,8 +1184,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            // if (muted) $media.muted = true;
-            if (!(device.ios() && SLeasy.isWeibo())) $media.muted = true;//微博静音bug
+            $media.muted = muted || false;
+            if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
                 var videoReady = false;
@@ -3277,7 +3278,6 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //如果上下页是同一页，则只执行to动画及子动画
             // $(currentSlider).fadeIn(300);
             // T.to(currentSlider, motionTime, FX.show);
-            console.log(FX.show);
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
         } else {
             //清除所有ae渲染层tween
