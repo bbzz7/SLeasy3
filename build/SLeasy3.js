@@ -1197,6 +1197,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1208,6 +1209,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1216,6 +1218,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $(this).one('canplaythrough', function () {
                     if (videoReady) return;
                     videoReady = true;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
@@ -1225,6 +1228,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 $(this).one('playing', function () {
                     if (videoReady) return;
                     videoReady = true;
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
@@ -1233,6 +1237,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 });
             } else {
                 $(this).one('playing', function () {
+                    $media.muted = false;
                     $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
