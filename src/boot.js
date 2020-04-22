@@ -96,7 +96,7 @@
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
                 //console.log($scope.pluginList[j]);
-                if($scope.pluginList[j][$scope.pluginList[j].length-1]=='loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
+                if ($scope.pluginList[j][$scope.pluginList[j].length - 1] == 'loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
                 var SLeasyPlugin = $scope.pluginList[j][0],
                     //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
                     pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
@@ -122,9 +122,60 @@
             SLeasy.router();//路由初始化
 
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0),{autoAlpha:0});
+            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
             !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
             $scope.initReady = true;
+
+            //scrollMagic -----------------------------------------------------------------------------
+            if ($config.scrollMagicMode) {
+                for (var i = 0; i < $config.sliders.length; i++) {
+                    if (i == 0) continue;
+                    var sl = $config.sliders[i];
+                    for (var j = 0; j < sl.subMotion.length; j++) {
+                        var sub = sl.subMotion[j];
+                        var el = $('#SLeasy_subMotion_' + sub.index);
+                        TweenMax.set(el, sub.set);
+                        console.log(sub.set);
+                    }
+                }
+
+            }
+            SLeasy.touchScroll(true, false);
+            //
+            var ctrl = new ScrollMagic.Controller();
+            // Create scenes in jQuery each() loop
+            $(".SLeasy_sliders").each(function (i) {
+                if (i == 0) return;
+                console.log('magic~~')
+                var tl = new TimelineMax();
+                $.each($config.sliders[i].subMotion, function (index, sub) {
+                    var tween;
+                    var el = $('#SLeasy_subMotion_' + sub.index);
+                    var preSub = index != 0 ? $config.sliders[i].subMotion[index - 1] : null;
+                    if (sub.from) tween = TweenMax.from(el, sub.time, SLeasy.fixProps(sub.from));
+                    if (sub.fromTo) tween = TweenMax.fromTo(el, sub.time, SLeasy.fixProps(sub.fromTo));
+                    var timePosition = '-=' + (preSub && sub.start ? (preSub.time - sub.start > 0 ? preSub.time - sub.start : preSub.time) : 0);
+                    // console.log($config.sliders[i].subMotion[index-1]);
+                    tween && tl.add(tween, timePosition);
+                })
+                var SM = new ScrollMagic.Scene({
+                    triggerElement: this,
+                    triggerHook: $config.sliders[i].triggerHook || 0.3,
+                    reverse: $config.sliders[i].reverse || false
+                })
+                    .setTween(tl)
+                    .addTo(ctrl);
+
+                if ($config.debugMode) {
+                    SM.addIndicators({
+                        colorTrigger: "white",
+                        colorStart: "white",
+                        colorEnd: "white",
+                        indent: 0
+                    })
+                }
+            });
+            //------------------------------------------------------------------------------------------
         }
     }
 })(

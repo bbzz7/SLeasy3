@@ -39,12 +39,15 @@
                 SLeasy.fixProps(subSet);
                 SLeasy.fixProps(subTo);
 
-                //根据幻灯对齐方式参数，进行y轴自适应修正
-                var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
-                if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
-                if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
-                if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
-                if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                //scrollMagic模式下除首屏外，其他不修正
+                if (!$config.scrollMagicMode || i == 0) {
+                    //根据幻灯对齐方式参数，进行y轴自适应修正
+                    var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
+                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
+                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
+                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
+                    if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                }
             }
         }
     }

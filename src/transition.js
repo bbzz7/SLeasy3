@@ -161,7 +161,7 @@
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
                 //如果下一页是scroll模式
-                if ($config.sliders[nextIndex].scroll) {
+                if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
                     SLeasy.touchScroll(true, false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
@@ -205,6 +205,8 @@
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来
                 if (isRouteSlider) motionTime = 0;
+                //scrollMagic
+                if($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn($scope.isSliderEdge)

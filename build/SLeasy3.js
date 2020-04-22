@@ -657,7 +657,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     //config
     var $config = { //默认配置
         //SLeasy------------------------------------------
-        id: '',//幻灯容器id
+        id: 'SLeasy',//幻灯容器id
         bg: '',//幻灯容器背景图片
         bgColor: '',//幻灯容器背景颜色
         host: 'images/',//资源目录url
@@ -677,10 +677,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         preload: true,//是否对素材预加载
         autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
-        debugMode: window.location.href.indexOf('http') == 0 ? 0 : 1,//默认仅当本地环境开启debug模式
+        debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         positionMode: 'absolute',//舞台子元素position模式
+        scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
         //music-------------------------------------------
         musicUrl: '',//背景音乐url
@@ -1143,6 +1144,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 return (typeof item == 'string' ? $(item) : item);
             });
         }
+        TweenMax.killTweensOf(el);
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
@@ -1417,6 +1419,25 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         return timelineName ? $scope[timelineName] : $scope.timeline;
     }
 
+    //scrollMagic模式
+    SLeasy.unfold = function (duration, height) {
+        if (!window.ScrollMagic) return alert('请确认是否开启ScrollMagic模式~')
+        var h = 0;
+        for (i = 0; i < $config.sliders.length; i++) {
+            console.log($config.sliders[i].height);
+            if (!$config.sliders[i].height) {
+                h += $scope.fixHeight;
+            } else {
+                h += $config.sliders[i].height * $scope.viewScale;
+            }
+        }
+        var firstSlider = $('.SLeasy_sliders').eq(0);
+        var secondSlider = $('.SLeasy_sliders').eq(2);
+        TweenMax.set(firstSlider, {height: $config.height * $scope.viewScale + $scope.yOffset.center});
+        TweenMax.set('#' + $config.id, {height: height - $scope.yOffset.center || h - $scope.yOffset.center});
+        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150});
+    }
+
     //shadown button
     SLeasy.shadownBt = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OTQ2MEFENzAxNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OTQ2MEFENzExNzEzMTFFNUFGRkJFN0NENjYxNTY2QkUiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo5NDYwQUQ2RTE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo5NDYwQUQ2RjE3MTMxMUU1QUZGQkU3Q0Q2NjE1NjZCRSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pg+JIfMAAAAQSURBVHjaYvj//z8DQIABAAj8Av7bok0WAAAAAElFTkSuQmCC'
 
@@ -1578,6 +1599,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     //html
     SLeasy.slider = function (opt) {
+        console.log(opt)
 
         //背景对齐策略
         var bgAlign = {
@@ -1597,14 +1619,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
 			width:' + $config.viewport + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
+			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\
-			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
+			background-position:' + ($config.scrollMagicMode && opt.index!=0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			position:absolute; display:' + (opt.display || 'none') + ';\
+			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
+			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
 			-webkit-overflow-scrolling:touch;\
 			">';
 
@@ -1638,6 +1661,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             "floats": 'floatElement',
             "loading": 'loadingElement'
         }
+
+        //scrollMagic
+        if(sliderIndex!=0 && $config.scrollMagicMode) display='block';
 
         //不同类型子动画元素生成策略
         var subElement = {
@@ -1721,7 +1747,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:'+(opt.fit || 'cover')+';" \
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
 				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },
@@ -2588,12 +2614,15 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 SLeasy.fixProps(subSet);
                 SLeasy.fixProps(subTo);
 
-                //根据幻灯对齐方式参数，进行y轴自适应修正
-                var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
-                if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
-                if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
-                if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
-                if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                //scrollMagic模式下除首屏外，其他不修正
+                if (!$config.scrollMagicMode || i == 0) {
+                    //根据幻灯对齐方式参数，进行y轴自适应修正
+                    var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
+                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
+                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
+                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
+                    if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                }
             }
         }
     }
@@ -3180,7 +3209,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
 
                 //如果下一页是scroll模式
-                if ($config.sliders[nextIndex].scroll) {
+                if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
                     SLeasy.touchScroll(true, false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
@@ -3224,6 +3253,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来
                 if (isRouteSlider) motionTime = 0;
+                //scrollMagic
+                if($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn($scope.isSliderEdge)
@@ -3944,7 +3975,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
                 //console.log($scope.pluginList[j]);
-                if($scope.pluginList[j][$scope.pluginList[j].length-1]=='loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
+                if ($scope.pluginList[j][$scope.pluginList[j].length - 1] == 'loadingPlugin') continue;//剔除自定义loading已经初始化过的插件
                 var SLeasyPlugin = $scope.pluginList[j][0],
                     //把初始化时注入的挂载点id转换成挂载点dom,合并入plugin参数
                     pluginArg = $.extend($scope.pluginList[j][1], {dom: $('#' + $scope.pluginList[j][1].node)}),
@@ -3970,9 +4001,60 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.router();//路由初始化
 
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0),{autoAlpha:0});
+            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
             !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
             $scope.initReady = true;
+
+            //scrollMagic -----------------------------------------------------------------------------
+            if ($config.scrollMagicMode) {
+                for (var i = 0; i < $config.sliders.length; i++) {
+                    if (i == 0) continue;
+                    var sl = $config.sliders[i];
+                    for (var j = 0; j < sl.subMotion.length; j++) {
+                        var sub = sl.subMotion[j];
+                        var el = $('#SLeasy_subMotion_' + sub.index);
+                        TweenMax.set(el, sub.set);
+                        console.log(sub.set);
+                    }
+                }
+
+            }
+            SLeasy.touchScroll(true, false);
+            //
+            var ctrl = new ScrollMagic.Controller();
+            // Create scenes in jQuery each() loop
+            $(".SLeasy_sliders").each(function (i) {
+                if (i == 0) return;
+                console.log('magic~~')
+                var tl = new TimelineMax();
+                $.each($config.sliders[i].subMotion, function (index, sub) {
+                    var tween;
+                    var el = $('#SLeasy_subMotion_' + sub.index);
+                    var preSub = index != 0 ? $config.sliders[i].subMotion[index - 1] : null;
+                    if (sub.from) tween = TweenMax.from(el, sub.time, SLeasy.fixProps(sub.from));
+                    if (sub.fromTo) tween = TweenMax.fromTo(el, sub.time, SLeasy.fixProps(sub.fromTo));
+                    var timePosition = '-=' + (preSub && sub.start ? (preSub.time - sub.start > 0 ? preSub.time - sub.start : preSub.time) : 0);
+                    // console.log($config.sliders[i].subMotion[index-1]);
+                    tween && tl.add(tween, timePosition);
+                })
+                var SM = new ScrollMagic.Scene({
+                    triggerElement: this,
+                    triggerHook: $config.sliders[i].triggerHook || 0.3,
+                    reverse: $config.sliders[i].reverse || false
+                })
+                    .setTween(tl)
+                    .addTo(ctrl);
+
+                if ($config.debugMode) {
+                    SM.addIndicators({
+                        colorTrigger: "white",
+                        colorStart: "white",
+                        colorEnd: "white",
+                        indent: 0
+                    })
+                }
+            });
+            //------------------------------------------------------------------------------------------
         }
     }
 })(
@@ -4287,6 +4369,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             var $defaultStyle = $('head style').eq(0);
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
+
         if (!$config.debugMode) {
             console.log = function () {
             };//设置console.log输出
@@ -4310,7 +4393,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",
             "background-repeat": "no-repeat",
-            "background-position": "center",
+            "background-position": $config.scrollMagicMode ? "top center" : "center center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",

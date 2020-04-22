@@ -5,6 +5,7 @@
 
     //html
     SLeasy.slider = function (opt) {
+        console.log(opt)
 
         //背景对齐策略
         var bgAlign = {
@@ -24,14 +25,15 @@
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
 			width:' + $config.viewport + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? $scope.fixHeight : '') + 'px;\
+			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\
-			background-position:' + bgAlign[(opt.alignMode || $config.alignMode)] + ';\
+			background-position:' + ($config.scrollMagicMode && opt.index!=0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			position:absolute; display:' + (opt.display || 'none') + ';\
+			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
+			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
 			-webkit-overflow-scrolling:touch;\
 			">';
 
@@ -65,6 +67,9 @@
             "floats": 'floatElement',
             "loading": 'loadingElement'
         }
+
+        //scrollMagic
+        if(sliderIndex!=0 && $config.scrollMagicMode) display='block';
 
         //不同类型子动画元素生成策略
         var subElement = {
@@ -148,7 +153,7 @@
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:'+(opt.fit || 'cover')+';" \
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
 				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5" x5-video-player-fullscreen="true" x5-video-orientation="landscape|portrait"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto') + '">\
 				</video></div>';
             },

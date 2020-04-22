@@ -366,6 +366,7 @@
                 return (typeof item == 'string' ? $(item) : item);
             });
         }
+        TweenMax.killTweensOf(el);
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
@@ -638,6 +639,25 @@
 
     SLeasy.timeline = function (timelineName) {
         return timelineName ? $scope[timelineName] : $scope.timeline;
+    }
+
+    //scrollMagic模式
+    SLeasy.unfold = function (duration, height) {
+        if (!window.ScrollMagic) return alert('请确认是否开启ScrollMagic模式~')
+        var h = 0;
+        for (i = 0; i < $config.sliders.length; i++) {
+            console.log($config.sliders[i].height);
+            if (!$config.sliders[i].height) {
+                h += $scope.fixHeight;
+            } else {
+                h += $config.sliders[i].height * $scope.viewScale;
+            }
+        }
+        var firstSlider = $('.SLeasy_sliders').eq(0);
+        var secondSlider = $('.SLeasy_sliders').eq(2);
+        TweenMax.set(firstSlider, {height: $config.height * $scope.viewScale + $scope.yOffset.center});
+        TweenMax.set('#' + $config.id, {height: height - $scope.yOffset.center || h - $scope.yOffset.center});
+        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150});
     }
 
     //shadown button

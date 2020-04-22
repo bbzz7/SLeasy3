@@ -4,7 +4,7 @@
     //config
     var $config = { //默认配置
         //SLeasy------------------------------------------
-        id: '',//幻灯容器id
+        id: 'SLeasy',//幻灯容器id
         bg: '',//幻灯容器背景图片
         bgColor: '',//幻灯容器背景颜色
         host: 'images/',//资源目录url
@@ -24,10 +24,11 @@
         preload: true,//是否对素材预加载
         autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
-        debugMode: window.location.href.indexOf('http') == 0 ? 0 : 1,//默认仅当本地环境开启debug模式
+        debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         positionMode: 'absolute',//舞台子元素position模式
+        scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
         //music-------------------------------------------
         musicUrl: '',//背景音乐url

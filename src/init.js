@@ -16,6 +16,7 @@
             var $defaultStyle = $('head style').eq(0);
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
+
         if (!$config.debugMode) {
             console.log = function () {
             };//设置console.log输出
@@ -39,7 +40,7 @@
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",
             "background-repeat": "no-repeat",
-            "background-position": "center",
+            "background-position": $config.scrollMagicMode ? "top center" : "center center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
             "margin": "0 auto",

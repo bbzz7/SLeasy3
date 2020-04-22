@@ -1,4 +1,4 @@
-var SLeasyPath = './',
+var SLeasyPath = '../@GitHub/SLeasy3/',
     LocalPath = './',
     gulp = require('gulp'),
     $ = {};
@@ -14,6 +14,7 @@ $.tinypng = require(SLeasyPath + 'node_modules/gulp-tinypng');
 gulp.task('build', function () {
     return gulp.src([
         'src/version.js',
+        'lib/audio/howler.min.js',
         'lib/GSAP/Club.min.js',
         'lib/Hammer.js',
         'lib/director.js',
@@ -56,19 +57,19 @@ gulp.task('build', function () {
 })
 
 gulp.task('SLeasy-publish', function () {
-    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/audio/*', 'lib*/physics/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
+    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/audio/*', 'lib*/physics/*', 'lib*/scrollmagic/*','lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
         return SLeasyPath + item;
     }))
         .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
 });
 
-gulp.task('clean', function () {
+gulp.task('clean', function (done) {
     return $.del([LocalPath + '@publish/index.html']);
 });
 
 gulp.task('replace', function () {
     var origin = /<!--SLeasy3-->\n(.*\n)*<!--SLeasy3 end-->/,
-        replace = '<script src="SLeasy3/build/SLeasy3.min.js" charset="utf-8"></script>';
+        replace = '<script src="SLeasy3/build/SLeasy3.min.js?' + ((new Date).getTime()) + '" charset="utf-8"></script>';
 
     var oldTime = /<!--timeStamp-->/,
         newTime = '<script>window.SLeasyTimeStamp=' + (new Date).getTime() + '</script>';
@@ -135,4 +136,5 @@ gulp.task('endReport', function (done) {
 });
 
 gulp.task('js-build', gulp.series('js-min', 'js-publish'));
+//gulp.task('js-build', gulp.series('js-publish'));
 gulp.task('publish', gulp.series('clean', 'replace', 'img-publish', 'font-publish', 'build', 'SLeasy-publish', 'js-build', 'endReport'));
