@@ -1,7 +1,6 @@
 // SLeasy3-scope
 ;(function (SLeasy, $) {
     var $config = SLeasy.config();
-
     //scope
     var $scope = {//全域变量
         title: $config.title,//当前title

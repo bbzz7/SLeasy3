@@ -7,7 +7,7 @@
     SLeasy.viewport = function (sliderBoxHeight) {
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
-        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        $("head").append('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
         //适配策略
         var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
@@ -48,6 +48,7 @@
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         $("#SLeasy_viewport").attr('content', _content);
+
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
         SLeasy.onResize = function (oMode) {
             $config.reloadMode && window.location.reload();
@@ -68,9 +69,12 @@
         }
         //}
 
+
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
-        $scope.fixHeight = iosInnerHeight() > sliderBoxHeight ? sliderBoxHeight : iosInnerHeight() + 1;
+        var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
+        $('#SLeasy_fixHeight').remove();
+        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight + 1;
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
