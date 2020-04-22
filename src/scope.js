@@ -657,7 +657,7 @@
         var secondSlider = $('.SLeasy_sliders').eq(2);
         TweenMax.set(firstSlider, {height: $config.height * $scope.viewScale + $scope.yOffset.center});
         TweenMax.set('#' + $config.id, {height: height - $scope.yOffset.center || h - $scope.yOffset.center});
-        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150});
+        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150, delay: 0.15});
     }
 
     //shadown button

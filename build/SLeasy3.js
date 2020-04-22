@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.8.23 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
+ SLeasy 3.9.0 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
+ 3.9.0(2020-04-22):更新添加ScrollMagic模式;
  3.8.23(2020-03-18):添加SLeasy.resize()自适应x5同层模式，更新video元素object-fit默认为cover;
  3.8.22(2020-01-19):更新、添加、修复了一些……;
  3.8.21(2020-01-16):更新幻灯子元素起始时间为0的场景及边界判断，不等待页面切换时间;
@@ -340,6 +341,90 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 	};
 
 }));
+
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iosInnerHeight = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+/**
+ * @module ios-inner-height
+ *
+ * @description Get proper window.innerHeight from iOS devices,
+ * excluding URL control and menu bar.
+ *
+ * @return {function} Callable function to retrieve the
+ * cached `window.innerHeight` measurement, specific to the
+ * device's current orientation.
+ */
+module.exports = (function () {
+	// Avoid errors when globals are undefined (CI, etc)
+	// https://github.com/tylerjpeterson/ios-inner-height/pull/7
+	if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+		return function () {
+			return 0;
+		};
+	}
+
+	// Non-iOS browsers return window.innerHeight per usual.
+	// No caching here since browsers can be resized, and setting
+	// up resize-triggered cache invalidation is not in scope.
+	/* istanbul ignore if  */
+	if (!navigator.userAgent.match(/iphone|ipod|ipad/i)) {
+		/**
+		 * Avoids conditional logic in the implementation
+		 * @return {number} - window's innerHeight measurement in pixels
+		 */
+		return function () {
+			return window.innerHeight;
+		};
+	}
+
+	// Store initial orientation
+	var axis = Math.abs(window.orientation);
+	// And hoist cached dimensions
+	var dims = {w: 0, h: 0};
+
+	/**
+	 * Creates an element with a height of 100vh since iOS accurately
+	 * reports vp height (but not window.innerHeight). Then destroy it.
+	 */
+	var createRuler = function () {
+		var ruler = document.createElement('div');
+
+		ruler.style.position = 'fixed';
+		ruler.style.height = '100vh';
+		ruler.style.width = 0;
+		ruler.style.top = 0;
+
+		document.documentElement.appendChild(ruler);
+
+		// Set cache conscientious of device orientation
+		dims.w = axis === 90 ? ruler.offsetHeight : window.innerWidth;
+		dims.h = axis === 90 ? window.innerWidth : ruler.offsetHeight;
+
+		// Clean up after ourselves
+		document.documentElement.removeChild(ruler);
+		ruler = null;
+	};
+
+	// Measure once
+	createRuler();
+
+	/**
+	 * Returns window's cached innerHeight measurement
+	 * based on viewport height and device orientation
+	 * @return {number} - window's innerHeight measurement in pixels
+	 */
+	return function () {
+		if (Math.abs(window.orientation) !== 90) {
+			return dims.h;
+		}
+
+		return dims.w;
+	};
+})();
+
+},{}]},{},[1])(1)
+});
 
 // Device.js
 // (c) 2014 Matthew Hudson
@@ -1435,7 +1520,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var secondSlider = $('.SLeasy_sliders').eq(2);
         TweenMax.set(firstSlider, {height: $config.height * $scope.viewScale + $scope.yOffset.center});
         TweenMax.set('#' + $config.id, {height: height - $scope.yOffset.center || h - $scope.yOffset.center});
-        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150});
+        TweenMax.to(window, duration || 1.5, {scrollTo: height || 150, delay: 0.15});
     }
 
     //shadown button
@@ -1581,7 +1666,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
-        $scope.fixHeight = $(window).height() > sliderBoxHeight ? sliderBoxHeight : $(window).height() + 1;
+        $scope.fixHeight = iosInnerHeight() > sliderBoxHeight ? sliderBoxHeight : iosInnerHeight() + 1;
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
@@ -4000,13 +4085,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
 
-            //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
-            !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
-            $scope.initReady = true;
-
             //scrollMagic -----------------------------------------------------------------------------
             if ($config.scrollMagicMode) {
+                TweenMax.set('#' + $config.id,{backgroundPosition:'center '+$scope.yOffset.center + 'px'})
                 for (var i = 0; i < $config.sliders.length; i++) {
                     if (i == 0) continue;
                     var sl = $config.sliders[i];
@@ -4055,6 +4136,11 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
             });
             //------------------------------------------------------------------------------------------
+
+            //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
+            !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+            $scope.initReady = true;
         }
     }
 })(

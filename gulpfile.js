@@ -20,6 +20,7 @@ gulp.task('build', function () {
         'lib/director.js',
         'lib/store.js',
         'lib/jquery.cookie.js',
+        'lib/ios-inner-height.js',
         'lib/device.js',
         'src/config.js',
         'src/scope.js',

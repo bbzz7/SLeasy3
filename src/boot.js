@@ -121,13 +121,9 @@
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
 
-            //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
-            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
-            !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
-            $scope.initReady = true;
-
             //scrollMagic -----------------------------------------------------------------------------
             if ($config.scrollMagicMode) {
+                TweenMax.set('#' + $config.id,{backgroundPosition:'center '+$scope.yOffset.center + 'px'})
                 for (var i = 0; i < $config.sliders.length; i++) {
                     if (i == 0) continue;
                     var sl = $config.sliders[i];
@@ -176,6 +172,11 @@
                 }
             });
             //------------------------------------------------------------------------------------------
+
+            //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+            $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
+            !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+            $scope.initReady = true;
         }
     }
 })(

@@ -70,7 +70,7 @@
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
-        $scope.fixHeight = $(window).height() > sliderBoxHeight ? sliderBoxHeight : $(window).height() + 1;
+        $scope.fixHeight = iosInnerHeight() > sliderBoxHeight ? sliderBoxHeight : iosInnerHeight() + 1;
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
