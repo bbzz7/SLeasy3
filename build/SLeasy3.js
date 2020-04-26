@@ -1,6 +1,7 @@
 /*!
- SLeasy 3.9.0 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
- 3.9.1(2020-04-22):更新添加iosInnerHeight()，以兼容iphone等全面屏机型下，钉钉、手淘中全屏高度的问题;
+ SLeasy 3.9.2 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
+ 3.9.2(2020-04-22):借鉴ios-inner-height.js，内置获取iphone等全面屏机型下，钉钉、手淘中全屏高度的兼容方法;
+ 3.9.1(2020-04-22):更新添加iosInnerHeight()，以解决兼容iphone等全面屏机型下，钉钉、手淘中全屏高度的问题;
  3.9.0(2020-04-22):更新添加ScrollMagic模式;
  3.8.23(2020-03-18):添加SLeasy.resize()自适应x5同层模式，更新video元素object-fit默认为cover;
  3.8.22(2020-01-19):更新、添加、修复了一些……;
@@ -4018,43 +4019,43 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                         console.log(sub.set);
                     }
                 }
-
-            }
-            SLeasy.touchScroll(true, false);
-            //
-            var ctrl = new ScrollMagic.Controller();
-            // Create scenes in jQuery each() loop
-            $(".SLeasy_sliders").each(function (i) {
-                if (i == 0) return;
-                console.log('magic~~')
-                var tl = new TimelineMax();
-                $.each($config.sliders[i].subMotion, function (index, sub) {
-                    var tween;
-                    var el = $('#SLeasy_subMotion_' + sub.index);
-                    var preSub = index != 0 ? $config.sliders[i].subMotion[index - 1] : null;
-                    if (sub.from) tween = TweenMax.from(el, sub.time, SLeasy.fixProps(sub.from));
-                    if (sub.fromTo) tween = TweenMax.fromTo(el, sub.time, SLeasy.fixProps(sub.fromTo));
-                    var timePosition = '-=' + (preSub && sub.start ? (preSub.time - sub.start > 0 ? preSub.time - sub.start : preSub.time) : 0);
-                    // console.log($config.sliders[i].subMotion[index-1]);
-                    tween && tl.add(tween, timePosition);
-                })
-                var SM = new ScrollMagic.Scene({
-                    triggerElement: this,
-                    triggerHook: $config.sliders[i].triggerHook || 0.3,
-                    reverse: $config.sliders[i].reverse || false
-                })
-                    .setTween(tl)
-                    .addTo(ctrl);
-
-                if ($config.debugMode) {
-                    SM.addIndicators({
-                        colorTrigger: "white",
-                        colorStart: "white",
-                        colorEnd: "white",
-                        indent: 0
+                SLeasy.touchScroll(true, false);
+                //
+                var ctrl = new ScrollMagic.Controller();
+                // Create scenes in jQuery each() loop
+                $(".SLeasy_sliders").each(function (i) {
+                    if (i == 0) return;
+                    console.log('magic~~')
+                    var tl = new TimelineMax();
+                    $.each($config.sliders[i].subMotion, function (index, sub) {
+                        var tween;
+                        var el = $('#SLeasy_subMotion_' + sub.index);
+                        var preSub = index != 0 ? $config.sliders[i].subMotion[index - 1] : null;
+                        if (sub.from) tween = TweenMax.from(el, sub.time, SLeasy.fixProps(sub.from));
+                        if (sub.fromTo) tween = TweenMax.fromTo(el, sub.time, SLeasy.fixProps(sub.fromTo));
+                        var timePosition = '-=' + (preSub && sub.start ? (preSub.time - sub.start > 0 ? preSub.time - sub.start : preSub.time) : 0);
+                        // console.log($config.sliders[i].subMotion[index-1]);
+                        tween && tl.add(tween, timePosition);
                     })
-                }
-            });
+                    var SM = new ScrollMagic.Scene({
+                        triggerElement: this,
+                        triggerHook: $config.sliders[i].triggerHook || 0.3,
+                        reverse: $config.sliders[i].reverse || false
+                    })
+                        .setTween(tl)
+                        .addTo(ctrl);
+
+                    if ($config.debugMode) {
+                        SM.addIndicators({
+                            colorTrigger: "white",
+                            colorStart: "white",
+                            colorEnd: "white",
+                            indent: 0
+                        })
+                    }
+                });
+            }
+
             //------------------------------------------------------------------------------------------
 
             //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
