@@ -1,5 +1,6 @@
-var SLeasyPath = '../@GitHub/SLeasy3/',
-    SLeasyPath = './',
+// var SLeasyPath = '../@GitHub/SLeasy3/',
+var SLeasyPath = './',
+    LocalPath = './',
     gulp = require('gulp'),
     $ = {};
 

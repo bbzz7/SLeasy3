@@ -80,9 +80,9 @@
                 // 5
                 {
                     set: {},
-                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: $config.viewport, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut}
                 },
             ],
             upDown: [//上下
@@ -158,9 +158,9 @@
                 // 5
                 {
                     set: {},
-                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut}
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut}
                 },
             ]
         };
@@ -168,7 +168,7 @@
         //获取切换式样
         var FXIndex = ($config.motionStyle == 'rand') ? Math.round(Math.random() * (motionFX.leftRight.length - 1)) : $config.motionStyle;
         FXIndex = typeof style != 'undefined' ? style : FXIndex;
-        var FXDirection = direction || $scope.FXDirection;
+        var FXDirection = direction || $config.motionDirection || $scope.FXDirection;
 
         //反向动效
         if (reverse) {

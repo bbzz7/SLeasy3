@@ -13,6 +13,8 @@
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
+        motionDirection:'upDown',//动画运动方向
+        motionEase:'',//
         force3D: true,//
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直

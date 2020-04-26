@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.2 by 宇文互动 庄宇 2020-03-18 email:30755405@qq.com
+ SLeasy 3.9.3 by 宇文互动 庄宇 2020-04-26 email:30755405@qq.com
+ 3.9.3(2020-04-26):更新完善ScrollMagic模式;
  3.9.2(2020-04-22):借鉴ios-inner-height.js，内置获取iphone等全面屏机型下，钉钉、手淘中全屏高度的兼容方法;
  3.9.1(2020-04-22):更新添加iosInnerHeight()，以解决兼容iphone等全面屏机型下，钉钉、手淘中全屏高度的问题;
  3.9.0(2020-04-22):更新添加ScrollMagic模式;
@@ -669,6 +670,8 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
+        motionDirection:'upDown',//动画运动方向
+        motionEase:'',//
         force3D: true,//
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
@@ -2946,9 +2949,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 // 5
                 {
                     set: {},
-                    in: {x: $config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: -$config.viewport, y: 0, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: $config.viewport, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    out: {x: -$config.viewport, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut}
                 },
             ],
             upDown: [//上下
@@ -3024,9 +3027,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 // 5
                 {
                     set: {},
-                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: Expo.easeInOut}
+                    in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
+                    out: {x: 0, y: -$scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut}
                 },
             ]
         };
@@ -3034,7 +3037,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         //获取切换式样
         var FXIndex = ($config.motionStyle == 'rand') ? Math.round(Math.random() * (motionFX.leftRight.length - 1)) : $config.motionStyle;
         FXIndex = typeof style != 'undefined' ? style : FXIndex;
-        var FXDirection = direction || $scope.FXDirection;
+        var FXDirection = direction || $config.motionDirection || $scope.FXDirection;
 
         //反向动效
         if (reverse) {
