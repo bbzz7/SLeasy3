@@ -53,7 +53,7 @@
     }
 
     //属性缩放变换
-    SLeasy.fixProps = function fixProps(transObj) {
+    SLeasy.fixProps = function fixProps(transObj,yOffset) {
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
@@ -110,6 +110,9 @@
                 }
             }
         }
+        //yOffset
+        var alignMode = $config.alignMode;
+        if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
         return transObj;
     }
 
