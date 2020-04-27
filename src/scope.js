@@ -329,8 +329,13 @@
         }
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
-                autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: function () {
+                autoAlpha: 1,
+                alpha: 1,
+                display: 'block',
+                ease: Power0.easeNone,
+                onComplete: (onComplete || function () {
+                }),
+                onUpdate: function () {
                     onUpdate && onUpdate();
                     if (Object.prototype.toString.call(el) === '[object Array]') {
                         $.each(el, function (index, target) {
@@ -343,7 +348,7 @@
             });
         } else {
             TweenMax.set(el, {
-                autoAlpha: 1, alpha: 1, onComplete: function () {
+                autoAlpha: 1, alpha: 1, display: 'block', onComplete: function () {
                     if (Object.prototype.toString.call(el) === '[object Array]') {
                         $.each(el, function (index, target) {
                             target.parent && target.parent.update && target.parent.update();

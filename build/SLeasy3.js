@@ -1113,8 +1113,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         }
         if (time) {
             TweenMax.to(el, time > 100 ? time / 1000 : time, {
-                autoAlpha: 1, alpha: 1, ease: Power0.easeNone, onComplete: (onComplete || function () {
-                }), onUpdate: function () {
+                autoAlpha: 1,
+                alpha: 1,
+                display: 'block',
+                ease: Power0.easeNone,
+                onComplete: (onComplete || function () {
+                }),
+                onUpdate: function () {
                     onUpdate && onUpdate();
                     if (Object.prototype.toString.call(el) === '[object Array]') {
                         $.each(el, function (index, target) {
@@ -1127,7 +1132,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             });
         } else {
             TweenMax.set(el, {
-                autoAlpha: 1, alpha: 1, onComplete: function () {
+                autoAlpha: 1, alpha: 1, display: 'block', onComplete: function () {
                     if (Object.prototype.toString.call(el) === '[object Array]') {
                         $.each(el, function (index, target) {
                             target.parent && target.parent.update && target.parent.update();
@@ -4374,7 +4379,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }
-        if (!SLeasy.isHttp() || $config.debugMode) {//debug模式
+        if (!SLeasy.isHttp() && $config.debugMode) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             var $defaultStyle = $('head style').eq(0);
             $defaultStyle.html($defaultStyle.html() + debugStyle);

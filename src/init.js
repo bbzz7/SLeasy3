@@ -11,7 +11,7 @@
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }
-        if (!SLeasy.isHttp() || $config.debugMode) {//debug模式
+        if (!SLeasy.isHttp() && $config.debugMode) {//debug模式
             var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
             var $defaultStyle = $('head style').eq(0);
             $defaultStyle.html($defaultStyle.html() + debugStyle);
