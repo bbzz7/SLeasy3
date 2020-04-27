@@ -121,7 +121,7 @@
     }
 
     //load
-    SLeasy.loader.load = function (urlArr, loadType, showLoading) {
+    SLeasy.loader.load = function (urlArr, loadType, showLoading, callback) {
         var stime = new Date().getTime();
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
@@ -134,7 +134,7 @@
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
-        function _load(loadArr) {
+        function _load(loadArr, callback) {
             var threadLoaded = 0;
             for (var i = 0; i < loadType; i++) {
                 if (!loadArr[loaded + i]) return;
@@ -157,7 +157,7 @@
                     if (SLeasy.loader.percent >= 100) {
                         console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady || (!hasCustomLoading)) {
-                            $config.on['loaded'](); //预加载完毕回调
+                            callback ? callback() : $config.on['loaded'](); //预加载完毕回调
                         } else {
                             //自定义loading自身加载完毕回调
                             $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
@@ -170,7 +170,7 @@
             }
         }
 
-        function _multiLoad(loadArr) {
+        function _multiLoad(loadArr, callback) {
             for (var j = 0; j < loadArr.length; j++) {
                 (function (i) {
                     setTimeout(function () {
@@ -193,7 +193,7 @@
                             if (SLeasy.loader.percent >= 100) {
                                 console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                                 if ($scope.loadingReady || (!hasCustomLoading)) {
-                                    $config.on['loaded'](); //预加载完毕回调
+                                    callback ? callback() : $config.on['loaded'](); //预加载完毕回调
                                 } else {
                                     //自定义loading自身加载完毕回调
                                     $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
