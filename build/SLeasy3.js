@@ -345,6 +345,90 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 }));
 
+(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iosInnerHeight = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+'use strict';
+
+/**
+ * @module ios-inner-height
+ *
+ * @description Get proper window.innerHeight from iOS devices,
+ * excluding URL control and menu bar.
+ *
+ * @return {function} Callable function to retrieve the
+ * cached `window.innerHeight` measurement, specific to the
+ * device's current orientation.
+ */
+module.exports = (function () {
+	// Avoid errors when globals are undefined (CI, etc)
+	// https://github.com/tylerjpeterson/ios-inner-height/pull/7
+	if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+		return function () {
+			return 0;
+		};
+	}
+
+	// Non-iOS browsers return window.innerHeight per usual.
+	// No caching here since browsers can be resized, and setting
+	// up resize-triggered cache invalidation is not in scope.
+	/* istanbul ignore if  */
+	if (!navigator.userAgent.match(/iphone|ipod|ipad/i)) {
+		/**
+		 * Avoids conditional logic in the implementation
+		 * @return {number} - window's innerHeight measurement in pixels
+		 */
+		return function () {
+			return window.innerHeight;
+		};
+	}
+
+	// Store initial orientation
+	var axis = Math.abs(window.orientation);
+	// And hoist cached dimensions
+	var dims = {w: 0, h: 0};
+
+	/**
+	 * Creates an element with a height of 100vh since iOS accurately
+	 * reports vp height (but not window.innerHeight). Then destroy it.
+	 */
+	var createRuler = function () {
+		var ruler = document.createElement('div');
+
+		ruler.style.position = 'fixed';
+		ruler.style.height = '100vh';
+		ruler.style.width = 0;
+		ruler.style.top = 0;
+
+		document.documentElement.appendChild(ruler);
+
+		// Set cache conscientious of device orientation
+		dims.w = axis === 90 ? ruler.offsetHeight : window.innerWidth;
+		dims.h = axis === 90 ? window.innerWidth : ruler.offsetHeight;
+
+		// Clean up after ourselves
+		document.documentElement.removeChild(ruler);
+		ruler = null;
+	};
+
+	// Measure once
+	createRuler();
+
+	/**
+	 * Returns window's cached innerHeight measurement
+	 * based on viewport height and device orientation
+	 * @return {number} - window's innerHeight measurement in pixels
+	 */
+	return function () {
+		if (Math.abs(window.orientation) !== 90) {
+			return dims.h;
+		}
+
+		return dims.w;
+	};
+})();
+
+},{}]},{},[1])(1)
+});
+
 // Device.js
 // (c) 2014 Matthew Hudson
 // Device.js is freely distributable under the MIT license.
@@ -2642,7 +2726,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //属性缩放变换
-    SLeasy.fixProps = function fixProps(transObj) {
+    SLeasy.fixProps = function fixProps(transObj,yOffset) {
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
@@ -2699,6 +2783,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 }
             }
         }
+        //yOffset
+        var alignMode = $config.alignMode;
+        if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
         return transObj;
     }
 
@@ -3066,13 +3153,13 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         $scope = SLeasy.scope();
 
     //go slider
-    SLeasy.goSlider = function (index) {
+    SLeasy.goSlider = function (index, duration) {
         var nextIndex = SLeasy.nextIndex(index);
         if ($config.routerMode) {
             //var detailHash=$scope.router.getRoute(1);
             $scope.router.setRoute(0, nextIndex + '');//设置路由
         } else {
-            SLeasy.transit(nextIndex);
+            SLeasy.transit(nextIndex, duration);
         }
         return SLeasy;
     }
@@ -3155,7 +3242,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     }
 
-    SLeasy.transitFX = function (nextIndex, isRouteSlider) {
+    SLeasy.transitFX = function (nextIndex, duration) {
         var _in,
             _out,
             _show,
@@ -3266,16 +3353,16 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                 //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来
-                if (isRouteSlider) motionTime = 0;
+                if (typeof duration != 'undefined') motionTime = duration;
                 //scrollMagic
-                if($config.scrollMagicMode) motionTime = 0;
+                if ($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn($scope.isSliderEdge)
             },
             onComplete: function () {
-                if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
                 $scope.isAnim = 0;//重置运动状态
+                if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
                 //console.log($scope.labelHash);
             },
         }, (customFX.show || motionFX.show));
@@ -3295,7 +3382,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     }
 
-    SLeasy.transit = function (nextIndex, isRouteSlider) {
+    SLeasy.transit = function (nextIndex, duration) {
         if ($scope.sliders.length == 0) return alert('当前没有任何幻灯json数据~!');
         if ($scope.isAnim) return;
         $scope.isAnim = 1;//重置运动状态
@@ -3303,7 +3390,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex, isRouteSlider);//切换效果
+            FX = SLeasy.transitFX(nextIndex, motionTime);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
@@ -3323,7 +3410,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
         if (currentSlider[0] != nextSlider[0]) $scope.timeline.clear();
 
         //动画切换执行
-        var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+        var motionTime = parseFloat(duration) || $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
             // $(currentSlider).fadeIn(300);
@@ -3376,7 +3463,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
     SLeasy.detailFX = function (index) {
         var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
-            motionFX = detail.motionFX || null,
+            motionFX = detail.fx || detail.FX || detail.motionFX || null,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1], motionFX[2]) : SLeasy.getMotionFX('leftRight', 0),
             _in = $.extend(motionFX.in, {display: 'block'}),
             _show = $.extend(motionFX.show, {
@@ -4199,7 +4286,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
     }
 
     //load
-    SLeasy.loader.load = function (urlArr, loadType, showLoading) {
+    SLeasy.loader.load = function (urlArr, loadType, showLoading, callback) {
         var stime = new Date().getTime();
         var dfd = $.Deferred();
         var _showLoading = typeof showLoading == 'undefined' ? ($.isEmptyObject($config.loading) ? $config.preload : false) : showLoading;
@@ -4212,7 +4299,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
         (urlArr && urlArr.length) ? (loadType == 'multi' ? _multiLoad(urlArr) : _load(urlArr)) : (SLeasy.loader.hidden(), dfd.resolve($config, $scope));//如果加载数组为空则立即返回
 
-        function _load(loadArr) {
+        function _load(loadArr, callback) {
             var threadLoaded = 0;
             for (var i = 0; i < loadType; i++) {
                 if (!loadArr[loaded + i]) return;
@@ -4235,7 +4322,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     if (SLeasy.loader.percent >= 100) {
                         console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
                         if ($scope.loadingReady || (!hasCustomLoading)) {
-                            $config.on['loaded'](); //预加载完毕回调
+                            callback ? callback() : $config.on['loaded'](); //预加载完毕回调
                         } else {
                             //自定义loading自身加载完毕回调
                             $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
@@ -4248,7 +4335,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
             }
         }
 
-        function _multiLoad(loadArr) {
+        function _multiLoad(loadArr, callback) {
             for (var j = 0; j < loadArr.length; j++) {
                 (function (i) {
                     setTimeout(function () {
@@ -4271,7 +4358,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                             if (SLeasy.loader.percent >= 100) {
                                 console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                                 if ($scope.loadingReady || (!hasCustomLoading)) {
-                                    $config.on['loaded'](); //预加载完毕回调
+                                    callback ? callback() : $config.on['loaded'](); //预加载完毕回调
                                 } else {
                                     //自定义loading自身加载完毕回调
                                     $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
@@ -4320,7 +4407,7 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
                     console.log('当前详情页索引：' + detailIndex);
                     var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
                     _index = SLeasy.nextIndex(_index);
-                    SLeasy.transit(_index, true);
+                    SLeasy.transit(_index, 0);
                     console.log(_index + '------------------------------------------------------');
                     SLeasy.closeDetailTransit($scope.detailIndex);
 

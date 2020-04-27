@@ -4,13 +4,13 @@
         $scope = SLeasy.scope();
 
     //go slider
-    SLeasy.goSlider = function (index) {
+    SLeasy.goSlider = function (index, duration) {
         var nextIndex = SLeasy.nextIndex(index);
         if ($config.routerMode) {
             //var detailHash=$scope.router.getRoute(1);
             $scope.router.setRoute(0, nextIndex + '');//设置路由
         } else {
-            SLeasy.transit(nextIndex);
+            SLeasy.transit(nextIndex, duration);
         }
         return SLeasy;
     }
@@ -93,7 +93,7 @@
 
     }
 
-    SLeasy.transitFX = function (nextIndex, isRouteSlider) {
+    SLeasy.transitFX = function (nextIndex, duration) {
         var _in,
             _out,
             _show,
@@ -204,16 +204,16 @@
                 //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来
-                if (isRouteSlider) motionTime = 0;
+                if (typeof duration != 'undefined') motionTime = duration;
                 //scrollMagic
-                if($config.scrollMagicMode) motionTime = 0;
+                if ($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn($scope.isSliderEdge)
             },
             onComplete: function () {
-                if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
                 $scope.isAnim = 0;//重置运动状态
+                if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
                 //console.log($scope.labelHash);
             },
         }, (customFX.show || motionFX.show));
@@ -233,7 +233,7 @@
 
     }
 
-    SLeasy.transit = function (nextIndex, isRouteSlider) {
+    SLeasy.transit = function (nextIndex, duration) {
         if ($scope.sliders.length == 0) return alert('当前没有任何幻灯json数据~!');
         if ($scope.isAnim) return;
         $scope.isAnim = 1;//重置运动状态
@@ -241,7 +241,7 @@
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex, isRouteSlider);//切换效果
+            FX = SLeasy.transitFX(nextIndex, motionTime);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
@@ -261,7 +261,7 @@
         if (currentSlider[0] != nextSlider[0]) $scope.timeline.clear();
 
         //动画切换执行
-        var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
+        var motionTime = parseFloat(duration) || $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
         if (currentSlider[0] == nextSlider[0]) {
             //如果上下页是同一页，则只执行to动画及子动画
             // $(currentSlider).fadeIn(300);

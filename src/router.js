@@ -25,7 +25,7 @@
                     console.log('当前详情页索引：' + detailIndex);
                     var _index = isNaN(parseInt(sliderIndex)) ? sliderIndex : parseInt(sliderIndex);//判断标签字符串与索引
                     _index = SLeasy.nextIndex(_index);
-                    SLeasy.transit(_index, true);
+                    SLeasy.transit(_index, 0);
                     console.log(_index + '------------------------------------------------------');
                     SLeasy.closeDetailTransit($scope.detailIndex);
 
