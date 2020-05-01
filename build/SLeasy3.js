@@ -1721,7 +1721,7 @@ module.exports = (function () {
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\
-			background-position:' + ($config.scrollMagicMode && opt.index!=0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
+			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
 			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
@@ -1761,7 +1761,7 @@ module.exports = (function () {
         }
 
         //scrollMagic
-        if(sliderIndex!=0 && $config.scrollMagicMode) display='block';
+        if (sliderIndex != 0 && $config.scrollMagicMode) display = 'block';
 
         //不同类型子动画元素生成策略
         var subElement = {
@@ -2399,10 +2399,10 @@ module.exports = (function () {
 
                     $spriteImg.frame = 0;
                     //设置sprite padding
-                    if (paddingOrCrop) {
+                    if (opt && opt.paddingOrCrop) {
                         $(selector).css({
-                            width: $sprite.w - ($scope.viewScale * (paddingOrCrop || 0)),
-                            height: $sprite.h - ($scope.viewScale * (paddingOrCrop || 0)),
+                            width: $sprite.w - ($scope.viewScale * (opt.paddingOrCrop || 0)),
+                            height: $sprite.h - ($scope.viewScale * (opt.paddingOrCrop || 0)),
                         });
                     }
                     TweenMax.fromTo($spriteImg, duration,
