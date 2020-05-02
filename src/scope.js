@@ -408,7 +408,7 @@
     }
 
     //闪烁元素
-    function blink(el, time, alpha, count) {
+    SLeasy.blink = function (el, time, alpha, count) {
         TweenMax.to(el, time, {autoAlpha: alpha, ease: Power0.easeOut, yoyo: true, repeat: count || -1});
         return SLeasy;
     }
