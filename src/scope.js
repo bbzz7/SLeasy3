@@ -407,6 +407,12 @@
         return SLeasy;
     }
 
+    //闪烁元素
+    function blink(el, time, alpha, count) {
+        TweenMax.to(el, time, {autoAlpha: alpha, ease: Power0.easeOut, yoyo: true, repeat: count || -1});
+        return SLeasy;
+    }
+
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, callback, muted) {
         $(mediaSelector).each(function (index, target) {
