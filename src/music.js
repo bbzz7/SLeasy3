@@ -132,8 +132,8 @@
         });
 
         //howler
-        if (window.Howl && $config.musicUrl instanceof Howl) {
-            return $config.musicUrl.pause();
+        if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
+            return $scope.audios['bgm'].pause($scope.bgmID);
         }
         //audio
         $("#SLeasy_music").length && $("#SLeasy_music")[0].pause();
@@ -170,7 +170,7 @@
 			background-repeat:no-repeat;\
 			background-position:center 0px;\
 			background-size:100% auto;\
-			z-index:1">\
+			z-index:10">\
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 
