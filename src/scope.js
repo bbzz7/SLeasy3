@@ -408,12 +408,13 @@
     }
 
     //闪烁元素
-    SLeasy.blink = function (el, time, alpha, count) {
+    SLeasy.blink = function (el, time, alpha, repeatDealy, count) {
         TweenMax.to(el, time > 100 ? time / 1000 : time, {
             autoAlpha: alpha,
             ease: Power0.easeOut,
             yoyo: true,
-            repeat: count || -1
+            repeat: count || -1,
+            repeatDelay: repeatDealy || 0,
         });
         return SLeasy;
     }
