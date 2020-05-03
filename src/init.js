@@ -116,38 +116,6 @@
             }
             for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
-            }
-        }
-
-        //详情页背景+子动画元素
-        for (var i = 0; i < $config.details.length; i++) {
-            if (typeof $config.details[i].bg == 'string') {
-                totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
-            } else {
-                if ($config.details[i].bg) {
-                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
-                        $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
-                    }
-                }
-            }
-            for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
-                $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
-            }
-        }
-
-        //浮动元素
-        for (var i = 0; i < $config.floats.length; i++) {
-            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
-        }
-
-        //额外加载项
-        for (var i = 0; i < $config.exLoadArr.length; i++) {
-            totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
-        }
-
-        //幻灯ae
-        for (var i = 0; i < $config.sliders.length; i++) {
-            for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 //ae序列帧
                 var ae = $config.sliders[i].subMotion[k].ae;
                 if (ae) {
@@ -166,9 +134,19 @@
             }
         }
 
-        //幻灯ae
+        //详情页背景+子动画元素
         for (var i = 0; i < $config.details.length; i++) {
+            if (typeof $config.details[i].bg == 'string') {
+                totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
+            } else {
+                if ($config.details[i].bg) {
+                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
+                        $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                    }
+                }
+            }
             for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
+                $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
                 //ae序列帧
                 var ae = $config.details[i].subMotion[k].ae;
                 if (ae) {
@@ -187,6 +165,30 @@
             }
         }
 
+        //浮动元素
+        for (var i = 0; i < $config.floats.length; i++) {
+            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
+            //ae序列帧
+            var ae = $config.floats[i].ae;
+            if (ae) {
+                for (var n = 0; n < ae.layer.length; n++) {
+                    var layerOpt = ae.layer[n];
+                    if (layerOpt[6] === false) {
+                        console.log('skip:' + ae.layer[n]);
+                        continue;
+                    }
+                    console.log(layerOpt);
+                    var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                    // console.log(bitmapArr);
+                    totalArr = totalArr.concat(bitmapArr);
+                }
+            }
+        }
+
+        //额外加载项
+        for (var i = 0; i < $config.exLoadArr.length; i++) {
+            totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
+        }
 
         //return
         if (!$config.preload) {
