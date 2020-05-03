@@ -13,8 +13,8 @@
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
-        motionDirection:'upDown',//动画运动方向
-        motionEase:'',//
+        motionDirection: 'upDown',//动画运动方向
+        motionEase: '',//
         force3D: true,//
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
@@ -36,7 +36,8 @@
         musicUrl: '',//背景音乐url
         musicLoop: true,//背景音乐是否循环
         musicAutoPlay: true,//背景音乐自动播放
-        musicTouchPlay: false,//触摸自动播放(仅1次)
+        musicTouchPlay: false,//触摸自动播放(仅1次),
+        musicMuteMode: 'global',
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //audios-------------------------------------------
