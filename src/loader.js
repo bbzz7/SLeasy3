@@ -139,8 +139,9 @@
             for (var i = 0; i < loadType; i++) {
                 if (!loadArr[loaded + i]) return;
                 var img = new Image();
+                // img.crossOrigin = "Anonymous";
                 img.src = loadArr[loaded + i];
-                console.log(':::::开始加载：' + img.src);
+                console.log(':::::load开始加载：' + img.src);
                 img.onload = function () {
                     loaded++;
                     threadLoaded++;
@@ -162,6 +163,7 @@
                             //自定义loading自身加载完毕回调
                             $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                         }
+                        SLeasy.exloadCache();//exLoad Cache
                         dfd.resolve($config, $scope);
                     } else {
                         if (threadLoaded == loadType) _load(loadArr);
@@ -175,8 +177,9 @@
                 (function (i) {
                     setTimeout(function () {
                         var img = new Image();
+                        // img.crossOrigin = "Anonymous";
                         img.src = loadArr[i];
-                        console.log(':::::开始加载：' + img.src);
+                        console.log(':::::multiLoad开始加载：' + img.src);
                         img.onload = function () {
                             loaded++;
                             //console.log(loaded);
@@ -198,6 +201,7 @@
                                     //自定义loading自身加载完毕回调
                                     $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                                 }
+                                SLeasy.exloadCache();//exLoad Cache
                                 dfd.resolve($config, $scope);
                             }
 
@@ -208,6 +212,16 @@
         }
 
         return dfd.promise();
+    }
+
+    //exLoadCache
+    SLeasy.exloadCache = function () {
+        $scope.exLoad = [];
+        for (var i = 0; i < $config.exLoadArr.length; i++) {
+            var img = new Image();
+            img.src = SLeasy.path($config.host, $config.exLoadArr[i]);
+            $scope.exLoad.push(img);
+        }
     }
 
     //
