@@ -754,8 +754,8 @@ module.exports = (function () {
         viewport: 321,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
-        motionDirection:'upDown',//动画运动方向
-        motionEase:'',//
+        motionDirection: 'upDown',//动画运动方向
+        motionEase: '',//
         force3D: true,//
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
@@ -777,7 +777,8 @@ module.exports = (function () {
         musicUrl: '',//背景音乐url
         musicLoop: true,//背景音乐是否循环
         musicAutoPlay: true,//背景音乐自动播放
-        musicTouchPlay: false,//触摸自动播放(仅1次)
+        musicTouchPlay: false,//触摸自动播放(仅1次),
+        musicMuteMode: 'global',
         musicBt: [1, '', 50, 50, 'topRight', 15, 15],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
 
         //audios-------------------------------------------
@@ -3480,7 +3481,7 @@ module.exports = (function () {
             _in = $.extend(motionFX.in, {display: 'block'}),
             _show = $.extend(motionFX.show, {
                 onStart: function (e) {
-                    detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, false);//禁止触摸默认滚动+禁止slider滑动手势
+                    detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);//禁止触摸默认滚动+禁止slider滑动手势
                     detail.onStart && detail.onStart();
                     SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
@@ -3828,6 +3829,7 @@ module.exports = (function () {
 
         //howler
         if (typeof $config.musicUrl == 'object') {
+            if($config.musicMuteMode=='global') Howler.mute(false);
             $scope.bgmID = $scope.audios['bgm'].play();
         }
 
@@ -3869,6 +3871,7 @@ module.exports = (function () {
 
         //howler
         if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
+            if($config.musicMuteMode=='global') Howler.mute(true);
             return $scope.audios['bgm'].pause($scope.bgmID);
         }
         //audio
@@ -4020,7 +4023,7 @@ module.exports = (function () {
             SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
-            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
+            $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
@@ -4072,7 +4075,7 @@ module.exports = (function () {
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
             //默认显示渲染
-            $config.musicAutoPlay ? SLeasy.music.play() : SLeasy.music.pause();
+            $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
@@ -4316,8 +4319,9 @@ module.exports = (function () {
             for (var i = 0; i < loadType; i++) {
                 if (!loadArr[loaded + i]) return;
                 var img = new Image();
+                // img.crossOrigin = "Anonymous";
                 img.src = loadArr[loaded + i];
-                console.log(':::::开始加载：' + img.src);
+                console.log(':::::load开始加载：' + img.src);
                 img.onload = function () {
                     loaded++;
                     threadLoaded++;
@@ -4339,6 +4343,7 @@ module.exports = (function () {
                             //自定义loading自身加载完毕回调
                             $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                         }
+                        SLeasy.exloadCache();//exLoad Cache
                         dfd.resolve($config, $scope);
                     } else {
                         if (threadLoaded == loadType) _load(loadArr);
@@ -4352,8 +4357,9 @@ module.exports = (function () {
                 (function (i) {
                     setTimeout(function () {
                         var img = new Image();
+                        // img.crossOrigin = "Anonymous";
                         img.src = loadArr[i];
-                        console.log(':::::开始加载：' + img.src);
+                        console.log(':::::multiLoad开始加载：' + img.src);
                         img.onload = function () {
                             loaded++;
                             //console.log(loaded);
@@ -4375,6 +4381,7 @@ module.exports = (function () {
                                     //自定义loading自身加载完毕回调
                                     $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                                 }
+                                SLeasy.exloadCache();//exLoad Cache
                                 dfd.resolve($config, $scope);
                             }
 
@@ -4385,6 +4392,16 @@ module.exports = (function () {
         }
 
         return dfd.promise();
+    }
+
+    //exLoadCache
+    SLeasy.exloadCache = function () {
+        $scope.exLoad = [];
+        for (var i = 0; i < $config.exLoadArr.length; i++) {
+            var img = new Image();
+            img.src = SLeasy.path($config.host, $config.exLoadArr[i]);
+            $scope.exLoad.push(img);
+        }
     }
 
     //
@@ -4583,38 +4600,6 @@ module.exports = (function () {
             }
             for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
-            }
-        }
-
-        //详情页背景+子动画元素
-        for (var i = 0; i < $config.details.length; i++) {
-            if (typeof $config.details[i].bg == 'string') {
-                totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
-            } else {
-                if ($config.details[i].bg) {
-                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
-                        $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
-                    }
-                }
-            }
-            for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
-                $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
-            }
-        }
-
-        //浮动元素
-        for (var i = 0; i < $config.floats.length; i++) {
-            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
-        }
-
-        //额外加载项
-        for (var i = 0; i < $config.exLoadArr.length; i++) {
-            totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
-        }
-
-        //幻灯ae
-        for (var i = 0; i < $config.sliders.length; i++) {
-            for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 //ae序列帧
                 var ae = $config.sliders[i].subMotion[k].ae;
                 if (ae) {
@@ -4633,9 +4618,19 @@ module.exports = (function () {
             }
         }
 
-        //幻灯ae
+        //详情页背景+子动画元素
         for (var i = 0; i < $config.details.length; i++) {
+            if (typeof $config.details[i].bg == 'string') {
+                totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
+            } else {
+                if ($config.details[i].bg) {
+                    for (var j = 0; j < $config.details[i].bg.length; j++) {//多重背景
+                        $config.details[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.details[i].bg[j]));
+                    }
+                }
+            }
             for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
+                $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
                 //ae序列帧
                 var ae = $config.details[i].subMotion[k].ae;
                 if (ae) {
@@ -4654,6 +4649,30 @@ module.exports = (function () {
             }
         }
 
+        //浮动元素
+        for (var i = 0; i < $config.floats.length; i++) {
+            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
+            //ae序列帧
+            var ae = $config.floats[i].ae;
+            if (ae) {
+                for (var n = 0; n < ae.layer.length; n++) {
+                    var layerOpt = ae.layer[n];
+                    if (layerOpt[6] === false) {
+                        console.log('skip:' + ae.layer[n]);
+                        continue;
+                    }
+                    console.log(layerOpt);
+                    var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                    // console.log(bitmapArr);
+                    totalArr = totalArr.concat(bitmapArr);
+                }
+            }
+        }
+
+        //额外加载项
+        for (var i = 0; i < $config.exLoadArr.length; i++) {
+            totalArr.push(SLeasy.path($config.host, $config.exLoadArr[i]));
+        }
 
         //return
         if (!$config.preload) {
