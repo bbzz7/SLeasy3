@@ -92,6 +92,7 @@
 
         //howler
         if (typeof $config.musicUrl == 'object') {
+            if($config.musicMuteMode=='global') Howler.mute(false);
             $scope.bgmID = $scope.audios['bgm'].play();
         }
 
@@ -133,6 +134,7 @@
 
         //howler
         if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
+            if($config.musicMuteMode=='global') Howler.mute(true);
             return $scope.audios['bgm'].pause($scope.bgmID);
         }
         //audio
