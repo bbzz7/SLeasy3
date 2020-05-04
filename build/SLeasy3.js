@@ -4586,6 +4586,26 @@ module.exports = (function () {
         //幻灯容器背景
         if ($config.bg) totalArr.push(SLeasy.path($config.host, $config.bg));
 
+        //浮动元素
+        for (var i = 0; i < $config.floats.length; i++) {
+            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
+            //ae序列帧
+            var ae = $config.floats[i].ae;
+            if (ae) {
+                for (var n = 0; n < ae.layer.length; n++) {
+                    var layerOpt = ae.layer[n];
+                    if (layerOpt[6] === false) {
+                        console.log('skip:' + ae.layer[n]);
+                        continue;
+                    }
+                    console.log(layerOpt);
+                    var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                    // console.log(bitmapArr);
+                    totalArr = totalArr.concat(bitmapArr);
+                }
+            }
+        }
+
         //幻灯背景+子动画元素
         for (var i = 0; i < $config.sliders.length; i++) {
             if ($config.sliders[i].bg) {
@@ -4646,26 +4666,6 @@ module.exports = (function () {
                         // console.log(bitmapArr);
                         totalArr = totalArr.concat(bitmapArr);
                     }
-                }
-            }
-        }
-
-        //浮动元素
-        for (var i = 0; i < $config.floats.length; i++) {
-            $config.floats[i].img && totalArr.push(SLeasy.path($config.host, $config.floats[i].img));
-            //ae序列帧
-            var ae = $config.floats[i].ae;
-            if (ae) {
-                for (var n = 0; n < ae.layer.length; n++) {
-                    var layerOpt = ae.layer[n];
-                    if (layerOpt[6] === false) {
-                        console.log('skip:' + ae.layer[n]);
-                        continue;
-                    }
-                    console.log(layerOpt);
-                    var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                    // console.log(bitmapArr);
-                    totalArr = totalArr.concat(bitmapArr);
                 }
             }
         }
