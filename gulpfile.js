@@ -2,7 +2,8 @@
 var SLeasyPath = './',
     LocalPath = './',
     gulp = require('gulp'),
-    $ = {};
+    $ = {},
+    cdn = '';
 
 $.del = require(SLeasyPath + 'node_modules/del');
 $.rev = require(SLeasyPath + 'node_modules/gulp-rev-append');
@@ -21,6 +22,7 @@ gulp.task('build', function () {
         'lib/director.js',
         'lib/store.js',
         'lib/jquery.cookie.js',
+        'lib/ios-inner-height.js',
         'lib/device.js',
         'src/config.js',
         'src/scope.js',
@@ -58,7 +60,7 @@ gulp.task('build', function () {
 })
 
 gulp.task('SLeasy-publish', function () {
-    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/audio/*', 'lib*/physics/*', 'lib*/scrollmagic/*','lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
+    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/audio/*', 'lib*/physics/*', 'lib*/scrollmagic/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
         return SLeasyPath + item;
     }))
         .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
@@ -70,7 +72,7 @@ gulp.task('clean', function (done) {
 
 gulp.task('replace', function () {
     var origin = /<!--SLeasy3-->\n(.*\n)*<!--SLeasy3 end-->/,
-        replace = '<script src="SLeasy3/build/SLeasy3.min.js?' + ((new Date).getTime()) + '" charset="utf-8"></script>';
+        replace = '<script src="' + cdn + 'SLeasy3/build/SLeasy3.min.js?' + ((new Date).getTime()) + '" charset="utf-8"></script>';
 
     var oldTime = /<!--timeStamp-->/,
         newTime = '<script>window.SLeasyTimeStamp=' + (new Date).getTime() + '</script>';
@@ -78,7 +80,7 @@ gulp.task('replace', function () {
     return gulp.src(LocalPath + '*.html')
         .pipe($.replace(oldTime, newTime))
         .pipe($.replace(origin, replace))
-        .pipe($.replace(SLeasyPath, 'SLeasy3/'))
+        .pipe($.replace(SLeasyPath, cdn + 'SLeasy3/'))
         .pipe($.replace('app.js', 'app.js?' + (new Date).getTime()))
         .pipe(gulp.dest(LocalPath + '@publish/'))
 });
