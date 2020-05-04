@@ -175,7 +175,7 @@
         function _multiLoad(loadArr, callback) {
             for (var j = 0; j < loadArr.length; j++) {
                 (function (i) {
-                    setTimeout(function () {
+                    // setTimeout(function () {
                         var img = new Image();
                         // img.crossOrigin = "Anonymous";
                         img.src = loadArr[i];
@@ -206,7 +206,7 @@
                             }
 
                         }
-                    }, 1000 / 50 * i)
+                    // }, 1000 / 50 * i)
                 })(j)
             }
         }

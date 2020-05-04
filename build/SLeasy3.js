@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.3 by 宇文互动 庄宇 2020-04-26 email:30755405@qq.com
+ SLeasy 3.9.4 by 宇文互动 庄宇 2020-05-04 email:30755405@qq.com
+ 3.9.4(2020-05-04):更新优化完全按config配置顺序预加载图片，包括ae类型;webAudio模式下，内置音乐按钮增加全局静音功能~
  3.9.3(2020-04-26):更新完善ScrollMagic模式;
  3.9.2(2020-04-22):借鉴ios-inner-height.js，内置获取iphone等全面屏机型下，钉钉、手淘中全屏高度的兼容方法;
  3.9.1(2020-04-22):更新添加iosInnerHeight()，以解决兼容iphone等全面屏机型下，钉钉、手淘中全屏高度的问题;
@@ -4355,7 +4356,7 @@ module.exports = (function () {
         function _multiLoad(loadArr, callback) {
             for (var j = 0; j < loadArr.length; j++) {
                 (function (i) {
-                    setTimeout(function () {
+                    // setTimeout(function () {
                         var img = new Image();
                         // img.crossOrigin = "Anonymous";
                         img.src = loadArr[i];
@@ -4386,7 +4387,7 @@ module.exports = (function () {
                             }
 
                         }
-                    }, 1000 / 50 * i)
+                    // }, 1000 / 50 * i)
                 })(j)
             }
         }
