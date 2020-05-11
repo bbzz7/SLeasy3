@@ -20,10 +20,17 @@
                 },
                 'height': function (thresholdHeight) {
 
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
-                        height = viewHeight > minHeight ? viewHeight : minHeight,
-                        viewportContent = 'width=' + height * ratio + ',user-scalable=no';
+                    var width = $config.viewport > minWidth ? $config.viewport : minWidth;
+
+                    var viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
+                        height = viewHeight > minHeight ? viewHeight : minHeight;
+
+                    $scope.fixWidth = height * ratio;
+                    var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
+                    //height模式下，重置viewScale
+                    if ($config.width / $config.height < ratio) {
+                        $scope.viewScale = $scope.fixWidth / $config.width;
+                    }
                     return viewportContent;
                 },
                 'auto': function () {
@@ -71,10 +78,10 @@
 
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
         var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
         $('#SLeasy_fixHeight').remove();
-        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight + 1;
+        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : $scope.fixWidth / ratio;
+        console.log('fixHeight:' + $scope.fixHeight)
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }

@@ -7,6 +7,7 @@
         body: $('body'),//body标签dom
         viewScale: $config.viewport / $config.width,//幻灯缩放比例因子
         fixHeight: 0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
+        fixWidth: $config.viewport,
         eventArr: [],//需要绑定的事件及元素数据数组
         sliderBox: null,//幻灯框架dom缓存变量
         swipe: 1,//是否允许滑动幻灯
@@ -590,7 +591,7 @@
             });
             var offsetX = (window.innerWidth - oldWidth) / 2;
             var offsetY = (window.innerHeight - oldHeight) / 2;
-            callback(offsetX, offsetY);
+            callback(window.innerWidth, window.innerHeight, offsetX, offsetY);
         }
     }
 

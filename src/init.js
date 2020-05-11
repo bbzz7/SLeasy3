@@ -34,7 +34,7 @@
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": $config.viewport + 'px',
+            "width": ($scope.fixWidth || $config.viewport) + 'px',
             "height": $scope.fixHeight + 'px',
             "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',

@@ -840,7 +840,9 @@ module.exports = (function () {
             'timeline': function (tl) {//子动画时间轴ready回调
                 console.log('子动画timeline ready~')
             },
-
+            'weixin': function (tl) {//子动画时间轴ready回调
+                console.log('Weixin JSBridge Ready~')
+            },
         }
 
 
@@ -877,6 +879,7 @@ module.exports = (function () {
         body: $('body'),//body标签dom
         viewScale: $config.viewport / $config.width,//幻灯缩放比例因子
         fixHeight: 0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
+        fixWidth: $config.viewport,
         eventArr: [],//需要绑定的事件及元素数据数组
         sliderBox: null,//幻灯框架dom缓存变量
         swipe: 1,//是否允许滑动幻灯
@@ -1460,7 +1463,7 @@ module.exports = (function () {
             });
             var offsetX = (window.innerWidth - oldWidth) / 2;
             var offsetY = (window.innerHeight - oldHeight) / 2;
-            callback(offsetX, offsetY);
+            callback(window.innerWidth, window.innerHeight, offsetX, offsetY);
         }
     }
 
@@ -1639,10 +1642,17 @@ module.exports = (function () {
                 },
                 'height': function (thresholdHeight) {
 
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
-                        height = viewHeight > minHeight ? viewHeight : minHeight,
-                        viewportContent = 'width=' + height * ratio + ',user-scalable=no';
+                    var width = $config.viewport > minWidth ? $config.viewport : minWidth;
+
+                    var viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
+                        height = viewHeight > minHeight ? viewHeight : minHeight;
+
+                    $scope.fixWidth = height * ratio;
+                    var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
+                    //height模式下，重置viewScale
+                    if ($config.width / $config.height < ratio) {
+                        $scope.viewScale = $scope.fixWidth / $config.width;
+                    }
                     return viewportContent;
                 },
                 'auto': function () {
@@ -1690,10 +1700,10 @@ module.exports = (function () {
 
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        //设置自适应全屏高度(+1px为弥补$(window).height()计算精度不能为小数，从而导致某些高度下露出1px背景的问题)
         var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
         $('#SLeasy_fixHeight').remove();
-        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight + 1;
+        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : $scope.fixWidth / ratio;
+        console.log('fixHeight:' + $scope.fixHeight)
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
@@ -1730,11 +1740,11 @@ module.exports = (function () {
         var html = '\
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
-			width:' + $config.viewport + 'px;\
+			width:' + ($scope.fixWidth || $config.viewport) + 'px;\
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:100% auto;\
+			background-size:cover;\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
@@ -2700,6 +2710,11 @@ module.exports = (function () {
                 "center": ($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset,
                 "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
             },
+            xOffset = $scope.xOffset = {
+                "left": $config.alignOffset,
+                "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset,
+                "right": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset
+            },
             sliders = opt || $config.sliders;
 
         for (var i = 0; i < sliders.length; i++) {
@@ -2730,17 +2745,23 @@ module.exports = (function () {
                 if (!$config.scrollMagicMode || i == 0) {
                     //根据幻灯对齐方式参数，进行y轴自适应修正
                     var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
+                    //y
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
                     if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                    //x
+                    if (subIn.x || subIn.x === 0) subIn.x += xOffset[alignMode];
+                    if (subShow.x || subShow.x === 0) subShow.x += xOffset[alignMode];
+                    if (subSet.x || subSet.x === 0) subSet.x += xOffset[alignMode];
+                    if (subTo.x || subTo.x === 0) subTo.x += xOffset[alignMode];
                 }
             }
         }
     }
 
     //属性缩放变换
-    SLeasy.fixProps = function fixProps(transObj,yOffset) {
+    SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
@@ -2800,6 +2821,7 @@ module.exports = (function () {
         //yOffset
         var alignMode = $config.alignMode;
         if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
+        if (xOffset && (typeof transObj.x != 'undefined')) transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
         return transObj;
     }
 
@@ -4113,13 +4135,17 @@ module.exports = (function () {
                 }
             });
             $config.on['timeline']($scope.timeline);//子动画时间轴ready回调
+            //onWeixin
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                $config.on['weixin'];
+            }, false);
 
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
 
             //scrollMagic -----------------------------------------------------------------------------
             if ($config.scrollMagicMode) {
-                TweenMax.set('#' + $config.id,{backgroundPosition:'center '+$scope.yOffset.center + 'px'})
+                TweenMax.set('#' + $config.id, {backgroundPosition: 'center ' + $scope.yOffset.center + 'px'})
                 for (var i = 0; i < $config.sliders.length; i++) {
                     if (i == 0) continue;
                     var sl = $config.sliders[i];
@@ -4519,7 +4545,7 @@ module.exports = (function () {
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": $config.viewport + 'px',
+            "width": ($scope.fixWidth || $config.viewport) + 'px',
             "height": $scope.fixHeight + 'px',
             "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',

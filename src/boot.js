@@ -117,13 +117,17 @@
                 }
             });
             $config.on['timeline']($scope.timeline);//子动画时间轴ready回调
+            //onWeixin
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                $config.on['weixin'];
+            }, false);
 
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
 
             //scrollMagic -----------------------------------------------------------------------------
             if ($config.scrollMagicMode) {
-                TweenMax.set('#' + $config.id,{backgroundPosition:'center '+$scope.yOffset.center + 'px'})
+                TweenMax.set('#' + $config.id, {backgroundPosition: 'center ' + $scope.yOffset.center + 'px'})
                 for (var i = 0; i < $config.sliders.length; i++) {
                     if (i == 0) continue;
                     var sl = $config.sliders[i];

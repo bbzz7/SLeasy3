@@ -98,7 +98,9 @@
             'timeline': function (tl) {//子动画时间轴ready回调
                 console.log('子动画timeline ready~')
             },
-
+            'weixin': function (tl) {//子动画时间轴ready回调
+                console.log('Weixin JSBridge Ready~')
+            },
         }
 
 

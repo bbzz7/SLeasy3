@@ -13,6 +13,11 @@
                 "center": ($scope.fixHeight - $config.height * $scope.viewScale) / 2 + $config.alignOffset,
                 "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
             },
+            xOffset = $scope.xOffset = {
+                "left": $config.alignOffset,
+                "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset,
+                "right": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset
+            },
             sliders = opt || $config.sliders;
 
         for (var i = 0; i < sliders.length; i++) {
@@ -43,17 +48,23 @@
                 if (!$config.scrollMagicMode || i == 0) {
                     //根据幻灯对齐方式参数，进行y轴自适应修正
                     var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
+                    //y
                     if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
                     if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
                     if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
                     if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                    //x
+                    if (subIn.x || subIn.x === 0) subIn.x += xOffset[alignMode];
+                    if (subShow.x || subShow.x === 0) subShow.x += xOffset[alignMode];
+                    if (subSet.x || subSet.x === 0) subSet.x += xOffset[alignMode];
+                    if (subTo.x || subTo.x === 0) subTo.x += xOffset[alignMode];
                 }
             }
         }
     }
 
     //属性缩放变换
-    SLeasy.fixProps = function fixProps(transObj,yOffset) {
+    SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
@@ -113,6 +124,7 @@
         //yOffset
         var alignMode = $config.alignMode;
         if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
+        if (xOffset && (typeof transObj.x != 'undefined')) transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
         return transObj;
     }
 

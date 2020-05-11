@@ -24,11 +24,11 @@
         var html = '\
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
-			width:' + $config.viewport + 'px;\
+			width:' + ($scope.fixWidth || $config.viewport) + 'px;\
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:100% auto;\
+			background-size:cover;\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
