@@ -60,10 +60,24 @@ gulp.task('build', function () {
 })
 
 gulp.task('SLeasy-publish', function () {
-    return gulp.src(['build*/SLeasy3.min.js', 'plugin*/*', 'lib*/*', 'lib*/canvas/*', 'lib*/audio/*', 'lib*/physics/*', 'lib*/scrollmagic/*', 'lib*/GSAP*/*', 'lib*/GSAP*/easing*/*', 'lib*/GSAP*/plugin*/*', 'lib*/GSAP*/plugins*/*', 'lib*/GSAP*/utils*/*'].map(function (item) {
+    return gulp.src([
+        'build*/SLeasy3.min.js',
+        'plugin*/*',
+        'lib*/*',
+        'lib*/canvas/*',
+        'lib*/audio/*',
+        'lib*/physics/*',
+        'lib*/scrollmagic/*',
+        'lib*/GSAP*/*',
+        'lib*/GSAP*/easing*/*',
+        'lib*/GSAP*/plugin*/*',
+        'lib*/GSAP*/plugins*/*',
+        'lib*/GSAP*/utils*/*',
+        'lib*/css*/*',
+        'lib*/utils*/*',
+    ].map(function (item) {
         return SLeasyPath + item;
-    }))
-        .pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
+    })).pipe(gulp.dest(LocalPath + '@publish/SLeasy3/'))
 });
 
 gulp.task('clean', function (done) {
