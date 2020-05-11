@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.4 by 宇文互动 庄宇 2020-05-04 email:30755405@qq.com
+ SLeasy 3.9.5 by 宇文互动 庄宇 2020-05-12 email:30755405@qq.com
+ 3.9.5(2020-05-12):更新完善height模式下的元素自适应~
  3.9.4(2020-05-04):更新优化完全按config配置顺序预加载图片，包括ae类型;webAudio模式下，内置音乐按钮增加全局静音功能~
  3.9.3(2020-04-26):更新完善ScrollMagic模式;
  3.9.2(2020-04-22):借鉴ios-inner-height.js，内置获取iphone等全面屏机型下，钉钉、手淘中全屏高度的兼容方法;
@@ -1633,7 +1634,7 @@ module.exports = (function () {
         //适配策略
         var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
-            ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            ratio = device.desktop() ? $config.width/$config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
@@ -1702,7 +1703,7 @@ module.exports = (function () {
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
         $('#SLeasy_fixHeight').remove();
-        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : $scope.fixWidth / ratio;
+        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
         console.log('fixHeight:' + $scope.fixHeight)
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;

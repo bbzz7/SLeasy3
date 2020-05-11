@@ -11,7 +11,7 @@
         //适配策略
         var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
-            ratio = $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            ratio = device.desktop() ? $config.width/$config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
@@ -80,7 +80,7 @@
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
         $('#SLeasy_fixHeight').remove();
-        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : $scope.fixWidth / ratio;
+        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
         console.log('fixHeight:' + $scope.fixHeight)
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
