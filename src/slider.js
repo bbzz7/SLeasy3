@@ -5,7 +5,6 @@
 
     //html
     SLeasy.slider = function (opt) {
-        console.log(opt)
 
         //背景对齐策略
         var bgAlign = {
