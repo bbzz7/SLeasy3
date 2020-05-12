@@ -7,7 +7,6 @@
         var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
-        // $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }

@@ -1628,6 +1628,8 @@ module.exports = (function () {
 
     //设置视口
     SLeasy.viewport = function (sliderBoxHeight) {
+        //刷新幻灯缩放比例因子
+        $scope.viewScale = $config.viewport / $config.width;
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
         $("head").append('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
@@ -1652,7 +1654,7 @@ module.exports = (function () {
                     var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
                     //height模式下，重置viewScale
                     if ($config.width / $config.height < ratio) {
-                        $scope.viewScale = $scope.fixWidth / $config.width;
+                        $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
                     }
                     return viewportContent;
                 },
@@ -4518,7 +4520,6 @@ module.exports = (function () {
         var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
-        // $scope.viewScale = $config.viewport / $config.width;//刷新幻灯缩放比例因子
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }

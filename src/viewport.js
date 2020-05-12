@@ -5,6 +5,8 @@
 
     //设置视口
     SLeasy.viewport = function (sliderBoxHeight) {
+        //刷新幻灯缩放比例因子
+        $scope.viewScale = $config.viewport / $config.width;
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
         $("head").append('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
@@ -29,7 +31,7 @@
                     var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
                     //height模式下，重置viewScale
                     if ($config.width / $config.height < ratio) {
-                        $scope.viewScale = $scope.fixWidth / $config.width;
+                        $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
                     }
                     return viewportContent;
                 },
