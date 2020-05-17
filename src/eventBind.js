@@ -110,6 +110,7 @@
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
                 var HDom = new H($('.SLeasy_loading ')[0]);
+                HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                 HDom.off(e).on(e, callback);//事件绑定
             })
         }
@@ -119,6 +120,7 @@
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
                     var HDom = new H($('.SLeasy_loading ')[0]);
+                    HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 })
             }

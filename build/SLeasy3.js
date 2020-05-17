@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.5 by 宇文互动 庄宇 2020-05-12 email:30755405@qq.com
+ SLeasy 3.9.6 by 宇文互动 庄宇 2020-05-17 email:30755405@qq.com
+ 3.9.6(2020-05-17):更新自定义loading和slider本身添加on事件绑定参数选项~
  3.9.5(2020-05-12):更新完善height模式下的元素自适应~
  3.9.4(2020-05-04):更新优化完全按config配置顺序预加载图片，包括ae类型;webAudio模式下，内置音乐按钮增加全局静音功能~
  3.9.3(2020-04-26):更新完善ScrollMagic模式;
@@ -3736,6 +3737,7 @@ module.exports = (function () {
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
                 var HDom = new H($('.SLeasy_loading ')[0]);
+                HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                 HDom.off(e).on(e, callback);//事件绑定
             })
         }
@@ -3745,6 +3747,7 @@ module.exports = (function () {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
                     var HDom = new H($('.SLeasy_loading ')[0]);
+                    HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 })
             }
