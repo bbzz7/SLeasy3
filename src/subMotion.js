@@ -43,6 +43,7 @@
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeline;
+            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
@@ -74,7 +75,7 @@
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             // console.warn(preSubMotion);
-            // console.warn(motionTime);
+            console.warn(startTime);
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {

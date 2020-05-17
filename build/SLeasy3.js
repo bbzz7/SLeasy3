@@ -904,7 +904,7 @@ module.exports = (function () {
         isSubMotion: 0,//当前子动画完成状态
         isDetailMotion: 0,//当前详情页子动画完成状态
 
-        timeLine: null,//子动画时间线
+        timeline: null,//子动画时间线
         fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
@@ -2887,6 +2887,7 @@ module.exports = (function () {
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeline;
+            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
@@ -2918,7 +2919,7 @@ module.exports = (function () {
                 set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
 
             // console.warn(preSubMotion);
-            // console.warn(motionTime);
+            console.warn(startTime);
 
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
@@ -3389,7 +3390,7 @@ module.exports = (function () {
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
                 //如果有自定义loading，第一页幻灯子元素起始时间为0，不等待页面切换时间
-                if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading)) motionTime = 0;
+                if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading) && 'xy'.indexOf($config.swipeMode) == -1) motionTime = 0;
                 //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来

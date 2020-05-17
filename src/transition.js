@@ -200,7 +200,7 @@
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
                 var motionTime = $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
                 //如果有自定义loading，第一页幻灯子元素起始时间为0，不等待页面切换时间
-                if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading)) motionTime = 0;
+                if ($scope.sliderIndex == 0 && !$.isEmptyObject($config.loading) && 'xy'.indexOf($config.swipeMode) == -1) motionTime = 0;
                 //如果无自定义loading，幻灯页面切换超过边界，子元素起始时间为0，不等待页面切换时间
                 if ($scope.isSliderEdge && $.isEmptyObject($config.loading)) motionTime = 0;
                 //如果是通过路由标识进来
