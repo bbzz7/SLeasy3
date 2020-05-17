@@ -3748,7 +3748,7 @@ module.exports = (function () {
         for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
-                    var HDom = new H($('.SLeasy_sliders')[0]);
+                    var HDom = new H($('.SLeasy_sliders')[i]);
                     HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 })
