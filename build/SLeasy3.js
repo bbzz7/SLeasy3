@@ -3398,6 +3398,8 @@ module.exports = (function () {
                 if ($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
+                console.warn(duration)
+                console.warn(motionTime)
                 console.warn($scope.isSliderEdge)
             },
             onComplete: function () {
@@ -3430,7 +3432,7 @@ module.exports = (function () {
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex, motionTime);//切换效果
+            FX = SLeasy.transitFX(nextIndex, duration);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
@@ -3736,7 +3738,7 @@ module.exports = (function () {
         //loading幻灯
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
-                var HDom = new H($('.SLeasy_loading ')[0]);
+                var HDom = new H($('.SLeasy_loading')[0]);
                 HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                 HDom.off(e).on(e, callback);//事件绑定
             })
@@ -3746,7 +3748,7 @@ module.exports = (function () {
         for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
-                    var HDom = new H($('.SLeasy_loading ')[0]);
+                    var HDom = new H($('.SLeasy_sliders')[0]);
                     HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 })

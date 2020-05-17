@@ -209,6 +209,8 @@
                 if ($config.scrollMagicMode) motionTime = 0;
 
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
+                console.warn(duration)
+                console.warn(motionTime)
                 console.warn($scope.isSliderEdge)
             },
             onComplete: function () {
@@ -241,7 +243,7 @@
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex, motionTime);//切换效果
+            FX = SLeasy.transitFX(nextIndex, duration);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
