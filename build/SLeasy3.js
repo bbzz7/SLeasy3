@@ -2882,6 +2882,7 @@ module.exports = (function () {
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope[type + 'Timeline'] = tl;
+            console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeline;
@@ -3731,7 +3732,23 @@ module.exports = (function () {
 
             }
         }
+        //loading幻灯
+        if ($('.SLeasy_loading ').length && $config.loading.on) {
+            $.each($config.loading.on, function (e, callback) {
+                var HDom = new H($('.SLeasy_loading ')[0]);
+                HDom.off(e).on(e, callback);//事件绑定
+            })
+        }
 
+        //slider幻灯
+        for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
+            if ($config.sliders[i].on) {
+                $.each($config.sliders[i].on, function (e, callback) {
+                    var HDom = new H($('.SLeasy_loading ')[0]);
+                    HDom.off(e).on(e, callback);//事件绑定
+                })
+            }
+        }
     }
 })(
     window.SLeasy = window.SLeasy || {},

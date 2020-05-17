@@ -39,6 +39,7 @@
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope[type + 'Timeline'] = tl;
+            console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeline;
