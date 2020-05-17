@@ -14,9 +14,9 @@
                 "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
             },
             xOffset = $scope.xOffset = {
-                "left": $config.alignOffset,
+                "top": $config.alignOffset,
                 "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset,
-                "right": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset
+                "bottom": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset
             },
             sliders = opt || $config.sliders;
 
