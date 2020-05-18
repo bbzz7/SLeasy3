@@ -152,13 +152,18 @@
             }
         }
 
-
         //show
+        if ($scope.sliderIndex == nextIndex) {//相同幻灯索引标识
+            $scope.isSameSlider = true;
+        } else {
+            $scope.isSameSlider = false;
+        }
         _show = $.extend({//show FX
             onStart: function () {
                 var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
+                console.warn($scope.sliderIndex + ':' + nextIndex);
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
@@ -207,7 +212,10 @@
                 if (typeof duration != 'undefined') motionTime = duration;
                 //scrollMagic
                 if ($config.scrollMagicMode) motionTime = 0;
+                //相同一页幻灯
+                if ($scope.isSameSlider) motionTime = 0;
 
+                // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
                 console.warn(duration)
                 console.warn(motionTime)

@@ -42,41 +42,56 @@
             console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
-            var tl = $scope.timeline;
-            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
+            var tl = $scope.timeline = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope.isSubMotion = 0;//子动画是否正在播放状态
         }
 
-        var totalTime = 0, startTime = 0;
+        var totalTime = 0;
         for (var i = 0; i < count; i++) {
             var subMotion = subMotionArr[i],//当前子动画
                 preSubMotion = subMotionArr[i - 1],//上一子动画
                 $dom = $('#SLeasy_' + (subName[type] || type) + '_' + subMotion.index),//当前子动画元素dom
                 time = subMotion.time || 0,//time
-                preTime = preSubMotion && preSubMotion.time ? preSubMotion.time : 0,
-                /*
-                 如果是第一个子动画，则当前子动画总时间累加值为，当前子动画时间，
-                 如果不是第一个子动画，则当前子动画总时间累加值为，当前子动画时间:
-                 如果当前子动画有设置start值:
-                 如果preTime - subMotion.start > subMotion.time，累加0
-                 否则累加subMotion.time - (preTime - subMotion.start)
-                 如果当前子动画没有设置start值，则累加上一子动画的运动时间
-                 */
-                totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : subMotion.time,
-                /*
-                 如果是第一个子动画，则子动画开始时间为幻灯页运动完成的时间，
-                 如果不是第一个子动画，则之前累加的startTime，加上当前的start值:
-                 如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
-                 如果当前子动画没有设置运动时间time，则直接加0
-                 */
-                startTime = preSubMotion ? (startTime + (time ? (typeof subMotion.start != 'undefined' ? subMotion.start : preTime) : 0)) : motionTime,
-                subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
+                preTime = preSubMotion && preSubMotion.time ? preSubMotion.time : 0;
+            /*
+             如果是第一个子动画，则当前子动画总时间累加值为，当前子动画时间，
+             如果不是第一个子动画，则当前子动画总时间累加值为，当前子动画时间:
+             如果当前子动画有设置start值:
+             如果preTime - subMotion.start > subMotion.time，累加0
+             否则累加subMotion.time - (preTime - subMotion.start)
+             如果当前子动画没有设置start值，则累加上一子动画的运动时间
+             */
+            // totalTime = preSubMotion ? (totalTime + (subMotion.start ? (preTime - subMotion.start > subMotion.time ? 0 : subMotion.time - (preTime - subMotion.start)) : subMotion.time)) : subMotion.time;
+            /*
+             如果是第一个子动画，则子动画开始时间为幻灯页运动完成的时间，
+             如果不是第一个子动画，则之前累加的startTime，加上当前的start值:
+             如果当前子动画没有设置start值，则累加上一子动画的运动时间，以连接其后
+             如果当前子动画没有设置运动时间time，则直接加0
+             */
+            // console.warn(subMotion.class);
+            // console.warn('preSubMotion:' + (preSubMotion ? true : false));
+            // console.warn('startTime01:' + startTime);
+            // console.warn(subMotion);
+            // console.warn('subMotion.time:' + subMotion.time);
+            // console.warn('time:' + time);
+
+            if (!time) {
+                var startTime = 0;
+            } else if (preTime || subMotion.start !== undefined) {
+                var startTime = totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0)
+            } else {
+                var startTime = totalTime = motionTime;
+            }
+
+            var subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
                 subShow = $.extend({display: 'block', force3D: $config.force3D}, subMotion.show || {}),//show
-                set = subMotion.set ? $.extend({position: 'absolute'}, subMotion.set) : {position: 'absolute'};//set
-
-            // console.warn(preSubMotion);
-            console.warn(startTime);
-
+                set = subMotion.set ? $.extend({
+                    position: 'absolute',
+                    display: 'block'
+                }, subMotion.set) : {position: 'absolute', display: 'block'};//set
+            // console.warn('totalTime:::' + totalTime);
+            // console.warn('startTime:::::::' + startTime);
+            // console.warn('----------------------------------');
             //判断当前幻灯是否包含ae渲染层
             if ($dom.find('.SLeasy_ae').length) {
                 console.log($dom);
@@ -150,6 +165,7 @@
 
         //play
         tl.play();
+        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},

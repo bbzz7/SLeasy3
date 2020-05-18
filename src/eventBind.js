@@ -31,9 +31,13 @@
                 $scope.FXDirection = 'leftRight';//设置切换式样方向
 
                 sliderBox.on('swipeleft', function (e) {
+                    var slidersEvent = $config.sliders[$scope.sliderIndex].on;
+                    if (slidersEvent && slidersEvent['swipeleft']) return;
                     $scope.swipe && SLeasy.goSlider('+=1');
                 });
                 sliderBox.on('swiperight', function (e) {
+                    var slidersEvent = $config.sliders[$scope.sliderIndex].on;
+                    if (slidersEvent && slidersEvent['swiperight']) return;
                     $scope.swipe && SLeasy.goSlider('-=1');
                 });
 
@@ -41,10 +45,14 @@
                 $scope.FXDirection = 'upDown';//设置切换式样方向
 
                 sliderBox.on('swipeup', function (e) {
+                    var slidersEvent = $config.sliders[$scope.sliderIndex].on;
+                    if (slidersEvent && slidersEvent['swipeup']) return;
                     console.log($scope.swipe);
                     $scope.swipe && SLeasy.goSlider('+=1');
                 });
                 sliderBox.on('swipedown', function (e) {
+                    var slidersEvent = $config.sliders[$scope.sliderIndex].on;
+                    if (slidersEvent && slidersEvent['swipedown']) return;
                     $scope.swipe && SLeasy.goSlider('-=1');
                 });
             }
