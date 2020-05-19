@@ -14,11 +14,22 @@
                 "bottom": $scope.fixHeight - $config.height * $scope.viewScale + $config.alignOffset
             },
             xOffset = $scope.xOffset = {
-                "top": $config.alignOffset,
-                "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset,
-                "bottom": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset
+                "top": $config.alignOffset * $scope.viewScale,
+                "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset * $scope.viewScale,
+                "bottom": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset * $scope.viewScale
             },
             sliders = opt || $config.sliders;
+
+        $scope.yOffsetOrigin = {
+            "top": $config.alignOffset,
+            "center": ($scope.fixHeight / $scope.viewScale - $config.height) / 2 + $config.alignOffset,
+            "bottom": $scope.fixHeight / $scope.viewScale - $config.height + $config.alignOffset
+        };
+        $scope.xOffsetOrigin = {
+            "top": $config.alignOffset,
+            "center": (($scope.fixWidth || $config.viewport) / $scope.viewScale - $config.width) / 2 + $config.alignOffset,
+            "bottom": ($scope.fixWidth || $config.viewport) / $scope.viewScale - $config.width + $config.alignOffset
+        };
 
         for (var i = 0; i < sliders.length; i++) {
             var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
@@ -43,6 +54,7 @@
                 SLeasy.fixProps(subShow);
                 SLeasy.fixProps(subSet);
                 SLeasy.fixProps(subTo);
+                console.log(subShow);
 
                 //scrollMagic模式下除首屏外，其他不修正
                 if (!$config.scrollMagicMode || i == 0) {
@@ -76,6 +88,11 @@
             var props = transObj[$scope.fixPropsArr[i]],
                 postfix;
             if (props) {
+                //func
+                if ($.isFunction(props)) {
+                    transObj[$scope.fixPropsArr[i]] = props() * $scope.viewScale;
+                    continue;
+                }
                 if (typeof props == 'string') {
                     //clip
                     if (props.indexOf('rect') != -1) {
