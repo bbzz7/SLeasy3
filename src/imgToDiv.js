@@ -24,7 +24,7 @@
                     style = {
                         'backgroundImage': 'url(' + $(this).attr("src") + ')',
                         'backgroundRepeat': 'no-repeat',
-                        'backgroundSize': w * $scope.viewScale + 'px',
+                        'backgroundSize': '100% auto',
                         'width': w * $scope.viewScale + 'px',
                         'height': h * $scope.viewScale + 'px'
                     }
