@@ -88,10 +88,6 @@
                 totalTime = totalTime + motionTime + preTime;
                 var startTime = totalTime;
                 // console.warn(totalTime)
-            } else if (!time && i != 0) {
-                //非第一个set子元素，无time
-                totalTime = totalTime + preTime;
-                var startTime = 0;
             } else if (time && subMotion.start && typeof subMotion.start == 'string') {
                 //有time，有start，且start值为'+=n,-=n'字符串时
                 // console.warn('2------------------')
@@ -102,12 +98,13 @@
                 if (subMotion.start.indexOf('-=') != -1) totalTime = totalTime + preTime - parseFloat(subMotion.start.split('-=')[1]);
                 var startTime = totalTime;
             } else {
-                //有time，start为数字时
+                //有/无time，有/无start为数字时
                 // console.warn('1-----------------')
                 // console.warn('preTime:' + preTime)
                 // console.warn(totalTime + '+' + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0))
                 // console.warn('-----------------')
-                var startTime = totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0)
+                totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : preTime);
+                var startTime = time ? totalTime : 0;//无time的set子元素，startTime值为0
             }
 
             var subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in

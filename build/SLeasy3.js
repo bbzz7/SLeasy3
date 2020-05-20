@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.6 by 宇文互动 庄宇 2020-05-17 email:30755405@qq.com
+ SLeasy 3.9.7 by 宇文互动 庄宇 2020-05-20 email:30755405@qq.com
+ 3.9.7(2020-05-20):重构subMotion的timeline起始时间点定位~
  3.9.6(2020-05-17):更新自定义loading和slider本身添加on事件绑定参数选项~
  3.9.5(2020-05-12):更新完善height模式下的元素自适应~
  3.9.4(2020-05-04):更新优化完全按config配置顺序预加载图片，包括ae类型;webAudio模式下，内置音乐按钮增加全局静音功能~
@@ -2949,10 +2950,6 @@ module.exports = (function () {
                 totalTime = totalTime + motionTime + preTime;
                 var startTime = totalTime;
                 // console.warn(totalTime)
-            } else if (!time && i != 0) {
-                //非第一个set子元素，无time
-                totalTime = totalTime + preTime;
-                var startTime = 0;
             } else if (time && subMotion.start && typeof subMotion.start == 'string') {
                 //有time，有start，且start值为'+=n,-=n'字符串时
                 // console.warn('2------------------')
@@ -2963,12 +2960,13 @@ module.exports = (function () {
                 if (subMotion.start.indexOf('-=') != -1) totalTime = totalTime + preTime - parseFloat(subMotion.start.split('-=')[1]);
                 var startTime = totalTime;
             } else {
-                //有time，start为数字时
+                //有/无time，有/无start为数字时
                 // console.warn('1-----------------')
                 // console.warn('preTime:' + preTime)
                 // console.warn(totalTime + '+' + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0))
                 // console.warn('-----------------')
-                var startTime = totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0)
+                totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : preTime);
+                var startTime = time ? totalTime : 0;//无time的set子元素，startTime值为0
             }
 
             var subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
