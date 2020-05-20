@@ -2936,12 +2936,39 @@ module.exports = (function () {
             // console.warn('subMotion.time:' + subMotion.time);
             // console.warn('time:' + time);
 
-            if (!time) {
+            // console.warn('=============================================');
+            // subMotion.pause && console.log('pasue:' + startTime);
+            // console.log('name:' + subMotion.class);
+            // console.log('preTime:' + preTime);
+            // console.log(totalTime == 0 && (time && subMotion.start == undefined));
+
+            if (totalTime == 0 && (time && subMotion.start == undefined)) {
+                //第一个有time,没有start的子元素
+                // console.warn('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+                //+preTime是考虑首尾页情况下，motionTime为0，totalTime会连续为0的问题
+                totalTime = totalTime + motionTime + preTime;
+                var startTime = totalTime;
+                // console.warn(totalTime)
+            } else if (!time && i != 0) {
+                //非第一个set子元素，无time
+                totalTime = totalTime + preTime;
                 var startTime = 0;
-            } else if (preTime || subMotion.start !== undefined) {
-                var startTime = totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0)
+            } else if (time && subMotion.start && typeof subMotion.start == 'string') {
+                //有time，有start，且start值为'+=n,-=n'字符串时
+                // console.warn('2------------------')
+                // console.warn('preTime:' + preTime);
+                // console.warn(totalTime + '+' + (preTime + parseFloat(subMotion.start.split('+=')[1])));
+                // console.warn('------------------')
+                if (subMotion.start.indexOf('+=') != -1) totalTime = totalTime + preTime + parseFloat(subMotion.start.split('+=')[1]);
+                if (subMotion.start.indexOf('-=') != -1) totalTime = totalTime + preTime - parseFloat(subMotion.start.split('-=')[1]);
+                var startTime = totalTime;
             } else {
-                var startTime = totalTime = motionTime;
+                //有time，start为数字时
+                // console.warn('1-----------------')
+                // console.warn('preTime:' + preTime)
+                // console.warn(totalTime + '+' + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0))
+                // console.warn('-----------------')
+                var startTime = totalTime = totalTime + (time ? (subMotion.start !== undefined ? subMotion.start : preTime) : 0)
             }
 
             var subIn = $.extend({force3D: $config.force3D}, subMotion.in || {}),//in
@@ -3001,8 +3028,9 @@ module.exports = (function () {
                 // console.log(subShow)
             }
             // console.log($dom)
-            // console.log('time:'+time)
-            // console.log('startTime:'+startTime)
+            // console.log('time:' + time)
+            // console.log('totalTime:' + totalTime)
+            // console.log('startTime:' + startTime)
             // console.log(subIn)
             // console.log(subShow)
             // console.log(subMotion.to)
