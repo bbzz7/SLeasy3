@@ -113,13 +113,13 @@
 
         //in
         if ($scope.sliderIndex < nextIndex) {
-            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1 && $config.loopMode) {//为最首，最末页情况
                 _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
             } else {
                 _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
             }
         } else {
-            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0 && $config.loopMode) {//为最首，最末页情况
                 _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
             } else {
                 _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
@@ -128,13 +128,13 @@
 
         //out
         if ($scope.sliderIndex < nextIndex) {
-            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1 && $config.loopMode) {//为最首，最末页情况
                 _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
             } else {
                 _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
             }
         } else {
-            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0 && $config.loopMode) {//为最首，最末页情况
                 _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
             } else {
                 _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));

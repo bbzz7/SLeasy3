@@ -3085,16 +3085,16 @@ module.exports = (function () {
                         WebkitBackfaceVisibility: 'hidden',
                         webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {x: 0, y: 0,rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 2
                 {
                     set: {transformOrigin: '50% 120%'},
-                    in: {x: 0, y: 0,rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 3
                 {
@@ -3134,9 +3134,9 @@ module.exports = (function () {
                 },
                 // 4
                 {
-                    in: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone}
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
                 {
@@ -3162,16 +3162,16 @@ module.exports = (function () {
                         WebkitBackfaceVisibility: 'hidden',
                         webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {x: 0, y: 0,rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 2
                 {
                     set: {transformOrigin: '120% 50%'},
-                    in: {x: 0, y: 0,rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 3
                 {
@@ -3212,9 +3212,9 @@ module.exports = (function () {
                 },
                 // 4
                 {
-                    in: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone}
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
                 {
@@ -3362,13 +3362,13 @@ module.exports = (function () {
 
         //in
         if ($scope.sliderIndex < nextIndex) {
-            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1 && $config.loopMode) {//为最首，最末页情况
                 _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
             } else {
                 _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
             }
         } else {
-            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0 && $config.loopMode) {//为最首，最末页情况
                 _in = $.extend({display: 'block'}, (customFX.in || motionFX.in));
             } else {
                 _in = $.extend({display: 'block'}, (customFX.out || motionFX.out));
@@ -3377,13 +3377,13 @@ module.exports = (function () {
 
         //out
         if ($scope.sliderIndex < nextIndex) {
-            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1) {//为最首，最末页情况
+            if ($scope.sliderIndex == 0 && nextIndex == $config.sliders.length - 1 && $config.loopMode) {//为最首，最末页情况
                 _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
             } else {
                 _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
             }
         } else {
-            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0) {//为最首，最末页情况
+            if ($scope.sliderIndex == $config.sliders.length - 1 && nextIndex == 0 && $config.loopMode) {//为最首，最末页情况
                 _out = $.extend({display: 'none'}, (customFX.out || motionFX.out));
             } else {
                 _out = $.extend({display: 'none'}, (customFX.in || motionFX.in));
@@ -4067,12 +4067,12 @@ module.exports = (function () {
         if ($config.arrowMode) {
             if ($config.swipeMode == 'x') {
                 var arrowHtml = '\
-				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
+				<svg id="SLeasy_arrow" viewBox="0 0 40 20" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
 				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
 
                 $(arrowHtml).appendTo('#' + ($config.id || 'SLeasy'));
-                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', autoAlpha: 0.8});
+                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', autoAlpha: 1});
                 T.from($("#SLeasy_arrow"), 1.5, {
                     autoAlpha: 0,
                     x: '+=10',
@@ -4084,12 +4084,12 @@ module.exports = (function () {
             } else {
 
                 var arrowHtml = '\
-				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
+				<svg id="SLeasy_arrow" viewBox="0 0 40 20" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
 				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
                 var arrowBox = $config.stageMode == 'scroll' ? 'body' : '#' + ($config.id || 'SLeasy');
                 $(arrowHtml).appendTo(arrowBox);
-                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', autoAlpha: 0.8});
+                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', autoAlpha: 1});
                 T.from($("#SLeasy_arrow"), 1.5, {
                     autoAlpha: 0,
                     y: '+=10',
