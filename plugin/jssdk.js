@@ -219,6 +219,7 @@
         };
         $.extend($config, opt);
         return jssdk._uploadImage($config).then(function (serverId) {
+            console.log(serverId);
             return $.get($config.apiUrl, {mediaId: serverId}, '', 'jsonp');
         })
     };
