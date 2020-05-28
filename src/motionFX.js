@@ -24,16 +24,16 @@
                         WebkitBackfaceVisibility: 'hidden',
                         webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {x: 0, y: 0,rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationY: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationY: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationY: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 2
                 {
                     set: {transformOrigin: '50% 120%'},
-                    in: {x: 0, y: 0,rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 3
                 {
@@ -73,9 +73,9 @@
                 },
                 // 4
                 {
-                    in: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone}
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
                 {
@@ -101,16 +101,16 @@
                         WebkitBackfaceVisibility: 'hidden',
                         webkitBackfaceVisibility: 'hidden'
                     },
-                    in: {x: 0, y: 0,rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationX: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationX: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationX: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 2
                 {
                     set: {transformOrigin: '120% 50%'},
-                    in: {x: 0, y: 0,rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
-                    show: {x: 0, y: 0,rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
-                    out: {x: 0, y: 0,rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
+                    in: {x: 0, y: 0, rotationZ: -90, autoAlpha: 0, ease: Expo.easeInOut},
+                    show: {x: 0, y: 0, rotationZ: 0, autoAlpha: 1, ease: Expo.easeInOut},
+                    out: {x: 0, y: 0, rotationZ: 90, autoAlpha: 0, ease: Expo.easeInOut}
                 },
                 // 3
                 {
@@ -151,9 +151,9 @@
                 },
                 // 4
                 {
-                    in: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone},
-                    show: {x: 0, y: 0, autoAlpha: 1, ease: Linear.easeNone},
-                    out: {x: 0, y: 0, autoAlpha: 0, ease: Linear.easeNone}
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
                 {
