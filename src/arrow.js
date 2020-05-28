@@ -13,12 +13,12 @@
         if ($config.arrowMode) {
             if ($config.swipeMode == 'x') {
                 var arrowHtml = '\
-				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
+				<svg id="SLeasy_arrow" viewBox="0 0 40 20" style="position:fixed;width:40px;height:20px;color:#fff;margin-top:-14px;top:50%;display:none">\
 				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
 
                 $(arrowHtml).appendTo('#' + ($config.id || 'SLeasy'));
-                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', autoAlpha: 0.8});
+                T.set($("#SLeasy_arrow"), {rotation: -90, right: 0, display: 'block', autoAlpha: 1});
                 T.from($("#SLeasy_arrow"), 1.5, {
                     autoAlpha: 0,
                     x: '+=10',
@@ -30,12 +30,12 @@
             } else {
 
                 var arrowHtml = '\
-				<svg id="SLeasy_arrow" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
+				<svg id="SLeasy_arrow" viewBox="0 0 40 20" style="position:fixed;width:40px;height:20px; margin-left:-20px;left:50%;color:#fff;display:none">\
 				<polyline points="5,15 20,5, 35,15" fill-opacity="0" stroke="' + arrowColor + '" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>\
 				</svg>';
                 var arrowBox = $config.stageMode == 'scroll' ? 'body' : '#' + ($config.id || 'SLeasy');
                 $(arrowHtml).appendTo(arrowBox);
-                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', autoAlpha: 0.8});
+                T.set($("#SLeasy_arrow"), {bottom: 10, display: 'block', autoAlpha: 1});
                 T.from($("#SLeasy_arrow"), 1.5, {
                     autoAlpha: 0,
                     y: '+=10',
