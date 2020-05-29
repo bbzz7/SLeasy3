@@ -3772,6 +3772,8 @@ module.exports = (function () {
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
                 } else {
+                    HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
+                    HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 }
 
@@ -3806,6 +3808,8 @@ module.exports = (function () {
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
                 } else {
+                    HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
+                    HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
                     HDom.off(e).on(e, callback);//事件绑定
                 }
 
