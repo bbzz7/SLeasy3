@@ -253,6 +253,7 @@
         }
 
         //幻灯全局swipe
+        if(!SLeasy.hammerObj().element) return;
         if ($.isEmptyObject($config.loading)) {
             if (allowSwipe) {
                 SLeasy.hammerObj().get('swipe').set({enable: true});
@@ -593,6 +594,11 @@
             var offsetY = (window.innerHeight - oldHeight) / 2;
             callback(window.innerWidth, window.innerHeight, offsetX, offsetY);
         }
+    }
+
+    //
+    SLeasy.viewScale = function (num) {
+        return num * $scope.viewScale;
     }
 
     //复制文字功能函数
