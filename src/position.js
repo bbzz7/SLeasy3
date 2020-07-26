@@ -61,15 +61,15 @@
                     //根据幻灯对齐方式参数，进行y轴自适应修正
                     var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
                     //y
-                    if (subIn.y || subIn.y === 0) subIn.y += yOffset[alignMode];
-                    if (subShow.y || subShow.y === 0) subShow.y += yOffset[alignMode];
-                    if (subSet.y || subSet.y === 0) subSet.y += yOffset[alignMode];
-                    if (subTo.y || subTo.y === 0) subTo.y += yOffset[alignMode];
+                    if (subIn.y >= 0 || subIn.y <= 0) subIn.y += yOffset[alignMode];
+                    if (subShow.y >= 0 || subShow.y <= 0) subShow.y += yOffset[alignMode];
+                    if (subSet.y >= 0 || subSet.y <= 0) subSet.y += yOffset[alignMode];
+                    if (subTo.y >= 0 || subTo.y <= 0) subTo.y += yOffset[alignMode];
                     //x
-                    if (subIn.x || subIn.x === 0) subIn.x += xOffset[alignMode];
-                    if (subShow.x || subShow.x === 0) subShow.x += xOffset[alignMode];
-                    if (subSet.x || subSet.x === 0) subSet.x += xOffset[alignMode];
-                    if (subTo.x || subTo.x === 0) subTo.x += xOffset[alignMode];
+                    if (subIn.x >= 0 || subIn.x <= 0) subIn.x += xOffset[alignMode];
+                    if (subShow.x >= 0 || subShow.x <= 0) subShow.x += xOffset[alignMode];
+                    if (subSet.x >= 0 || subSet.x <= 0) subSet.x += xOffset[alignMode];
+                    if (subTo.x >= 0 || subTo.x <= 0) subTo.x += xOffset[alignMode];
                 }
             }
         }
@@ -83,14 +83,15 @@
             'backgroundPositionY': true,
             'letterSpacing': true
         }
-        //console.log(transObj);
+        // console.log(transObj);
         for (var i = 0; i < $scope.fixPropsArr.length; i++) {
             var props = transObj[$scope.fixPropsArr[i]],
                 postfix;
             if (props) {
                 //func
                 if ($.isFunction(props)) {
-                    transObj[$scope.fixPropsArr[i]] = props() * $scope.viewScale;
+                    // transObj[$scope.fixPropsArr[i]] = props() * $scope.viewScale;
+                    transObj[$scope.fixPropsArr[i]] = props;
                     continue;
                 }
                 if (typeof props == 'string') {
@@ -129,6 +130,7 @@
                         props = parseInt(props.replace('-=', ''));//去掉%后缀
                         postfix = '-=';//确定后缀值
                         transObj[$scope.fixPropsArr[i]] = postfix + props * $scope.viewScale;//按照viewScale等比缩放
+                        console.log(transObj[$scope.fixPropsArr[i]])
                         continue;
                     }
                 } else {
