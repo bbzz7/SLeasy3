@@ -80,8 +80,9 @@
     }
 
     //check weChat
-    SLeasy.isWechat = SLeasy.isWeixin = function () {
+    SLeasy.isWechat = SLeasy.isWeixin = function (noDevTools) {
         var ua = window.navigator.userAgent.toLowerCase();
+        if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
         if (ua.match(/MicroMessenger/i) == 'micromessenger') {
             return true;
         } else {
@@ -253,7 +254,7 @@
         }
 
         //幻灯全局swipe
-        if(!SLeasy.hammerObj().element) return;
+        if (!SLeasy.hammerObj().element) return;
         if ($.isEmptyObject($config.loading)) {
             if (allowSwipe) {
                 SLeasy.hammerObj().get('swipe').set({enable: true});
