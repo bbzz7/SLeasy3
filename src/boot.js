@@ -45,6 +45,7 @@
 
             // SLeasy.eventBind(false);//事件绑定
             $scope.loadingReady = true;
+            $config.loading.onReady && $config.loading.onReady()
         } else {
             //幻灯初始化
             sliderHtml = pageInit($config.sliders, 'sliders');
