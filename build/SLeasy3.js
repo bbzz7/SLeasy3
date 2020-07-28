@@ -3966,8 +3966,13 @@ module.exports = (function () {
 
         //howler
         if (typeof $config.musicUrl == 'object') {
-            if($config.musicMuteMode=='global') Howler.mute(false);
-            $scope.bgmID = $scope.audios['bgm'].play();
+            if ($config.musicMuteMode == 'global') Howler.mute(false);
+            if ($scope.bgmID) {
+                $scope.audios['bgm'].play($scope.bgmID);
+            } else {
+                $scope.bgmID = $scope.audios['bgm'].play();
+            }
+
         }
 
         //audio
@@ -4008,7 +4013,7 @@ module.exports = (function () {
 
         //howler
         if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
-            if($config.musicMuteMode=='global') Howler.mute(true);
+            if ($config.musicMuteMode == 'global') Howler.mute(true);
             return $scope.audios['bgm'].pause($scope.bgmID);
         }
         //audio
