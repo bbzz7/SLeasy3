@@ -30,3 +30,4 @@ SLeasy.$check = function(text){
   }
   return 0;
 }
+//返回1则有敏感词,不通过; 返回0则通过,无敏感词;
