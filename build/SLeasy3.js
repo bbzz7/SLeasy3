@@ -4152,6 +4152,7 @@ module.exports = (function () {
 
         if (!$.isEmptyObject($config.loading) && !$scope.loadingReady) {
             //loading初始化
+            $config.loading.onInit && $config.loading.onInit();
             $config.loading.type = 'loading';
             loadingHtml = SLeasy.slider($config.loading);
             //音乐初始化
