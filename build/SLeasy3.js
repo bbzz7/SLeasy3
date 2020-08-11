@@ -3972,7 +3972,8 @@ module.exports = (function () {
             } else {
                 $scope.bgmID = $scope.audios['bgm'].play();
             }
-
+        } else {
+            $scope.bgmID = true;
         }
 
         //audio
