@@ -3972,8 +3972,6 @@ module.exports = (function () {
             } else {
                 $scope.bgmID = $scope.audios['bgm'].play();
             }
-        } else {
-            $scope.bgmID = true;
         }
 
         //audio
@@ -4016,6 +4014,8 @@ module.exports = (function () {
         if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
             if ($config.musicMuteMode == 'global') Howler.mute(true);
             return $scope.audios['bgm'].pause($scope.bgmID);
+        } else {
+            $scope.bgmID = true;
         }
         //audio
         $("#SLeasy_music").length && $("#SLeasy_music")[0].pause();
