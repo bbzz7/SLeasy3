@@ -765,6 +765,7 @@ module.exports = (function () {
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
+        routerNotFound:function (){SLeasy.goSlider(0)},//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
         alignMode: 'center',//幻灯背景对齐方式
@@ -1104,7 +1105,7 @@ module.exports = (function () {
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return r[2];
         //哈希查找
-        var h = window.location.hash.substr(1).match(reg);
+        var h = window.location.hash.substr(1).replace(/\//g,'&').match(reg);
         if (h != null) return h[2];
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
@@ -4611,8 +4612,8 @@ module.exports = (function () {
                 console.log('router action~~~');
             },
             notfound: function () {
-                console.log('no router match~~~');
-                // SLeasy.goSlider(0);
+                console.warn('no router match~~~');
+                $config.routerNotFound && $config.routerNotFound();
             }
         }
         var router = new Router($.extend(def, {}));
