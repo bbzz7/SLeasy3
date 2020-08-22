@@ -51,8 +51,8 @@
                 console.log('router action~~~');
             },
             notfound: function () {
-                console.log('no router match~~~');
-                // SLeasy.goSlider(0);
+                console.warn('no router match~~~');
+                $config.routerNotFound && $config.routerNotFound();
             }
         }
         var router = new Router($.extend(def, {}));
