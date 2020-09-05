@@ -1105,7 +1105,7 @@ module.exports = (function () {
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return r[2];
         //哈希查找
-        var h = window.location.hash.substr(1).replace(/\//g,'&').match(reg);
+        var h = window.location.hash.substr(1).replace(/\//g, '&').match(reg);
         if (h != null) return h[2];
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
@@ -1479,6 +1479,22 @@ module.exports = (function () {
         return num * $scope.viewScale;
     }
 
+    //
+    SLeasy.respY = function (y, margin) {
+        return function (index, target) {
+            var m = margin || 0;
+            var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
+            var yTop = y * $scope.viewScale + $scope.yOffset.center;
+            if (yBottom > $scope.fixHeight) {
+                return $scope.fixHeight - $(target).height() - m;
+            } else if (yTop < 0) {
+                return m;
+            } else {
+                return y * $scope.viewScale + $scope.yOffset.center;
+            }
+        }
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
@@ -1647,7 +1663,7 @@ module.exports = (function () {
         //适配策略
         var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
             minHeight = 480,//最小高度
-            ratio = device.desktop() ? $config.width/$config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
+            ratio = device.desktop() ? $config.width / $config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
@@ -1714,7 +1730,7 @@ module.exports = (function () {
 
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height();
+        var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height() + 1;//+1以避免小数，导致底部有背景缝隙
         $('#SLeasy_fixHeight').remove();
         $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
         console.log('fixHeight:' + $scope.fixHeight)
@@ -4683,15 +4699,15 @@ module.exports = (function () {
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                $(".SLeasy_loading").fadeIn(300, function () {
-                    $config.loading.onComplete && $config.loading.onComplete();
+                SLeasy.init($config).done(function () {
                     SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
-                    $config.loading.onStartLoad && $config.loading.onStartLoad();
-                    SLeasy.init($config).done(function () {
-                        dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
-                        console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-                        $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
+                    $(".SLeasy_loading").fadeIn(300, function () {
+                        $config.loading.onComplete && $config.loading.onComplete();
+                        $config.loading.onStartLoad && $config.loading.onStartLoad();
                     });
+                    dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
+                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+                    $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                 });
             }
         });
