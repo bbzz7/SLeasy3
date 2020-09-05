@@ -228,7 +228,7 @@
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return r[2];
         //哈希查找
-        var h = window.location.hash.substr(1).replace(/\//g,'&').match(reg);
+        var h = window.location.hash.substr(1).replace(/\//g, '&').match(reg);
         if (h != null) return h[2];
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
@@ -600,6 +600,22 @@
     //
     SLeasy.viewScale = function (num) {
         return num * $scope.viewScale;
+    }
+
+    //
+    SLeasy.respY = function (y, margin) {
+        return function (index, target) {
+            var m = margin || 0;
+            var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
+            var yTop = y * $scope.viewScale + $scope.yOffset.center;
+            if (yBottom > $scope.fixHeight) {
+                return $scope.fixHeight - $(target).height() - m;
+            } else if (yTop < 0) {
+                return m;
+            } else {
+                return y * $scope.viewScale + $scope.yOffset.center;
+            }
+        }
     }
 
     //复制文字功能函数
