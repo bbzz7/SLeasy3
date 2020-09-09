@@ -152,9 +152,9 @@
             subMotion.pause && tl.addPause(startTime);
 
             //add motion
-            if (subMotion.to) {
-                subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
-                tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
+            if (subMotion.el) {
+                subMotion.set && T.set($(subMotion.el), subMotion.set);
+                if(subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
             } else {
                 if (set.display && set.display == 'none') subShow.display = 'none';
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
