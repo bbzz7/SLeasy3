@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.8 by 宇文互动 庄宇 2020-07-26 email:30755405@qq.com
+ SLeasy 3.9.9 by 宇文互动 庄宇 2020-09-06 email:30755405@qq.com
+ 3.9.9(2020-09-06):fixHeight+1以避免小数，导致底部有背景缝隙;增加SLeasy.respY()功能函数，解决顶部/底部元素超出安全区域时自适应定位~
  3.9.8(2020-07-26):修正x,y自适应偏移判断bug;回滚config函数值计算的返回值为原生值;添加SortableJS库~
  3.9.7(2020-05-20):重构subMotion的timeline起始时间点定位~
  3.9.6(2020-05-17):更新自定义loading和slider本身添加on事件绑定参数选项~
@@ -908,7 +909,7 @@ module.exports = (function () {
         isDetailMotion: 0,//当前详情页子动画完成状态
 
         timeline: null,//子动画时间线
-        fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing'],//需要修正的属性
+        fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
@@ -1495,6 +1496,11 @@ module.exports = (function () {
         }
     }
 
+    //
+    SLeasy.checkPhone = function (phoneNum) {
+        return (/^1[3456789]\d{9}$/.test(phoneNum));
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
@@ -1883,6 +1889,15 @@ module.exports = (function () {
 				' + opt.text + '\
 				</div>';
             },
+            //a ---------------------------------------------------------
+            "a": function (opt) {
+                return '<a\
+                id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
+                class="' + (opt.class || '') + ' SLeasy_a SLeasy_' + (subName[opt.type] || opt.type) + '"\
+                href="' + opt.a + '"\
+                style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+                </a>'
+            },
             //audio -----------------------------------------------------
             'audio': function (opt) {
                 return '<audio\
@@ -1899,7 +1914,7 @@ module.exports = (function () {
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
 				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5-page"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : '-webkit-playsinline webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto" ') + (opt.loop !== undefined ? 'loop="loop"' : '') + '>\
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (typeof opt.x5 == 'undefined' || opt.x5 ? 'x5-video-player-type="h5-page"' : '') + 'width="' + (opt.width * $scope.viewScale || '100%') + '" ' + (opt.height ? 'height="' + opt.height * $scope.viewScale + '"' : 'height="100%"') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : 'webkit-playsinline playsinline') + (typeof opt.playsinline != 'undefined' && opt.playsinline && opt.white ? '' : ' x5-playsinline') + ' preload="' + (opt.preload || 'auto" ') + (opt.loop !== undefined ? 'loop="loop"' : '') + '>\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
@@ -3041,9 +3056,9 @@ module.exports = (function () {
             subMotion.pause && tl.addPause(startTime);
 
             //add motion
-            if (subMotion.to) {
-                subMotion.set && tl.add(T.set($(subMotion.el), subMotion.set));
-                tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
+            if (subMotion.el) {
+                subMotion.set && T.set($(subMotion.el), subMotion.set);
+                if(subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
             } else {
                 if (set.display && set.display == 'none') subShow.display = 'none';
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
@@ -4451,18 +4466,19 @@ module.exports = (function () {
     SLeasy.loader.show = function (msg, overLayBg) {
         if ($("#SLeasy_loader").length) { //如果loader已初始化
             msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
-            overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg})
+            overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg});//设置背景
             $("#SLeasy_loader").fadeIn(300);
         } else {
             var loaderBox = $config.stageMode == 'scroll' ? $("body") : $scope.sliderBox;
             loaderBox.prepend(SLeasy.loader.html());
             msg && $("#SLeasy_loader_msg").text(msg) && SLeasy.loader.progress('');//设置msg
+            overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg});//设置背景
             $("#SLeasy_loader").fadeIn(300);
         }
     }
 
-    //hidden
-    SLeasy.loader.hidden = function () {
+    //hide
+    SLeasy.loader.hide = SLeasy.loader.hidden = function () {
         $("#SLeasy_loader").fadeOut(300);
     }
 
@@ -4522,36 +4538,36 @@ module.exports = (function () {
             for (var j = 0; j < loadArr.length; j++) {
                 (function (i) {
                     // setTimeout(function () {
-                        var img = new Image();
-                        // img.crossOrigin = "Anonymous";
-                        img.src = loadArr[i];
-                        console.log(':::::multiLoad开始加载：' + img.src);
-                        img.onload = function () {
-                            loaded++;
-                            //console.log(loaded);
-                            SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
-                            SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
-                            $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                            //自定义loading百分比显示
-                            if (hasCustomLoading && $scope.loadingReady) {
-                                //自定义loading的onProgress回调
-                                // console.log('========================='+percent+'========================')
-                                $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
-                            }
-                            // dfd.notify(SLeasy.loader.percent);
-                            if (SLeasy.loader.percent >= 100) {
-                                console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
-                                if ($scope.loadingReady || (!hasCustomLoading)) {
-                                    callback ? callback() : $config.on['loaded'](); //预加载完毕回调
-                                } else {
-                                    //自定义loading自身加载完毕回调
-                                    $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
-                                }
-                                SLeasy.exloadCache();//exLoad Cache
-                                dfd.resolve($config, $scope);
-                            }
-
+                    var img = new Image();
+                    // img.crossOrigin = "Anonymous";
+                    img.src = loadArr[i];
+                    console.log(':::::multiLoad开始加载：' + img.src);
+                    img.onload = function () {
+                        loaded++;
+                        //console.log(loaded);
+                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
+                        SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                        $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
+                        //自定义loading百分比显示
+                        if (hasCustomLoading && $scope.loadingReady) {
+                            //自定义loading的onProgress回调
+                            // console.log('========================='+percent+'========================')
+                            $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
                         }
+                        // dfd.notify(SLeasy.loader.percent);
+                        if (SLeasy.loader.percent >= 100) {
+                            console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
+                            if ($scope.loadingReady || (!hasCustomLoading)) {
+                                callback ? callback() : $config.on['loaded'](); //预加载完毕回调
+                            } else {
+                                //自定义loading自身加载完毕回调
+                                $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
+                            }
+                            SLeasy.exloadCache();//exLoad Cache
+                            dfd.resolve($config, $scope);
+                        }
+
+                    }
                     // }, 1000 / 50 * i)
                 })(j)
             }
