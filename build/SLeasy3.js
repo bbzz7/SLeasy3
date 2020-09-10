@@ -3756,10 +3756,10 @@ module.exports = (function () {
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
             //禁止触摸默认行为
-            SLeasy.touchScroll(false);
+            SLeasy.touchScroll(false, true);
 
             if ($config.stageMode == 'scroll') {
-                SLeasy.touchScroll(true);
+                SLeasy.touchScroll(true, false);
                 sliderBox.get('swipe').set({enable: false});
             }
 
