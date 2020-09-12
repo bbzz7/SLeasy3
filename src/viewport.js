@@ -31,7 +31,12 @@
                     var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
                     //height模式下，重置viewScale
                     if ($config.width / $config.height < ratio) {
-                        $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+                        if ($config.fixWidthMode) {
+                            $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+                        } else {
+                            $scope.viewScale = height / $config.stageMode;//刷新幻灯缩放比例因子
+                            $scope.fixWidth = $config.width * $scope.viewScale;
+                        }
                     }
                     return viewportContent;
                 },
