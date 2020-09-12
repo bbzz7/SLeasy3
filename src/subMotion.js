@@ -142,7 +142,17 @@
             }
 
             // console.log($dom);
+            //roundXY
+            if (subMotion.roundXY) {
+                if (subMotion.set && subMotion.set.x) subMotion.set.x = Math.round(subMotion.set.x);
+                if (subMotion.set && subMotion.set.y) subMotion.set.y = Math.round(subMotion.set.y);
+                if (subMotion.in && subMotion.in.x) subMotion.in.x = Math.round(subMotion.in.x);
+                if (subMotion.in && subMotion.in.y) subMotion.in.y = Math.round(subMotion.in.y);
+                if (subMotion.show && subMotion.show.x) subMotion.show.x = Math.round(subMotion.show.x);
+                if (subMotion.show && subMotion.show.y) subMotion.show.y = Math.round(subMotion.show.y);
+            }
             //set
+            console.log(subMotion.set)
             subMotion.set && T.set($dom, subMotion.set);
 
             //add label
@@ -154,7 +164,7 @@
             //add motion
             if (subMotion.el) {
                 subMotion.set && T.set($(subMotion.el), subMotion.set);
-                if(subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
+                if (subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
             } else {
                 if (set.display && set.display == 'none') subShow.display = 'none';
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
