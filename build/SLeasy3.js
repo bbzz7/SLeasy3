@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.9 by 宇文互动 庄宇 2020-09-06 email:30755405@qq.com
+ SLeasy 3.9.10 by 宇文互动 庄宇 2020-09-12 email:30755405@qq.com
+ 3.9.10(2020-09-12):增加fixWidthMode自适应宽度模式开关，更新完善stageMode的阈值模式~
  3.9.9(2020-09-06):fixHeight+1以避免小数，导致底部有背景缝隙;增加SLeasy.respY()功能函数，解决顶部/底部元素超出安全区域时自适应定位~
  3.9.8(2020-07-26):修正x,y自适应偏移判断bug;回滚config函数值计算的返回值为原生值;添加SortableJS库~
  3.9.7(2020-05-20):重构subMotion的timeline起始时间点定位~
@@ -777,6 +778,7 @@ module.exports = (function () {
         debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
+        fixWidthMode:false,//舞台的宽度自适应模式
         positionMode: 'absolute',//舞台子元素position模式
         scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
@@ -1501,6 +1503,11 @@ module.exports = (function () {
         return (/^1[3456789]\d{9}$/.test(phoneNum));
     }
 
+    //
+    SLeasy.bg = function (el, bgImage) {
+        $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
@@ -1687,7 +1694,12 @@ module.exports = (function () {
                     var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
                     //height模式下，重置viewScale
                     if ($config.width / $config.height < ratio) {
-                        $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+                        if ($config.fixWidthMode) {
+                            $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+                        } else {
+                            $scope.viewScale = height / $config.stageMode;//刷新幻灯缩放比例因子
+                            $scope.fixWidth = $config.width * $scope.viewScale;
+                        }
                     }
                     return viewportContent;
                 },
@@ -3046,7 +3058,17 @@ module.exports = (function () {
             }
 
             // console.log($dom);
+            //roundXY
+            if (subMotion.roundXY) {
+                if (subMotion.set && subMotion.set.x) subMotion.set.x = Math.round(subMotion.set.x);
+                if (subMotion.set && subMotion.set.y) subMotion.set.y = Math.round(subMotion.set.y);
+                if (subMotion.in && subMotion.in.x) subMotion.in.x = Math.round(subMotion.in.x);
+                if (subMotion.in && subMotion.in.y) subMotion.in.y = Math.round(subMotion.in.y);
+                if (subMotion.show && subMotion.show.x) subMotion.show.x = Math.round(subMotion.show.x);
+                if (subMotion.show && subMotion.show.y) subMotion.show.y = Math.round(subMotion.show.y);
+            }
             //set
+            console.log(subMotion.set)
             subMotion.set && T.set($dom, subMotion.set);
 
             //add label
@@ -3058,7 +3080,7 @@ module.exports = (function () {
             //add motion
             if (subMotion.el) {
                 subMotion.set && T.set($(subMotion.el), subMotion.set);
-                if(subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
+                if (subMotion.to) tl.add(T.to($(subMotion.el), time, $.extend({force3D: $config.force3D}, subMotion.to)), startTime);
             } else {
                 if (set.display && set.display == 'none') subShow.display = 'none';
                 tl.add(T.fromTo($dom, time, subIn, subShow), startTime);
