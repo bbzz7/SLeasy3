@@ -30,6 +30,7 @@
         debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
+        fixWidthMode:false,//舞台的宽度自适应模式
         positionMode: 'absolute',//舞台子元素position模式
         scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
