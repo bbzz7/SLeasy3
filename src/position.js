@@ -54,7 +54,6 @@
                 SLeasy.fixProps(subShow);
                 SLeasy.fixProps(subSet);
                 SLeasy.fixProps(subTo);
-                console.log(subShow);
 
                 //scrollMagic模式下除首屏外，其他不修正
                 if (!$config.scrollMagicMode || i == 0) {

@@ -228,7 +228,7 @@
         var r = window.location.search.substr(1).match(reg);
         if (r != null) return r[2];
         //哈希查找
-        var h = window.location.hash.substr(1).replace(/\//g, '&').match(reg);
+        var h = window.location.hash.substr(1).replace(/\//g, '&').replace(/\?/g, '&').match(reg);
         if (h != null) return h[2];
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
