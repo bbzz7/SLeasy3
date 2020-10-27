@@ -637,49 +637,56 @@
      苹果手机：微信里面和sarafi浏览器里也都可以，
      PC:sarafi版本必须在10.2以上，其他浏览器可以.
      兼容性测试网站：https://www.caniuse.com/*/
-    SLeasy.copyText = function (text, msg) {
-        // 数字没有 .length 不能执行selectText 需要转化成字符串
-        var textString = text.toString();
-        var input = document.querySelector('#copy-input');
-        if (!input) {
-            input = document.createElement('input');
-            input.id = "copy-input";
-            input.readOnly = "readOnly";        // 防止ios聚焦触发键盘事件
-            input.style.position = "absolute";
-            input.style.left = "-1000px";
-            input.style.zIndex = "-1000";
-            // document.body.appendChild(input)
-            if (document.querySelector('#SLeasy')) {
-                var $SLeasy = document.querySelector('#SLeasy');
-                $SLeasy.appendChild(input);
-            } else {
-                document.body.appendChild(input);
-            }
+    SLeasy.copyText = function (text, msg,callBack) {
+        var element = document.createElement('textarea');
+        var previouslyFocusedElement = document.activeElement;
+
+        element.value = text;
+
+        // Prevent keyboard from showing on mobile
+        element.setAttribute('readonly', '');
+
+        element.style.contain = 'strict';
+        element.style.position = 'absolute';
+        element.style.top = '-999px';
+        element.style.fontSize = '12pt'; // Prevent zooming on iOS
+
+        var selection = document.getSelection();
+        var originalRange = false;
+        if (selection.rangeCount > 0) {
+            originalRange = selection.getRangeAt(0);
         }
-        input.value = textString;
-        // ios必须先选中文字且不支持 input.select();
-        selectText(input, 0, textString.length);
-        if (document.execCommand('copy')) {
-            document.execCommand('copy');
-            msg ? alert(msg) : alert('已复制到粘贴板');
-        } else {
-            console.log('该机型不兼容复制函数，请手动复制~');
+
+        $('#SLeasy').append(element);
+        element.select();
+
+        // Explicit selection workaround for iOS
+        element.selectionStart = 0;
+        element.selectionEnd = text.length;
+
+        var isSuccess = false;
+        try {
+            isSuccess = document.execCommand('copy');
+        } catch (_) {
         }
-        input.blur();
-        // input自带的select()方法在苹果端无法进行选择，所以需要自己去写一个类似的方法
-        // 选择文本。createTextRange(setSelectionRange)是input方法
-        function selectText(textbox, startIndex, stopIndex) {
-            if (textbox.createTextRange) {//ie
-                var range = textbox.createTextRange();
-                range.collapse(true);
-                range.moveStart('character', startIndex);//起始光标
-                range.moveEnd('character', stopIndex - startIndex);//结束光标
-                range.select();//不兼容苹果
-            } else {//firefox/chrome
-                textbox.setSelectionRange(startIndex, stopIndex);
-                textbox.focus();
-            }
+
+        element.remove();
+
+        if (originalRange) {
+            selection.removeAllRanges();
+            selection.addRange(originalRange);
         }
+
+        // Get the focus back on the previously focused element, if any
+        if (previouslyFocusedElement) {
+            previouslyFocusedElement.focus();
+        }
+        if (isSuccess) {
+            callBack ? callBack() : alert(msg || '已复制到粘贴板~');
+        }else{
+            alert('该机型不兼容复制函数，请手动复制~');
+        }
+        return isSuccess;
     }
 
     // 时间线控制,用于'时间轴模式'下
