@@ -31,7 +31,7 @@
         }
 
         //SLeasy容器初始化
-        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo('body'), $config.id = 'SLeasy';//slide容器dom引用缓存
+        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo($config.rotateMode ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
             "width": ($scope.fixWidth || $config.viewport) + 'px',
             "height": $scope.fixHeight + 'px',
@@ -44,6 +44,13 @@
             "position": "relative",
             "margin": "0 auto",
         });
+        //rotateMode
+        if ($config.rotateMode) {
+            TweenMax.set($scope.sliderBox, {
+                y:-($scope.fixHeight-$scope.fixWidth)/2,
+                rotation: -90
+            });
+        }
 
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;

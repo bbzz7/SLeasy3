@@ -22,6 +22,7 @@
         routerNotFound:function (){SLeasy.goSlider(0)},//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
+        rotateMode:false,//旋转模式
         alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
         preload: true,//是否对素材预加载

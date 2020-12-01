@@ -61,6 +61,10 @@
 
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
+        //rotateMode
+        if($config.rotateMode){
+            _content ='width=device-width,user-scalable=no';
+        }
         $("#SLeasy_viewport").attr('content', _content);
 
         // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
@@ -85,9 +89,17 @@
 
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        var fixHeight = $('<div id="SLeasy_fixHeight" style="height: 100vh"></div>').appendTo('body').height() + 1;//+1以避免小数，导致底部有背景缝隙
-        $('#SLeasy_fixHeight').remove();
-        $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
+        var $fixBox=$('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden"></div>').appendTo('body');
+        var fixHeight = $fixBox.height() + 1;//+1以避免小数，导致底部有背景缝隙
+        //rotateMode
+        if ($config.rotateMode) {
+            $scope.fixWidth = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
+            $scope.fixHeight = $fixBox.width();
+            $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+        }else{
+            $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
+            $fixBox.remove();
+        }
         console.log('fixHeight:' + $scope.fixHeight)
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
