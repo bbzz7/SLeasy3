@@ -42,13 +42,14 @@
             "background-position": $config.scrollMagicMode ? "top center" : "center center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
-            "margin": "0 auto",
+            "margin": $scope.fixMargin+"px auto",
         });
         //rotateMode
         if ($config.rotateMode) {
             TweenMax.set($scope.sliderBox, {
-                y:-($scope.fixHeight-$scope.fixWidth)/2,
-                rotation: -90
+                y: -($scope.fixHeight - $scope.fixWidth) / 2,
+                x: device.portrait() && -($scope.fixWidth - $scope.fixHeight) / 2,
+                rotation: device.landscape() ? -90 : 90
             });
         }
 

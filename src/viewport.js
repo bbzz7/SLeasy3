@@ -22,22 +22,13 @@
                 },
                 'height': function (thresholdHeight) {
 
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth;
+                    var height = thresholdHeight || ($config.viewport > minWidth ? $config.viewport : minWidth);
+                    $scope.viewScale = (thresholdHeight || height) / $config.height;//刷新幻灯缩放比例因子
+                    var viewWidth = height * ratio;
 
-                    var viewHeight = (thresholdHeight || $config.height) * (width / $config.width),
-                        height = viewHeight > minHeight ? viewHeight : minHeight;
+                    $scope.fixWidth = viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : viewWidth;
+                    var viewportContent = 'width=' + viewWidth + ',user-scalable=no';
 
-                    $scope.fixWidth = height * ratio;
-                    var viewportContent = 'width=' + $scope.fixWidth + ',user-scalable=no';
-                    //height模式下，重置viewScale
-                    if ($config.width / $config.height < ratio) {
-                        if ($config.fixWidthMode) {
-                            $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
-                        } else {
-                            $scope.viewScale = height / $config.stageMode;//刷新幻灯缩放比例因子
-                            $scope.fixWidth = $config.width * $scope.viewScale;
-                        }
-                    }
                     return viewportContent;
                 },
                 'auto': function () {
@@ -50,7 +41,8 @@
                     return viewportContent;
                 },
                 'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
-                    var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
+                    // var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
+                    var viewportContent = viewport.height(threshold);
                     return viewportContent;
                 },
                 'device-width': function () {
@@ -62,8 +54,8 @@
 
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         //rotateMode
-        if($config.rotateMode){
-            _content ='width=device-width,user-scalable=no';
+        if ($config.rotateMode) {
+            _content = device.landscape() ? viewport['device-width'] : viewport['width'];
         }
         $("#SLeasy_viewport").attr('content', _content);
 
@@ -89,15 +81,24 @@
 
 
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        var $fixBox=$('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden"></div>').appendTo('body');
+        var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden"></div>').appendTo('body');
         var fixHeight = $fixBox.height() + 1;//+1以避免小数，导致底部有背景缝隙
         //rotateMode
+        // alert(fixHeight);
         if ($config.rotateMode) {
-            $scope.fixWidth = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
-            $scope.fixHeight = $fixBox.width();
-            $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
-        }else{
+            if (device.landscape() && !device.desktop()) {
+                $scope.fixWidth = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
+                $scope.fixHeight = $fixBox.width();
+                $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
+                $scope.fixMargin = 0;
+            } else {
+                $scope.fixWidth = fixHeight > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : fixHeight;
+                $scope.fixHeight = $fixBox.width();
+                $scope.fixMargin = fixHeight > $config.width * $scope.viewScale ? (fixHeight - $config.width * $scope.viewScale) / 2 : 0;
+            }
+        } else {
             $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
+            $scope.fixMargin = fixHeight - 1 > sliderBoxHeight ? (fixHeight - 1 - sliderBoxHeight) / 2 : 0;
             $fixBox.remove();
         }
         console.log('fixHeight:' + $scope.fixHeight)
