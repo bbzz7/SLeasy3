@@ -237,9 +237,9 @@
 
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
-        // console.log(e.target)
-        if ($(e.target).hasClass('SLeasy_sliders') || $(e.target).hasClass('SLeasy_detail')) {
+        if (e.target.id == 'SLeasy_loading' || e.target.id == 'SLeasy_fixBox' || e.target.id == 'SLeasy_rotateTips' || $(e.target).hasClass('SLeasy_sliders') || $(e.target).hasClass('SLeasy_detail')) {
             e.preventDefault();
+            e.stopPropagation();
         } else {
             e.stopPropagation();
         }
@@ -637,7 +637,7 @@
      苹果手机：微信里面和sarafi浏览器里也都可以，
      PC:sarafi版本必须在10.2以上，其他浏览器可以.
      兼容性测试网站：https://www.caniuse.com/*/
-    SLeasy.copyText = function (text, msg,callBack) {
+    SLeasy.copyText = function (text, msg, callBack) {
         var element = document.createElement('textarea');
         var previouslyFocusedElement = document.activeElement;
 
@@ -683,7 +683,7 @@
         }
         if (isSuccess) {
             callBack ? callBack() : alert(msg || '已复制到粘贴板~');
-        }else{
+        } else {
             alert('该机型不兼容复制函数，请手动复制~');
         }
         return isSuccess;

@@ -13,7 +13,7 @@
     SLeasy.eventBind = function (globalBinding) {
         if (globalBinding) {
             //全局 -------------------------
-            sliderBox = new H(document.getElementById($config.id) || document.getElementById('SLeasy'));
+            sliderBox = new H(document.getElementById(($scope.rotateMode=='auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
             //禁止触摸默认行为

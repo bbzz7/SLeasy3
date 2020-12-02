@@ -1,5 +1,5 @@
 // SLeasy3-viewport
-;(function (SLeasy, $, device) {
+;(function (SLeasy, $, device, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
@@ -18,17 +18,16 @@
                 'width': function () {
                     var width = $config.viewport > minWidth ? $config.viewport : minWidth,
                         viewportContent = 'width=' + width + ',user-scalable=no';
+                    if (!$config.rotateMode) $scope.viewWidth = width / ratio;
                     return viewportContent;
                 },
                 'height': function (thresholdHeight) {
-
                     var height = thresholdHeight || ($config.viewport > minWidth ? $config.viewport : minWidth);
                     $scope.viewScale = (thresholdHeight || height) / $config.height;//刷新幻灯缩放比例因子
-                    var viewWidth = height * ratio;
+                    var viewWidth = $scope.viewWidth = $config.rotateMode ? height / ratio : height * ratio;
 
                     $scope.fixWidth = viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : viewWidth;
                     var viewportContent = 'width=' + viewWidth + ',user-scalable=no';
-
                     return viewportContent;
                 },
                 'auto': function () {
@@ -51,37 +50,23 @@
                 }
             };
 
-
-        var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         //rotateMode
+        if ($config.rotateMode == 'auto') {
+            $scope.rotateMode = 'auto';
+            if (device.portrait() && $config.width / $config.height < 1) $config.rotateMode = false;
+            if (device.portrait() && $config.width / $config.height > 1) $config.rotateMode = true;
+            if (device.landscape() && $config.width / $config.height > 1) $config.rotateMode = false;
+            if (device.landscape() && $config.width / $config.height < 1) $config.rotateMode = true;
+        }
+        //设置viewport-content
+        var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         if ($config.rotateMode) {
             _content = device.landscape() ? viewport['device-width'] : viewport['width'];
         }
         $("#SLeasy_viewport").attr('content', _content);
 
-        // if ($config.stageMode == 'auto' || typeof $config.stageMode == 'number') {
-        SLeasy.onResize = function (oMode) {
-            $config.reloadMode && window.location.reload();
-            //横竖屏回调
-            if ($config.on['resize']) {
-                $config.on['resize'](oMode);
-            }
-            //hack ios微信下横竖屏切换布局显示不能复位
-            if (device.ios() && SLeasy.isWechat()) {
-                if (oMode == '横屏') {
-                    $('#SLeasy_viewport').attr('content', 'width=' + $scope.fixHeight + ',user-scalable=no');
-                } else {
-                    setTimeout(function () {
-                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
-                    }, 150)
-                }
-            }
-        }
-        //}
-
-
         var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-        var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden"></div>').appendTo('body');
+        var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden;"></div>').appendTo('body');
         var fixHeight = $fixBox.height() + 1;//+1以避免小数，导致底部有背景缝隙
         //rotateMode
         // alert(fixHeight);
@@ -99,9 +84,101 @@
         } else {
             $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
             $scope.fixMargin = fixHeight - 1 > sliderBoxHeight ? (fixHeight - 1 - sliderBoxHeight) / 2 : 0;
-            $fixBox.remove();
         }
+        if (!$scope.rotateMode) $fixBox.remove();
         console.log('fixHeight:' + $scope.fixHeight)
+
+        //初始态横竖屏提示
+        if (!$.isEmptyObject($config.rotateTips)) {
+            $('<div id="SLeasy_rotateTips"></div>').appendTo($config.rotateMode ? '#SLeasy_fixBox' : 'body').css({
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '101vw',
+                height: '101vh',
+                backgroundImage: 'url(' + SLeasy.path($config.host, $config.rotateTips.bg) + ')',
+                backgroundSize: 'cover',
+                backgroundColor: $config.rotateTips.bgColor,
+                backgroundPosition: 'center center',
+                zIndex: $config.rotateTips.zIndex || 99,
+                display: ($config.rotateTips.orientation === 0 && device.portrait() || $config.rotateTips.orientation === 90 && device.landscape()) ? 'block' : 'none'
+            });
+            if ($config.rotateTips.orientation === 0 && device.portrait() || $config.rotateTips.orientation === 90 && device.landscape()) {
+                $config.reloadMode = true;
+            }
+        }
+        SLeasy.onResize = function (oMode) {
+            setTimeout(function () {
+                $config.reloadMode && window.location.reload();
+            }, 250);
+
+            //横竖屏旋转自适应
+            if ($scope.rotateMode == 'auto') {
+                if (oMode == '竖屏') {
+                    // $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
+                    T.set($scope.sliderBox, {
+                        xPercent: -50,
+                        yPercent: -50,
+                        top: '50%',
+                        left: '50%',
+                        rotation: '+=90',
+
+                    });
+                    setTimeout(function () {
+                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
+                    }, 100)
+                } else {
+                    T.set($scope.sliderBox, {
+                        xPercent: 0,
+                        yPercent: 0,
+                        top: '0%',
+                        left: '0%',
+                        rotation: '-=90',
+                    });
+                    if ($config.stageMode == 'width') {
+                        T.set($scope.sliderBox, {
+                            top: '-50%',
+                            marginTop:0
+                        });
+                    }
+                    setTimeout(function () {
+                        $('#SLeasy_viewport').attr('content', 'width=' + $scope.viewWidth + ',user-scalable=no');
+                    }, 100)
+                }
+            }
+
+            //旋转态横竖屏提示
+            if (!$.isEmptyObject($config.rotateTips)) {
+                if (oMode == ($config.rotateTips.orientation === 0 ? '竖屏' : '横屏')) {
+                    setTimeout(function () {
+                        $('#SLeasy').hide();
+                        $('#SLeasy_rotateTips').show();
+                    }, 50);
+                } else {
+                    // $('#SLeasy_rotateTips').remove();
+                    $('#SLeasy').show();
+                    $('#SLeasy_rotateTips').hide();
+                }
+            }
+
+            //横竖屏回调
+            if ($config.on['resize']) {
+                $config.on['resize'](oMode);
+            }
+            //hack ios微信下横竖屏切换布局显示不能复位
+            if (device.ios() && SLeasy.isWechat()) {
+                if (oMode == '横屏') {
+                    // $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
+                } else {
+                    $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
+                    setTimeout(function () {
+                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
+                    }, 180)
+                }
+            }
+        }
+
+        //scroll
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
@@ -110,5 +187,6 @@
 })(
     window.SLeasy = window.SLeasy || {},
     jQuery,
-    device
+    device,
+    TweenMax
 );

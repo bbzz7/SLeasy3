@@ -31,7 +31,7 @@
         }
 
         //SLeasy容器初始化
-        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').prependTo($config.rotateMode ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
+        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode=='auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
             "width": ($scope.fixWidth || $config.viewport) + 'px',
             "height": $scope.fixHeight + 'px',
@@ -42,15 +42,27 @@
             "background-position": $config.scrollMagicMode ? "top center" : "center center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
-            "margin": $scope.fixMargin+"px auto",
+            "margin": !$config.rotateMode ? ($scope.fixMargin + "px auto") : "0 auto",
         });
         //rotateMode
         if ($config.rotateMode) {
-            TweenMax.set($scope.sliderBox, {
-                y: -($scope.fixHeight - $scope.fixWidth) / 2,
-                x: device.portrait() && -($scope.fixWidth - $scope.fixHeight) / 2,
-                rotation: device.landscape() ? -90 : 90
-            });
+            if (device.landscape()) {
+                TweenMax.set($scope.sliderBox, {
+                    xPercent: 0,
+                    yPercent: 0,
+                    top: '0%',
+                    left: '0%',
+                    rotation: 0,
+                });
+            } else {
+                TweenMax.set($scope.sliderBox, {
+                    xPercent: -50,
+                    yPercent: -50,
+                    top: '50%',
+                    left: '50%',
+                    rotation: 90,
+                });
+            }
         }
 
         //loading资源加载
