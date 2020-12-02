@@ -61,7 +61,7 @@
         //设置viewport-content
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         if ($config.rotateMode) {
-            _content = device.landscape() ? viewport['device-width'] : viewport['width'];
+            _content = device.landscape() ? viewport['device-width']() : viewport['width']();
         }
         $("#SLeasy_viewport").attr('content', _content);
 
@@ -108,6 +108,7 @@
             }
         }
         SLeasy.onResize = function (oMode) {
+            if (device.desktop()) return;
             setTimeout(function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
@@ -137,8 +138,8 @@
                     });
                     if ($config.stageMode == 'width') {
                         T.set($scope.sliderBox, {
-                            top: '-50%',
-                            marginTop:0
+                            top: -($scope.fixHeight - $config.viewport) / 2,
+                            marginTop: 0
                         });
                     }
                     setTimeout(function () {

@@ -31,7 +31,7 @@
         }
 
         //SLeasy容器初始化
-        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode=='auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
+        $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode == 'auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
             "width": ($scope.fixWidth || $config.viewport) + 'px',
             "height": $scope.fixHeight + 'px',
@@ -50,9 +50,9 @@
                 TweenMax.set($scope.sliderBox, {
                     xPercent: 0,
                     yPercent: 0,
-                    top: '0%',
+                    top: -(window.innerWidth - window.innerHeight) / 2,
                     left: '0%',
-                    rotation: 0,
+                    rotation: -90,
                 });
             } else {
                 TweenMax.set($scope.sliderBox, {
