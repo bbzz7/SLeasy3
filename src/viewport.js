@@ -54,6 +54,7 @@
             if (device.landscape() && $config.width / $config.height > 1) $config.rotateMode = false;
             if (device.landscape() && $config.width / $config.height < 1) $config.rotateMode = true;
         }
+        if(device.desktop()) $config.rotateMode = false;
         //设置viewport-content
         if (typeof $config.stageMode == 'number') {
             viewport['threshold']($config.stageMode)
@@ -64,13 +65,13 @@
             device.landscape() ? viewport.height() : viewport.width();
         }
 
-        var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden;"></div>').appendTo('body');
+        var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden;margin: auto"></div>').appendTo('body');
         var boxWidth = $fixBox.width();
         var boxHeight = $fixBox.height();
 
         //rotateMode
         if ($config.rotateMode) {
-            if (device.landscape() && !device.desktop()) {
+            if (device.landscape()) {
                 $scope.viewScale = boxHeight / $config.width;//刷新幻灯缩放比例因子
                 var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
                 $scope.fixWidth = boxHeight;
@@ -90,6 +91,16 @@
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
         }
         if (!$scope.rotateMode) $fixBox.remove();
+        if (device.desktop()) {
+            $scope.viewScale = $config.viewport / (ratio > 1 ? $config.height : $config.width);//刷新幻灯缩放比例因子
+            $scope.fixWidth = ratio > 1 ? $config.viewport * ratio : $config.viewport;
+            $scope.fixHeight = ratio < 1 ? $config.viewport / ratio : $config.viewport;
+            $scope.fixMargin = 0;
+            $('#SLeasy_fixBox').css({
+                width: $scope.fixWidth,
+                height: $scope.fixHeight
+            })
+        }
         console.log('fixHeight:' + $scope.fixHeight)
 
         //初始态横竖屏提示
