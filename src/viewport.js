@@ -24,7 +24,7 @@
                 'height': function (thresholdHeight) {
                     var height = thresholdHeight || ($config.viewport > minWidth ? $config.viewport : minWidth);
                     $scope.viewScale = (thresholdHeight || height) / $config.height;//刷新幻灯缩放比例因子
-                    var viewWidth = $scope.viewWidth = $config.rotateMode ? height / ratio : height * ratio;
+                    var viewWidth = $scope.viewWidth = ($config.rotateMode && $config.stageMode == 'height') ? height / ratio : height * ratio;
 
                     $scope.fixWidth = viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : viewWidth;
                     var viewportContent = 'width=' + viewWidth + ',user-scalable=no';
@@ -61,7 +61,7 @@
         //设置viewport-content
         var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
         if ($config.rotateMode) {
-            _content = device.landscape() ? viewport['device-width']() : viewport['width']();
+            _content = device.landscape() ? viewport['height']() : viewport['width']();
         }
         $("#SLeasy_viewport").attr('content', _content);
 
