@@ -5,7 +5,7 @@
     var $scope = {//全域变量
         title: $config.title,//当前title
         body: $('body'),//body标签dom
-        viewScale: $config.viewport / $config.width,//幻灯缩放比例因子
+        viewScale: device.landscape() ? window.innerHeight / $config.height : window.innerWidth / $config.width,//幻灯缩放比例因子
         fixHeight: 0,//全屏自适应高度变量，SLeasy.viewport()执行后，会将该值设置为当前自适应全屏高度
         fixWidth: $config.viewport,
         eventArr: [],//需要绑定的事件及元素数据数组

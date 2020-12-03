@@ -5,48 +5,44 @@
 
     //设置视口
     SLeasy.viewport = function (sliderBoxHeight) {
-        //刷新幻灯缩放比例因子
-        $scope.viewScale = $config.viewport / $config.width;
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
-        $("head").append('<meta id="SLeasy_viewport" name="viewport" content="width=device-width"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        $('meta[name="viewport"]').remove();
+        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        //初始化横竖屏状态
+        $scope.isLandscape = device.landscape();
         //适配策略
-        var minWidth = SLeasy.is('ios') ? 320 : 321,//最小宽度
-            minHeight = 480,//最小高度
-            ratio = device.desktop() ? $config.width / $config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
+        var ratio = device.desktop() ? $config.width / $config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
                 'width': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewportContent = 'width=' + width + ',user-scalable=no';
-                    if (!$config.rotateMode) $scope.viewWidth = width / ratio;
-                    return viewportContent;
+                    //刷新幻灯缩放比例因子
+                    $scope.viewScale = window.innerWidth / $config.width;
+                    $scope.fixWidth = window.innerWidth;
+                    return;
                 },
                 'height': function (thresholdHeight) {
-                    var height = thresholdHeight || ($config.viewport > minWidth ? $config.viewport : minWidth);
-                    $scope.viewScale = (thresholdHeight || height) / $config.height;//刷新幻灯缩放比例因子
-                    var viewWidth = $scope.viewWidth = ($config.rotateMode && $config.stageMode == 'height') ? height / ratio : height * ratio;
-
-                    $scope.fixWidth = viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : viewWidth;
-                    var viewportContent = 'width=' + viewWidth + ',user-scalable=no';
-                    return viewportContent;
+                    var height = thresholdHeight || window.innerHeight;
+                    $scope.viewScale = height / $config.height;//刷新幻灯缩放比例因子
+                    $scope.viewWidth = window.innerWidth;
+                    $scope.fixWidth = $scope.viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : $scope.viewWidth;
+                    return;
                 },
                 'auto': function () {
-                    var viewportContent = $config.width / $config.height >= ratio ? viewport.width() : viewport.height();
-                    return viewportContent;
+                    $config.width / $config.height >= ratio ? viewport.width() : viewport.height();
+                    return;
                 },
                 'scroll': function () {
-                    var width = $config.viewport > minWidth ? $config.viewport : minWidth,
-                        viewportContent = 'width=' + width + ',user-scalable=no';
+                    viewport.width();
                     return viewportContent;
                 },
                 'threshold': function (threshold) {//阈值模式,当stageMode为指定数值的时候,按阈值高度等比缩放
-                    // var viewportContent = $config.width / threshold >= ratio ? viewport.width() : viewport.height(threshold);
-                    var viewportContent = viewport.height(threshold);
-                    return viewportContent;
+                    viewport.height(threshold);
+                    return;
                 },
                 'device-width': function () {
-                    viewportContent = 'width=device-width,user-scalable=no';
-                    return viewportContent;
+                    var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                    $("#SLeasy_viewport").attr('content', viewportContent);
+                    return;
                 }
             };
 
@@ -59,31 +55,39 @@
             if (device.landscape() && $config.width / $config.height < 1) $config.rotateMode = true;
         }
         //设置viewport-content
-        var _content = (typeof $config.stageMode == 'number') ? viewport['threshold']($config.stageMode) : viewport[$config.stageMode]();
-        if ($config.rotateMode) {
-            _content = device.landscape() ? viewport['height']() : viewport['width']();
+        if (typeof $config.stageMode == 'number') {
+            viewport['threshold']($config.stageMode)
+        } else {
+            viewport[$config.stageMode]();
         }
-        $("#SLeasy_viewport").attr('content', _content);
+        if ($config.rotateMode) {
+            device.landscape() ? viewport.height() : viewport.width();
+        }
 
-        var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
         var $fixBox = $('<div id="SLeasy_fixBox" style="width:100vw;height: 100vh;position: relative;overflow: hidden;"></div>').appendTo('body');
-        var fixHeight = $fixBox.height() + 1;//+1以避免小数，导致底部有背景缝隙
+        var boxWidth = $fixBox.width();
+        var boxHeight = $fixBox.height();
+
         //rotateMode
-        // alert(fixHeight);
         if ($config.rotateMode) {
             if (device.landscape() && !device.desktop()) {
-                $scope.fixWidth = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
-                $scope.fixHeight = $fixBox.width();
-                $scope.viewScale = $scope.fixWidth / $config.width;//刷新幻灯缩放比例因子
-                $scope.fixMargin = 0;
+                $scope.viewScale = boxHeight / $config.width;//刷新幻灯缩放比例因子
+                var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
+                $scope.fixWidth = boxHeight;
+                $scope.fixHeight = boxWidth > sliderBoxHeight ? sliderBoxHeight : boxWidth;
+                $scope.fixMargin = boxWidth > sliderBoxHeight ? (boxWidth - sliderBoxHeight) / 2 : 0;
             } else {
-                $scope.fixWidth = fixHeight > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : fixHeight;
-                $scope.fixHeight = $fixBox.width();
-                $scope.fixMargin = fixHeight > $config.width * $scope.viewScale ? (fixHeight - $config.width * $scope.viewScale) / 2 : 0;
+                $scope.viewScale = boxWidth / $config.height;//刷新幻灯缩放比例因子
+                var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.width * $scope.viewScale;
+                $scope.fixWidth = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
+                $scope.fixHeight = boxWidth;
+                $scope.fixMargin = 0;
             }
         } else {
-            $scope.fixHeight = fixHeight > sliderBoxHeight ? sliderBoxHeight : fixHeight;
-            $scope.fixMargin = fixHeight - 1 > sliderBoxHeight ? (fixHeight - 1 - sliderBoxHeight) / 2 : 0;
+            var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
+            $scope.fixWidth = boxWidth;
+            $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
+            $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
         }
         if (!$scope.rotateMode) $fixBox.remove();
         console.log('fixHeight:' + $scope.fixHeight)
@@ -103,9 +107,6 @@
                 zIndex: $config.rotateTips.zIndex || 99,
                 display: ($config.rotateTips.orientation === 0 && device.portrait() || $config.rotateTips.orientation === 90 && device.landscape()) ? 'block' : 'none'
             });
-            if ($config.rotateTips.orientation === 0 && device.portrait() || $config.rotateTips.orientation === 90 && device.landscape()) {
-                $config.reloadMode = true;
-            }
         }
         SLeasy.onResize = function (oMode) {
             if (device.desktop()) return;
@@ -116,7 +117,6 @@
             //横竖屏旋转自适应
             if ($scope.rotateMode == 'auto') {
                 if (oMode == '竖屏') {
-                    // $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
                     T.set($scope.sliderBox, {
                         xPercent: -50,
                         yPercent: -50,
@@ -126,8 +126,10 @@
 
                     });
                     setTimeout(function () {
-                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
-                    }, 100)
+                        var viewportScale = '';
+                        var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                        $("#SLeasy_viewport").attr('content', viewportContent);
+                    }, 160)
                 } else {
                     T.set($scope.sliderBox, {
                         xPercent: 0,
@@ -138,13 +140,18 @@
                     });
                     if ($config.stageMode == 'width') {
                         T.set($scope.sliderBox, {
-                            top: -($scope.fixHeight - $config.viewport) / 2,
+                            top: -($scope.fixHeight - $scope.fixWidth) / 2,
                             marginTop: 0
                         });
                     }
                     setTimeout(function () {
-                        $('#SLeasy_viewport').attr('content', 'width=' + $scope.viewWidth + ',user-scalable=no');
-                    }, 100)
+                        var viewportScale = ($fixBox.height() - 52) / ($scope.isLandscape ? boxHeight : boxWidth);
+                        // var viewportScale = $fixBox.height() / boxWidth;
+                        alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
+                        // $('#SLeasy,.SLeasy_loading,.SLeasy_sliders,.SLeasy_details').css('height',1500*$scope.viewScale);
+                        var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
+                        $("#SLeasy_viewport").attr('content', viewportContent);
+                    }, 160)
                 }
             }
 
@@ -163,20 +170,7 @@
             }
 
             //横竖屏回调
-            if ($config.on['resize']) {
-                $config.on['resize'](oMode);
-            }
-            //hack ios微信下横竖屏切换布局显示不能复位
-            if (device.ios() && SLeasy.isWechat()) {
-                if (oMode == '横屏') {
-                    // $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
-                } else {
-                    $('#SLeasy_viewport').attr('content', 'width=device-width,user-scalable=no');
-                    setTimeout(function () {
-                        $('#SLeasy_viewport').attr('content', 'width=' + $config.viewport + ',user-scalable=no');
-                    }, 180)
-                }
-            }
+            if ($config.on['resize']) $config.on['resize'](oMode);
         }
 
         //scroll

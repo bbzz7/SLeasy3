@@ -42,7 +42,7 @@
             "background-position": $config.scrollMagicMode ? "top center" : "center center",
             "overflow": $config.positionMode == "absolute" ? "hidden" : "visible",//relative模式则高度按内容自适应
             "position": "relative",
-            "margin": !$config.rotateMode ? ($scope.fixMargin + "px auto") : "0 auto",
+            "margin": $scope.fixMargin + "px auto",
         });
         //rotateMode
         if ($config.rotateMode) {
