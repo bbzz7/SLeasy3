@@ -33,8 +33,12 @@
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode == 'auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": ($scope.fixWidth || $config.viewport) + 'px',
-            "height": $scope.fixHeight + 'px',
+            "width": $scope.SLeasyWidth,
+            "height": $scope.SLeasyHeight,
+            "max-width": $scope.maxWidth + 'px',
+            "max-height": $scope.maxHeight + 'px',
+            // "max-width": ($scope.fixWidth || $config.viewport) + 'px',
+            // "max-height": $scope.fixHeight + 'px',
             "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",

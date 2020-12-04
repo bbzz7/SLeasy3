@@ -14,6 +14,16 @@
             "photo": 'center center'
         }
 
+        //自动旋转模式:中心原点对齐
+        if ($scope.rotateMode == 'auto') {
+            var bgAlign = {
+                "top": 'center top',
+                "center": 'center center',
+                "bottom": 'center bottom',
+                "photo": 'center center'
+            }
+        }
+
         //slider label hash
         if (typeof opt.label != 'undefined') {
             $scope.labelHash[opt.label] = opt.index;
@@ -23,8 +33,10 @@
         var html = '\
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
-			width:' + ($scope.fixWidth || $config.viewport) + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
+			width:100%;\
+			max-width:' + $scope.maxWidth + 'px;\
+			max-height:' + $scope.maxHeight + 'px;\
+			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\

@@ -1750,6 +1750,9 @@ module.exports = (function () {
 
         //rotateMode
         if ($config.rotateMode) {
+            $scope.SLeasyWidth = '100vh';
+            $scope.SLeasyHeight = '100vw';
+            //
             if (device.landscape()) {
                 $scope.viewScale = boxHeight / $config.width;//刷新幻灯缩放比例因子
                 var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
@@ -1764,6 +1767,9 @@ module.exports = (function () {
                 $scope.fixMargin = 0;
             }
         } else {
+            $scope.SLeasyWidth = '100vw';
+            $scope.SLeasyHeight = '100vh';
+            //
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
@@ -1775,11 +1781,17 @@ module.exports = (function () {
             $scope.fixWidth = ratio > 1 ? $config.viewport * ratio : $config.viewport;
             $scope.fixHeight = ratio < 1 ? $config.viewport / ratio : $config.viewport;
             $scope.fixMargin = 0;
+            var fixBoxPadding = (window.innerHeight - $scope.fixHeight) / 2 > 0 ? (window.innerHeight - $scope.fixHeight) / 2 : 0;
             $('#SLeasy_fixBox').css({
                 width: $scope.fixWidth,
-                height: $scope.fixHeight
-            })
+                height: $scope.fixHeight,
+                // padding: fixBoxPadding + 'px 0'
+            });
+            $scope.SLeasyWidth = '100%';
+            $scope.SLeasyHeight = '100%';
         }
+        $scope.maxWidth = $config.width * $scope.viewScale;
+        $scope.maxHeight = $config.height * $scope.viewScale;
         console.log('fixHeight:' + $scope.fixHeight)
 
         //初始态横竖屏提示
@@ -1798,6 +1810,7 @@ module.exports = (function () {
                 display: ($config.rotateTips.orientation === 0 && device.portrait() || $config.rotateTips.orientation === 90 && device.landscape()) ? 'block' : 'none'
             });
         }
+        //横竖屏旋转切换事件 --------------------------------------------------
         SLeasy.onResize = function (oMode) {
             if (device.desktop()) return;
             setTimeout(function () {
@@ -1815,12 +1828,23 @@ module.exports = (function () {
                         rotation: '+=90',
 
                     });
+                    if ($config.width / $config.height >= 1) {
+                        $scope.sliderBox.css({
+                            width: '100vh',
+                            height: '100vw',
+                        });
+                    } else {
+                        $scope.sliderBox.css({
+                            width: '100vw',
+                            height: '100vh',
+                        });
+                    }
                     setTimeout(function () {
                         var viewportScale = '';
                         var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
                     }, 160)
-                } else {
+                } else if (oMode == '横屏') {
                     T.set($scope.sliderBox, {
                         xPercent: 0,
                         yPercent: 0,
@@ -1828,24 +1852,32 @@ module.exports = (function () {
                         left: '0%',
                         rotation: '-=90',
                     });
-                    if ($config.stageMode == 'width') {
-                        T.set($scope.sliderBox, {
-                            top: -($scope.fixHeight - $scope.fixWidth) / 2,
-                            marginTop: 0
+
+                    if ($config.width / $config.height >= 1) {
+                        //原生横屏
+                        $scope.sliderBox.css({
+                            width: '100vw',
+                            height: '100vh',
+                        });
+                    } else {
+                        //原生竖屏
+                        $scope.sliderBox.css({
+                            width: '100vh',
+                            height: '100vw',
+                            top:'-50%',
+                            // marginTop: 0
                         });
                     }
                     setTimeout(function () {
                         var viewportScale = ($fixBox.height() - 52) / ($scope.isLandscape ? boxHeight : boxWidth);
-                        // var viewportScale = $fixBox.height() / boxWidth;
-                        alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
-                        // $('#SLeasy,.SLeasy_loading,.SLeasy_sliders,.SLeasy_details').css('height',1500*$scope.viewScale);
+                        // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
                         var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
                     }, 160)
                 }
             }
 
-            //旋转态横竖屏提示
+            //旋转态横竖屏提示 -----------------------------
             if (!$.isEmptyObject($config.rotateTips)) {
                 if (oMode == ($config.rotateTips.orientation === 0 ? '竖屏' : '横屏')) {
                     setTimeout(function () {
@@ -1891,6 +1923,16 @@ module.exports = (function () {
             "photo": 'center center'
         }
 
+        //自动旋转模式:中心原点对齐
+        if ($scope.rotateMode == 'auto') {
+            var bgAlign = {
+                "top": 'center top',
+                "center": 'center center',
+                "bottom": 'center bottom',
+                "photo": 'center center'
+            }
+        }
+
         //slider label hash
         if (typeof opt.label != 'undefined') {
             $scope.labelHash[opt.label] = opt.index;
@@ -1900,8 +1942,10 @@ module.exports = (function () {
         var html = '\
 			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
 			style="\
-			width:' + ($scope.fixWidth || $config.viewport) + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? opt.height * $scope.viewScale : $scope.fixHeight) : '') + 'px;\
+			width:100%;\
+			max-width:' + $scope.maxWidth + 'px;\
+			max-height:' + $scope.maxHeight + 'px;\
+			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
 			background-size:100% auto;\
@@ -4830,8 +4874,12 @@ module.exports = (function () {
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode == 'auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
-            "width": ($scope.fixWidth || $config.viewport) + 'px',
-            "height": $scope.fixHeight + 'px',
+            "width": $scope.SLeasyWidth,
+            "height": $scope.SLeasyHeight,
+            "max-width": $scope.maxWidth + 'px',
+            "max-height": $scope.maxHeight + 'px',
+            // "max-width": ($scope.fixWidth || $config.viewport) + 'px',
+            // "max-height": $scope.fixHeight + 'px',
             "background-image": $config.bg ? 'url(' + SLeasy.path($config.host, $config.bg) + ')' : 'none',
             "background-color": $config.bgColor || 'transparent',
             "background-size": "100% auto",
