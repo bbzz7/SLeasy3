@@ -1693,8 +1693,15 @@ module.exports = (function () {
                     return;
                 },
                 'height': function (thresholdHeight) {
-                    var height = thresholdHeight || window.innerHeight;
+                    var height = window.innerHeight;
                     $scope.viewScale = height / $config.height;//刷新幻灯缩放比例因子
+                    if (thresholdHeight) {
+                        if (height > thresholdHeight * window.innerWidth / $config.width) {
+                            $scope.viewScale = window.innerWidth / $config.width;
+                        } else {
+                            $scope.viewScale = height / thresholdHeight;
+                        }
+                    }
                     $scope.viewWidth = window.innerWidth;
                     $scope.fixWidth = $scope.viewWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : $scope.viewWidth;
                     return;
@@ -1726,7 +1733,7 @@ module.exports = (function () {
             if (device.landscape() && $config.width / $config.height > 1) $config.rotateMode = false;
             if (device.landscape() && $config.width / $config.height < 1) $config.rotateMode = true;
         }
-        if(device.desktop()) $config.rotateMode = false;
+        if (device.desktop()) $config.rotateMode = false;
         //设置viewport-content
         if (typeof $config.stageMode == 'number') {
             viewport['threshold']($config.stageMode)
@@ -1758,7 +1765,7 @@ module.exports = (function () {
             }
         } else {
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-            $scope.fixWidth = boxWidth;
+            $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
         }
@@ -2032,7 +2039,7 @@ module.exports = (function () {
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
 				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
-				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (opt.width ? ('width="' + (opt.width * $scope.viewScale || '100%') + '" ') : '') + (opt.height ? ('height="' + (opt.height * $scope.viewScale || '100%') + '" ') : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : 'webkit-playsinline playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false"') + ' preload="' + (opt.preload || 'auto" ') + (opt.loop !== undefined ? 'loop="loop"' : '') + '>\
+				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (opt.width ? ('width="' + (opt.width * $scope.viewScale || '100%') + '" ') : 'width="100%"') + (opt.height ? ('height="' + (opt.height * $scope.viewScale || '100%') + '" ') : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : 'webkit-playsinline playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false"') + ' preload="' + (opt.preload || 'auto" ') + (opt.loop !== undefined ? 'loop="loop"' : '') + '>\
 				</video></div>';
             },
             //iframe ----------------------------------------------------
