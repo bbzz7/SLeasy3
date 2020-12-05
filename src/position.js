@@ -34,29 +34,55 @@
         for (var i = 0; i < sliders.length; i++) {
             var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
             for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
-                //console.log(subMotions[j]);
-                if (subMotions[j].shadownBt) {//处理shadownBt的情况
-                    var bt = subMotions[j].shadownBt;
-                    //subMotions[j].in={x:bt[2],y:bt[3]};
-                    //subMotions[j].show={x:bt[2],y:bt[3]};
-                    subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
-                        x: bt[2],
-                        y: bt[3]
-                    } : {x: bt[2]}), subMotions[j].set);
+                if ($scope.rotateMode == 'auto') {
+                    $scope.originX = $config.width / 2;
+                    $scope.originY = $config.height / 2;
+
+                    //处理shadownBt的情况
+                    if (subMotions[j].shadownBt) {
+                        var bt = subMotions[j].shadownBt;
+                        subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
+                            x: bt[2] - $scope.originX,
+                            y: bt[3] - $scope.originY,
+                            top: '50%',
+                            left: '50%'
+                        } : {x: bt[2] - $scope.originX, top: '50%', left: '50%'}), subMotions[j].set);
+                    }
+
+                    var originCenter = {top: '50%', left: '50%'};
+                    var subIn = subMotions[j].in ? $.extend(originCenter, subMotions[j].in) : {},
+                        subShow = subMotions[j].show ? $.extend(originCenter, subMotions[j].show) : {},
+                        subSet = subMotions[j].set ? $.extend(originCenter, subMotions[j].set) : originCenter,
+                        subTo = subMotions[j].to ? $.extend(originCenter, subMotions[j].to) : {};
+
+                    $.each([subIn, subShow, subSet, subTo], function (index, item) {
+                        if (typeof item.x == 'number') item.x -= $scope.originX;
+                        if (typeof item.y == 'number') item.y -= $scope.originY;
+                    });
+                } else {
+                    //处理shadownBt的情况
+                    if (subMotions[j].shadownBt) {
+                        var bt = subMotions[j].shadownBt;
+                        subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
+                            x: bt[2],
+                            y: bt[3]
+                        } : {x: bt[2]}), subMotions[j].set);
+                    }
+
+                    var subIn = subMotions[j].in || {},
+                        subShow = subMotions[j].show || {},
+                        subSet = subMotions[j].set || {},
+                        subTo = subMotions[j].to || {};
                 }
 
-                var subIn = subMotions[j].in || {},
-                    subShow = subMotions[j].show || {},
-                    subSet = subMotions[j].set || {},
-                    subTo = subMotions[j].to || {};
+                //fix -------------------------------------------------------------------
+                subMotions[j].in = SLeasy.fixProps(subIn);
+                subMotions[j].show = SLeasy.fixProps(subShow);
+                subMotions[j].set = SLeasy.fixProps(subSet);
+                subMotions[j].to = SLeasy.fixProps(subTo);
 
-                SLeasy.fixProps(subIn);
-                SLeasy.fixProps(subShow);
-                SLeasy.fixProps(subSet);
-                SLeasy.fixProps(subTo);
-
-                //scrollMagic模式下除首屏外，其他不修正
-                if (!$config.scrollMagicMode || i == 0) {
+                //scrollMagic模式下除首屏外，其他不修正 -------------------------------------
+                if ((!$config.scrollMagicMode || i == 0) && $scope.rotateMode != 'auto') {
                     //根据幻灯对齐方式参数，进行y轴自适应修正
                     var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
                     //y
