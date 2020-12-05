@@ -34,6 +34,7 @@
         for (var i = 0; i < sliders.length; i++) {
             var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
             for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
+                //原点对齐坐标转换
                 if ($scope.rotateMode == 'auto') {
                     $scope.originX = $config.width / 2;
                     $scope.originY = $config.height / 2;
@@ -59,6 +60,7 @@
                         if (typeof item.x == 'number') item.x -= $scope.originX;
                         if (typeof item.y == 'number') item.y -= $scope.originY;
                     });
+                //普通模式坐标转换
                 } else {
                     //处理shadownBt的情况
                     if (subMotions[j].shadownBt) {
