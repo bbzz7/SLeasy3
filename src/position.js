@@ -81,11 +81,15 @@
     SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
         //原点对齐坐标转换
         if ($scope.rotateMode == 'auto') {
-            var originCenter = {top: '50%', left: '50%'};
             if (!$.isEmptyObject(transObj)) {
-                transObj = $.extend(originCenter, transObj);
-                if (typeof transObj.x == 'number') transObj.x -= $scope.originX;
-                if (typeof transObj.y == 'number') transObj.y -= $scope.originY;
+                if (typeof transObj.x == 'number'){
+                    transObj = $.extend({left:'50%'}, transObj);
+                    transObj.x -= $scope.originX;
+                }
+                if (typeof transObj.y == 'number'){
+                    transObj = $.extend({top:'50%'}, transObj);
+                    transObj.y -= $scope.originY;
+                }
             }
         }
 
