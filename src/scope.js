@@ -628,6 +628,17 @@
         $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
     }
 
+    //旋转状态判断
+    SLeasy.isRotated = function () {
+        //是否旋转判断
+        if (device.landscape() && $config.width / $config.height > 1) {
+            $scope.isRotated = false;
+        } else {
+            $scope.isRotated = true;
+        }
+        return $scope.isRotated;
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
