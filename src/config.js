@@ -10,7 +10,7 @@
         host: 'images/',//资源目录url
         width: 750,//幻灯宽度
         height: 1500,//幻灯高度
-        viewport: 321,//视口大小
+        viewport: 375,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
         motionDirection: 'upDown',//动画运动方向
