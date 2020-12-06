@@ -39,7 +39,7 @@
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:100% auto;\
+			background-size:cover;\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
@@ -819,7 +819,9 @@
                 }
 
                 //loopSprite
-                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, paddingOrCrop, scaleX, scaleY) {
+                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, loopCount, paddingOrCrop, scaleX, scaleY) {
+                    var _loopCount = loopCount || -1;
+                    var _currentLoopCount = 0;
                     var $sprite = $(selector)[0];
                     $sprite.loop = true;
                     $sprite.frame = start;
@@ -828,6 +830,7 @@
 
                     function loop() {
                         setTimeout(function () {
+                            if (!$sprite.loop) return;
                             if (end > start) {
                                 $sprite.frame++;
                             } else {
@@ -835,7 +838,13 @@
                             }
                             if ($sprite.frame == end) {
                                 var onComplete = function () {
-                                    SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                    _currentLoopCount++;
+                                    console.log(_currentLoopCount + ':' + _loopCount)
+                                    if (_currentLoopCount < _loopCount || _loopCount == -1) {
+                                        SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                    } else {
+                                        $sprite.loop = false;
+                                    }
                                 }
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop, 1, 1, onComplete);
                                 $sprite.frame = start;
@@ -843,7 +852,7 @@
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
                             }
                             if ($sprite.loop) loop();
-                        }, (delay || 1) * 1000);
+                        }, (motionTime + delay) * 1000);
                     }
 
                     return SLeasy;
