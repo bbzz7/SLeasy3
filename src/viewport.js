@@ -11,6 +11,8 @@
         $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
+        //获取是否旋转状态
+        SLeasy.isRotated();
         //适配策略
         var ratio = device.desktop() ? $config.width / $config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
@@ -145,9 +147,13 @@
                 $config.reloadMode && window.location.reload();
             }, 250);
 
+            //刷新是否旋转状态
+            SLeasy.isRotated();
+
             //横竖屏旋转自适应
             if ($scope.rotateMode == 'auto') {
                 if (oMode == '竖屏') {
+                    //
                     T.set($scope.sliderBox, {
                         xPercent: -50,
                         yPercent: -50,
@@ -173,6 +179,7 @@
                         $("#SLeasy_viewport").attr('content', viewportContent);
                     }, 160)
                 } else if (oMode == '横屏') {
+                    //
                     T.set($scope.sliderBox, {
                         xPercent: 0,
                         yPercent: 0,
@@ -192,12 +199,12 @@
                         $scope.sliderBox.css({
                             width: '100vh',
                             height: '100vw',
-                            top:'-50%',
+                            top: '-50%',
                             // marginTop: 0
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = ($fixBox.height() - 52) / ($scope.isLandscape ? boxHeight : boxWidth);
+                        var viewportScale = ($fixBox.height() - 0) / ($scope.isLandscape ? boxHeight : boxWidth);
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
                         var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);

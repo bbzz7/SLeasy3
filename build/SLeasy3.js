@@ -759,7 +759,7 @@ module.exports = (function () {
         host: 'images/',//资源目录url
         width: 750,//幻灯宽度
         height: 1500,//幻灯高度
-        viewport: 321,//视口大小
+        viewport: 375,//视口大小
         motionTime: 0.8,//切换动画时间
         motionStyle: 0,//动画风格，默认随机
         motionDirection: 'upDown',//动画运动方向
@@ -1510,6 +1510,17 @@ module.exports = (function () {
         $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
     }
 
+    //旋转状态判断
+    SLeasy.isRotated = function () {
+        //是否旋转判断
+        if (device.landscape() && $config.width / $config.height > 1) {
+            $scope.isRotated = false;
+        } else {
+            $scope.isRotated = true;
+        }
+        return $scope.isRotated;
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
@@ -1683,6 +1694,8 @@ module.exports = (function () {
         $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
+        //获取是否旋转状态
+        SLeasy.isRotated();
         //适配策略
         var ratio = device.desktop() ? $config.width / $config.height : $(window).width() / $(window).height(),//当前设备屏幕高宽比
             viewport = {
@@ -1817,9 +1830,13 @@ module.exports = (function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
 
+            //刷新是否旋转状态
+            SLeasy.isRotated();
+
             //横竖屏旋转自适应
             if ($scope.rotateMode == 'auto') {
                 if (oMode == '竖屏') {
+                    //
                     T.set($scope.sliderBox, {
                         xPercent: -50,
                         yPercent: -50,
@@ -1845,6 +1862,7 @@ module.exports = (function () {
                         $("#SLeasy_viewport").attr('content', viewportContent);
                     }, 160)
                 } else if (oMode == '横屏') {
+                    //
                     T.set($scope.sliderBox, {
                         xPercent: 0,
                         yPercent: 0,
@@ -1864,12 +1882,12 @@ module.exports = (function () {
                         $scope.sliderBox.css({
                             width: '100vh',
                             height: '100vw',
-                            top:'-50%',
+                            top: '-50%',
                             // marginTop: 0
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = ($fixBox.height() - 52) / ($scope.isLandscape ? boxHeight : boxWidth);
+                        var viewportScale = ($fixBox.height() - 0) / ($scope.isLandscape ? boxHeight : boxWidth);
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
                         var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
@@ -1948,7 +1966,7 @@ module.exports = (function () {
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:100% auto;\
+			background-size:cover;\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
@@ -2728,7 +2746,9 @@ module.exports = (function () {
                 }
 
                 //loopSprite
-                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, paddingOrCrop, scaleX, scaleY) {
+                SLeasy.loopSprite = function (selector, start, end, motionTime, delay, loopCount, paddingOrCrop, scaleX, scaleY) {
+                    var _loopCount = loopCount || -1;
+                    var _currentLoopCount = 0;
                     var $sprite = $(selector)[0];
                     $sprite.loop = true;
                     $sprite.frame = start;
@@ -2737,6 +2757,7 @@ module.exports = (function () {
 
                     function loop() {
                         setTimeout(function () {
+                            if (!$sprite.loop) return;
                             if (end > start) {
                                 $sprite.frame++;
                             } else {
@@ -2744,7 +2765,13 @@ module.exports = (function () {
                             }
                             if ($sprite.frame == end) {
                                 var onComplete = function () {
-                                    SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                    _currentLoopCount++;
+                                    console.log(_currentLoopCount + ':' + _loopCount)
+                                    if (_currentLoopCount < _loopCount || _loopCount == -1) {
+                                        SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
+                                    } else {
+                                        $sprite.loop = false;
+                                    }
                                 }
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop, 1, 1, onComplete);
                                 $sprite.frame = start;
@@ -2752,7 +2779,7 @@ module.exports = (function () {
                                 SLeasy.gotoSprite(selector, $sprite.frame, motionTime, paddingOrCrop);
                             }
                             if ($sprite.loop) loop();
-                        }, (delay || 1) * 1000);
+                        }, (motionTime + delay) * 1000);
                     }
 
                     return SLeasy;
@@ -2991,11 +3018,15 @@ module.exports = (function () {
     SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
         //原点对齐坐标转换
         if ($scope.rotateMode == 'auto') {
-            var originCenter = {top: '50%', left: '50%'};
             if (!$.isEmptyObject(transObj)) {
-                transObj = $.extend(originCenter, transObj);
-                if (typeof transObj.x == 'number') transObj.x -= $scope.originX;
-                if (typeof transObj.y == 'number') transObj.y -= $scope.originY;
+                if (typeof transObj.x == 'number'){
+                    transObj = $.extend({left:'50%'}, transObj);
+                    transObj.x -= $scope.originX;
+                }
+                if (typeof transObj.y == 'number'){
+                    transObj = $.extend({top:'50%'}, transObj);
+                    transObj.y -= $scope.originY;
+                }
             }
         }
 
