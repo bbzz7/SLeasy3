@@ -2941,51 +2941,26 @@ module.exports = (function () {
             "bottom": ($scope.fixWidth || $config.viewport) / $scope.viewScale - $config.width + $config.alignOffset
         };
 
+        //中心原点坐标
+        $scope.originX = $config.width / 2;
+        $scope.originY = $config.height / 2;
+
         for (var i = 0; i < sliders.length; i++) {
             var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
             for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
-                //原点对齐坐标转换
-                if ($scope.rotateMode == 'auto') {
-                    $scope.originX = $config.width / 2;
-                    $scope.originY = $config.height / 2;
-
-                    //处理shadownBt的情况
-                    if (subMotions[j].shadownBt) {
-                        var bt = subMotions[j].shadownBt;
-                        subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
-                            x: bt[2] - $scope.originX,
-                            y: bt[3] - $scope.originY,
-                            top: '50%',
-                            left: '50%'
-                        } : {x: bt[2] - $scope.originX, top: '50%', left: '50%'}), subMotions[j].set);
-                    }
-
-                    var originCenter = {top: '50%', left: '50%'};
-                    var subIn = subMotions[j].in ? $.extend(originCenter, subMotions[j].in) : {},
-                        subShow = subMotions[j].show ? $.extend(originCenter, subMotions[j].show) : {},
-                        subSet = subMotions[j].set ? $.extend(originCenter, subMotions[j].set) : originCenter,
-                        subTo = subMotions[j].to ? $.extend(originCenter, subMotions[j].to) : {};
-
-                    $.each([subIn, subShow, subSet, subTo], function (index, item) {
-                        if (typeof item.x == 'number') item.x -= $scope.originX;
-                        if (typeof item.y == 'number') item.y -= $scope.originY;
-                    });
-                //普通模式坐标转换
-                } else {
-                    //处理shadownBt的情况
-                    if (subMotions[j].shadownBt) {
-                        var bt = subMotions[j].shadownBt;
-                        subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
-                            x: bt[2],
-                            y: bt[3]
-                        } : {x: bt[2]}), subMotions[j].set);
-                    }
-
-                    var subIn = subMotions[j].in || {},
-                        subShow = subMotions[j].show || {},
-                        subSet = subMotions[j].set || {},
-                        subTo = subMotions[j].to || {};
+                //处理shadownBt的情况
+                if (subMotions[j].shadownBt) {
+                    var bt = subMotions[j].shadownBt;
+                    subMotions[j].set = $.extend((typeof bt[3] == 'number' ? {
+                        x: bt[2],
+                        y: bt[3]
+                    } : {x: bt[2]}), subMotions[j].set);
                 }
+
+                var subIn = subMotions[j].in || {},
+                    subShow = subMotions[j].show || {},
+                    subSet = subMotions[j].set || {},
+                    subTo = subMotions[j].to || {};
 
                 //fix -------------------------------------------------------------------
                 subMotions[j].in = SLeasy.fixProps(subIn);
@@ -3014,6 +2989,16 @@ module.exports = (function () {
 
     //属性缩放变换
     SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
+        //原点对齐坐标转换
+        if ($scope.rotateMode == 'auto') {
+            var originCenter = {top: '50%', left: '50%'};
+            if (!$.isEmptyObject(transObj)) {
+                transObj = $.extend(originCenter, transObj);
+                if (typeof transObj.x == 'number') transObj.x -= $scope.originX;
+                if (typeof transObj.y == 'number') transObj.y -= $scope.originY;
+            }
+        }
+
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
             'backgroundPositionX': true,
