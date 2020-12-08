@@ -1108,10 +1108,10 @@ module.exports = (function () {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         //参数查找
         var r = window.location.search.substr(1).match(reg);
-        if (r != null) return r[2];
+        if (r != null) return decodeURIComponent(r[2]);
         //哈希查找
         var h = window.location.hash.substr(1).replace(/\//g, '&').replace(/\?/g, '&').match(reg);
-        if (h != null) return h[2];
+        if (h != null) return decodeURIComponent(h[2]);
         //调试返回时间错字符串
         if (debug) return ('test' + $.now());
         return '';
@@ -1519,6 +1519,27 @@ module.exports = (function () {
             $scope.isRotated = true;
         }
         return $scope.isRotated;
+    }
+
+    //wrap gsap
+    SLeasy.set = function (el, set) {
+        TweenMax.set(el, SLeasy.fixProps(set));
+        return SLeasy;
+    }
+
+    SLeasy.to = function (el, duration, to) {
+        TweenMax.to(el, duration, SLeasy.fixProps(to));
+        return SLeasy;
+    }
+
+    SLeasy.from = function (el, duration, from) {
+        TweenMax.from(el, duration, SLeasy.fixProps(from));
+        return SLeasy;
+    }
+
+    SLeasy.fromTo = function (el, duration, fromTo) {
+        TweenMax.fromTo(el, duration, SLeasy.fixProps(fromTo));
+        return SLeasy;
     }
 
     //复制文字功能函数
@@ -2143,7 +2164,7 @@ module.exports = (function () {
                         return '<select\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
-						style="text-align:center;text-align-last:center;-webkit-appearance:none;appearance:none;border:0px solid;background:transparent;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
+						style="text-align:left;text-align-last:left;-webkit-appearance:none;appearance:none;border:0px solid;background:transparent;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
 						' + opitionHtml + '</select>';
                     }
                 }
