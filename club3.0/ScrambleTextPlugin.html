@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ScrambleText3</title>
+    <script src="https://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script src="gsap.min.js"></script>
+    <!--<script src="ScrambleTextPlugin3.min.js"></script>-->
+    <script src="ScrambleTextPlugin3.min.js"></script>
+    <style>
+        .myLine {
+            color: red
+        }
+    </style>
+</head>
+
+<body>
+<div id="myText">
+    Works with arrays and selectors - a single SplitText instance can manage multiple elements
+</div>
+
+<script>
+    $(document).ready(function (e) {
+        gsap.registerPlugin(ScrambleTextPlugin);
+        gsap.to($("#myText"), {duration: 1, scrambleText: "THIS IS NEW TEXT"});
+
+        //or customize things:
+        //TweenMax.to($("#myText"), 5, {scrambleText:{text:"THIS IS NEW TEXT", revealDelay:0, speed:0.5, newClass:"myClass"}});
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=1000"/>
+    <title>InertiaPlugin</title>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+            background-color: black;
+            font-family: Arial, sans-serif;
+        }
+
+        .box {
+            background-color: #91e600;
+            text-align: center;
+            width: 200px;
+            height: 100px;
+            line-height: 100px;
+            color: black;
+            position: absolute;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="header" style="position:relative; padding:10px; color:#CCC;">
+    <h1 style="color:white; display:inline;">Draggable and ThrowPropsPlugin Demo</h1>
+    <div style="display:inline; position:relative; bottom:5px; margin-left:16px; padding:6px 10px 6px 6px; background-color:#333;">
+        <form style="display:inline;">
+            <label><input type="checkbox" name="snap" id="snap" value="1"/> Snap to grid</label>
+        </form>
+    </div>
+</div>
+<div id="container" style="position:relative; height:601px; overflow:hidden;">
+    <div id="box" class="box">Drag and throw me</div>
+    <div id="box2" class="box" style="left:400px; background-color:red;">Drag and throw me too</div>
+</div>
+<script src="https://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script src="gsap.min.js"></script>
+<script src="Draggable.min.js"></script>
+<script src="InertiaPlugin.min.js"></script>
+<!--<script src="ClubPlugins.min.js"></script>-->
+
+<script>
+    $(function () {
+        gsap.registerPlugin(InertiaPlugin);
+        gsap.to($("#box2"), {
+            duration: 2,
+            inertia: {
+                x: {velocity: 500, max: 300, min: 0},
+                y: {velocity: 400, max: 200, min: 0}
+            }
+        });
+        //create the grid (feel free to tweak any of these numbers)
+        var gridWidth = 200,
+            gridHeight = 100,
+            gridRows = 6,
+            gridColumns = 6,
+            $snap = $("#snap"),
+            $container = $("#container"),
+            i, top, left;
+        for (i = 0; i < gridRows * gridColumns; i++) {
+            top = Math.floor(i / gridColumns) * gridHeight;
+            left = (i * gridWidth) % (gridColumns * gridWidth);
+            $("<div/>").css({
+                position: "absolute",
+                border: "1px solid #454545",
+                width: gridWidth - 1,
+                height: gridHeight - 1,
+                top: top,
+                left: left
+            }).prependTo($container);
+        }
+        //set the container's size to match the grid
+        gsap.set($container, {height: gridRows * gridHeight + 1, width: gridColumns * gridWidth + 1});
+
+        var tl = gsap.timeline();
+        tl.to('#box', 3, {x: 300})
+            .to('#box2', 2, {y: 300})
+            .pause();
+
+        //now make both boxes draggable.
+        Draggable.create("#box", {
+            bounds: $container,
+            edgeResistance: 0.8,
+            type: "x,y",
+            inertia: true,
+            snap: {
+                x: function (endValue) {
+                    if ($snap.prop("checked")) {
+                        return Math.round(endValue / gridWidth) * gridWidth;
+                    } else {
+                        return endValue;
+                    }
+                },
+                y: function (endValue) {
+                    if ($snap.prop("checked")) {
+                        return Math.round(endValue / gridHeight) * gridHeight;
+                    } else {
+                        return endValue;
+                    }
+                }
+            }
+        });
+        //when the user selects "snap to grid", we should immediately snap to the grid...
+        $snap.on("change", function () {
+            if ($snap.prop("checked")) {
+                $(".box").each(function (index, element) {
+                    gsap.to(element, {
+                        duration: 0.5,
+                        x: Math.round(gsap.getProperty(element, 'x') / gridWidth) * gridWidth,
+                        y: Math.round(gsap.getProperty(element, 'y') / gridHeight) * gridHeight
+                    });
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

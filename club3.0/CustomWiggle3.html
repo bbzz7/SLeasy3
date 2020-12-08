@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CustomWiggle3</title>
+    <script src="https://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+    <script src="gsap.min.js"></script>
+    <script src="CustomEase3.min.js"></script>
+    <script src="CustomWiggle3.min.js"></script>
+    <!--<script src="ClubPlugins.min.js"></script>-->
+    <style>
+        body {
+            margin-left: 0px;
+            margin-top: 0px;
+            margin-right: 0px;
+            margin-bottom: 0px;
+            background-color: black;
+        }
+
+        svg {
+            overflow: visible;
+        }
+    </style>
+</head>
+
+<body>
+<svg width="100%" height="700" viewBox="0 0 700 700">
+    <line x1="0" x2="700" y1="701" y2="701" stroke="#ccc" stroke-width="2"/>
+    <path id="bounce" fill="none" stroke="#336633" stroke-width="4px"/>
+    <path id="squish" fill="none" stroke="#663333" stroke-width="4px"/>
+    <circle id="ball" fill="blue" r="75" cx="350" cy="75"/>
+</svg>
+<script>
+    $(document).ready(function (e) {
+        gsap.registerPlugin(CustomEase, CustomWiggle);
+        //Create a 10-wiggle anticipation ease:
+        CustomWiggle.create("funWiggle", {wiggles: 10, type: "anticipate"});
+        gsap.to("#ball", {duration: 2, rotation: 30, ease: "funWiggle"});
+    });
+</script>
+</body>
+</html>
