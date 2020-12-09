@@ -3011,6 +3011,9 @@ module.exports = (function () {
                     subTo = subMotions[j].to || {};
 
                 //fix -------------------------------------------------------------------
+                if (sliders[i].scroll) {
+                    subIn.isScroll = subShow.isScroll = subSet.isScroll = subTo.isScroll = true;
+                }
                 subMotions[j].in = SLeasy.fixProps(subIn);
                 subMotions[j].show = SLeasy.fixProps(subShow);
                 subMotions[j].set = SLeasy.fixProps(subSet);
@@ -3038,18 +3041,18 @@ module.exports = (function () {
     //属性缩放变换
     SLeasy.fixProps = function fixProps(transObj, yOffset, xOffset) {
         //原点对齐坐标转换
-        if ($scope.rotateMode == 'auto') {
+        if ($scope.rotateMode == 'auto' && !transObj.isScroll) {
             if (!$.isEmptyObject(transObj)) {
-                if (typeof transObj.x == 'number'){
-                    transObj = $.extend({left:'50%'}, transObj);
+                if (typeof transObj.x == 'number') {
+                    transObj = $.extend({left: '50%'}, transObj);
                     transObj.x -= $scope.originX;
                 }
-                if (typeof transObj.y == 'number'){
-                    transObj = $.extend({top:'50%'}, transObj);
+                if (typeof transObj.y == 'number') {
+                    transObj = $.extend({top: '50%'}, transObj);
                     transObj.y -= $scope.originY;
                 }
             }
-        }
+        }else if(transObj.isScroll) delete transObj.isScroll;
 
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
