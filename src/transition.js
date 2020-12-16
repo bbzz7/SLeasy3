@@ -163,7 +163,7 @@
                 var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
-                console.warn($scope.sliderIndex + ':' + nextIndex);
+                console.log($scope.sliderIndex + ':' + nextIndex);
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
@@ -217,9 +217,9 @@
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.warn(duration)
-                console.warn(motionTime)
-                console.warn($scope.isSliderEdge)
+                console.log(duration)
+                console.log(motionTime)
+                console.log($scope.isSliderEdge)
             },
             onComplete: function () {
                 $scope.isAnim = 0;//重置运动状态
