@@ -1515,7 +1515,7 @@ module.exports = (function () {
     //旋转状态判断
     SLeasy.isRotated = function () {
         //是否旋转判断
-        if (device.landscape() && $config.width / $config.height > 1) {
+        if ((device.landscape() && $config.width > $config.height) || (device.portrait() && $config.width < $config.height)) {
             $scope.isRotated = false;
         } else {
             $scope.isRotated = true;
@@ -1717,6 +1717,7 @@ module.exports = (function () {
         $("head").prepend('<meta content="yes" name="mobile-web-app-capable"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no, email=no,adress=no"/><meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover">');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
+        $scope.isDesktop = device.desktop();
         //获取是否旋转状态
         SLeasy.isRotated();
         //适配策略
@@ -1811,7 +1812,7 @@ module.exports = (function () {
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
             //初始化为横屏模式时
-            if ($scope.isLandscape) {
+            if ($scope.isLandscape && !$scope.isDesktop && window.screen.availWidth < window.screen.availHeight) {
                 $scope.SLeasyWidth = '100vw';
                 $scope.SLeasyHeight = window.screen.availWidth;
                 $scope.viewScale = window.screen.availWidth / $config.height;//刷新幻灯缩放比例因子
@@ -1859,7 +1860,9 @@ module.exports = (function () {
         }
         //横竖屏旋转切换事件 --------------------------------------------------
         SLeasy.onResize = function (oMode) {
-            if (device.desktop()) return;
+            if (device.desktop()) return setTimeout(function (){
+                location.reload()
+            },250);
             setTimeout(function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
@@ -1869,6 +1872,7 @@ module.exports = (function () {
 
             //横竖屏旋转自适应
             if ($scope.rotateMode == 'auto') {
+                //
                 if (oMode == '竖屏') {
                     //
                     T.set($scope.sliderBox, {
@@ -1876,7 +1880,8 @@ module.exports = (function () {
                         yPercent: -50,
                         top: '50%',
                         left: '50%',
-                        rotation: '+=90',
+                        margin: '0 auto',
+                        rotation: $config.stageMode == 'width' ? 0 : 90,
                     });
                     if ($config.width / $config.height >= 1) {
                         $scope.sliderBox.css({
@@ -1889,10 +1894,23 @@ module.exports = (function () {
                             height: '100vh',
                         });
                     }
+                    //
+                    // if ($scope.isLandscape) {
+                    //     $fixBox.css({
+                    //         maxWidth: boxHeight,
+                    //         maxHeight: boxWidth,
+                    //     })
+                    // } else {
+                    //     $fixBox.css({
+                    //         maxWidth: boxWidth,
+                    //         maxHeight: boxHeight,
+                    //     })
+                    // }
+                    //
                     setTimeout(function () {
                         var viewportContent = 'width=device-width, initial-scale=1,user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 180)
+                    }, 50)
                 } else if (oMode == '横屏') {
                     //
                     T.set($scope.sliderBox, {
@@ -1900,7 +1918,8 @@ module.exports = (function () {
                         yPercent: 0,
                         top: '0%',
                         left: '0%',
-                        rotation: '-=90',
+                        margin: '0 auto',
+                        rotation: $config.stageMode == 'height' ? 0 : -90,
                     });
 
                     if ($config.width / $config.height >= 1) {
@@ -1918,6 +1937,19 @@ module.exports = (function () {
                             // marginTop: 0
                         });
                     }
+                    //
+                    // if ($scope.isLandscape) {
+                    //     $fixBox.css({
+                    //         maxWidth: boxWidth,
+                    //         maxHeight: boxHeight,
+                    //     })
+                    // } else {
+                    //     $fixBox.css({
+                    //         maxWidth: boxHeight,
+                    //         maxHeight: boxWidth,
+                    //     })
+                    // }
+                    //
                     setTimeout(function () {
                         var viewportScale = $scope.isLandscape ? 1 : $fixBox.height() / boxWidth;
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
