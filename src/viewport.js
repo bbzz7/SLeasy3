@@ -8,7 +8,7 @@
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
         $('meta[name="viewport"]').remove();
-        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        $("head").prepend('<meta content="yes" name="mobile-web-app-capable"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no, email=no,adress=no"/><meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover">');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
         //获取是否旋转状态
@@ -49,7 +49,7 @@
                     return;
                 },
                 'device-width': function () {
-                    var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                    var viewportContent = 'width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover';
                     $("#SLeasy_viewport").attr('content', viewportContent);
                     return;
                 }
@@ -104,6 +104,17 @@
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
+            //初始化为横屏模式时
+            if ($scope.isLandscape) {
+                $scope.SLeasyWidth = '100vw';
+                $scope.SLeasyHeight = window.screen.availWidth;
+                $scope.viewScale = window.screen.availWidth / $config.height;//刷新幻灯缩放比例因子
+                var viewportScale = $fixBox.height() / window.screen.availWidth;
+                viewportScale = Math.ceil(viewportScale * 1000) / 1000;
+                var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
+                $("#SLeasy_viewport").attr('content', viewportContent);
+                // alert(viewportScale + '/' + $scope.SLeasyHeight + '/');
+            }
         }
         if (!$scope.rotateMode) $fixBox.remove();
         if (device.desktop()) {
@@ -160,7 +171,6 @@
                         top: '50%',
                         left: '50%',
                         rotation: '+=90',
-
                     });
                     if ($config.width / $config.height >= 1) {
                         $scope.sliderBox.css({
@@ -174,10 +184,9 @@
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = '';
-                        var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                        var viewportContent = 'width=device-width, initial-scale=1,user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 160)
+                    }, 180)
                 } else if (oMode == '横屏') {
                     //
                     T.set($scope.sliderBox, {
@@ -204,11 +213,11 @@
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = ($fixBox.height() - 0) / ($scope.isLandscape ? boxHeight : boxWidth);
+                        var viewportScale = $scope.isLandscape ? 1 : $fixBox.height() / boxWidth;
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
-                        var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
+                        var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 160)
+                    }, 180)
                 }
             }
 

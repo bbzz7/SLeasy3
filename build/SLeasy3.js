@@ -768,10 +768,12 @@ module.exports = (function () {
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
-        routerNotFound:function (){SLeasy.goSlider(0)},//路由未匹配执行回调
+        routerNotFound: function () {
+            SLeasy.goSlider(0)
+        },//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
-        rotateMode:false,//旋转模式
+        rotateMode: false,//旋转模式
         alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
         preload: true,//是否对素材预加载
@@ -780,7 +782,7 @@ module.exports = (function () {
         debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
-        fixWidthMode:false,//舞台的宽度自适应模式
+        fixWidthMode: false,//舞台的宽度自适应模式
         positionMode: 'absolute',//舞台子元素position模式
         scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
@@ -795,6 +797,9 @@ module.exports = (function () {
         //audios-------------------------------------------
         audios: {},//webAudio+Howler
         audioType: 'webAudio',
+
+        //video-------------------------------------------
+        videoCache: false,
 
         //slider------------------------------------------
         sliders: [], //幻灯json数组
@@ -1309,7 +1314,7 @@ module.exports = (function () {
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            $media.muted = muted || false;
+            $media.muted = muted || true;
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -1319,10 +1324,9 @@ module.exports = (function () {
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1331,10 +1335,9 @@ module.exports = (function () {
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1343,29 +1346,27 @@ module.exports = (function () {
                 $(this).one('canplaythrough', function () {
                     if (videoReady) return;
                     videoReady = true;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
                     if (videoReady) return;
                     videoReady = true;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
             } else {
                 $(this).one('playing', function () {
                     $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -1461,6 +1462,7 @@ module.exports = (function () {
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
+        $media.muted = false;
         return $media.play();
     }
 
@@ -1527,18 +1529,18 @@ module.exports = (function () {
         return SLeasy;
     }
 
-    SLeasy.to = function (el, duration, to) {
-        TweenMax.to(el, duration, SLeasy.fixProps(to));
+    SLeasy.to = function (el, to) {
+        TweenMax.to(el, SLeasy.fixProps(to));
         return SLeasy;
     }
 
-    SLeasy.from = function (el, duration, from) {
-        TweenMax.from(el, duration, SLeasy.fixProps(from));
+    SLeasy.from = function (el, from) {
+        TweenMax.from(el, SLeasy.fixProps(from));
         return SLeasy;
     }
 
-    SLeasy.fromTo = function (el, duration, fromTo) {
-        TweenMax.fromTo(el, duration, SLeasy.fixProps(fromTo));
+    SLeasy.fromTo = function (el, fromTo) {
+        TweenMax.fromTo(el, SLeasy.fixProps(fromTo));
         return SLeasy;
     }
 
@@ -1712,7 +1714,7 @@ module.exports = (function () {
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
         $('meta[name="viewport"]').remove();
-        $("head").prepend('<meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><meta name="format-detection" content="telephone=no, email=no,adress=no"/>');
+        $("head").prepend('<meta content="yes" name="mobile-web-app-capable"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no, email=no,adress=no"/><meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover">');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
         //获取是否旋转状态
@@ -1753,7 +1755,7 @@ module.exports = (function () {
                     return;
                 },
                 'device-width': function () {
-                    var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                    var viewportContent = 'width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover';
                     $("#SLeasy_viewport").attr('content', viewportContent);
                     return;
                 }
@@ -1808,6 +1810,17 @@ module.exports = (function () {
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
+            //初始化为横屏模式时
+            if ($scope.isLandscape) {
+                $scope.SLeasyWidth = '100vw';
+                $scope.SLeasyHeight = window.screen.availWidth;
+                $scope.viewScale = window.screen.availWidth / $config.height;//刷新幻灯缩放比例因子
+                var viewportScale = $fixBox.height() / window.screen.availWidth;
+                viewportScale = Math.ceil(viewportScale * 1000) / 1000;
+                var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
+                $("#SLeasy_viewport").attr('content', viewportContent);
+                // alert(viewportScale + '/' + $scope.SLeasyHeight + '/');
+            }
         }
         if (!$scope.rotateMode) $fixBox.remove();
         if (device.desktop()) {
@@ -1864,7 +1877,6 @@ module.exports = (function () {
                         top: '50%',
                         left: '50%',
                         rotation: '+=90',
-
                     });
                     if ($config.width / $config.height >= 1) {
                         $scope.sliderBox.css({
@@ -1878,10 +1890,9 @@ module.exports = (function () {
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = '';
-                        var viewportContent = 'width=device-width, initial-scale=1.0,viewport-fit=cover';
+                        var viewportContent = 'width=device-width, initial-scale=1,user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 160)
+                    }, 180)
                 } else if (oMode == '横屏') {
                     //
                     T.set($scope.sliderBox, {
@@ -1908,11 +1919,11 @@ module.exports = (function () {
                         });
                     }
                     setTimeout(function () {
-                        var viewportScale = ($fixBox.height() - 0) / ($scope.isLandscape ? boxHeight : boxWidth);
+                        var viewportScale = $scope.isLandscape ? 1 : $fixBox.height() / boxWidth;
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
-                        var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',viewport-fit=cover';
+                        var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 160)
+                    }, 180)
                 }
             }
 
@@ -3180,7 +3191,7 @@ module.exports = (function () {
         if (type && type != 'sliders') {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
             $scope[type + 'Timeline'] = tl;
-            console.warn(type + 'Timeline')
+            // console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
             var tl = $scope.timeline = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
@@ -3701,7 +3712,7 @@ module.exports = (function () {
                 var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
-                console.warn($scope.sliderIndex + ':' + nextIndex);
+                console.log($scope.sliderIndex + ':' + nextIndex);
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
@@ -3755,9 +3766,9 @@ module.exports = (function () {
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.warn(duration)
-                console.warn(motionTime)
-                console.warn($scope.isSliderEdge)
+                console.log(duration)
+                console.log(motionTime)
+                console.log($scope.isSliderEdge)
             },
             onComplete: function () {
                 $scope.isAnim = 0;//重置运动状态
@@ -4189,7 +4200,24 @@ module.exports = (function () {
         }
 
         //auto playHack
-        $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
+        $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
+        if($config.musicAutoPlay && typeof $config.musicUrl == 'string'){
+            //hack部分机型无法自动播放的bug
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                //howler
+                if (typeof $config.musicUrl == 'object') {
+                    if ($scope.bgmID) {
+                        $scope.audios['bgm'].play($scope.bgmID);
+                    } else {
+                        $scope.bgmID = $scope.audios['bgm'].play();
+                    }
+                    console.log('howl BGM music play~')
+                } else {
+                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+                }
+            }, false);
+        }
+
         if (typeof $config.musicUrl == 'object') {
             $config.musicUrl.src = SLeasy.path($config.host, $config.musicUrl.src);
             $scope.audios['bgm'] = new Howl($config.musicUrl);
@@ -4198,7 +4226,7 @@ module.exports = (function () {
                 $scope.isMusic = 1;
                 SLeasy.music.isPlaying = true;
                 T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
-                document.removeEventListener('touchstart', SLeasy.music.play);
+                document.removeEventListener('touchend', SLeasy.music.play);
             });
             $scope.audios['bgm'].on('pause', function () {
                 $scope.isMusic = 0;
@@ -4235,7 +4263,7 @@ module.exports = (function () {
     //play
     SLeasy.music.play = function () {
         setTimeout(function () {//不支持自动播放情况
-            if (!$scope.isMusic) {
+            if (!$scope.isMusic && $("#SLeasy_musicBt").length) {
                 T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
@@ -4258,27 +4286,12 @@ module.exports = (function () {
             $("#SLeasy_music")[0].play();
         }
 
-        //hack部分机型无法自动播放的bug
-        document.addEventListener("WeixinJSBridgeReady", function () {
-            //howler
-            if (typeof $config.musicUrl == 'object') {
-                if ($scope.bgmID) {
-                    $scope.audios['bgm'].play($scope.bgmID);
-                } else {
-                    $scope.bgmID = $scope.audios['bgm'].play();
-                }
-                console.log('howl BGM music play~')
-            } else {
-                $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
-            }
-        }, false);
-
         //兼容安卓
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
-            document.removeEventListener('touchstart', SLeasy.music.play);
+            if($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            document.removeEventListener('touchend', SLeasy.music.play);
         })
     }
 
@@ -4446,7 +4459,7 @@ module.exports = (function () {
             SLeasy.imgToDiv($scope.sliderBox, dfd);
 
             //默认显示渲染
-            $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
+            // $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();//播放背景音乐
 
             //插件初始化
             for (var j = 0; j < $scope.pluginList.length; j++) {
@@ -4487,6 +4500,12 @@ module.exports = (function () {
 
             //框架初始化($scope.sliderBox.html()包含了loading结构代码)
             $scope.sliderBox.append(sliderHtml + detailHtml + musicHtml);
+            //在可以的环境下自动播放-暂停，以缓存video
+            if ($config.videoCache) {
+                document.addEventListener("WeixinJSBridgeReady", function () {
+                    SLeasy.initMedia($('video').eq(0));
+                },false)
+            }
 
             SLeasy.loader.hidden();//隐藏loading
             $.isEmptyObject($config.loading) && SLeasy.float();//浮动元素初始化
@@ -4499,7 +4518,7 @@ module.exports = (function () {
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
             //默认显示渲染
-            $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();
+            // $config.musicAutoPlay && typeof $config.musicUrl == 'string' ? SLeasy.music.play() : SLeasy.music.pause();
 
             //dom缓存
             $scope.sliders = $(".SLeasy_sliders");//幻灯引用缓存
