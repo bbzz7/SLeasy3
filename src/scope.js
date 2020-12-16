@@ -427,7 +427,7 @@
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
-            $media.muted = muted || false;
+            $media.muted = muted || true;
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -437,10 +437,9 @@
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -449,10 +448,9 @@
                     videoReady = true;
                     console.log($media.paused)
                     if ($media.paused) return;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -461,29 +459,27 @@
                 $(this).one('canplaythrough', function () {
                     if (videoReady) return;
                     videoReady = true;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
                 $(this).one('playing', function () {
                     if (videoReady) return;
                     videoReady = true;
-                    $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
             } else {
                 $(this).one('playing', function () {
                     $media.muted = false;
-                    $media.currentTime = 0;
                     $media.pause();
                     $media.muted = false;
+                    $media.currentTime = 0;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -579,6 +575,7 @@
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
+        $media.muted = false;
         return $media.play();
     }
 
@@ -645,18 +642,18 @@
         return SLeasy;
     }
 
-    SLeasy.to = function (el, duration, to) {
-        TweenMax.to(el, duration, SLeasy.fixProps(to));
+    SLeasy.to = function (el, to) {
+        TweenMax.to(el, SLeasy.fixProps(to));
         return SLeasy;
     }
 
-    SLeasy.from = function (el, duration, from) {
-        TweenMax.from(el, duration, SLeasy.fixProps(from));
+    SLeasy.from = function (el, from) {
+        TweenMax.from(el, SLeasy.fixProps(from));
         return SLeasy;
     }
 
-    SLeasy.fromTo = function (el, duration, fromTo) {
-        TweenMax.fromTo(el, duration, SLeasy.fixProps(fromTo));
+    SLeasy.fromTo = function (el, fromTo) {
+        TweenMax.fromTo(el, SLeasy.fixProps(fromTo));
         return SLeasy;
     }
 
