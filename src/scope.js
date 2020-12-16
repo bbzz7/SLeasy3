@@ -628,7 +628,7 @@
     //旋转状态判断
     SLeasy.isRotated = function () {
         //是否旋转判断
-        if (device.landscape() && $config.width / $config.height > 1) {
+        if ((device.landscape() && $config.width > $config.height) || (device.portrait() && $config.width < $config.height)) {
             $scope.isRotated = false;
         } else {
             $scope.isRotated = true;
