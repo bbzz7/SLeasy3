@@ -36,7 +36,24 @@
         }
 
         //auto playHack
-        $config.musicTouchPlay && document.addEventListener('touchstart', SLeasy.music.play, false);
+        $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
+        if($config.musicAutoPlay && typeof $config.musicUrl == 'string'){
+            //hack部分机型无法自动播放的bug
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                //howler
+                if (typeof $config.musicUrl == 'object') {
+                    if ($scope.bgmID) {
+                        $scope.audios['bgm'].play($scope.bgmID);
+                    } else {
+                        $scope.bgmID = $scope.audios['bgm'].play();
+                    }
+                    console.log('howl BGM music play~')
+                } else {
+                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+                }
+            }, false);
+        }
+
         if (typeof $config.musicUrl == 'object') {
             $config.musicUrl.src = SLeasy.path($config.host, $config.musicUrl.src);
             $scope.audios['bgm'] = new Howl($config.musicUrl);
@@ -45,7 +62,7 @@
                 $scope.isMusic = 1;
                 SLeasy.music.isPlaying = true;
                 T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
-                document.removeEventListener('touchstart', SLeasy.music.play);
+                document.removeEventListener('touchend', SLeasy.music.play);
             });
             $scope.audios['bgm'].on('pause', function () {
                 $scope.isMusic = 0;
@@ -82,7 +99,7 @@
     //play
     SLeasy.music.play = function () {
         setTimeout(function () {//不支持自动播放情况
-            if (!$scope.isMusic) {
+            if (!$scope.isMusic && $("#SLeasy_musicBt").length) {
                 T.set($("#SLeasy_musicBt"), {
                     backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
                     ease: Power4.easeOut
@@ -105,27 +122,12 @@
             $("#SLeasy_music")[0].play();
         }
 
-        //hack部分机型无法自动播放的bug
-        document.addEventListener("WeixinJSBridgeReady", function () {
-            //howler
-            if (typeof $config.musicUrl == 'object') {
-                if ($scope.bgmID) {
-                    $scope.audios['bgm'].play($scope.bgmID);
-                } else {
-                    $scope.bgmID = $scope.audios['bgm'].play();
-                }
-                console.log('howl BGM music play~')
-            } else {
-                $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
-            }
-        }, false);
-
         //兼容安卓
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
-            document.removeEventListener('touchstart', SLeasy.music.play);
+            if($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            document.removeEventListener('touchend', SLeasy.music.play);
         })
     }
 
