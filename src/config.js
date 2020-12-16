@@ -19,10 +19,12 @@
         loopMode: false,//启用首尾循环模式
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
-        routerNotFound:function (){SLeasy.goSlider(0)},//路由未匹配执行回调
+        routerNotFound: function () {
+            SLeasy.goSlider(0)
+        },//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
-        rotateMode:false,//旋转模式
+        rotateMode: false,//旋转模式
         alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
         preload: true,//是否对素材预加载
@@ -31,7 +33,7 @@
         debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
-        fixWidthMode:false,//舞台的宽度自适应模式
+        fixWidthMode: false,//舞台的宽度自适应模式
         positionMode: 'absolute',//舞台子元素position模式
         scrollMagicMode: false,//是否开启scrollmagic模式
         timeStamp: window.SLeasyTimeStamp || null,
@@ -46,6 +48,9 @@
         //audios-------------------------------------------
         audios: {},//webAudio+Howler
         audioType: 'webAudio',
+
+        //video-------------------------------------------
+        videoCache: false,
 
         //slider------------------------------------------
         sliders: [], //幻灯json数组

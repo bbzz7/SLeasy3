@@ -70,6 +70,12 @@
 
             //框架初始化($scope.sliderBox.html()包含了loading结构代码)
             $scope.sliderBox.append(sliderHtml + detailHtml + musicHtml);
+            //在可以的环境下自动播放-暂停，以缓存video
+            if ($config.videoCache) {
+                document.addEventListener("WeixinJSBridgeReady", function () {
+                    SLeasy.initMedia($('video').eq(0));
+                },false)
+            }
 
             SLeasy.loader.hidden();//隐藏loading
             $.isEmptyObject($config.loading) && SLeasy.float();//浮动元素初始化
