@@ -50,21 +50,20 @@
         });
         //rotateMode
         if ($config.rotateMode) {
+            var margin = $scope.isLandscape ? $scope.fixMarginW : $scope.fixMargin;
             if (device.landscape()) {
                 TweenMax.set($scope.sliderBox, {
-                    xPercent: 0,
-                    yPercent: 0,
-                    top: -(window.innerWidth - window.innerHeight) / 2,
-                    left: '0%',
+                    transformOrigin: '0 0',
                     rotation: -90,
+                    y: '100vh',
+                    margin: 'auto ' + margin + 'px'
                 });
             } else {
                 TweenMax.set($scope.sliderBox, {
-                    xPercent: -50,
-                    yPercent: -50,
-                    top: '50%',
-                    left: '50%',
+                    transformOrigin: '0 0',
                     rotation: 90,
+                    x: '100vw',
+                    margin: margin + 'px auto'
                 });
             }
         }

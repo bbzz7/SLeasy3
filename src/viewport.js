@@ -89,13 +89,16 @@
                 var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
                 $scope.fixWidth = boxHeight;
                 $scope.fixHeight = boxWidth > sliderBoxHeight ? sliderBoxHeight : boxWidth;
-                $scope.fixMargin = boxWidth > sliderBoxHeight ? (boxWidth - sliderBoxHeight) / 2 : 0;
+                $scope.fixMargin = 0;
+                $scope.fixMarginW = boxWidth > sliderBoxHeight ? (boxWidth - sliderBoxHeight) / 2 : 0;
             } else {
                 $scope.viewScale = boxWidth / $config.height;//刷新幻灯缩放比例因子
                 var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.width * $scope.viewScale;
                 $scope.fixWidth = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
                 $scope.fixHeight = boxWidth;
-                $scope.fixMargin = 0;
+                $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
+                $scope.fixMarginW = 0;
+
             }
         } else {
             $scope.SLeasyWidth = '100vw';
@@ -105,6 +108,7 @@
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
+            $scope.fixMarginW = boxWidth > $scope.fixWidth ? (boxWidth - $scope.fixWidth) / 2 : 0;
 
             //初始化为横屏模式时
             if ($scope.isLandscape && !$scope.isDesktop && window.screen.availWidth < window.screen.availHeight) {
@@ -112,7 +116,7 @@
                 $scope.SLeasyHeight = window.screen.availWidth;
                 $scope.viewScale = window.screen.availWidth / $config.height;//刷新幻灯缩放比例因子
                 var viewportScale = $fixBox.height() / window.screen.availWidth;
-                viewportScale = Math.ceil(viewportScale * 1000) / 1000;
+                $scope.landscapeViewportScale = viewportScale = Math.ceil(viewportScale * 1000) / 1000;
                 var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
                 $("#SLeasy_viewport").attr('content', viewportContent);
                 // alert(viewportScale + '/' + $scope.SLeasyHeight + '/');
@@ -167,40 +171,32 @@
 
             //横竖屏旋转自适应
             if ($scope.rotateMode == 'auto') {
+                var margin = $scope.isLandscape ? $scope.fixMarginW : $scope.fixMargin;
                 //
                 if (oMode == '竖屏') {
                     //
-                    T.set($scope.sliderBox, {
-                        xPercent: -50,
-                        yPercent: -50,
-                        top: '50%',
-                        left: '50%',
-                        margin: '0 auto',
-                        rotation: $config.stageMode == 'width' ? 0 : 90,
-                    });
                     if ($config.width / $config.height >= 1) {
-                        $scope.sliderBox.css({
+                        //原生横屏
+                        T.set($scope.sliderBox, {
+                            transformOrigin: '0 0',
                             width: '100vh',
                             height: '100vw',
+                            x: $scope.sliderBox.height(),
+                            margin: margin + 'px auto',
+                            rotation: 90,
                         });
                     } else {
-                        $scope.sliderBox.css({
+                        //原生竖屏
+                        T.set($scope.sliderBox, {
+                            transformOrigin: '0 0',
                             width: '100vw',
                             height: '100vh',
+                            x: 0,
+                            y: 0,
+                            margin: margin + 'px auto ',
+                            rotation: 0,
                         });
                     }
-                    //
-                    // if ($scope.isLandscape) {
-                    //     $fixBox.css({
-                    //         maxWidth: boxHeight,
-                    //         maxHeight: boxWidth,
-                    //     })
-                    // } else {
-                    //     $fixBox.css({
-                    //         maxWidth: boxWidth,
-                    //         maxHeight: boxHeight,
-                    //     })
-                    // }
                     //
                     setTimeout(function () {
                         var viewportContent = 'width=device-width, initial-scale=1,user-scalable=no,viewport-fit=cover';
@@ -208,49 +204,35 @@
                     }, 50)
                 } else if (oMode == '横屏') {
                     //
-                    T.set($scope.sliderBox, {
-                        xPercent: 0,
-                        yPercent: 0,
-                        top: '0%',
-                        left: '0%',
-                        margin: '0 auto',
-                        rotation: $config.stageMode == 'height' ? 0 : -90,
-                    });
-
                     if ($config.width / $config.height >= 1) {
                         //原生横屏
-                        $scope.sliderBox.css({
+                        T.set($scope.sliderBox, {
+                            transformOrigin: '0 0',
                             width: '100vw',
                             height: '100vh',
+                            x: 0,
+                            y: 0,
+                            margin: '0 auto',
+                            rotation: 0,
                         });
                     } else {
                         //原生竖屏
-                        $scope.sliderBox.css({
+                        T.set($scope.sliderBox, {
                             width: '100vh',
                             height: '100vw',
-                            top: '-50%',
-                            // marginTop: 0
+                            transformOrigin: '0 0',
+                            y: $scope.sliderBox.width(),
+                            margin: 'auto ' + margin + 'px',
+                            rotation: -90,
                         });
                     }
                     //
-                    // if ($scope.isLandscape) {
-                    //     $fixBox.css({
-                    //         maxWidth: boxWidth,
-                    //         maxHeight: boxHeight,
-                    //     })
-                    // } else {
-                    //     $fixBox.css({
-                    //         maxWidth: boxHeight,
-                    //         maxHeight: boxWidth,
-                    //     })
-                    // }
-                    //
                     setTimeout(function () {
-                        var viewportScale = $scope.isLandscape ? 1 : $fixBox.height() / boxWidth;
+                        var viewportScale = $scope.isLandscape ? ($scope.landscapeViewportScale || 1) : window.innerHeight / boxWidth;
                         // alert($fixBox.height() + ':' + boxWidth + ':' + viewportScale + ':' + window.innerHeight);
                         var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
                         $("#SLeasy_viewport").attr('content', viewportContent);
-                    }, 180)
+                    }, 300)
                 }
             }
 
