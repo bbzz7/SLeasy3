@@ -22,7 +22,7 @@ gulp.task('build', function () {
         'lib/director.js',
         'lib/store.js',
         'lib/jquery.cookie.js',
-        'lib/ios-inner-height.js',
+        'lib/iphone-inline-video.js',
         'lib/device.js',
         'src/config.js',
         'src/scope.js',

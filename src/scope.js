@@ -657,6 +657,14 @@
         return SLeasy;
     }
 
+    SLeasy.enableInlineVideo = function () {
+        if (SLeasy.isWeibo()) {
+            $('video').each(function () {
+                enableInlineVideo(this);
+            });
+        }
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')

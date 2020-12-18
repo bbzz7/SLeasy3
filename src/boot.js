@@ -70,11 +70,13 @@
 
             //框架初始化($scope.sliderBox.html()包含了loading结构代码)
             $scope.sliderBox.append(sliderHtml + detailHtml + musicHtml);
+            //微博下iphone-inline-video
+            SLeasy.enableInlineVideo();
             //在可以的环境下自动播放-暂停，以缓存video
             if ($config.videoCache) {
                 document.addEventListener("WeixinJSBridgeReady", function () {
                     SLeasy.initMedia($('video').eq(0));
-                },false)
+                }, false)
             }
 
             SLeasy.loader.hidden();//隐藏loading

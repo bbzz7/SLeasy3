@@ -105,6 +105,7 @@
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
+
             //初始化为横屏模式时
             if ($scope.isLandscape && !$scope.isDesktop && window.screen.availWidth < window.screen.availHeight) {
                 $scope.SLeasyWidth = '100vw';
@@ -153,10 +154,10 @@
             });
         }
         //横竖屏旋转切换事件 --------------------------------------------------
-        SLeasy.onResize = function (oMode) {
-            if (device.desktop()) return setTimeout(function (){
-                location.reload()
-            },250);
+        SLeasy.onResize = function (oMode, eType) {
+            if ($scope.isDesktop) return setTimeout(function () {
+                location.reload();
+            }, 250);
             setTimeout(function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
