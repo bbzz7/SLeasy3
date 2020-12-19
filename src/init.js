@@ -10,15 +10,24 @@
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }
-        if (!SLeasy.isHttp() && $config.debugMode) {//debug模式
-            var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
-            var $defaultStyle = $('head style').eq(0);
-            $defaultStyle.html($defaultStyle.html() + debugStyle);
+        if (!SLeasy.isHttp()) {
+            //本地手机模拟器中禁止长按呼出右键菜单
+            window.oncontextmenu = function () {
+                return false;
+            }
+            //debug模式
+            if ($config.debugMode) {
+                var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
+                var $defaultStyle = $('head style').eq(0);
+                $defaultStyle.html($defaultStyle.html() + debugStyle);
+            }
         }
 
         if (!$config.debugMode) {
+            //劫持console.log输出
             console.log = function () {
-            };//设置console.log输出
+                return false;
+            }
         } else {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
