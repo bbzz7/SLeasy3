@@ -3952,7 +3952,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     SLeasy.eventBind = function (globalBinding) {
         if (globalBinding) {
             //全局 -------------------------
-            sliderBox = new H(document.getElementById(($scope.rotateMode=='auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
+            sliderBox = new H(document.getElementById(($scope.rotateMode == 'auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
             //禁止触摸默认行为
@@ -4007,9 +4007,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
-                //console.log(document.getElementById(id));
-                if (e == 'click') {//点击事件,方便某些广告监测代码
-                    $(dom).off('click').on('click', callback);
+                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                    $(dom).off(e).on(e, callback);
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
@@ -4043,9 +4042,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     callback = el.onEvent;
 
                 dom.style.cursor = "pointer";//鼠标手势
-                //console.log(document.getElementById(id));
-                if (e == 'click') {//点击事件,方便某些广告监测代码
-                    $(dom).off('click').on('click', callback);
+                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                    $(dom).off(e).on(e, callback);
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
                     HDom.off('press').on('press', callback);
