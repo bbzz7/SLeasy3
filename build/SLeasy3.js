@@ -4007,6 +4007,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
+
                 if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
                 } else if (e == 'hold') {//长按事件
@@ -4058,9 +4059,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         //loading幻灯
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
-                var HDom = new H($('.SLeasy_loading')[0]);
-                HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
-                HDom.off(e).on(e, callback);//事件绑定
+                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                    $('.SLeasy_loading').off(e).on(e, callback);
+                } else {
+                    var HDom = new H($('.SLeasy_loading')[0]);
+                    HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
+                    HDom.off(e).on(e, callback);//事件绑定
+                }
             })
         }
 
@@ -4068,9 +4073,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
-                    var HDom = new H($('.SLeasy_sliders')[i]);
-                    HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
-                    HDom.off(e).on(e, callback);//事件绑定
+                    if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                        $('.SLeasy_sliders').eq(i).off(e).on(e, callback);
+                    } else {
+                        var HDom = new H($('.SLeasy_sliders')[i]);
+                        HDom.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
+                        HDom.off(e).on(e, callback);//事件绑定
+                    }
                 })
             }
         }
