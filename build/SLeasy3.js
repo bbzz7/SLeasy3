@@ -1744,11 +1744,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $scope.fixMarginW = boxWidth > $scope.fixWidth ? (boxWidth - $scope.fixWidth) / 2 : 0;
 
             //初始化为横屏模式时
-            if ($scope.isLandscape && !$scope.isDesktop && window.screen.availWidth < window.screen.availHeight) {
+            if ($scope.isLandscape && !$scope.isDesktop) {
                 $scope.SLeasyWidth = '100vw';
-                $scope.SLeasyHeight = window.screen.availWidth;
-                $scope.viewScale = window.screen.availWidth / $config.height;//刷新幻灯缩放比例因子
-                var viewportScale = $fixBox.height() / window.screen.availWidth;
+                if(device.iphone() && SLeasy.isWeixin()){
+                    //在iphone的微信内，横屏时window.screen.availWidth不变(2020.12.29)
+                    $scope.SLeasyHeight = window.screen.availWidth;
+                }else{
+                    $scope.SLeasyHeight = window.screen.availHeight;
+                }
+                $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
+                var viewportScale = $fixBox.height() / $scope.SLeasyHeight;
                 $scope.landscapeViewportScale = viewportScale = Math.ceil(viewportScale * 1000) / 1000;
                 var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
                 $("#SLeasy_viewport").attr('content', viewportContent);
