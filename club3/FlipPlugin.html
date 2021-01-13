@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Flip</title>
+    <style>
+        body {
+            background-color: #222;
+            color: #ccc;
+            padding: 10px 24px;
+            font-family: "Signika Negative", sans-serif, Arial;
+            font-weight: 300;
+        }
+
+        .group.reorder {
+            flex-direction: row;
+        }
+
+        h1 {
+            color: white;
+            font-weight: 400;
+        }
+
+        .group {
+            width: 740px;
+            height: auto;
+            padding: 4px;
+            background: #111;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            color: black;
+        }
+
+        .box {
+            margin: 4px;
+            padding: 8px;
+            font-size: 22px;
+            line-height: 28px;
+        }
+
+        .box:nth-child(1) {
+            background: rgba(85, 102, 205, 0.7);
+        }
+
+        .box:nth-child(2) {
+            background: rgba(125, 70, 200, 0.7);
+        }
+
+        .box:nth-child(3) {
+            background: rgba(33, 150, 243, 0.7);
+        }
+
+        .box:nth-child(4) {
+            background: rgba(0, 188, 212, 0.7);
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin-bottom: 10px;
+        }
+
+        .logo {
+            position: absolute;
+            width: 60px;
+            bottom: 20px;
+            right: 30px;
+        }
+
+
+        Resources1×
+
+        0.5
+        ×
+
+        0.25
+        ×Rerun
+    </style>
+</head>
+
+<body>
+<h1>Smoothly change flex direction with GSAP's Flip plugin</h1>
+
+<button id="changeLayout" class="button">change</button>
+<div class="group">
+    <div class="box">Common "FLIP" techniques employed by other tools won't work with flex elements because of the way
+        browsers handle width/height.
+    </div>
+    <div class="box">Simply set <code>absolute: true</code> to have GSAP's Flip plugin make the elements position:
+        absolute during the flip to work around challenges with flex and grid layouts.
+    </div>
+    <div class="box">When the flip animation is done, elements get reverted back to their normal positioning and
+        everything appears seamless.
+    </div>
+    <div class="box">Happy flipping!</div>
+</div>
+<a href="https://greensock.com/"><img src="https://assets.codepen.io/16327/hero-logo.svg" class="logo"/></a>
+<script src="https://lib.sinaapp.com/js/jquery/2.0.3/jquery-2.0.3.min.js"></script>
+<script src="gsap.min.js"></script>
+<script src="Flip.min.js"></script>
+<!--<script src="ClubPlugins.min.js"></script>-->
+<script>
+
+    $(document).ready(function (e) {
+        gsap.registerPlugin(Flip);
+
+        const group = document.querySelector(".group");
+
+        document.querySelector(".button").addEventListener("click", () => {
+            // Get the initial state
+            const state = Flip.getState(".group, .box");
+
+            // toggle the flex direction
+            group.classList.toggle("reorder");
+
+            Flip.from(state, {
+                absolute: true, // uses position: absolute during the flip to work around flexbox challenges
+                duration: 0.5,
+                stagger: 0.1,
+                ease: "power1.inOut"
+                // you can use any other tweening properties here too, like onComplete, onUpdate, delay, etc.
+            });
+        });
+    });
+</script>
+</body>
+</html>

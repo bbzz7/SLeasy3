@@ -9,25 +9,79 @@
     <!--<script src="ClubPlugins.min.js"></script>-->
     <style>
         body {
-            margin-left: 0px;
-            margin-top: 0px;
-            margin-right: 0px;
-            margin-bottom: 0px;
-            background-color: #fff;
+            font-family: "proxima-nova", sans-serif;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: hsl(134, 50%, 95%);
+            padding: 0;
+            margin: 0;
         }
+        svg {
+            width: 80vw;
+            height: auto;
+            max-width: 960px;
+        }
+
+        #target {
+            stroke-miterlimit: 10;
+            stroke-width: 36;
+            fill: none;
+            stroke-linecap: round;
+            stroke: #88CE02;
+        }
+
+        #track {
+            stroke-miterlimit: 10;
+            stroke-width: 1;
+            fill: none;
+            stroke: #aaa;
+        }
+
+        .motionTricks {
+            padding: 8px 16px;
+            margin-top: 16px;
+            cursor: pointer;
+            border-radius: 500px;
+            text-decoration: none;
+            border: solid 2px #ccc;
+            color: #ccc;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+        }
+
+
     </style>
 </head>
 
 <body>
-<svg id="loadingBarBox" style="overflow:visible">
-    <circle stroke-width="6" stroke="#959595" fill="none" cx="78" cy="78" r="75"/>
-    <circle stroke-width="6" stroke="#f2c730" fill="none" cx="78" cy="78" r="75" id="loadingBar"/>
+<h1>DrawSVG Infinity Looping</h1>
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500">
+    <path id="track" d="M500,250,397.63,352.32a144.77,144.77,0,0,1-204.74,0h0a144.79,144.79,0,0,1,0-204.74h0a144.79,144.79,0,0,1,204.74,0L500,250,602.37,352.32c61.87,61.87,153.53,51.21,204.74,0h0a144.79,144.79,0,0,0,0-204.74h0a144.79,144.79,0,0,0-204.74,0Z" />
+    <path id="target" d="M500,250,397.63,352.32a144.77,144.77,0,0,1-204.74,0h0a144.79,144.79,0,0,1,0-204.74h0a144.79,144.79,0,0,1,204.74,0L500,250,602.37,352.32c61.87,61.87,153.53,51.21,204.74,0h0a144.79,144.79,0,0,0,0-204.74h0a144.79,144.79,0,0,0-204.74,0Z" />
+
 </svg>
+<a href="https://www.motiontricks.com" target="_blank" class="motionTricks">motiontricks.com</a>
 <script>
     $(document).ready(function (e) {
+        console.clear();
         gsap.registerPlugin(DrawSVGPlugin);
-        gsap.set("#loadingBarBox", {rotation: -89.9, x: -75, y: -65});
-        gsap.from("#loadingBar", {duration: 2, drawSVG: "0", ease: Bounce.easeOut});
+        gsap.set("path", { drawSVG: false });
+
+        gsap.timeline({ delay: 0.75 })
+            .to("#track", { duration: 0.85, drawSVG: true, ease: "power2.inOut" })
+            .to("#target", { drawSVG: "0% 15%", ease: "power2.in" })
+            .to("#target", {
+                duration: 1.25,
+                drawSVG: "100% 115%",
+                ease: "none",
+                repeat: -1
+            });
+
     });
 </script>
 </body>
