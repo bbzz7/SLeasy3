@@ -15,8 +15,8 @@
             },
             xOffset = $scope.xOffset = {
                 "top": $config.alignOffset * $scope.viewScale,
-                "center": (($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset * $scope.viewScale,
-                "bottom": ($scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset * $scope.viewScale
+                "center": (($scope.maxWidth || $scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale) / 2 + $config.alignOffset * $scope.viewScale,
+                "bottom": ($scope.maxWidth || $scope.fixWidth || $config.viewport) - $config.width * $scope.viewScale + $config.alignOffset * $scope.viewScale
             },
             sliders = opt || $config.sliders;
 
