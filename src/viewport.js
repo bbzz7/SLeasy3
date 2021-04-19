@@ -139,8 +139,8 @@
                 height: $scope.fixHeight,
                 // padding: fixBoxPadding + 'px 0'
             });
-            $scope.SLeasyWidth = '100%';
-            $scope.SLeasyHeight = '100%';
+            $scope.SLeasyWidth = '100vw';
+            $scope.SLeasyHeight = '100vh';
         }
         $scope.maxWidth = $config.width * $scope.viewScale;
         $scope.maxHeight = $config.height * $scope.viewScale;

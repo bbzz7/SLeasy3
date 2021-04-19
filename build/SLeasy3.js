@@ -353,90 +353,9 @@ var _gsScope="undefined"!=typeof module&&module.exports&&"undefined"!=typeof glo
 
 }));
 
-(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.iosInnerHeight = f()}})(function(){var define,module,exports;return (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-'use strict';
-
-/**
- * @module ios-inner-height
- *
- * @description Get proper window.innerHeight from iOS devices,
- * excluding URL control and menu bar.
- *
- * @return {function} Callable function to retrieve the
- * cached `window.innerHeight` measurement, specific to the
- * device's current orientation.
- */
-module.exports = (function () {
-	// Avoid errors when globals are undefined (CI, etc)
-	// https://github.com/tylerjpeterson/ios-inner-height/pull/7
-	if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-		return function () {
-			return 0;
-		};
-	}
-
-	// Non-iOS browsers return window.innerHeight per usual.
-	// No caching here since browsers can be resized, and setting
-	// up resize-triggered cache invalidation is not in scope.
-	/* istanbul ignore if  */
-	if (!navigator.userAgent.match(/iphone|ipod|ipad/i)) {
-		/**
-		 * Avoids conditional logic in the implementation
-		 * @return {number} - window's innerHeight measurement in pixels
-		 */
-		return function () {
-			return window.innerHeight;
-		};
-	}
-
-	// Store initial orientation
-	var axis = Math.abs(window.orientation);
-	// And hoist cached dimensions
-	var dims = {w: 0, h: 0};
-
-	/**
-	 * Creates an element with a height of 100vh since iOS accurately
-	 * reports vp height (but not window.innerHeight). Then destroy it.
-	 */
-	var createRuler = function () {
-		var ruler = document.createElement('div');
-
-		ruler.style.position = 'fixed';
-		ruler.style.height = '100vh';
-		ruler.style.width = 0;
-		ruler.style.top = 0;
-
-		document.documentElement.appendChild(ruler);
-
-		// Set cache conscientious of device orientation
-		dims.w = axis === 90 ? ruler.offsetHeight : window.innerWidth;
-		dims.h = axis === 90 ? window.innerWidth : ruler.offsetHeight;
-
-		// Clean up after ourselves
-		document.documentElement.removeChild(ruler);
-		ruler = null;
-	};
-
-	// Measure once
-	createRuler();
-
-	/**
-	 * Returns window's cached innerHeight measurement
-	 * based on viewport height and device orientation
-	 * @return {number} - window's innerHeight measurement in pixels
-	 */
-	return function () {
-		if (Math.abs(window.orientation) !== 90) {
-			return dims.h;
-		}
-
-		return dims.w;
-	};
-})();
-
-},{}]},{},[1])(1)
-});
-
+/*! npm.im/iphone-inline-video 2.2.2 */
+var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
+    function e(e,i,n,r){function t(n){d=i(t,r),e(n-(a||n)),a=n}var d,a;return{start:function(){d||t(0)},stop:function(){n(d),d=null,a=0}}}function i(i){return e(i,requestAnimationFrame,cancelAnimationFrame)}function n(e,i,n){function r(r){n&&!n(e,i)||r.stopImmediatePropagation()}return e.addEventListener(i,r),r}function r(e,i,n,r){function t(){return n[i]}function d(e){n[i]=e}r&&d(e[i]),Object.defineProperty(e,i,{get:t,set:d})}function t(e,i,n){n.addEventListener(i,function(){return e.dispatchEvent(new Event(i))})}function d(e,i){Promise.resolve().then(function(){e.dispatchEvent(new Event(i))})}function a(e){var i=new Audio;return t(e,"play",i),t(e,"playing",i),t(e,"pause",i),i.crossOrigin=e.crossOrigin,i.src=e.src||e.currentSrc||"data:",i}function u(e,i,n){(m||0)+200<Date.now()&&(e[h]=!0,m=Date.now()),n||(e.currentTime=i),k[++T%3]=100*i|0}function o(e){return e.driver.currentTime>=e.video.duration}function s(e){var i=this;i.video.readyState>=i.video.HAVE_FUTURE_DATA?(i.hasAudio||(i.driver.currentTime=i.video.currentTime+e*i.video.playbackRate/1e3,i.video.loop&&o(i)&&(i.driver.currentTime=0)),u(i.video,i.driver.currentTime)):i.video.networkState===i.video.NETWORK_IDLE&&0===i.video.buffered.length&&i.video.load(),i.video.ended&&(delete i.video[h],i.video.pause(!0))}function c(){var e=this,i=e[g];if(e.webkitDisplayingFullscreen)return void e[E]();"data:"!==i.driver.src&&i.driver.src!==e.src&&(u(e,0,!0),i.driver.src=e.src),e.paused&&(i.paused=!1,0===e.buffered.length&&e.load(),i.driver.play(),i.updater.start(),i.hasAudio||(d(e,"play"),i.video.readyState>=i.video.HAVE_ENOUGH_DATA&&d(e,"playing")))}function v(e){var i=this,n=i[g];n.driver.pause(),n.updater.stop(),i.webkitDisplayingFullscreen&&i[w](),n.paused&&!e||(n.paused=!0,n.hasAudio||d(i,"pause"),i.ended&&!i.webkitDisplayingFullscreen&&(i[h]=!0,d(i,"ended")))}function p(e,n){var r={};e[g]=r,r.paused=!0,r.hasAudio=n,r.video=e,r.updater=i(s.bind(r)),n?r.driver=a(e):(e.addEventListener("canplay",function(){e.paused||d(e,"playing")}),r.driver={src:e.src||e.currentSrc||"data:",muted:!0,paused:!0,pause:function(){r.driver.paused=!0},play:function(){r.driver.paused=!1,o(r)&&u(e,0)},get ended(){return o(r)}}),e.addEventListener("emptied",function(){var i=!r.driver.src||"data:"===r.driver.src;r.driver.src&&r.driver.src!==e.src&&(u(e,0,!0),r.driver.src=e.src,i||!n&&e.autoplay?r.driver.play():r.updater.stop())},!1),e.addEventListener("webkitbeginfullscreen",function(){e.paused?n&&0===r.driver.buffered.length&&r.driver.load():(e.pause(),e[E]())}),n&&(e.addEventListener("webkitendfullscreen",function(){r.driver.currentTime=e.currentTime}),e.addEventListener("seeking",function(){k.indexOf(100*e.currentTime|0)<0&&(r.driver.currentTime=e.currentTime)}))}function l(e){var i=e[h];return delete e[h],!e.webkitDisplayingFullscreen&&!i}function f(e){var i=e[g];e[E]=e.play,e[w]=e.pause,e.play=c,e.pause=v,r(e,"paused",i.driver),r(e,"muted",i.driver,!0),r(e,"playbackRate",i.driver,!0),r(e,"ended",i.driver),r(e,"loop",i.driver,!0),n(e,"seeking",function(e){return!e.webkitDisplayingFullscreen}),n(e,"seeked",function(e){return!e.webkitDisplayingFullscreen}),n(e,"timeupdate",l),n(e,"ended",l)}function y(e,i){if(void 0===i&&(i={}),!e[g]){if(!i.everywhere){if(!b)return;if(!(i.iPad||i.ipad?/iPhone|iPod|iPad/:/iPhone|iPod/).test(navigator.userAgent))return}e.pause();var n=e.autoplay;e.autoplay=!1,p(e,!e.muted),f(e),e.classList.add("IIV"),e.muted&&n&&(e.play(),e.addEventListener("playing",function i(){e.autoplay=!0,e.removeEventListener("playing",i)})),/iPhone|iPod|iPad/.test(navigator.platform)||console.warn("iphone-inline-video is not guaranteed to work in emulated environments")}}var m,b="object"==typeof document&&"object-fit"in document.head.style&&!matchMedia("(-webkit-video-playable-inline)").matches,g="fregante:iphone-inline-video",h="fregante:iphone-inline-video:event",E="fregante:iphone-inline-video:nativeplay",w="fregante:iphone-inline-video:nativepause",k=[],T=0;return y}();
 // Device.js
 // (c) 2014 Matthew Hudson
 // Device.js is freely distributable under the MIT license.
@@ -1853,8 +1772,8 @@ module.exports = (function () {
                 height: $scope.fixHeight,
                 // padding: fixBoxPadding + 'px 0'
             });
-            $scope.SLeasyWidth = '100%';
-            $scope.SLeasyHeight = '100%';
+            $scope.SLeasyWidth = '100vw';
+            $scope.SLeasyHeight = '100vh';
         }
         $scope.maxWidth = $config.width * $scope.viewScale;
         $scope.maxHeight = $config.height * $scope.viewScale;
