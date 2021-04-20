@@ -665,6 +665,30 @@
         }
     }
 
+    SLeasy.on = function (el, event, callback) {
+        $(el).each(function (index) {
+            var dom = this;
+            var HDom = new Hammer(dom),
+                e = event;
+
+            if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
+            dom.style.cursor = "pointer";//鼠标手势
+
+            if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                $(dom).off(e).on(e, callback);
+            } else if (e == 'hold') {//长按事件
+                HDom.get('press').set({time: 1000});
+                HDom.off('press').on('press', callback);
+            } else {
+                HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
+                HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
+                HDom.off(e).on(e, function () {
+                    callback(index)
+                });//事件绑定
+            }
+        })
+    }
+
     //复制文字功能函数
     // 必须手动触发 点击事件或者其他事件，不能直接使用js调用！！！
     //  copyText('h5实现一键复制到粘贴板 兼容ios')
