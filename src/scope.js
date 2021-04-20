@@ -683,7 +683,7 @@
                 HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
                 HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
                 HDom.off(e).on(e, function () {
-                    callback(index)
+                    callback(index, dom);
                 });//事件绑定
             }
         })
