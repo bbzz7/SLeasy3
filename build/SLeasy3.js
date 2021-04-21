@@ -3275,7 +3275,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 if (subMotion.show && subMotion.show.y) subMotion.show.y = Math.round(subMotion.show.y);
             }
             //set
-            console.log(subMotion.set)
+            // console.log(subMotion.set)
             subMotion.set && T.set($dom, subMotion.set);
 
             //add label
@@ -3323,7 +3323,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         //play
         tl.play();
-        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+        // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},
@@ -3828,12 +3828,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
 
     //goDetail
-    SLeasy.goDetail = function (index) {
+    SLeasy.goDetail = function (index, allowMulti) {
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             $scope.router.setRoute(1, nextIndex + '');//设置路由
         } else {
-            SLeasy.detailTransit(nextIndex);
+            SLeasy.detailTransit(nextIndex, allowMulti);
         }
         return SLeasy;
     }
@@ -3872,9 +3872,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     }
 
-    SLeasy.detailTransit = function (index) {
+    SLeasy.detailTransit = function (index, allowMulti) {
         //如果详情页处于打开状态未关闭，则return
-        if ($scope.isDetail || !$config.details[index]) return;
+        // console.log(($scope.isDetail || !$config.details[index]) && !allowMulti)
+        if (($scope.isDetail || !$config.details[index]) && !allowMulti) return;
         //索引边界检查
         if (typeof index == 'undefined' || index < 0 || index > $config.details.length - 1) return;
 
@@ -3882,7 +3883,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         var detail = $config.details[index],
             dom = $scope.details.eq(index),
-            FX = SLeasy.detailFX(index),
+            FX = SLeasy.detailFX(index, allowMulti),
             time = detail.time || $config.motionTime
         ;
 
@@ -3909,18 +3910,18 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
 
     //closeDetail
-    SLeasy.closeDetail = function (index, callback) {
+    SLeasy.closeDetail = function (index, allowMulti, callback) {
         var nextIndex = SLeasy.nextDetailIndex(index);
         if ($config.routerMode) {
             var sliderHash = $scope.router.getRoute(1)
             $scope.router.setRoute(1, 'html');//设置路由
         } else {
-            SLeasy.closeDetailTransit(nextIndex, callback);
+            SLeasy.closeDetailTransit(nextIndex, allowMulti, callback);
         }
         return SLeasy;
     }
 
-    SLeasy.closeDetailTransit = function (index, callback) {
+    SLeasy.closeDetailTransit = function (index, allowMulti, callback) {
         //如果详情页处于打开状态未关闭，则return
         if (!$scope.isDetail) return;
         //索引边界检查
@@ -3931,14 +3932,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             onComplete = {
                 onComplete: function () {
                     console.log(dom);
-                    callback && callback();//回调hack
                     //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
                     ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
-                    T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
-                    T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
-                    $scope.isDetail = 0;//详情页已关闭
+                    if (!allowMulti) {
+                        T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
+                        T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
+                        $scope.isDetail = 0;//详情页已关闭
+                    }
                     //如果positionMod为relative情况
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
+                    callback && callback();//回调hack
                 }
             },
             FX = SLeasy.detailFX(index),
@@ -4993,15 +4996,15 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             console.log($scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                SLeasy.init($config).done(function () {
-                    SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
-                    $(".SLeasy_loading").fadeIn(300, function () {
-                        $config.loading.onComplete && $config.loading.onComplete();
-                        $config.loading.onStartLoad && $config.loading.onStartLoad();
+                SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
+                $(".SLeasy_loading").fadeIn(300, function () {
+                    $config.loading.onComplete && $config.loading.onComplete();
+                    $config.loading.onStartLoad && $config.loading.onStartLoad();
+                    SLeasy.init($config).done(function () {
+                        dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
+                        console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+                        $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                     });
-                    dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
-                    console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-                    $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
                 });
             }
         });

@@ -152,7 +152,7 @@
                 if (subMotion.show && subMotion.show.y) subMotion.show.y = Math.round(subMotion.show.y);
             }
             //set
-            console.log(subMotion.set)
+            // console.log(subMotion.set)
             subMotion.set && T.set($dom, subMotion.set);
 
             //add label
@@ -200,7 +200,7 @@
 
         //play
         tl.play();
-        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+        // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},
