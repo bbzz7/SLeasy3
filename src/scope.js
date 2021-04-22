@@ -637,8 +637,8 @@
     }
 
     //wrap gsap
-    SLeasy.set = function (el, set) {
-        TweenMax.set(el, SLeasy.fixProps(set));
+    SLeasy.set = function (el, set, noFix) {
+        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set));
         return SLeasy;
     }
 
@@ -678,12 +678,14 @@
                 $(dom).off(e).on(e, callback);
             } else if (e == 'hold') {//长按事件
                 HDom.get('press').set({time: 1000});
-                HDom.off('press').on('press', callback);
+                HDom.off('press').on('press', function (ev) {
+                    callback(index, dom, ev);
+                });
             } else {
                 HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
                 HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
-                HDom.off(e).on(e, function () {
-                    callback(index, dom);
+                HDom.off(e).on(e, function (ev) {
+                    callback(index, dom, ev);
                 });//事件绑定
             }
         })
