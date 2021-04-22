@@ -28,7 +28,7 @@
                 onStart: function (e) {
                     detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);//禁止触摸默认滚动+禁止slider滑动手势
                     detail.onStart && detail.onStart();
-                    SLeasy.subMotion(detail.subMotion, 'details');
+                    !$scope.isDetail && SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
                 onComplete: function (e) {
@@ -122,8 +122,7 @@
                 }
             },
             FX = SLeasy.detailFX(index),
-            time = detail.time || $config.motionTime
-        ;
+            time = detail.time || $config.motionTime;
 
         //详情页关闭回调
         $config.on['detailClose'](index);
