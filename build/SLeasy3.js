@@ -1408,9 +1408,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     //
     SLeasy.respY = function (y, margin) {
         return function (index, target) {
+            console.log(gsap.getProperty(target,'height'));
+            setTimeout(function (){
+                console.log($(target).css('height'));
+            },500)
             var m = margin || 0;
             var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
             var yTop = y * $scope.viewScale + $scope.yOffset.center;
+            console.log(y * $scope.viewScale + '+' + $(target).height() + '+' + $scope.yOffset.center + '=' + yBottom);
             if (yBottom > $scope.fixHeight) {
                 return $scope.fixHeight - $(target).height() - m;
             } else if (yTop < 0) {
@@ -2869,7 +2874,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     TweenMax || TweenLite
 );
 // SLeasy3-imgToDiv
-;(function (SLeasy, $) {
+;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
@@ -2904,7 +2909,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 transformedCount++;
                 // console.log('============'+w+':'+h+'==============');
                 if ($scope.initReady && transformedCount == transformTotal) {
-                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~');
+                    //重新set float元素以获得正确的尺寸
+                    $('.SLeasy_floatElement').each(function (index, element) {
+                        T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+                    });
                     dfd.resolve();//初始化完毕
                 }
             });
@@ -2939,7 +2948,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 })(
     window.SLeasy = window.SLeasy || {},
-    jQuery
+    jQuery,
+    TweenMax || TweenLite
 );
 // SLeasy3-fix
 ;(function (SLeasy) {

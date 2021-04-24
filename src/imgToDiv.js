@@ -1,5 +1,5 @@
 // SLeasy3-imgToDiv
-;(function (SLeasy, $) {
+;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
@@ -34,7 +34,11 @@
                 transformedCount++;
                 // console.log('============'+w+':'+h+'==============');
                 if ($scope.initReady && transformedCount == transformTotal) {
-                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
+                    console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~');
+                    //重新set float元素以获得正确的尺寸
+                    $('.SLeasy_floatElement').each(function (index, element) {
+                        T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+                    });
                     dfd.resolve();//初始化完毕
                 }
             });
@@ -69,5 +73,6 @@
     }
 })(
     window.SLeasy = window.SLeasy || {},
-    jQuery
+    jQuery,
+    TweenMax || TweenLite
 );
