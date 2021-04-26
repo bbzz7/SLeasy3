@@ -184,6 +184,7 @@
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 
+        //事件
         H($("#SLeasy_musicBt")[0]).on('tap', function () {
             if (!$scope.isMusic) {
                 SLeasy.music.play();

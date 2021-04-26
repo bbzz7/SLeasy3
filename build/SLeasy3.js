@@ -1406,20 +1406,22 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //
-    SLeasy.respY = function (y, margin) {
+    SLeasy.respY = function (y, margin, height, offset) {
         return function (index, target) {
-            console.log(gsap.getProperty(target,'height'));
-            setTimeout(function (){
-                console.log($(target).css('height'));
-            },500)
-            var m = margin || 0;
+            var m = SLeasy.viewScale(margin) || 0;
             var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
             var yTop = y * $scope.viewScale + $scope.yOffset.center;
-            console.log(y * $scope.viewScale + '+' + $(target).height() + '+' + $scope.yOffset.center + '=' + yBottom);
             if (yBottom > $scope.fixHeight) {
                 return $scope.fixHeight - $(target).height() - m;
             } else if (yTop < 0) {
                 return m;
+            } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
+                if (offset < 1 && offset > -1) {
+                    var offsetY = $scope.fixHeight - SLeasy.viewScale(height) / 2 * offset;
+                }else{
+                    var offsetY = offset || ($scope.fixHeight - SLeasy.viewScale(height)) / 4;
+                }
+                return y * $scope.viewScale + $scope.yOffset.center + offsetY;
             } else {
                 return y * $scope.viewScale + $scope.yOffset.center;
             }
@@ -4340,6 +4342,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 
+        //事件
         H($("#SLeasy_musicBt")[0]).on('tap', function () {
             if (!$scope.isMusic) {
                 SLeasy.music.play();
