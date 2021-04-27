@@ -279,10 +279,11 @@
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
         } else {
             //清除所有ae渲染层tween
-            $.each($scope.aeLayer, function (index, aeLayer) {
-                T.killTweensOf(aeLayer);
-            })
-
+            if (duration >= 0.1) {
+                $.each($scope.aeLayer, function (index, aeLayer) {
+                    T.killTweensOf(aeLayer);
+                })
+            }
             //slider切换
             preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
             //自定义切换效果
