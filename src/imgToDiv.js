@@ -39,6 +39,9 @@
                     $('.SLeasy_floatElement').each(function (index, element) {
                         T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
                     });
+                    $('.SLeasy_loadingElement').each(function (index, element) {
+                        T.set($(this), $config.loading.subMotion[index].set);
+                    });
                     dfd.resolve();//初始化完毕
                 }
             });
