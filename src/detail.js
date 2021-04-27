@@ -19,7 +19,7 @@
         return index = (typeof index == 'number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
     }
 
-    SLeasy.detailFX = function (index) {
+    SLeasy.detailFX = function (index, allowMulti) {
         var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
             motionFX = detail.fx || detail.FX || detail.motionFX || null,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1], motionFX[2]) : SLeasy.getMotionFX('leftRight', 0),
@@ -28,7 +28,7 @@
                 onStart: function (e) {
                     detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);//禁止触摸默认滚动+禁止slider滑动手势
                     detail.onStart && detail.onStart();
-                    !$scope.isDetail && SLeasy.subMotion(detail.subMotion, 'details');
+                    (!$scope.isDetail || allowMulti) && SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
                 onComplete: function (e) {
@@ -82,7 +82,6 @@
 
         T.set(dom, FX.set);//自定义set，主要是z-index等
         T.fromTo(dom, time, FX.in, FX.show);
-
     }
 
 
@@ -111,7 +110,7 @@
                     console.log(dom);
                     //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
                     ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
-                    if (!allowMulti) {
+                    if (!allowMulti || $.isFunction(allowMulti)) {
                         T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
                         T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                         $scope.isDetail = 0;//详情页已关闭
@@ -119,6 +118,7 @@
                     //如果positionMod为relative情况
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
                     callback && callback();//回调hack
+                    if (allowMulti && $.isFunction(allowMulti)) allowMulti();
                 }
             },
             FX = SLeasy.detailFX(index),

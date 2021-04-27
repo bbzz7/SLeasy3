@@ -1418,7 +1418,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
                 if (offset < 1 && offset > -1) {
                     var offsetY = $scope.fixHeight - SLeasy.viewScale(height) / 2 * offset;
-                }else{
+                } else {
                     var offsetY = offset || ($scope.fixHeight - SLeasy.viewScale(height)) / 4;
                 }
                 return y * $scope.viewScale + $scope.yOffset.center + offsetY;
@@ -2369,7 +2369,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             autoAlpha: 1,
                             roundProps: "frame",
                             frame: aeOpt.end,
-                            ease: SteppedEase.config(frameCount),
+                            ease: 'steps('+frameCount+')',
                             repeat: aeOpt.repeat,
                             yoyo: !!aeOpt.yoyo,
                             onStart: aeOpt.onStart,
@@ -2418,7 +2418,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                                 autoAlpha: 1,
                                 roundProps: "frame",
                                 frame: $aeOpt.end,
-                                ease: SteppedEase.config(frameCount),
+                                ease: 'steps('+frameCount+')',
                                 repeat: $aeOpt.repeat,
                                 yoyo: !!$aeOpt.yoyo,
                                 onStart: $aeOpt.onStart,
@@ -2915,6 +2915,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     //重新set float元素以获得正确的尺寸
                     $('.SLeasy_floatElement').each(function (index, element) {
                         T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+                    });
+                    $('.SLeasy_loadingElement').each(function (index, element) {
+                        T.set($(this), $config.loading.subMotion[index].set);
                     });
                     dfd.resolve();//初始化完毕
                 }
@@ -3813,10 +3816,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             T.to(currentSlider, motionTime, $.extend({display: 'block'}, FX.show));
         } else {
             //清除所有ae渲染层tween
-            $.each($scope.aeLayer, function (index, aeLayer) {
-                T.killTweensOf(aeLayer);
-            })
-
+            if (duration >= 0.1) {
+                $.each($scope.aeLayer, function (index, aeLayer) {
+                    T.killTweensOf(aeLayer);
+                })
+            }
             //slider切换
             preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
             //自定义切换效果
@@ -3856,7 +3860,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return index = (typeof index == 'number') ? index : SLeasy.label(index);//如果是label标签，则获取标签对应的索引值
     }
 
-    SLeasy.detailFX = function (index) {
+    SLeasy.detailFX = function (index, allowMulti) {
         var detail = $config.details[index] || (console.warn('详情页索引参数错误~！')),
             motionFX = detail.fx || detail.FX || detail.motionFX || null,
             motionFX = motionFX ? SLeasy.getMotionFX(motionFX[0], motionFX[1], motionFX[2]) : SLeasy.getMotionFX('leftRight', 0),
@@ -3865,7 +3869,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 onStart: function (e) {
                     detail.scroll ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);//禁止触摸默认滚动+禁止slider滑动手势
                     detail.onStart && detail.onStart();
-                    !$scope.isDetail && SLeasy.subMotion(detail.subMotion, 'details');
+                    (!$scope.isDetail || allowMulti) && SLeasy.subMotion(detail.subMotion, 'details');
                     $scope.isDetail = 1;//详情页已打开
                 },
                 onComplete: function (e) {
@@ -3919,7 +3923,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         T.set(dom, FX.set);//自定义set，主要是z-index等
         T.fromTo(dom, time, FX.in, FX.show);
-
     }
 
 
@@ -3948,7 +3951,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     console.log(dom);
                     //如果当前stageMode为scroll，或者当前幻灯页为scroll模式，则恢复触摸默认滚动禁用sliderSwipe，否则禁止触摸默认滚动，启用sliderSwipe
                     ($config.stageMode == 'scroll' || $config.sliders[$scope.sliderIndex].scroll) ? SLeasy.touchScroll(true, false) : SLeasy.touchScroll(false, true);
-                    if (!allowMulti) {
+                    if (!allowMulti || $.isFunction(allowMulti)) {
                         T.set(dom, {clearProps: $scope.clearProps, display: 'none'});//清除幻灯内联式样
                         T.set($scope.detailMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                         $scope.isDetail = 0;//详情页已关闭
@@ -3956,6 +3959,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     //如果positionMod为relative情况
                     $config.positionMode == 'relative' && $scope.sliderBox.css("overflow", "visible");
                     callback && callback();//回调hack
+                    if (allowMulti && $.isFunction(allowMulti)) allowMulti();
                 }
             },
             FX = SLeasy.detailFX(index),
