@@ -612,7 +612,7 @@
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
                 if (offset < 1 && offset > -1) {
                     var offsetY = $scope.fixHeight - SLeasy.viewScale(height) / 2 * offset;
-                }else{
+                } else {
                     var offsetY = offset || ($scope.fixHeight - SLeasy.viewScale(height)) / 4;
                 }
                 return y * $scope.viewScale + $scope.yOffset.center + offsetY;
@@ -645,7 +645,7 @@
 
     //wrap gsap
     SLeasy.set = function (el, set, noFix) {
-        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set));
+        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set, true, true));
         return SLeasy;
     }
 

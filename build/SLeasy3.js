@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.11 by 宇文互动 庄宇 2020-12-01 email:30755405@qq.com
+ SLeasy 3.9.12 by 宇文互动 庄宇 2020-12-01 email:30755405@qq.com
+ 3.9.12(2021-04-27):增强SLeasy.respY()自适应功能函数，允许detail页多层叠加~
  3.9.11(2020-12-01):增加横竖屏旋转模式(config.rotateMode)~
  3.9.10(2020-09-12):增加fixWidthMode自适应宽度模式开关，更新完善stageMode的阈值模式~
  3.9.9(2020-09-06):fixHeight+1以避免小数，导致底部有背景缝隙;增加SLeasy.respY()功能函数，解决顶部/底部元素超出安全区域时自适应定位~
@@ -1451,7 +1452,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //wrap gsap
     SLeasy.set = function (el, set, noFix) {
-        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set));
+        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set, true, true));
         return SLeasy;
     }
 
@@ -2369,7 +2370,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             autoAlpha: 1,
                             roundProps: "frame",
                             frame: aeOpt.end,
-                            ease: 'steps('+frameCount+')',
+                            ease: SteppedEase.config(frameCount),
                             repeat: aeOpt.repeat,
                             yoyo: !!aeOpt.yoyo,
                             onStart: aeOpt.onStart,
@@ -2418,7 +2419,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                                 autoAlpha: 1,
                                 roundProps: "frame",
                                 frame: $aeOpt.end,
-                                ease: 'steps('+frameCount+')',
+                                ease: SteppedEase.config(frameCount),
                                 repeat: $aeOpt.repeat,
                                 yoyo: !!$aeOpt.yoyo,
                                 onStart: $aeOpt.onStart,
