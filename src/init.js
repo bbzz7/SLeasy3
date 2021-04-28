@@ -23,6 +23,13 @@
             }
         }
 
+        //debug模式
+        if ($config.debugMode === true) {
+            var debugStyle = '.SLeasy_shadownBt{border: 1px solid #fff;box-shadow:0 0 5px #000}';
+            var $defaultStyle = $('head style').eq(0);
+            $defaultStyle.html($defaultStyle.html() + debugStyle);
+        }
+
         if (!$config.debugMode) {
             //劫持console.log输出
             console.log = function () {
