@@ -5023,8 +5023,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
+                $config.loading.onComplete && $config.loading.onComplete();
                 $(".SLeasy_loading").fadeIn(300, function () {
-                    $config.loading.onComplete && $config.loading.onComplete();
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
                         dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
