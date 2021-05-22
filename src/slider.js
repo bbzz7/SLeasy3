@@ -92,7 +92,7 @@
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_' + (subName[opt.type] || opt.type) + ' ' + (typeof opt.toDiv != 'undefined' && !opt.toDiv ? 'noDiv' : 'toDiv') + '"\
 				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';-webkit-overflow-scrolling:touch;overflow-scrolling: touch;">\
-				<img src="' + SLeasy.path($config.host, opt.img) + '">\
+				' + (opt.dragMode ? '<div class="dragEl" style="position:relative">' : '') + '<img src="' + SLeasy.path($config.host, opt.img) + '">' + (opt.dragMode ? '</div>' : '') + '\
 				</div>';
             },
             //shadownBt -------------------------------------------------
