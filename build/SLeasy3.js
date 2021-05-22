@@ -2356,14 +2356,15 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 //播放渲染层 -----------------------------------------------------
                 SLeasy.playAeLayer = function (aeOpt) {
-                    //单个tween
+                    //单个tween -------------------------------
                     if (!aeOpt.length) {
                         var aeLayer = aeOpt.aeLayer || $scope.aeLayer[aeOpt.name];
-                        TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
                         var startFrame = (typeof aeOpt.start != 'undefined') ? aeOpt.start : aeLayer.frame;
                         var frameCount = Math.abs(aeOpt.end - startFrame),
                             time = frameCount / (aeOpt.fps || 25);
                         var aeTl = $scope.aeTimeLine[aeOpt.timeline] = $scope.aeTimeLine[aeOpt.timeline] || new TimelineMax();
+                        aeTl.clear();//清除当前层所有tween
+
                         aeLayer.preFrame = startFrame;
                         var tweenData = {
                             alpha: 1,
@@ -2389,7 +2390,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         };
 
                         if (typeof aeOpt.start != 'undefined') {
-                            aeTl.fromTo(aeLayer, time, {
+                            aeTl.clear().fromTo(aeLayer, time, {
                                 frame: aeOpt.start,
                                 autoAlpha: 1,
                                 alpha: 1
@@ -2398,14 +2399,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             aeTl.set(aeLayer, {autoAlpha: 1, alpha: 1});
                             aeTl.to(aeLayer, time, tweenData, '+=' + (aeOpt.offsetTime || 0));
                         }
-                        //多个tween
+                        //多个tween -------------------------------------
                     } else if (aeOpt.length && aeOpt.length > 0) {
                         var aeTl = $scope.aeTimeLine[aeOpt[0].timeline] = $scope.aeTimeLine[aeOpt[0].timeline] || new TimelineMax();
-                        //清除当前层所有tween
-                        for (var i = 0; i < aeOpt.length; i++) {
-                            var aeLayer = aeOpt[i].aeLayer || $scope.aeLayer[aeOpt[i].name];
-                            TweenMax.killTweensOf(aeLayer);//清除当前层所有tween
-                        }
+                        aeTl.clear();//清除当前层所有tween
+
                         //add所有tween
                         for (var i = 0; i < aeOpt.length; i++) {
                             var $aeOpt = aeOpt[i];
@@ -2439,19 +2437,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                                     }
                                 })(i),
                             };
-                            // aeTl.eventCallback('onComplete', function () {
-                            //     aeLayer.parent._updating = false;
-                            // })
                             if (typeof $aeOpt.start != 'undefined') {
                                 aeTl.add(TweenMax.fromTo(aeLayer, time, {
                                     immediateRender: false,//防止立即刷新frame值
                                     frame: $aeOpt.start,
                                     autoAlpha: 1,
                                     alpha: 1
-                                }, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
+                                }, tweenData), '+=' + ($aeOpt.offsetTime || 0));
                             } else {
                                 aeTl.set(aeLayer, {autoAlpha: 1, alpha: 1});
-                                aeTl.add(TweenMax.to(aeLayer, time, tweenData, '+=' + ($aeOpt.offsetTime || 0)));
+                                aeTl.add(TweenMax.to(aeLayer, time, tweenData), '+=' + ($aeOpt.offsetTime || 0));
                             }
                         }
                     }
@@ -2461,12 +2456,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 //暂停渲染层 -----------------------------------------------------
                 SLeasy.pauseAeLayer = function (name) {
                     if (name && name != 'all') {
-                        $(TweenMax.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
+                        $(gsap.getTweensOf(SLeasy.$scope.aeLayer[name])).each(function (index, tween) {
                             tween.pause();
                         })
                     } else {
                         for (n in $scope.aeLayer) {
-                            $(TweenMax.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
+                            $(gsap.getTweensOf($scope.aeLayer[n])).each(function (index, tween) {
                                 tween.pause();
                             })
                         }
