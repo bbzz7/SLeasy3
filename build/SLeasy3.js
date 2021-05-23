@@ -1432,7 +1432,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //wrap gsap
     SLeasy.set = function (el, set, noFix) {
-        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set, true, true));
+        TweenMax.set(el, noFix ? SLeasy.fixProps(set) : SLeasy.fixProps(set, true, true));
         return SLeasy;
     }
 
@@ -3068,7 +3068,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     if (props.lastIndexOf('%') != -1) {
                         props = parseInt(props);//去掉%后缀
                         postfix = '%';//确定后缀值
-                        transObj[$scope.fixPropsArr[i]] = props + postfix;//按照viewScale等比缩放
+                        transObj[$scope.fixPropsArr[i]] = props + postfix;//百分比不缩放
                         continue;
                     }
                     //+=

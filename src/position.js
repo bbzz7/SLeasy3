@@ -134,7 +134,7 @@
                     if (props.lastIndexOf('%') != -1) {
                         props = parseInt(props);//去掉%后缀
                         postfix = '%';//确定后缀值
-                        transObj[$scope.fixPropsArr[i]] = props + postfix;//按照viewScale等比缩放
+                        transObj[$scope.fixPropsArr[i]] = props + postfix;//百分比不缩放
                         continue;
                     }
                     //+=

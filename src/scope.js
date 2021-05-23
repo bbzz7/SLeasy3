@@ -645,7 +645,7 @@
 
     //wrap gsap
     SLeasy.set = function (el, set, noFix) {
-        TweenMax.set(el, noFix ? set : SLeasy.fixProps(set, true, true));
+        TweenMax.set(el, noFix ? SLeasy.fixProps(set) : SLeasy.fixProps(set, true, true));
         return SLeasy;
     }
 
