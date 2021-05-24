@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.12 by 宇文互动 庄宇 2020-12-01 email:30755405@qq.com
+ SLeasy 3.9.13 by 宇文互动 庄宇 2021-05-25 email:30755405@qq.com
+ 3.9.13(2021-05-25):修正:幻灯子元素在Safari中执行3d变换显示的问题;新增:x,y自适应偏移条件;SLeasy.pauseMedia()/SLeasy.music.volume();
  3.9.12(2021-04-27):增强SLeasy.respY()自适应功能函数，允许detail页多层叠加~
  3.9.11(2020-12-01):增加横竖屏旋转模式(config.rotateMode)~
  3.9.10(2020-09-12):增加fixWidthMode自适应宽度模式开关，更新完善stageMode的阈值模式~

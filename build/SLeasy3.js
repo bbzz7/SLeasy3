@@ -1363,7 +1363,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
         $media.muted = false;
-        return $media.play();
+        $media.play();
+        return SLeasy;
+    }
+
+    SLeasy.pauseMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        $media.pause();
+        return SLeasy;
     }
 
     //安卓微信同层全屏resize
@@ -1436,18 +1443,18 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return SLeasy;
     }
 
-    SLeasy.to = function (el, to) {
-        TweenMax.to(el, SLeasy.fixProps(to));
+    SLeasy.to = function (el, to, noFix) {
+        TweenMax.to(el, noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
         return SLeasy;
     }
 
-    SLeasy.from = function (el, from) {
-        TweenMax.from(el, SLeasy.fixProps(from));
+    SLeasy.from = function (el, from, noFix) {
+        TweenMax.from(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true));
         return SLeasy;
     }
 
-    SLeasy.fromTo = function (el, fromTo) {
-        TweenMax.fromTo(el, SLeasy.fixProps(fromTo));
+    SLeasy.fromTo = function (el, from, to, noFix) {
+        TweenMax.fromTo(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true), noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
         return SLeasy;
     }
 
@@ -1483,6 +1490,17 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 });//事件绑定
             }
         })
+    }
+
+    SLeasy.bg = function (el, url, isImgSrc) {
+        if (isImgSrc) {
+            var bgUrl = SLeasy.path($config.host, url);
+            $(el).attr('src', bgUrl);
+        } else {
+            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            TweenMax.set(el, {backgroundImage: bgUrl});
+        }
+        return SLeasy;
     }
 
     //复制文字功能函数
@@ -3028,7 +3046,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     transObj.y -= $scope.originY;
                 }
             }
-        }else if(transObj.isScroll) delete transObj.isScroll;
+        } else if (transObj.isScroll) delete transObj.isScroll;
 
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
@@ -3095,8 +3113,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         //yOffset
         var alignMode = $config.alignMode;
-        if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
-        if (xOffset && (typeof transObj.x != 'undefined')) transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
+        if (yOffset && (typeof transObj.y != 'undefined') && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
+            transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
+        }
+        if (xOffset && (typeof transObj.x != 'undefined') && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
+            transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
+        }
         return transObj;
     }
 
@@ -3745,7 +3767,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
         _out = $.extend({force3D: $config.force3D}, _out);
-        _show = $.extend({force3D: $config.force3D}, _show);
+        _show = $.extend({force3D: $config.force3D,clearProps: $scope.clearProps}, _show);
 
         return {
             in: _in,
@@ -4175,7 +4197,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         //auto playHack
         $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
-        if($config.musicAutoPlay && typeof $config.musicUrl == 'string'){
+        if ($config.musicAutoPlay && typeof $config.musicUrl == 'string') {
             //hack部分机型无法自动播放的bug
             document.addEventListener("WeixinJSBridgeReady", function () {
                 //howler
@@ -4264,7 +4286,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            if($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            if ($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {
+                backgroundPosition: 'center 0px',
+                ease: Power4.easeOut
+            });
             document.removeEventListener('touchend', SLeasy.music.play);
         })
     }
@@ -4295,6 +4320,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             });
         })
 
+    }
+
+    //
+    SLeasy.music.volume = function (volume) {
+        //howler
+        if (typeof $config.musicUrl == 'object') {
+            $scope.audios['bgm'].volume(volume);
+        } else {
+            $("#SLeasy_music")[0].volume = volume;
+        }
     }
 
     //musicBt:[1,'http://xxx/musicBt.png',60,60,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
