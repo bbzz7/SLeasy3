@@ -94,7 +94,7 @@
                     transObj.y -= $scope.originY;
                 }
             }
-        }else if(transObj.isScroll) delete transObj.isScroll;
+        } else if (transObj.isScroll) delete transObj.isScroll;
 
         var addPX = {//需要添加px单位的属性
             'lineHeight': true,
@@ -161,8 +161,12 @@
         }
         //yOffset
         var alignMode = $config.alignMode;
-        if (yOffset && (typeof transObj.y != 'undefined')) transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
-        if (xOffset && (typeof transObj.x != 'undefined')) transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
+        if (yOffset && (typeof transObj.y != 'undefined') && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
+            transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
+        }
+        if (xOffset && (typeof transObj.x != 'undefined') && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
+            transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
+        }
         return transObj;
     }
 
