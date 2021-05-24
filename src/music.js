@@ -37,7 +37,7 @@
 
         //auto playHack
         $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
-        if($config.musicAutoPlay && typeof $config.musicUrl == 'string'){
+        if ($config.musicAutoPlay && typeof $config.musicUrl == 'string') {
             //hack部分机型无法自动播放的bug
             document.addEventListener("WeixinJSBridgeReady", function () {
                 //howler
@@ -126,7 +126,10 @@
         $("#SLeasy_music").on('playing', function () {
             $scope.isMusic = 1;
             SLeasy.music.isPlaying = true;
-            if($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {backgroundPosition: 'center 0px', ease: Power4.easeOut});
+            if ($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {
+                backgroundPosition: 'center 0px',
+                ease: Power4.easeOut
+            });
             document.removeEventListener('touchend', SLeasy.music.play);
         })
     }
@@ -157,6 +160,16 @@
             });
         })
 
+    }
+
+    //
+    SLeasy.music.volume = function (volume) {
+        //howler
+        if (typeof $config.musicUrl == 'object') {
+            $scope.audios['bgm'].volume(volume);
+        } else {
+            $("#SLeasy_music")[0].volume = volume;
+        }
     }
 
     //musicBt:[1,'http://xxx/musicBt.png',60,60,'topRight',10,10],//背景音乐按钮[开启状态，sprite图片url，宽度，高度，对齐方式，x轴偏移，y轴偏移]
