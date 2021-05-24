@@ -576,7 +576,14 @@
         var $media = SLeasy.media(mediaSelector);
         $media.currentTime = 0;
         $media.muted = false;
-        return $media.play();
+        $media.play();
+        return SLeasy;
+    }
+
+    SLeasy.pauseMedia = function (mediaSelector) {
+        var $media = SLeasy.media(mediaSelector);
+        $media.pause();
+        return SLeasy;
     }
 
     //安卓微信同层全屏resize
@@ -649,18 +656,18 @@
         return SLeasy;
     }
 
-    SLeasy.to = function (el, to) {
-        TweenMax.to(el, SLeasy.fixProps(to));
+    SLeasy.to = function (el, to, noFix) {
+        TweenMax.to(el, noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
         return SLeasy;
     }
 
-    SLeasy.from = function (el, from) {
-        TweenMax.from(el, SLeasy.fixProps(from));
+    SLeasy.from = function (el, from, noFix) {
+        TweenMax.from(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true));
         return SLeasy;
     }
 
-    SLeasy.fromTo = function (el, fromTo) {
-        TweenMax.fromTo(el, SLeasy.fixProps(fromTo));
+    SLeasy.fromTo = function (el, from, to, noFix) {
+        TweenMax.fromTo(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true), noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
         return SLeasy;
     }
 
@@ -696,6 +703,17 @@
                 });//事件绑定
             }
         })
+    }
+
+    SLeasy.bg = function (el, url, isImgSrc) {
+        if (isImgSrc) {
+            var bgUrl = SLeasy.path($config.host, url);
+            $(el).attr('src', bgUrl);
+        } else {
+            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            TweenMax.set(el, {backgroundImage: bgUrl});
+        }
+        return SLeasy;
     }
 
     //复制文字功能函数
