@@ -96,6 +96,7 @@
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
+                        SLeasy.exloadCache();//exLoad Cache
                         dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
                         console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
                         $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
@@ -116,8 +117,7 @@
         if (!$.isEmptyObject($loading) && !$scope.loadingSourceReady) {
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
-                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img))
-                );
+                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {

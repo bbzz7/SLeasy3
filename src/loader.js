@@ -137,39 +137,45 @@
 
         function _load(loadArr, callback) {
             var threadLoaded = 0;
-            for (var i = 0; i < loadType; i++) {
-                if (!loadArr[loaded + i]) return;
-                var img = new Image();
-                // img.crossOrigin = "Anonymous";
-                img.src = loadArr[loaded + i];
-                console.log(':::::load开始加载：' + img.src);
-                img.onload = function () {
-                    loaded++;
-                    threadLoaded++;
-                    //console.log(loaded);
-                    SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
-                    SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
-                    $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                    if (hasCustomLoading && $scope.loadingReady) {
-                        //自定义loading的onProgress回调
-                        // console.log('========================='+percent+'========================')
-                        $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
-                    }
-                    // dfd.notify(SLeasy.loader.percent);
-                    if (SLeasy.loader.percent >= 100) {
-                        console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
-                        if ($scope.loadingReady || (!hasCustomLoading)) {
-                            callback ? callback() : $config.on['loaded'](); //预加载完毕回调
+            for (var j = 0; j < loadType; j++) {
+                (function (i) {
+                    if (!loadArr[loaded + i]) return;
+                    var img = new Image();
+                    // img.crossOrigin = "Anonymous";
+                    img.src = loadArr[loaded + i];
+                    // console.log(':::::load开始加载：' + img.src);
+                    img.onload = function () {
+                        console.log(':::' + (loaded + i) + '::加载完毕：' + img.src);
+                        loaded++;
+                        threadLoaded++;
+                        //console.log(loaded);
+                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
+                        SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                        if (hasCustomLoading && $scope.loadingReady) {
+                            //自定义loading的onProgress回调
+                            // console.log('========================='+percent+'========================')
+                            $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
                         } else {
-                            //自定义loading自身加载完毕回调
-                            $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
+                            $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                         }
-                        SLeasy.exloadCache();//exLoad Cache
-                        dfd.resolve($config, $scope);
-                    } else {
-                        if (threadLoaded == loadType) _load(loadArr);
+                        // dfd.notify(SLeasy.loader.percent);
+                        if (SLeasy.loader.percent >= 100) {
+                            console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
+                            if ($scope.loadingReady || (!hasCustomLoading)) {
+                                callback ? callback() : $config.on['loaded'](); //预加载完毕回调
+                            } else {
+                                //自定义loading自身加载完毕回调
+                                $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
+                            }
+                            dfd.resolve($config, $scope);
+                        } else {
+                            if (threadLoaded == loadType){
+                                _load(loadArr);
+                                console.log('-------------------------------');
+                            }
+                        }
                     }
-                }
+                })(j)
             }
         }
 
@@ -182,6 +188,7 @@
                     img.src = loadArr[i];
                     console.log(':::::multiLoad开始加载：' + img.src);
                     img.onload = function () {
+                        console.log(':::' + i + '::加载完毕：' + img.src);
                         loaded++;
                         //console.log(loaded);
                         SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
@@ -202,7 +209,6 @@
                                 //自定义loading自身加载完毕回调
                                 $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                             }
-                            SLeasy.exloadCache();//exLoad Cache
                             dfd.resolve($config, $scope);
                         }
 

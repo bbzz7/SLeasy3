@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.12 by 宇文互动 庄宇 2020-12-01 email:30755405@qq.com
+ SLeasy 3.9.13 by 宇文互动 庄宇 2021-05-25 email:30755405@qq.com
+ 3.9.13(2021-05-25):修正:幻灯子元素在Safari中执行3d变换显示的问题;新增:x,y自适应偏移条件;SLeasy.pauseMedia()/SLeasy.music.volume();
  3.9.12(2021-04-27):增强SLeasy.respY()自适应功能函数，允许detail页多层叠加~
  3.9.11(2020-12-01):增加横竖屏旋转模式(config.rotateMode)~
  3.9.10(2020-09-12):增加fixWidthMode自适应宽度模式开关，更新完善stageMode的阈值模式~
@@ -1361,6 +1362,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     SLeasy.playMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
+        $media.pause();
         $media.currentTime = 0;
         $media.muted = false;
         $media.play();
@@ -1424,6 +1426,25 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     //
     SLeasy.bg = function (el, bgImage) {
         $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
+    }
+
+    //insert
+    SLeasy.insert = function (el, data) {
+        var type = el.replace('.', '').replace('#', '');
+        var html = SLeasy.subElement(data, type, null, 'block');
+        $(html).appendTo(el);
+        SLeasy.imgToDiv($(el));
+        $('.SLeasy_' + type).each(function (index, element) {
+            SLeasy.set($(this), data[index].set, true);
+            if (data[index].event) {
+                SLeasy.on(this, data[index].event, data[index].onEvent);
+            }
+            if (data[index].on) {
+                for (event in data[index].on) {
+                    SLeasy.on(this, event, data[index].on[event]);
+                }
+            }
+        });
     }
 
     //旋转状态判断
@@ -2913,7 +2934,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     $('.SLeasy_loadingElement').each(function (index, element) {
                         T.set($(this), $config.loading.subMotion[index].set);
                     });
-                    dfd.resolve();//初始化完毕
+                    dfd && dfd.resolve();//初始化完毕
                 }
             });
         });
@@ -4776,39 +4797,45 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         function _load(loadArr, callback) {
             var threadLoaded = 0;
-            for (var i = 0; i < loadType; i++) {
-                if (!loadArr[loaded + i]) return;
-                var img = new Image();
-                // img.crossOrigin = "Anonymous";
-                img.src = loadArr[loaded + i];
-                console.log(':::::load开始加载：' + img.src);
-                img.onload = function () {
-                    loaded++;
-                    threadLoaded++;
-                    //console.log(loaded);
-                    SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
-                    SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
-                    $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
-                    if (hasCustomLoading && $scope.loadingReady) {
-                        //自定义loading的onProgress回调
-                        // console.log('========================='+percent+'========================')
-                        $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
-                    }
-                    // dfd.notify(SLeasy.loader.percent);
-                    if (SLeasy.loader.percent >= 100) {
-                        console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
-                        if ($scope.loadingReady || (!hasCustomLoading)) {
-                            callback ? callback() : $config.on['loaded'](); //预加载完毕回调
+            for (var j = 0; j < loadType; j++) {
+                (function (i) {
+                    if (!loadArr[loaded + i]) return;
+                    var img = new Image();
+                    // img.crossOrigin = "Anonymous";
+                    img.src = loadArr[loaded + i];
+                    // console.log(':::::load开始加载：' + img.src);
+                    img.onload = function () {
+                        console.log(':::' + (loaded + i) + '::加载完毕：' + img.src);
+                        loaded++;
+                        threadLoaded++;
+                        //console.log(loaded);
+                        SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
+                        SLeasy.loader.percent = SLeasy.loader.percent > 100 ? 100 : SLeasy.loader.percent;
+                        if (hasCustomLoading && $scope.loadingReady) {
+                            //自定义loading的onProgress回调
+                            // console.log('========================='+percent+'========================')
+                            $config.loading.onProgress && $config.loading.onProgress(SLeasy.loader.percent);
                         } else {
-                            //自定义loading自身加载完毕回调
-                            $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
+                            $config.on['loadProgress'](SLeasy.loader.percent); //预加载进行时回调
                         }
-                        SLeasy.exloadCache();//exLoad Cache
-                        dfd.resolve($config, $scope);
-                    } else {
-                        if (threadLoaded == loadType) _load(loadArr);
+                        // dfd.notify(SLeasy.loader.percent);
+                        if (SLeasy.loader.percent >= 100) {
+                            console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
+                            if ($scope.loadingReady || (!hasCustomLoading)) {
+                                callback ? callback() : $config.on['loaded'](); //预加载完毕回调
+                            } else {
+                                //自定义loading自身加载完毕回调
+                                $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
+                            }
+                            dfd.resolve($config, $scope);
+                        } else {
+                            if (threadLoaded == loadType){
+                                _load(loadArr);
+                                console.log('-------------------------------');
+                            }
+                        }
                     }
-                }
+                })(j)
             }
         }
 
@@ -4821,6 +4848,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     img.src = loadArr[i];
                     console.log(':::::multiLoad开始加载：' + img.src);
                     img.onload = function () {
+                        console.log(':::' + i + '::加载完毕：' + img.src);
                         loaded++;
                         //console.log(loaded);
                         SLeasy.loader.percent = Math.round(loaded * 100 / loadArr.length / ((!$.isEmptyObject($config.loading) && !$scope.loadingReady ? 100 : $config.loader.endAt) / 100));
@@ -4841,7 +4869,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                                 //自定义loading自身加载完毕回调
                                 $config.loading && $config.loading.onLoadingLoaded && $config.loading.onLoadingLoaded();
                             }
-                            SLeasy.exloadCache();//exLoad Cache
                             dfd.resolve($config, $scope);
                         }
 
@@ -5037,6 +5064,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
+                        SLeasy.exloadCache();//exLoad Cache
                         dfd.resolve();//如果有loading，第二次init完毕时，调用第一次done回调
                         console.log('loadingReady::>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
                         $config.loading.onLoaded && $config.loading.onLoaded();//预加载完毕自定义loading回调
@@ -5057,8 +5085,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if (!$.isEmptyObject($loading) && !$scope.loadingSourceReady) {
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
-                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img))
-                );
+                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {
