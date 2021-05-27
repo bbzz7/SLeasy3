@@ -635,6 +635,23 @@
         return (/^1[3456789]\d{9}$/.test(phoneNum));
     }
 
+    //微信底部导航条高度检测处理
+    SLeasy.checkNavBar = function (delay, count) {
+        var checkCount = 0;
+        var oldHeight = $(window).height();
+        SLeasy.isWechat() && checkHeight();
+
+        function checkHeight() {
+            checkCount++;
+            setTimeout(function () {
+                if (oldHeight > $(window).height()) {
+                    location.reload();
+                } else {
+                    if (checkCount < (count || 60)) checkHeight();
+                }
+            }, delay || 50)
+        }
+    }
     //
     SLeasy.bg = function (el, bgImage) {
         $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');

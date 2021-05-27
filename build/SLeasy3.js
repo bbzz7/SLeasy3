@@ -682,6 +682,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
         debugMode: 'auto',//默认仅当本地环境开启debug模式
         reloadMode: false,//屏幕旋转自动刷新页面重新适配
+        checkNavBar: false,//检测微信底部导航条/强制刷新
         stageMode: 'width',//舞台适配模式，int数值:小于该指定高度则自动缩放,反之按宽度匹配,width:根据宽度缩放，height:根据高度缩放，auto:根据高宽比例，自动缩放;
         fixWidthMode: false,//舞台的宽度自适应模式
         positionMode: 'absolute',//舞台子元素position模式
@@ -1423,6 +1424,23 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return (/^1[3456789]\d{9}$/.test(phoneNum));
     }
 
+    //微信底部导航条高度检测处理
+    SLeasy.checkNavBar = function (delay, count) {
+        var checkCount = 0;
+        var oldHeight = $(window).height();
+        SLeasy.isWechat() && checkHeight();
+
+        function checkHeight() {
+            checkCount++;
+            setTimeout(function () {
+                if (oldHeight > $(window).height()) {
+                    location.reload();
+                } else {
+                    if (checkCount < (count || 60)) checkHeight();
+                }
+            }, delay || 50)
+        }
+    }
     //
     SLeasy.bg = function (el, bgImage) {
         $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
@@ -4975,6 +4993,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
+        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }

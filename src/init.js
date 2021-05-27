@@ -7,6 +7,7 @@
         var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
+        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }
