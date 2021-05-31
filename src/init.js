@@ -7,7 +7,6 @@
         var dfd = $.Deferred();
         SLeasy.checkGoto();//跳转(url/淘宝)检测
         var $config = SLeasy.config(opt);//合并自定义参数
-        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         if ($config.debugMode == 'auto') {
             $config.debugMode = SLeasy.isHttp() ? 0 : 1;
         }
@@ -94,6 +93,7 @@
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
+                if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {

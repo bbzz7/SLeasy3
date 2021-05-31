@@ -643,13 +643,16 @@
 
         function checkHeight() {
             checkCount++;
-            setTimeout(function () {
-                if (oldHeight > $(window).height()) {
-                    location.reload();
-                } else {
-                    if (checkCount < (count || 60)) checkHeight();
+            if (oldHeight > $(window).height()) {
+                location.reload();
+            } else {
+                console.log(oldHeight + ':' + $(window).height());
+                if (checkCount < (count || 60)) {
+                    setTimeout(function () {
+                        checkHeight();
+                    }, delay || 50)
                 }
-            }, delay || 50)
+            }
         }
     }
     //
