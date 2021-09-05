@@ -12,7 +12,7 @@
         var loaderColor = $config.loader.color;
         var loaderBg = $config.loader.bg;
         var loaderStyle = [
-            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: relative">\
+            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="' + loaderColor + '" style="position: absolute;left: 50%;top:50%;margin-left: -' + $config.loader.size[0] / 2 + 'px;margin-top: -' + $config.loader.size[1] / 2 + 'px">\
             <g fill="none" fill-rule="evenodd">\
                 <g transform="translate(1 1)" stroke-width="2">\
                     <circle stroke-opacity=".5" cx="18" cy="18" r="18"/>\
@@ -31,7 +31,7 @@
 
             //==================================================================================
 
-            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: relative">\
+            '<svg class="SLeasy_loadingSVG" width="38" height="38" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" style="position: absolute;left: 50%;top:50%">\
                 <defs>\
                 <linearGradient x1="8.042%" y1="0%" x2="65.682%" y2="23.865%" id="a">\
                     <stop stop-color="' + loaderColor + '" stop-opacity="0" offset="0%"/>\
@@ -66,28 +66,24 @@
             //==================================================================================
         ];
 
-        var loadingStyle = 'position:absolute;z-index:9999;top:50%;left:50%;overflow:hidden' +
-            'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
-            'margin-left:' + -$config.loader.size[0] / 2 + 'px;' +
-            'margin-top:' + -$config.loader.size[1] / 2 + 'px';
+        var loadingStyle = 'position:absolute;z-index:9999;overflow:hidden;width:100%;height:100%;';
 
-        var percentStyle = 'position:absolute;text-align:center;top:0;left:0;' +
+        var percentStyle = 'position:absolute;text-align:center;left: 50%;top:50%;' +
             'width:' + $config.loader.size[0] + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
+            'margin-left:-' + ($config.loader.size[0]/2) + 'px;' +
+            'margin-top:-' + ($config.loader.size[1]/2) + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
 
-        var msgStyle = 'position:absolute;text-align:center;' +
-            'top:' + ($config.loader.size[1]) + 'px;' +
-            'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;' +
-            'width:' + $config.viewport + 'px;' +
+        var msgStyle = 'position:absolute;text-align:center;width:100%;top:50%;' +
+            'margin-top:' + ($config.loader.size[1]/2) + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
 
-        var overLayStyle = 'width:' + $config.viewport + 'px;height:' + $scope.fixHeight + 'px;' +
-            'background:' + loaderBg + ';position:absolute;' +
-            'left:-' + ($config.viewport - $config.loader.size[0]) / 2 + 'px;top:-' + ($scope.fixHeight - $config.loader.size[1]) / 2 + 'px';
+        var overLayStyle = 'width:100%;height:100%;' +
+            'background:' + loaderBg + ';position:absolute;';
 
         var percentHtml = '<div id="SLeasy_loader_percent" style="' + percentStyle + '"></div>';
         var msgHtml = '<div id="SLeasy_loader_msg" style="' + msgStyle + '"></div>';
@@ -169,7 +165,7 @@
                             }
                             dfd.resolve($config, $scope);
                         } else {
-                            if (threadLoaded == loadType){
+                            if (threadLoaded == loadType) {
                                 _load(loadArr);
                                 console.log('-------------------------------');
                             }
