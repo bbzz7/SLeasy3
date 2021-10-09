@@ -633,7 +633,7 @@
     //
     SLeasy.inHeight = function (height) {
         return function () {
-            return $scope.fixHeight >= height ? 1 : 0;
+            return $scope.fixHeight >= SLeasy.viewScale(height) ? 1 : 0;
         }
     }
 
