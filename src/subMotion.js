@@ -153,7 +153,7 @@
             }
             //set
             // console.log(subMotion.set)
-            subMotion.set && T.set($dom, subMotion.set);
+            !subMotion.el && subMotion.set && T.set($dom, subMotion.set);
 
             //add label
             subMotion.label && tl.addLabel(subMotion.label);
