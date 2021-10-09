@@ -631,6 +631,13 @@
     }
 
     //
+    SLeasy.inHeight = function (height) {
+        return function () {
+            return $scope.fixHeight >= height ? 1 : 0;
+        }
+    }
+
+    //
     SLeasy.checkPhone = function (phoneNum) {
         return (/^1[3456789]\d{9}$/.test(phoneNum));
     }
