@@ -699,22 +699,27 @@
 
     //wrap gsap
     SLeasy.set = function (el, set, noFix) {
-        TweenMax.set(el, noFix ? SLeasy.fixProps(set) : SLeasy.fixProps(set, true, true));
+        var _set = $.extend({}, set);
+        TweenMax.set(el, noFix ? SLeasy.fixProps(_set) : SLeasy.fixProps(_set, true, true));
         return SLeasy;
     }
 
     SLeasy.to = function (el, to, noFix) {
-        TweenMax.to(el, noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
+        var _to = $.extend({}, to);
+        TweenMax.to(el, noFix ? SLeasy.fixProps(_to) : SLeasy.fixProps(_to, true, true));
         return SLeasy;
     }
 
     SLeasy.from = function (el, from, noFix) {
-        TweenMax.from(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true));
+        var _from = $.extend({}, from);
+        TweenMax.from(el, noFix ? SLeasy.fixProps(_from) : SLeasy.fixProps(_from, true, true));
         return SLeasy;
     }
 
     SLeasy.fromTo = function (el, from, to, noFix) {
-        TweenMax.fromTo(el, noFix ? SLeasy.fixProps(from) : SLeasy.fixProps(from, true, true), noFix ? SLeasy.fixProps(to) : SLeasy.fixProps(to, true, true));
+        var _from = $.extend({}, from);
+        var _to = $.extend({}, to);
+        TweenMax.fromTo(el, noFix ? SLeasy.fixProps(_from) : SLeasy.fixProps(_from, true, true), noFix ? SLeasy.fixProps(_to) : SLeasy.fixProps(_to, true, true));
         return SLeasy;
     }
 
