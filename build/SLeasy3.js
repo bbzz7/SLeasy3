@@ -1317,6 +1317,7 @@ module.exports = (function () {
         $(mediaSelector).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
+            console.log($media);
             $media.muted = muted || true;
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
@@ -1493,8 +1494,8 @@ module.exports = (function () {
     }
 
     //
-    SLeasy.viewScale = function (num) {
-        return num * $scope.viewScale;
+    SLeasy.viewScale = function (num, reverse) {
+        return reverse ? num / $scope.viewScale : num * $scope.viewScale;
     }
 
     //
@@ -1552,17 +1553,13 @@ module.exports = (function () {
             }
         }
     }
-    //
-    SLeasy.bg = function (el, bgImage) {
-        $(el).css('backgroundImage', 'url(' + SLeasy.path($config.host, bgImage) + ')');
-    }
 
     //insert
     SLeasy.insert = function (el, data) {
         var type = el.replace('.', '').replace('#', '');
         var html = SLeasy.subElement(data, type, null, 'block');
         $(html).appendTo(el);
-        SLeasy.imgToDiv($(el));
+        SLeasy.imgToDiv($(el), $.Deferred());
         $('.SLeasy_' + type).each(function (index, element) {
             SLeasy.set($(this), data[index].set, true);
             if (data[index].event) {
@@ -1656,6 +1653,22 @@ module.exports = (function () {
             TweenMax.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;
+    }
+
+    //解决div设置contenteditable为true时，获取焦点后光标位置放在最后
+    SLeasy.keepLastIndex = function (obj) {
+        if (window.getSelection) {//ie11 10 9 ff safari
+            obj.focus(); //解决ff不获取焦点无法定位问题
+            var range = window.getSelection();//创建range
+            range.selectAllChildren(obj);//range 选择obj下所有子内容
+            range.collapseToEnd();//光标移至最后
+        } else if (document.selection) {//ie10 9 8 7 6 5
+            var range = document.selection.createRange();//创建选择对象
+            //var range = document.body.createTextRange();
+            range.moveToElementText(obj);//range定位到obj
+            range.collapse(false);//光标移至最后
+            range.select();
+        }
     }
 
     //复制文字功能函数
@@ -3889,7 +3902,7 @@ module.exports = (function () {
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
                 T.set(currentSubMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                 T.set(currentSlider, {clearProps: $scope.clearProps});
-                T.set(currentSlider, $.extend(motionFX.set, $config.sliders[$scope.sliderIndex].set || {}));
+                T.set(currentSlider, $.extend(motionFX.set, $config.sliders[$scope.sliderIndex].set || {}, customFX.set || {}));
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
@@ -3922,7 +3935,7 @@ module.exports = (function () {
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
         _out = $.extend({force3D: $config.force3D}, _out);
-        _show = $.extend({force3D: $config.force3D,clearProps: $scope.clearProps}, _show);
+        _show = $.extend({force3D: $config.force3D, clearProps: $scope.clearProps}, _show);
 
         return {
             in: _in,
@@ -3975,11 +3988,11 @@ module.exports = (function () {
                 })
             }
             //slider切换
-            preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
+            preFXAguments = $config.sliders[nextIndex].preMotionFX || $config.sliders[nextIndex].preFX || $config.sliders[nextIndex].preFx || $config.sliders[nextIndex].prefx || null;
             //自定义切换效果
             preFX = preFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : FX;
             preMotionTime = motionTime;
-            T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}));
+            T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}, preFX.set || {}));
             T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
         }
