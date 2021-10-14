@@ -199,7 +199,7 @@
                 //清除幻灯内联式样,!!!!~~~~(幻灯一定要去除zIndex和transform:matrix3d属性,不然在移动设备上,带有3d属性的子元素会出现穿透幻灯(父元素)现象)
                 T.set(currentSubMotion, {clearProps: $scope.clearProps, display: 'none'});//清除子动画图片内联式样
                 T.set(currentSlider, {clearProps: $scope.clearProps});
-                T.set(currentSlider, $.extend(motionFX.set, $config.sliders[$scope.sliderIndex].set || {}));
+                T.set(currentSlider, $.extend(motionFX.set, $config.sliders[$scope.sliderIndex].set || {}, customFX.set || {}));
 
                 //sub motion
                 var subMotionArr = $config.sliders[nextIndex].subMotion;
@@ -232,7 +232,7 @@
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
         _out = $.extend({force3D: $config.force3D}, _out);
-        _show = $.extend({force3D: $config.force3D,clearProps: $scope.clearProps}, _show);
+        _show = $.extend({force3D: $config.force3D, clearProps: $scope.clearProps}, _show);
 
         return {
             in: _in,
@@ -285,11 +285,11 @@
                 })
             }
             //slider切换
-            preFXAguments = $config.sliders[nextIndex].preMotionFX || null;
+            preFXAguments = $config.sliders[nextIndex].preMotionFX || $config.sliders[nextIndex].preFX || $config.sliders[nextIndex].preFx || $config.sliders[nextIndex].prefx || null;
             //自定义切换效果
             preFX = preFXAguments ? SLeasy.getMotionFX(preFXAguments[0], preFXAguments[1], preFXAguments[2]) : FX;
             preMotionTime = motionTime;
-            T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}));
+            T.set(currentSlider, $.extend(FX.set, $config.sliders[$scope.sliderIndex].set || {}, preFX.set || {}));
             T.to(currentSlider, preMotionTime || motionTime, preFX.out || FX.out);
             T.fromTo(nextSlider, motionTime, FX.in, FX.show);
         }
