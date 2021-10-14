@@ -33,7 +33,7 @@
                         dfd.reject(res);
                     });
                 }
-            }, 'jsonp');
+            },'jsonp');
         }
         return dfd.promise();
     };
@@ -42,9 +42,11 @@
     jssdk.check = function () {
         wx.checkJsApi({
             jsApiList: [
-                'onMenuShareTimeline',
-                'onMenuShareAppMessage',
-                'onMenuShareQQ',
+                'updateAppMessageShareData',
+                'updateTimelineShareData',
+                'onMenuShareTimeline',//（即将废弃）
+                'onMenuShareAppMessage',//（即将废弃）
+                'onMenuShareQQ',//（即将废弃）
                 'onMenuShareWeibo',
                 'onMenuShareQZone',
                 'startRecord',
@@ -77,6 +79,12 @@
                 'addCard',
                 'chooseCard',
                 'openCard'
+            ],
+            openTagList: [
+                '<wx-open-launch-weapp>',
+                // '<wx-open-launch-app>',
+                // '<wx-open-subscribe>',
+                // '<wx-open-audio>'
             ],
             success: function (res) {
                 alert("检测通过：" + JSON.stringify(res));
