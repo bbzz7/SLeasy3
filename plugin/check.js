@@ -11,10 +11,10 @@ for(var i = 0;i<SLeasy.badWords.length;i++){
   if(SLeasy.badWords[i].length<6)continue;
   SLeasy.sensitiveText.push(Base64.decode(SLeasy.badWords[i]));
 }
-//1 请输入正确的信息 0 通过 2字符过长
+//1 检测到非法词 0 通过 2字符过长
 SLeasy.$check = function(text){
-  if(text.length<1){
-    return 1;
+  if(!text || text.length<1){
+    return 0;
   }
   // var tmpStr = text.replace(/[\u4e00-\u9fa5]/gi,"aa");
   // if(tmpStr.length>10){
