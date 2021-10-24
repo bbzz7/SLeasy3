@@ -176,13 +176,15 @@
                         //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
                         if (scrollTop <= 0) {
                             $scope.isAtTop = true;
-                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) {
+                            if (!$config.sliders[nextIndex].autoSwitch) return;
+                            if ($config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) {
                                 SLeasy.goSlider(nextIndex - 1);
                                 $scope.isAtTop = false;
                             }
                         } else if (scrollTop >= scrollTopMax) {
                             $scope.isAtBottom = true;
-                            if (!$config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[1]) {
+                            if (!$config.sliders[nextIndex].autoSwitch) return;
+                            if ($config.sliders[nextIndex].autoSwitch || ($config.sliders[nextIndex].autoSwitch[1])) {
                                 SLeasy.goSlider(nextIndex + 1);
                                 $scope.isAtBottom = false;
                             }
