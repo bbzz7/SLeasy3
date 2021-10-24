@@ -210,8 +210,8 @@
                     },
                     'select': function () {
                         var opitionHtml = '';
-                        for (var i = 0; i < opt.opition.length; i++) {
-                            var row = '<option value="' + opt.opition[i][1] + '">' + opt.opition[i][0] + '</option>';
+                        for (var i = 0; i < opt.option.length; i++) {
+                            var row = '<option value="' + (opt.value ? opt.value[i] : opt.option[i][1]) + '">' + ($.isArray(opt.option[i]) ? opt.option[i][0] : opt.option[i]) + '</option>';
                             opitionHtml += row;
                         }
                         return '<select\
