@@ -1,4 +1,4 @@
-// Mask v1.0.0 for SLeasy3 by 庄宇 email:30755405@qq.com
+// Regions v1.0.0 for SLeasy3 by 庄宇 email:30755405@qq.com
 ;(function (SLeasy) {
     SLeasy.regions = [
         {
