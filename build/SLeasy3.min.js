@@ -1,6 +1,6 @@
 /*!
- SLeasy 3.9.14 by 宇文互动 庄宇 2021-10-14 email:30755405@qq.com
- 3.9.15(2021-10-28):更新首页出现逻辑，在所有img加载完毕，SLeasy.init().done()之后;添加regions全国三级省区json数据
+ SLeasy 3.9.15 by 宇文互动 庄宇 2021-10-28 email:30755405@qq.com
+ 3.9.15(2021-10-28):更新首页出现逻辑，在所有img加载完毕，SLeasy.init().done()之后;添加regions全国三级省区json数据;
  3.9.14(2021-10-14):添加SLeasy.keepLastIndex();更新SLeasy.viewScale()/SLeasy.insert();
  3.9.13(2021-05-25):修正:幻灯子元素在Safari中执行3d变换显示的问题;新增:x,y自适应偏移条件;SLeasy.pauseMedia()/SLeasy.music.volume();
  3.9.12(2021-04-27):增强SLeasy.respY()自适应功能函数，允许detail页多层叠加~
