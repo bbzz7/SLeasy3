@@ -17,7 +17,7 @@ gulp.task('build', function () {
     return gulp.src([
         'src/version.js',
         'lib/audio/howler.min.js',
-        'lib/GSAP/Club.min.js',
+        'lib/GSAP3/Club3.min.js',
         'lib/Hammer.js',
         'lib/director.js',
         'lib/store.js',
