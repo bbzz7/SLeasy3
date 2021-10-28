@@ -163,7 +163,7 @@
         //幻灯背景+子动画元素
         for (var i = 0; i < $config.sliders.length; i++) {
             if ($config.sliders[i].bg) {
-                if (typeof $config.sliders[i].bg == 'string') {
+                if ($config.sliders[i].bg && typeof $config.sliders[i].bg == 'string') {
                     totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg));
                 } else {
                     if ($config.sliders[i].bg) {
@@ -195,7 +195,7 @@
 
         //详情页背景+子动画元素
         for (var i = 0; i < $config.details.length; i++) {
-            if (typeof $config.details[i].bg == 'string') {
+            if ($config.details[i].bg && typeof $config.details[i].bg == 'string') {
                 totalArr.push(SLeasy.path($config.host, $config.details[i].bg));
             } else {
                 if ($config.details[i].bg) {
