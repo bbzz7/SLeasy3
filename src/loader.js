@@ -110,11 +110,13 @@
             overLayBg && $("#SLeasy_loader_overLay").css({background: overLayBg});//设置背景
             $("#SLeasy_loader").fadeIn(300);
         }
+        return SLeasy;
     }
 
     //hide
     SLeasy.loader.hide = SLeasy.loader.hidden = function () {
         $("#SLeasy_loader").fadeOut(300);
+        return SLeasy;
     }
 
     //load
