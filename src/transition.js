@@ -271,6 +271,7 @@
 
         //冻结并清除当前子动画
         if (currentSlider[0] != nextSlider[0]) $scope.timeline.clear();
+        SLeasy.kill(currentSlider.find('.SLeasy_subMotion'));
 
         //动画切换执行
         var motionTime = parseFloat(duration) || $config.sliders[nextIndex].time || $config.sliders[nextIndex].motionTime || $config.motionTime;
