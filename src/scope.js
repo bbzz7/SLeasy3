@@ -620,7 +620,7 @@
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
                 if (offset < 1 && offset > -1) {
-                    var offsetY = $scope.fixHeight - SLeasy.viewScale(height) / 2 * offset;
+                    var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
                     var offsetY = offset || ($scope.fixHeight - SLeasy.viewScale(height)) / 4;
                 }
