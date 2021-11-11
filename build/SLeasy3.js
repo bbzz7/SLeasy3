@@ -1486,13 +1486,15 @@ module.exports = (function () {
             var m = SLeasy.viewScale(margin) || 0;
             var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
             var yTop = y * $scope.viewScale + $scope.yOffset.center;
+            console.log('yBottom:' + yBottom)
+            console.log('yTop:' + yTop)
             if (yBottom > $scope.fixHeight) {
                 return $scope.fixHeight - $(target).height() - m;
             } else if (yTop < 0) {
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
                 if (offset < 1 && offset > -1) {
-                    var offsetY = $scope.fixHeight - SLeasy.viewScale(height) / 2 * offset;
+                    var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
                     var offsetY = offset || ($scope.fixHeight - SLeasy.viewScale(height)) / 4;
                 }
@@ -3406,7 +3408,6 @@ module.exports = (function () {
                     position: 'absolute',
                     display: 'block'
                 }, subMotion.set) : {position: 'absolute', display: 'block'};//set
-            console.log(typeof subMotion.onComplete);
             if (typeof subMotion.onComplete == 'function') {
                 subShow.onComplete = subMotion.onComplete;//打平onCompelte
                 // console.log(subShow);

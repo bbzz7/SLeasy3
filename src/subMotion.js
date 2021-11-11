@@ -113,7 +113,6 @@
                     position: 'absolute',
                     display: 'block'
                 }, subMotion.set) : {position: 'absolute', display: 'block'};//set
-            console.log(typeof subMotion.onComplete);
             if (typeof subMotion.onComplete == 'function') {
                 subShow.onComplete = subMotion.onComplete;//打平onCompelte
                 // console.log(subShow);
