@@ -1486,8 +1486,6 @@ module.exports = (function () {
             var m = SLeasy.viewScale(margin) || 0;
             var yBottom = y * $scope.viewScale + $(target).height() + $scope.yOffset.center;
             var yTop = y * $scope.viewScale + $scope.yOffset.center;
-            console.log('yBottom:' + yBottom)
-            console.log('yTop:' + yTop)
             if (yBottom > $scope.fixHeight) {
                 return $scope.fixHeight - $(target).height() - m;
             } else if (yTop < 0) {
