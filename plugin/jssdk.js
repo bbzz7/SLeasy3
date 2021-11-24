@@ -352,6 +352,11 @@
         });
         return dfd.promise();
     }
+
+    //关闭当前网页窗口
+    jssdk.closeWindow = function () {
+        wx.closeWindow();
+    }
 //
 })(window.jssdk = window.jssdk || {}, jQuery);
 
