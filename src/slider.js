@@ -192,7 +192,7 @@
                 //
                 var inputHtml = {
                     'text': function () {
-                        return '<input type="' + opt.input + '"\
+                        return '<input type="' + (opt.password ? 'password' : opt.input) + '"\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="outline:none;border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
