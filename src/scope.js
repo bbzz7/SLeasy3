@@ -307,18 +307,32 @@
     }
 
     //摇一摇事件封装
-    SLeasy.shake = function (start, callback) {
-        var myShakeEvent = new Shake({
-            threshold: 15, // optional shake strength threshold
-            timeout: 1000 // optional, determines the frequency of event generation
-        });
+    SLeasy.shake = function (start, callback, tips) {
+        if (window.DeviceOrientationEvent) {
+            if (device.ios() && window.DeviceOrientationEvent.requestPermission) {
+                window.DeviceOrientationEvent.requestPermission().then(function (state) {
+                    if (state == 'granted') {
+                        var myShakeEvent = new Shake({
+                            threshold: 15, // optional shake strength threshold
+                            timeout: 1000 // optional, determines the frequency of event generation
+                        });
 
-        if (start == 'start') {
-            myShakeEvent.start();
-            window.addEventListener('shake', callback, false);
-        } else if (start == 'stop') {
-            window.removeEventListener('shake', callback, false);
-            myShakeEvent.stop();
+                        if (start == 'start') {
+                            myShakeEvent.start();
+                            window.addEventListener('shake', callback, false);
+                        } else if (start == 'stop') {
+                            window.removeEventListener('shake', callback, false);
+                            myShakeEvent.stop();
+                        }
+                    } else {
+                        alert('需要授权摇一摇,请刷新或关闭微信后,再次打开进行授权!');
+                    }
+                }).catch(function (err) {
+                    alert('error: ' + err);
+                });
+            }
+        } else {
+            alert("您的浏览器不支持HTML5 DeviceOrientation接口");
         }
     }
 
