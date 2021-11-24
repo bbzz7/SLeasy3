@@ -1179,18 +1179,32 @@ module.exports = (function () {
     }
 
     //摇一摇事件封装
-    SLeasy.shake = function (start, callback) {
-        var myShakeEvent = new Shake({
-            threshold: 15, // optional shake strength threshold
-            timeout: 1000 // optional, determines the frequency of event generation
-        });
+    SLeasy.shake = function (start, callback, tips) {
+        if (window.DeviceOrientationEvent) {
+            if (device.ios() && window.DeviceOrientationEvent.requestPermission) {
+                window.DeviceOrientationEvent.requestPermission().then(function (state) {
+                    if (state == 'granted') {
+                        var myShakeEvent = new Shake({
+                            threshold: 15, // optional shake strength threshold
+                            timeout: 1000 // optional, determines the frequency of event generation
+                        });
 
-        if (start == 'start') {
-            myShakeEvent.start();
-            window.addEventListener('shake', callback, false);
-        } else if (start == 'stop') {
-            window.removeEventListener('shake', callback, false);
-            myShakeEvent.stop();
+                        if (start == 'start') {
+                            myShakeEvent.start();
+                            window.addEventListener('shake', callback, false);
+                        } else if (start == 'stop') {
+                            window.removeEventListener('shake', callback, false);
+                            myShakeEvent.stop();
+                        }
+                    } else {
+                        alert('需要授权摇一摇,请刷新或关闭微信后,再次打开进行授权!');
+                    }
+                }).catch(function (err) {
+                    alert('error: ' + err);
+                });
+            }
+        } else {
+            alert("您的浏览器不支持HTML5 DeviceOrientation接口");
         }
     }
 
@@ -2280,7 +2294,7 @@ module.exports = (function () {
                 //
                 var inputHtml = {
                     'text': function () {
-                        return '<input type="' + opt.input + '"\
+                        return '<input type="' + (opt.password ? 'password' : opt.input) + '"\
 						id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 						class="' + (opt.class || '') + ' SLeasy_input SLeasy_' + (subName[opt.type] || opt.type) + '"\
 						style="outline:none;border:0;padding:0;position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';"\
@@ -3034,6 +3048,10 @@ module.exports = (function () {
             setTimeout(function () {
                 console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~')
                 dfd.resolve();//初始化完毕
+                //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
+                $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
+                !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
+                $scope.initReady = true;
             }, 0)
         }
 
@@ -3064,7 +3082,6 @@ module.exports = (function () {
                         T.set($(this), $config.loading.subMotion[index].set);
                     });
                     dfd && dfd.resolve();//初始化完毕
-
                     //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
                     $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
                     !$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0]) && SLeasy.goSlider(0);
