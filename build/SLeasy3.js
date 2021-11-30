@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.15 by 宇文互动 庄宇 2021-10-28 email:30755405@qq.com
+ SLeasy 3.9.16 by 宇文互动 庄宇 2021-11-25 email:30755405@qq.com
+ 3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
  3.9.15(2021-10-28):更新首页出现逻辑，在所有img加载完毕，SLeasy.init().done()之后;添加regions全国三级省区json数据;
  3.9.14(2021-10-14):添加SLeasy.keepLastIndex();更新SLeasy.viewScale()/SLeasy.insert();
  3.9.13(2021-05-25):修正:幻灯子元素在Safari中执行3d变换显示的问题;新增:x,y自适应偏移条件;SLeasy.pauseMedia()/SLeasy.music.volume();
