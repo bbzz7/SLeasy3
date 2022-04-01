@@ -104,19 +104,17 @@
 
 <script>
     $(document).ready(function (e) {
-//    
-
-        var tl = gsap.timeline(),
-            circle = document.getElementById("circle");
+        gsap.registerPlugin(MorphSVGPlugin, GSDevTools);
+        var tl = gsap.timeline();
+        var circle = document.getElementById("circle");
 
         tl.to(circle, {duration: 1, morphSVG: "#hippo"}, "+=1")
             .to(circle, {duration: 1, morphSVG: "#star"}, "+=1")
             .to(circle, {duration: 1, morphSVG: "#elephant"}, "+=1");
-//
+
+        //
+        GSDevTools.create();//要首先创建
     });
-
-    GSDevTools.create();
-
 </script>
 </body>
 </html>

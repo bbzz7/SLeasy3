@@ -79,7 +79,7 @@ EDIT ON
 <script>
     $(function () {
         //register the plugin (just once)
-        gsap.registerPlugin(MotionPathPlugin);
+        gsap.registerPlugin(MotionPathPlugin, MotionPathHelper);
 
         gsap.set(".astronaut", {scale: 0.5, autoAlpha: 1});
 
