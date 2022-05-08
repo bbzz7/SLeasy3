@@ -4,13 +4,14 @@
         $scope = SLeasy.scope();
 
     //go slider
-    SLeasy.goSlider = function (index, duration) {
+    SLeasy.goSlider = function (index, duration, fx) {
         var nextIndex = SLeasy.nextIndex(index);
         if ($config.routerMode) {
             //var detailHash=$scope.router.getRoute(1);
             $scope.router.setRoute(0, nextIndex + '');//设置路由
         } else {
-            SLeasy.transit(nextIndex, duration);
+            console.log(fx)
+            SLeasy.transit(nextIndex, duration, fx);
         }
         return SLeasy;
     }
@@ -93,12 +94,12 @@
 
     }
 
-    SLeasy.transitFX = function (nextIndex, duration) {
+    SLeasy.transitFX = function (nextIndex, duration, fx) {
         var _in,
             _out,
             _show,
             _set,
-            motionFX = SLeasy.getMotionFX(),//获取全局配置切换效果
+            motionFX = fx ? SLeasy.getMotionFX(fx[0], fx[1], fx[2]) : SLeasy.getMotionFX(),//获取全局配置切换效果
             customFX
         ;
 
@@ -245,7 +246,7 @@
 
     }
 
-    SLeasy.transit = function (nextIndex, duration) {
+    SLeasy.transit = function (nextIndex, duration, fx) {
         if ($scope.sliders.length == 0) return alert('当前没有任何幻灯json数据~!');
         if ($scope.isAnim) return;
         $scope.isAnim = 1;//重置运动状态
@@ -253,7 +254,7 @@
         var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
             //nextIndex=SLeasy.nextIndex(index),//下一幻灯索引
             nextSlider = $scope.sliders.eq(nextIndex),//下一幻灯
-            FX = SLeasy.transitFX(nextIndex, duration);//切换效果
+            FX = SLeasy.transitFX(nextIndex, duration, fx);//切换效果
 
         //设置该页标题
         var title = $config.sliders[nextIndex].title || $config.title;
