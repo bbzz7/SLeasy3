@@ -98,7 +98,7 @@
             _out,
             _show,
             _set,
-            motionFX = SLeasy.getMotionFX(fx ? fx : ''),//获取全局配置切换效果
+            motionFX = fx ? SLeasy.getMotionFX(fx[0], fx[1], fx[2]) : SLeasy.getMotionFX(),//获取全局配置切换效果
             customFX
         ;
 
