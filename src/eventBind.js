@@ -71,8 +71,13 @@
 
                 if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
-                } else if (e == 'hold') {//长按事件
-                    HDom.get('press').set({time: 1000});
+                } else if (e.indexOf('holdup') == 0) {//长按释放事件
+                    var time = parseInt(e.replace('holdup', '')) || 1000;
+                    HDom.get('press').set({time: time});
+                    HDom.off('pressup').on('pressup', callback);
+                } else if (e.indexOf('hold') == 0) {//长按事件
+                    var time = parseInt(e.replace('hold', '')) || 1000;
+                    HDom.get('press').set({time: time});
                     HDom.off('press').on('press', callback);
                 } else {
                     HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
