@@ -752,7 +752,8 @@ module.exports = (function () {
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
         routerNotFound: function () {
-            SLeasy.goSlider(0)
+            return;
+            SLeasy.goSlider(0);
         },//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
@@ -4241,8 +4242,13 @@ module.exports = (function () {
 
                 if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
-                } else if (e == 'hold') {//长按事件
-                    HDom.get('press').set({time: 1000});
+                } else if (e.indexOf('holdup') == 0) {//长按释放事件
+                    var time = parseInt(e.replace('holdup', '')) || 1000;
+                    HDom.get('press').set({time: time});
+                    HDom.off('pressup').on('pressup', callback);
+                } else if (e.indexOf('hold') == 0) {//长按事件
+                    var time = parseInt(e.replace('hold', '')) || 1000;
+                    HDom.get('press').set({time: time});
                     HDom.off('press').on('press', callback);
                 } else {
                     HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
