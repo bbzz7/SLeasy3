@@ -438,11 +438,11 @@
 
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, callback, muted) {
-        $(mediaSelector).each(function (index, target) {
+        $((mediaSelector || 'audio')).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
             console.log($media);
-            $media.muted = muted || true;
+            $media.muted = (muted == false ? false : true);
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -599,6 +599,12 @@
     SLeasy.pauseMedia = function (mediaSelector) {
         var $media = SLeasy.media(mediaSelector);
         $media.pause();
+        return SLeasy;
+    }
+
+    SLeasy.muteMedia = function (mediaSelector, muted) {
+        var $media = SLeasy.media(mediaSelector);
+        $media.muted = (muted == 0 ? false : true);
         return SLeasy;
     }
 
