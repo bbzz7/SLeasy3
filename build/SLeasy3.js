@@ -1648,8 +1648,12 @@ module.exports = (function () {
 
     SLeasy.bg = function (el, url, isImgSrc) {
         if (isImgSrc) {
-            var bgUrl = SLeasy.path($config.host, url);
-            $(el).attr('src', bgUrl);
+            if (url) {
+                var bgUrl = SLeasy.path($config.host, url);
+                $(el).attr('src', bgUrl);
+            } else {
+                $(el).removeAttr("src");
+            }
         } else {
             var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
@@ -3614,6 +3618,12 @@ module.exports = (function () {
                 },
                 // 5
                 {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
+                {
                     set: {},
                     in: {x: $scope.fixWidth, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
@@ -3691,6 +3701,12 @@ module.exports = (function () {
                     out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
+                {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
                 {
                     set: {},
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
