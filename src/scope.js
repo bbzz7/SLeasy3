@@ -345,7 +345,7 @@
             });
         }
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 1,
                 alpha: 1,
                 display: 'block',
@@ -389,7 +389,7 @@
         }
         TweenMax.killTweensOf(el);
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 }), onUpdate: function () {
                     onUpdate && onUpdate();
@@ -426,7 +426,7 @@
 
     //闪烁元素
     SLeasy.blink = function (el, time, alpha, repeatDealy, count) {
-        TweenMax.to(el, time > 100 ? time / 1000 : time, {
+        TweenMax.to(el, time >= 100 ? time / 1000 : time, {
             autoAlpha: alpha,
             ease: Power0.easeOut,
             yoyo: true,
