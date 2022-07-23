@@ -79,6 +79,12 @@
                 },
                 // 5
                 {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
+                {
                     set: {},
                     in: {x: $scope.fixWidth, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
@@ -156,6 +162,12 @@
                     out: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut}
                 },
                 // 5
+                {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
                 {
                     set: {},
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
