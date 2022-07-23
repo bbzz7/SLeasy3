@@ -608,6 +608,23 @@
         return SLeasy;
     }
 
+    //长按选中
+    SLeasy.userSelect = function (el, canSelect) {
+        if (canSelect == false) {
+            $(el).css({
+                'user-select': 'none',
+                '-webkit-user-select': 'none',
+                '-webkit-touch-callout': 'none',
+            })
+        } else if (canSelect == true) {
+            $(el).css({
+                'user-select': 'auto',
+                '-webkit-user-select': 'auto',
+                '-webkit-touch-callout': 'default',
+            })
+        }
+    }
+
     //安卓微信同层全屏resize
     SLeasy.resize = function (callback) {
         var oldWidth = window.innerWidth;
