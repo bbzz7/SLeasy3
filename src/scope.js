@@ -776,8 +776,12 @@
 
     SLeasy.bg = function (el, url, isImgSrc) {
         if (isImgSrc) {
-            var bgUrl = SLeasy.path($config.host, url);
-            $(el).attr('src', bgUrl);
+            if (url) {
+                var bgUrl = SLeasy.path($config.host, url);
+                $(el).attr('src', bgUrl);
+            } else {
+                $(el).removeAttr("src");
+            }
         } else {
             var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
