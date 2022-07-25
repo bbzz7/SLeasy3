@@ -5101,28 +5101,32 @@ module.exports = (function () {
     //percent
     SLeasy.percent = function (opt) {
         var faker = {percent: 0};
-        setTimeout(function () {
-            gsap.to(faker, {
-                percent: SLeasy.loader.percent,
-                snap: 'percent',
-                ease: 'none',
-                duration: opt.smoothTime || 2,
-                onUpdate: function () {
-                    if (opt.onUpdate) {
-                        opt.onUpdate();
-                    } else {
-                        $('.percent').length && $('.percent').text(faker.percent + '%');
+        _percent(opt);
+
+        function _percent() {
+            setTimeout(function () {
+                gsap.to(faker, {
+                    percent: SLeasy.loader.percent,
+                    snap: 'percent',
+                    ease: 'none',
+                    duration: opt.smoothTime || 2,
+                    onUpdate: function () {
+                        if (opt.onUpdate) {
+                            opt.onUpdate();
+                        } else {
+                            $('.percent').length && $('.percent').text(faker.percent + '%');
+                        }
+                    },
+                    onComplete: function () {
+                        if (SLeasy.loader.percent >= 100 && faker.percent == 100) {
+                            opt.onComplete && opt.onComplete();
+                        } else {
+                            _percent()(opt);
+                        }
                     }
-                },
-                onComplete: function () {
-                    if (SLeasy.loader.percent >= 100 && faker.percent == 100) {
-                        opt.onComplete && opt.onComplete();
-                    } else {
-                        SLeasy.percent(opt);
-                    }
-                }
-            })
-        }, opt.loopTime || 300);
+                })
+            }, opt.loopTime || 300);
+        }
     }
     //
 })(
