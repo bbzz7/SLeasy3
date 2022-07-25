@@ -71,13 +71,13 @@
         var percentStyle = 'position:absolute;text-align:center;left: 50%;top:50%;' +
             'width:' + $config.loader.size[0] + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
-            'margin-left:-' + ($config.loader.size[0]/2) + 'px;' +
-            'margin-top:-' + ($config.loader.size[1]/2) + 'px;' +
+            'margin-left:-' + ($config.loader.size[0] / 2) + 'px;' +
+            'margin-top:-' + ($config.loader.size[1] / 2) + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
 
         var msgStyle = 'position:absolute;text-align:center;width:100%;top:50%;' +
-            'margin-top:' + ($config.loader.size[1]/2) + 'px;' +
+            'margin-top:' + ($config.loader.size[1] / 2) + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
@@ -229,6 +229,32 @@
         }
     }
 
+    //percent
+    SLeasy.percent = function (opt) {
+        var faker = {percent: 0};
+        setTimeout(function () {
+            gsap.to(faker, {
+                percent: SLeasy.loader.percent,
+                snap: 'percent',
+                ease: 'none',
+                duration: opt.smoothTime || 2,
+                onUpdate: function () {
+                    if (opt.onUpdate) {
+                        opt.onUpdate();
+                    } else {
+                        $('.percent').length && $('.percent').text(faker.percent + '%');
+                    }
+                },
+                onComplete: function () {
+                    if (SLeasy.loader.percent >= 100 && faker.percent == 100) {
+                        opt.onComplete && opt.onComplete();
+                    } else {
+                        SLeasy.percent(opt);
+                    }
+                }
+            })
+        }, opt.loopTime || 300);
+    }
     //
 })(
     window.SLeasy = window.SLeasy || {},
