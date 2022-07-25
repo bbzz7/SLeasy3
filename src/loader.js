@@ -252,7 +252,7 @@
                         if (SLeasy.loader.percent >= 100 && faker.percent == 100) {
                             opt.onComplete && opt.onComplete();
                         } else {
-                            _percent()(opt);
+                            _percent(opt);
                         }
                     }
                 })
