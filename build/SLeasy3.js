@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.16 by 宇文互动 庄宇 2021-11-25 email:30755405@qq.com
+ SLeasy 3.9.17 by 宇文互动 庄宇 2022-07-25 email:30755405@qq.com
+ 3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
  3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
  3.9.15(2021-10-28):更新首页出现逻辑，在所有img加载完毕，SLeasy.init().done()之后;添加regions全国三级省区json数据;
  3.9.14(2021-10-14):添加SLeasy.keepLastIndex();更新SLeasy.viewScale()/SLeasy.insert();
