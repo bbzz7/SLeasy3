@@ -83,7 +83,7 @@
                 });
             }
         }
-
+        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
@@ -93,7 +93,6 @@
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {

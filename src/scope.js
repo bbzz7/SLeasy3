@@ -689,6 +689,7 @@
         function checkHeight() {
             checkCount++;
             if (oldHeight > $(window).height()) {
+                SLeasy.hide('#SLeasy',300);
                 location.reload();
             } else {
                 console.log(oldHeight + ':' + $(window).height());
