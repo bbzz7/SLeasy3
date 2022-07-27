@@ -681,25 +681,28 @@
     }
 
     //微信底部导航条高度检测处理
-    SLeasy.checkNavBar = function (delay, count) {
-        var checkCount = 0;
-        var oldHeight = $(window).height();
-        SLeasy.isWechat() && checkHeight();
+    SLeasy.checkNavBar = function () {
+        $scope.hasNavBar = (SLeasy.isWechat() && history.length > 1) ? true : false;
+        return $scope.hasNavBar;
+    }
 
-        function checkHeight() {
-            checkCount++;
-            if (oldHeight > $(window).height()) {
-                SLeasy.hide('#SLeasy',300);
-                location.reload();
+    //给当前url添加时间戳
+    SLeasy.timeStampURL = function () {
+        var search = '';
+        if (!location.search) {
+            search = ('?ts=' + (new Date().getTime()));
+        } else {
+            search = location.search;
+            var reg = new RegExp("(^|&)ts=([^&]*)(&|$)");
+            var r = search.substr(1).match(reg);
+            if (r != null) {
+                search = search.replace(r[0], ('ts=' + (new Date().getTime())))
             } else {
-                console.log(oldHeight + ':' + $(window).height());
-                if (checkCount < (count || 60)) {
-                    setTimeout(function () {
-                        checkHeight();
-                    }, delay || 50)
-                }
+                search = search + ('&ts=' + (new Date().getTime()));
             }
         }
+        var url = location.origin + location.pathname + search + location.hash;
+        return url;
     }
 
     //insert
