@@ -1893,10 +1893,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             //初始化为横屏模式时
             if ($scope.isLandscape && !$scope.isDesktop) {
                 $scope.SLeasyWidth = '100vw';
-                if(device.iphone() && SLeasy.isWeixin()){
+                if (device.iphone() && SLeasy.isWeixin()) {
                     //在iphone的微信内，横屏时window.screen.availWidth不变(2020.12.29)
                     $scope.SLeasyHeight = window.screen.availWidth;
-                }else{
+                } else {
                     $scope.SLeasyHeight = window.screen.availHeight;
                 }
                 $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
@@ -1908,7 +1908,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             }
         }
         if (!$scope.rotateMode) $fixBox.remove();
-        if (device.desktop()) {
+        if (device.desktop() && typeof $config.stageMode != 'number') {
             $scope.viewScale = $config.viewport / (ratio > 1 ? $config.height : $config.width);//刷新幻灯缩放比例因子
             $scope.fixWidth = ratio > 1 ? $config.viewport * ratio : $config.viewport;
             $scope.fixHeight = ratio < 1 ? $config.viewport / ratio : $config.viewport;
@@ -1924,6 +1924,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         $scope.maxWidth = $config.width * $scope.viewScale;
         $scope.maxHeight = $config.height * $scope.viewScale;
+        if ($scope.fixHeight > window.innerHeight) $scope.fixHeight = window.innerHeight;
+        if ($scope.maxHeight > window.innerHeight) $scope.maxHeight = window.innerHeight;
         console.log('fixHeight:' + $scope.fixHeight)
 
         //初始态横竖屏提示
