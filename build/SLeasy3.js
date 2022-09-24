@@ -1448,6 +1448,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             } else if (yTop < 0) {
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
+                //offset百分比
                 if (offset < 1 && offset > -1) {
                     var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
@@ -1587,16 +1588,24 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         })
     }
 
-    SLeasy.bg = function (el, url, isImgSrc) {
+    SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if (type) {
+            var types = {
+                'jpg': 'data:image/jpeg;base64,',
+                'png': 'data:image/png;base64,',
+                'gif': 'data:image/gif;base64,',
+            }
+            var mt = types[type] || '';
+        }
         if (isImgSrc) {
             if (url) {
-                var bgUrl = SLeasy.path($config.host, url);
+                var bgUrl = isBase64 ? mt + url : SLeasy.path($config.host, url);
                 $(el).attr('src', bgUrl);
             } else {
                 $(el).removeAttr("src");
             }
         } else {
-            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;
@@ -3022,6 +3031,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         'backgroundImage': 'url(' + $(this).attr("src") + ')',
                         'backgroundRepeat': 'no-repeat',
                         'backgroundSize': '100% auto',
+                        'backgroundPosition': 'center',
                         'width': w * $scope.viewScale + 'px',
                         'height': h * $scope.viewScale + 'px'
                     }
@@ -3243,10 +3253,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         //yOffset
         var alignMode = $config.alignMode;
-        if (yOffset && (typeof transObj.y != 'undefined') && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
+        if (yOffset && (typeof transObj.y != 'undefined' && !$.isFunction(transObj.y)) && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
             transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
         }
-        if (xOffset && (typeof transObj.x != 'undefined') && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
+        if (xOffset && (typeof transObj.x != 'undefined' && !$.isFunction(transObj.x)) && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
             transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
         }
         return transObj;
@@ -5042,7 +5052,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     duration: opt.smoothTime || 2,
                     onUpdate: function () {
                         if (opt.onUpdate) {
-                            opt.onUpdate();
+                            opt.onUpdate(faker.percent);
                         } else {
                             $('.percent').length && $('.percent').text(faker.percent + '%');
                         }
