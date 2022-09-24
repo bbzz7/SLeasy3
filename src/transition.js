@@ -10,7 +10,6 @@
             //var detailHash=$scope.router.getRoute(1);
             $scope.router.setRoute(0, nextIndex + '');//设置路由
         } else {
-            console.log(fx)
             SLeasy.transit(nextIndex, duration, fx);
         }
         return SLeasy;

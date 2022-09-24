@@ -20,7 +20,8 @@
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
         routerNotFound: function () {
-            SLeasy.goSlider(0)
+            return;
+            SLeasy.goSlider(0);
         },//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色

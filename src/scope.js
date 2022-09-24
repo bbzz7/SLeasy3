@@ -345,7 +345,7 @@
             });
         }
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 1,
                 alpha: 1,
                 display: 'block',
@@ -389,7 +389,7 @@
         }
         TweenMax.killTweensOf(el);
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 }), onUpdate: function () {
                     onUpdate && onUpdate();
@@ -426,7 +426,7 @@
 
     //闪烁元素
     SLeasy.blink = function (el, time, alpha, repeatDealy, count) {
-        TweenMax.to(el, time > 100 ? time / 1000 : time, {
+        TweenMax.to(el, time >= 100 ? time / 1000 : time, {
             autoAlpha: alpha,
             ease: Power0.easeOut,
             yoyo: true,
@@ -438,11 +438,11 @@
 
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, callback, muted) {
-        $(mediaSelector).each(function (index, target) {
+        $((mediaSelector || 'audio')).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
             console.log($media);
-            $media.muted = muted || true;
+            $media.muted = (muted == false ? false : true);
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -602,6 +602,29 @@
         return SLeasy;
     }
 
+    SLeasy.muteMedia = function (mediaSelector, muted) {
+        var $media = SLeasy.media(mediaSelector);
+        $media.muted = (muted == 0 ? false : true);
+        return SLeasy;
+    }
+
+    //长按选中
+    SLeasy.userSelect = function (el, canSelect) {
+        if (canSelect == false) {
+            $(el).css({
+                'user-select': 'none',
+                '-webkit-user-select': 'none',
+                '-webkit-touch-callout': 'none',
+            })
+        } else if (canSelect == true) {
+            $(el).css({
+                'user-select': 'auto',
+                '-webkit-user-select': 'auto',
+                '-webkit-touch-callout': 'default',
+            })
+        }
+    }
+
     //安卓微信同层全屏resize
     SLeasy.resize = function (callback) {
         var oldWidth = window.innerWidth;
@@ -633,6 +656,7 @@
             } else if (yTop < 0) {
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
+                //offset百分比
                 if (offset < 1 && offset > -1) {
                     var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
@@ -658,24 +682,28 @@
     }
 
     //微信底部导航条高度检测处理
-    SLeasy.checkNavBar = function (delay, count) {
-        var checkCount = 0;
-        var oldHeight = $(window).height();
-        SLeasy.isWechat() && checkHeight();
+    SLeasy.checkNavBar = function () {
+        $scope.hasNavBar = (SLeasy.isWechat() && history.length > 1) ? true : false;
+        return $scope.hasNavBar;
+    }
 
-        function checkHeight() {
-            checkCount++;
-            if (oldHeight > $(window).height()) {
-                location.reload();
+    //给当前url添加时间戳
+    SLeasy.timeStampURL = function () {
+        var search = '';
+        if (!location.search) {
+            search = ('?ts=' + (new Date().getTime()));
+        } else {
+            search = location.search;
+            var reg = new RegExp("(^|&)ts=([^&]*)(&|$)");
+            var r = search.substr(1).match(reg);
+            if (r != null) {
+                search = search.replace(r[0], ('ts=' + (new Date().getTime())))
             } else {
-                console.log(oldHeight + ':' + $(window).height());
-                if (checkCount < (count || 60)) {
-                    setTimeout(function () {
-                        checkHeight();
-                    }, delay || 50)
-                }
+                search = search + ('&ts=' + (new Date().getTime()));
             }
         }
+        var url = location.origin + location.pathname + search + location.hash;
+        return url;
     }
 
     //insert
@@ -768,12 +796,24 @@
         })
     }
 
-    SLeasy.bg = function (el, url, isImgSrc) {
+    SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if (type) {
+            var types = {
+                'jpg': 'data:image/jpeg;base64,',
+                'png': 'data:image/png;base64,',
+                'gif': 'data:image/gif;base64,',
+            }
+            var mt = types[type] || '';
+        }
         if (isImgSrc) {
-            var bgUrl = SLeasy.path($config.host, url);
-            $(el).attr('src', bgUrl);
+            if (url) {
+                var bgUrl = isBase64 ? mt + url : SLeasy.path($config.host, url);
+                $(el).attr('src', bgUrl);
+            } else {
+                $(el).removeAttr("src");
+            }
         } else {
-            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;

@@ -105,6 +105,9 @@
             $scope.SLeasyHeight = '100vh';
             //
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
+            console.warn('viewScale:' + $scope.viewScale);
+            console.warn('sliderBoxHeight:' + sliderBoxHeight);
+            console.warn('boxHeight:' + boxHeight);
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
@@ -113,13 +116,14 @@
             //初始化为横屏模式时
             if ($scope.isLandscape && !$scope.isDesktop) {
                 $scope.SLeasyWidth = '100vw';
-                if(device.iphone() && SLeasy.isWeixin()){
+                if (device.iphone() && SLeasy.isWeixin()) {
                     //在iphone的微信内，横屏时window.screen.availWidth不变(2020.12.29)
-                    $scope.SLeasyHeight = window.screen.availWidth;
-                }else{
-                    $scope.SLeasyHeight = window.screen.availHeight;
+                    // $scope.SLeasyHeight = window.screen.availWidth;
+                    $scope.SLeasyHeight = boxHeight;
+                } else {
+                    $scope.SLeasyHeight = boxHeight;
                 }
-                $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
+                // $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
                 var viewportScale = $fixBox.height() / $scope.SLeasyHeight;
                 $scope.landscapeViewportScale = viewportScale = Math.ceil(viewportScale * 1000) / 1000;
                 var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
@@ -128,7 +132,7 @@
             }
         }
         if (!$scope.rotateMode) $fixBox.remove();
-        if (device.desktop()) {
+        if (device.desktop() && typeof $config.stageMode != 'number') {
             $scope.viewScale = $config.viewport / (ratio > 1 ? $config.height : $config.width);//刷新幻灯缩放比例因子
             $scope.fixWidth = ratio > 1 ? $config.viewport * ratio : $config.viewport;
             $scope.fixHeight = ratio < 1 ? $config.viewport / ratio : $config.viewport;
@@ -144,6 +148,10 @@
         }
         $scope.maxWidth = $config.width * $scope.viewScale;
         $scope.maxHeight = $config.height * $scope.viewScale;
+        if ($scope.fixHeight > window.innerHeight) $scope.fixHeight = window.innerHeight;
+        if ($scope.maxHeight > window.innerHeight) $scope.fixMargin = 0;
+        if ($scope.maxHeight > window.innerHeight) $scope.maxHeight = window.innerHeight;
+
         console.log('fixHeight:' + $scope.fixHeight)
 
         //初始态横竖屏提示
@@ -263,7 +271,6 @@
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
-
     }
 })(
     window.SLeasy = window.SLeasy || {},

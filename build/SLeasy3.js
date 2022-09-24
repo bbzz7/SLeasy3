@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.16 by 宇文互动 庄宇 2021-11-25 email:30755405@qq.com
+ SLeasy 3.9.17 by 宇文互动 庄宇 2022-07-25 email:30755405@qq.com
+ 3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
  3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
  3.9.15(2021-10-28):更新首页出现逻辑，在所有img加载完毕，SLeasy.init().done()之后;添加regions全国三级省区json数据;
  3.9.14(2021-10-14):添加SLeasy.keepLastIndex();更新SLeasy.viewScale()/SLeasy.insert();
@@ -671,7 +672,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         swipeMode: 'y',//滑动模式，xy：上下左右，x：水平，y：垂直
         routerMode: false,//路由开启模式
         routerNotFound: function () {
-            SLeasy.goSlider(0)
+            return;
+            SLeasy.goSlider(0);
         },//路由未匹配执行回调
         arrowMode: true,//是否显示滑动指示箭头
         arrowColor: '#fff',//箭头颜色
@@ -1135,7 +1137,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             });
         }
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 1,
                 alpha: 1,
                 display: 'block',
@@ -1179,7 +1181,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         TweenMax.killTweensOf(el);
         if (time) {
-            TweenMax.to(el, time > 100 ? time / 1000 : time, {
+            TweenMax.to(el, time >= 100 ? time / 1000 : time, {
                 autoAlpha: 0, alpha: 0, ease: Power0.easeNone, onComplete: (onComplete || function () {
                 }), onUpdate: function () {
                     onUpdate && onUpdate();
@@ -1216,7 +1218,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //闪烁元素
     SLeasy.blink = function (el, time, alpha, repeatDealy, count) {
-        TweenMax.to(el, time > 100 ? time / 1000 : time, {
+        TweenMax.to(el, time >= 100 ? time / 1000 : time, {
             autoAlpha: alpha,
             ease: Power0.easeOut,
             yoyo: true,
@@ -1228,11 +1230,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //初始化media为可立即播放状态(暂停)
     SLeasy.initMedia = function (mediaSelector, callback, muted) {
-        $(mediaSelector).each(function (index, target) {
+        $((mediaSelector || 'audio')).each(function (index, target) {
             $(this).off();
             var $media = $(this)[0];
             console.log($media);
-            $media.muted = muted || true;
+            $media.muted = (muted == false ? false : true);
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -1392,6 +1394,29 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return SLeasy;
     }
 
+    SLeasy.muteMedia = function (mediaSelector, muted) {
+        var $media = SLeasy.media(mediaSelector);
+        $media.muted = (muted == 0 ? false : true);
+        return SLeasy;
+    }
+
+    //长按选中
+    SLeasy.userSelect = function (el, canSelect) {
+        if (canSelect == false) {
+            $(el).css({
+                'user-select': 'none',
+                '-webkit-user-select': 'none',
+                '-webkit-touch-callout': 'none',
+            })
+        } else if (canSelect == true) {
+            $(el).css({
+                'user-select': 'auto',
+                '-webkit-user-select': 'auto',
+                '-webkit-touch-callout': 'default',
+            })
+        }
+    }
+
     //安卓微信同层全屏resize
     SLeasy.resize = function (callback) {
         var oldWidth = window.innerWidth;
@@ -1423,6 +1448,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             } else if (yTop < 0) {
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
+                //offset百分比
                 if (offset < 1 && offset > -1) {
                     var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
@@ -1448,24 +1474,28 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //微信底部导航条高度检测处理
-    SLeasy.checkNavBar = function (delay, count) {
-        var checkCount = 0;
-        var oldHeight = $(window).height();
-        SLeasy.isWechat() && checkHeight();
+    SLeasy.checkNavBar = function () {
+        $scope.hasNavBar = (SLeasy.isWechat() && history.length > 1) ? true : false;
+        return $scope.hasNavBar;
+    }
 
-        function checkHeight() {
-            checkCount++;
-            if (oldHeight > $(window).height()) {
-                location.reload();
+    //给当前url添加时间戳
+    SLeasy.timeStampURL = function () {
+        var search = '';
+        if (!location.search) {
+            search = ('?ts=' + (new Date().getTime()));
+        } else {
+            search = location.search;
+            var reg = new RegExp("(^|&)ts=([^&]*)(&|$)");
+            var r = search.substr(1).match(reg);
+            if (r != null) {
+                search = search.replace(r[0], ('ts=' + (new Date().getTime())))
             } else {
-                console.log(oldHeight + ':' + $(window).height());
-                if (checkCount < (count || 60)) {
-                    setTimeout(function () {
-                        checkHeight();
-                    }, delay || 50)
-                }
+                search = search + ('&ts=' + (new Date().getTime()));
             }
         }
+        var url = location.origin + location.pathname + search + location.hash;
+        return url;
     }
 
     //insert
@@ -1558,12 +1588,24 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         })
     }
 
-    SLeasy.bg = function (el, url, isImgSrc) {
+    SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if (type) {
+            var types = {
+                'jpg': 'data:image/jpeg;base64,',
+                'png': 'data:image/png;base64,',
+                'gif': 'data:image/gif;base64,',
+            }
+            var mt = types[type] || '';
+        }
         if (isImgSrc) {
-            var bgUrl = SLeasy.path($config.host, url);
-            $(el).attr('src', bgUrl);
+            if (url) {
+                var bgUrl = isBase64 ? mt + url : SLeasy.path($config.host, url);
+                $(el).attr('src', bgUrl);
+            } else {
+                $(el).removeAttr("src");
+            }
         } else {
-            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;
@@ -1852,6 +1894,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $scope.SLeasyHeight = '100vh';
             //
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
+            console.warn('viewScale:' + $scope.viewScale);
+            console.warn('sliderBoxHeight:' + sliderBoxHeight);
+            console.warn('boxHeight:' + boxHeight);
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
@@ -1860,13 +1905,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             //初始化为横屏模式时
             if ($scope.isLandscape && !$scope.isDesktop) {
                 $scope.SLeasyWidth = '100vw';
-                if(device.iphone() && SLeasy.isWeixin()){
+                if (device.iphone() && SLeasy.isWeixin()) {
                     //在iphone的微信内，横屏时window.screen.availWidth不变(2020.12.29)
-                    $scope.SLeasyHeight = window.screen.availWidth;
-                }else{
-                    $scope.SLeasyHeight = window.screen.availHeight;
+                    // $scope.SLeasyHeight = window.screen.availWidth;
+                    $scope.SLeasyHeight = boxHeight;
+                } else {
+                    $scope.SLeasyHeight = boxHeight;
                 }
-                $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
+                // $scope.viewScale = $scope.SLeasyHeight / $config.height;//刷新幻灯缩放比例因子
                 var viewportScale = $fixBox.height() / $scope.SLeasyHeight;
                 $scope.landscapeViewportScale = viewportScale = Math.ceil(viewportScale * 1000) / 1000;
                 var viewportContent = 'width=device-width, initial-scale=' + viewportScale + ',user-scalable=no,viewport-fit=cover';
@@ -1875,7 +1921,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             }
         }
         if (!$scope.rotateMode) $fixBox.remove();
-        if (device.desktop()) {
+        if (device.desktop() && typeof $config.stageMode != 'number') {
             $scope.viewScale = $config.viewport / (ratio > 1 ? $config.height : $config.width);//刷新幻灯缩放比例因子
             $scope.fixWidth = ratio > 1 ? $config.viewport * ratio : $config.viewport;
             $scope.fixHeight = ratio < 1 ? $config.viewport / ratio : $config.viewport;
@@ -1891,6 +1937,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         $scope.maxWidth = $config.width * $scope.viewScale;
         $scope.maxHeight = $config.height * $scope.viewScale;
+        if ($scope.fixHeight > window.innerHeight) $scope.fixHeight = window.innerHeight;
+        if ($scope.maxHeight > window.innerHeight) $scope.fixMargin = 0;
+        if ($scope.maxHeight > window.innerHeight) $scope.maxHeight = window.innerHeight;
+
         console.log('fixHeight:' + $scope.fixHeight)
 
         //初始态横竖屏提示
@@ -2010,7 +2060,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if ($config.stageMode == 'scroll') {
             $scope.fixHeight = sliderBoxHeight;
         }
-
     }
 })(
     window.SLeasy = window.SLeasy || {},
@@ -2194,7 +2243,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
                 class="' + (opt.class || '') + ' SLeasy_video SLeasy_' + (subName[opt.type] || opt.type) + '" style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + '">\
                 \<video\
-				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:100% auto;' : 'background:#000000;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
+				style="' + (opt.poster ? 'background-image:url(' + SLeasy.path($config.host, opt.poster) + ');background-size:' + (opt.fit || 'cover') + ';' : 'background:transparent;') + 'object-fit:' + (opt.fit || 'cover') + ';" \
 				src="' + SLeasy.path($config.host, opt.video, opt.timeStamp || false) + '" type="' + (opt.mediaType || 'video/mp4') + '" poster="' + (SLeasy.path($config.host, opt.poster) || '') + '" ' + (opt.width ? ('width="' + (opt.width * $scope.viewScale || '100%') + '" ') : 'width="100%"') + (opt.height ? ('height="' + (opt.height * $scope.viewScale || '100%') + '" ') : '') + (typeof opt.controls != 'undefined' && !opt.controls ? '' : 'controls ') + (typeof opt.playsinline != 'undefined' && !opt.playsinline ? '' : 'webkit-playsinline playsinline x5-video-player-type="h5-page" x5-video-player-fullscreen="false"') + ' preload="' + (opt.preload || 'auto" ') + (opt.loop !== undefined ? 'loop="loop"' : '') + (opt.muted !== undefined ? 'muted' : '') + '>\
 				</video></div>';
             },
@@ -2982,6 +3031,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         'backgroundImage': 'url(' + $(this).attr("src") + ')',
                         'backgroundRepeat': 'no-repeat',
                         'backgroundSize': '100% auto',
+                        'backgroundPosition': 'center',
                         'width': w * $scope.viewScale + 'px',
                         'height': h * $scope.viewScale + 'px'
                     }
@@ -3203,10 +3253,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         //yOffset
         var alignMode = $config.alignMode;
-        if (yOffset && (typeof transObj.y != 'undefined') && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
+        if (yOffset && (typeof transObj.y != 'undefined' && !$.isFunction(transObj.y)) && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
             transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
         }
-        if (xOffset && (typeof transObj.x != 'undefined') && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
+        if (xOffset && (typeof transObj.x != 'undefined' && !$.isFunction(transObj.x)) && (typeof transObj.x == 'number' || transObj.x.lastIndexOf('px') != -1)) {
             transObj.x = parseFloat(transObj.x) + ($scope.xOffset[alignMode] || 0);
         }
         return transObj;
@@ -3526,6 +3576,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 },
                 // 5
                 {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
+                {
                     set: {},
                     in: {x: $scope.fixWidth, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
@@ -3604,6 +3660,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 },
                 // 5
                 {
+                    in: {x: 0, y: 0, autoAlpha: 0, ease: Power0.easeOut},
+                    show: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut},
+                    out: {x: 0, y: 0, autoAlpha: 1, ease: Power0.easeOut}
+                },
+                // 6
+                {
                     set: {},
                     in: {x: 0, y: $scope.fixHeight, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
                     show: {x: 0, y: 0, autoAlpha: 1, ease: $config.motionEase || Expo.easeInOut},
@@ -3645,7 +3707,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             //var detailHash=$scope.router.getRoute(1);
             $scope.router.setRoute(0, nextIndex + '');//设置路由
         } else {
-            console.log(fx)
             SLeasy.transit(nextIndex, duration, fx);
         }
         return SLeasy;
@@ -4161,8 +4222,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
-                } else if (e == 'hold') {//长按事件
-                    HDom.get('press').set({time: 1000});
+                } else if (e.indexOf('holdup') == 0) {//长按释放事件
+                    var time = parseInt(e.replace('holdup', '')) || 1000;
+                    HDom.get('press').set({time: time});
+                    HDom.off('pressup').on('pressup', callback);
+                } else if (e.indexOf('hold') == 0) {//长按事件
+                    var time = parseInt(e.replace('hold', '')) || 1000;
+                    HDom.get('press').set({time: time});
                     HDom.off('press').on('press', callback);
                 } else {
                     HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
@@ -4814,13 +4880,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var percentStyle = 'position:absolute;text-align:center;left: 50%;top:50%;' +
             'width:' + $config.loader.size[0] + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
-            'margin-left:-' + ($config.loader.size[0]/2) + 'px;' +
-            'margin-top:-' + ($config.loader.size[1]/2) + 'px;' +
+            'margin-left:-' + ($config.loader.size[0] / 2) + 'px;' +
+            'margin-top:-' + ($config.loader.size[1] / 2) + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
 
         var msgStyle = 'position:absolute;text-align:center;width:100%;top:50%;' +
-            'margin-top:' + ($config.loader.size[1]/2) + 'px;' +
+            'margin-top:' + ($config.loader.size[1] / 2) + 'px;' +
             'height:' + $config.loader.size[1] + 'px;' +
             'line-height:' + $config.loader.size[1] + 'px;' +
             $config.loader.textStyle;
@@ -4972,6 +5038,36 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
     }
 
+    //percent
+    SLeasy.percent = function (opt) {
+        var faker = {percent: 0};
+        _percent(opt);
+
+        function _percent() {
+            setTimeout(function () {
+                gsap.to(faker, {
+                    percent: SLeasy.loader.percent,
+                    snap: 'percent',
+                    ease: 'none',
+                    duration: opt.smoothTime || 2,
+                    onUpdate: function () {
+                        if (opt.onUpdate) {
+                            opt.onUpdate(faker.percent);
+                        } else {
+                            $('.percent').length && $('.percent').text(faker.percent + '%');
+                        }
+                    },
+                    onComplete: function () {
+                        if (SLeasy.loader.percent >= 100 && faker.percent == 100) {
+                            opt.onComplete && opt.onComplete();
+                        } else {
+                            _percent(opt);
+                        }
+                    }
+                })
+            }, opt.loopTime || 300);
+        }
+    }
     //
 })(
     window.SLeasy = window.SLeasy || {},
@@ -5132,7 +5228,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 });
             }
         }
-
+        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
@@ -5142,7 +5238,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
