@@ -656,6 +656,7 @@
             } else if (yTop < 0) {
                 return m;
             } else if (height && $scope.fixHeight > SLeasy.viewScale(height)) {
+                //offset百分比
                 if (offset < 1 && offset > -1) {
                     var offsetY = ($scope.fixHeight - SLeasy.viewScale(height)) / 2 * offset;
                 } else {
@@ -795,16 +796,24 @@
         })
     }
 
-    SLeasy.bg = function (el, url, isImgSrc) {
+    SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if (type) {
+            var types = {
+                'jpg': 'data:image/jpeg;base64,',
+                'png': 'data:image/png;base64,',
+                'gif': 'data:image/gif;base64,',
+            }
+            var mt = types[type] || '';
+        }
         if (isImgSrc) {
             if (url) {
-                var bgUrl = SLeasy.path($config.host, url);
+                var bgUrl = isBase64 ? mt + url : SLeasy.path($config.host, url);
                 $(el).attr('src', bgUrl);
             } else {
                 $(el).removeAttr("src");
             }
         } else {
-            var bgUrl = 'url(' + SLeasy.path($config.host, url) + ')';
+            var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
             TweenMax.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;
