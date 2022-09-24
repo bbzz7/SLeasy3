@@ -243,7 +243,7 @@
                     duration: opt.smoothTime || 2,
                     onUpdate: function () {
                         if (opt.onUpdate) {
-                            opt.onUpdate();
+                            opt.onUpdate(faker.percent);
                         } else {
                             $('.percent').length && $('.percent').text(faker.percent + '%');
                         }
