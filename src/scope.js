@@ -797,6 +797,10 @@
     }
 
     SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if(el && !url){
+            var bg=$(el).css('backgroundImage').replace('url("','').replace('")','').replace('url(','').replace(')','');
+            return bg;
+        }
         if (type) {
             var types = {
                 'jpg': 'data:image/jpeg;base64,',
