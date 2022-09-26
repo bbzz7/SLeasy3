@@ -81,10 +81,10 @@
                 'openCard'
             ],
             openTagList: [
-                '<wx-open-launch-weapp>',
-                '<wx-open-launch-app>',
-                '<wx-open-subscribe>',
-                '<wx-open-audio>'
+                'wx-open-launch-weapp',
+                'wx-open-launch-app',
+                'wx-open-subscribe',
+                'wx-open-audio'
             ],
             success: function (res) {
                 alert("检测通过：" + JSON.stringify(res));
