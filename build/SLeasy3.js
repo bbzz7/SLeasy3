@@ -908,9 +908,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     //check http
     SLeasy.isHttp = function (url) {
         if (url) {
-            return (url.indexOf('http') == 0) ? true : false;
+            return (url.indexOf('http') == 0 && url.indexOf('http://localhost') == -1) ? true : false;
         } else {
-            return (location.href.indexOf('http') == 0) ? true : false;
+            return (location.href.indexOf('http') == 0 && location.href.indexOf('http://localhost') == -1) ? true : false;
         }
     }
 
@@ -1589,6 +1589,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
+        if(el && !url){
+            var bg=$(el).css('backgroundImage').replace('url("','').replace('")','').replace('url(','').replace(')','');
+            return bg;
+        }
         if (type) {
             var types = {
                 'jpg': 'data:image/jpeg;base64,',
