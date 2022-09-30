@@ -684,6 +684,10 @@
     //微信底部导航条高度检测处理
     SLeasy.checkNavBar = function () {
         $scope.hasNavBar = (SLeasy.isWechat() && history.length > 1) ? true : false;
+        if($scope.hasNavBar && !SLeasy.getRequest('SLReload')){
+            location.hash='SLReload=1';
+            location.reload();
+        }
         return $scope.hasNavBar;
     }
 
