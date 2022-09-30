@@ -684,8 +684,12 @@
     //微信底部导航条高度检测处理
     SLeasy.checkNavBar = function () {
         $scope.hasNavBar = (SLeasy.isWechat() && history.length > 1) ? true : false;
-        if($scope.hasNavBar && !SLeasy.getRequest('SLReload')){
-            location.hash='SLReload=1';
+        if ($scope.hasNavBar && !SLeasy.getRequest('SLReload')) {
+            if (location.hash) {
+                location.hash = location.hash + '&SLReload=1';
+            } else {
+                location.hash = 'SLReload=1';
+            }
             location.reload();
         }
         return $scope.hasNavBar;
@@ -801,8 +805,8 @@
     }
 
     SLeasy.bg = function (el, url, isImgSrc, isBase64, type) {
-        if(el && !url){
-            var bg=$(el).css('backgroundImage').replace('url("','').replace('")','').replace('url(','').replace(')','');
+        if (el && !url) {
+            var bg = $(el).css('backgroundImage').replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
             return bg;
         }
         if (type) {
