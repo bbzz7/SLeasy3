@@ -262,7 +262,9 @@
     }
 
     //开始录音
-    jssdk.startRecord = wx.startRecord;
+    jssdk.startRecord = function (){
+        wx.startRecord();
+    };
 
     //停止录音
     jssdk.stopRecord = function (translate, uploadVoice) {
