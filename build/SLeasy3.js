@@ -4077,8 +4077,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var detail = $config.details[index],
             dom = $scope.details.eq(index),
             FX = SLeasy.detailFX(index, allowMulti),
-            time = detail.time || $config.motionTime
-        ;
+            time = detail.time || $config.motionTime;
+        if ($.isFunction(detail.time)) time = detail.time();
 
         //详情页打开回调
         $config.on['detailOpen'](index);
@@ -4139,6 +4139,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             },
             FX = SLeasy.detailFX(index),
             time = detail.time || $config.motionTime;
+        if ($.isFunction(detail.time)) time = detail.time();
 
         //详情页关闭回调
         $config.on['detailClose'](index);
