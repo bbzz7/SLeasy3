@@ -2958,6 +2958,43 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     }
                 }
 
+                //spriteNext
+                SLeasy.spriteNext = function (selector, start, end, motionTime, onComplete) {
+                    var $sprite = $(selector)[0];
+                    $sprite.frame = SLeasy.spriteFrame(selector);
+                    if (end > start) {
+                        $sprite.frame++;
+                    } else {
+                        $sprite.frame--;
+                    }
+                    if (end > start && $sprite.frame > end) {
+                        SLeasy.gotoSprite(selector, start, 0);
+                        $sprite.frame = start;
+                        $sprite.frame++;
+                    }
+                    if (end < start && $sprite.frame < end) {
+                        SLeasy.gotoSprite(selector, start, 0);
+                        $sprite.frame = start;
+                        $sprite.frame--;
+                    }
+
+                    if (end > start && $sprite.frame == end) {
+                        var _onComplete = function () {
+                            SLeasy.gotoSprite(selector, start, 0, 0, 1, 1, onComplete);
+                        }
+                        SLeasy.gotoSprite(selector, $sprite.frame, motionTime || 0.5, 0, 1, 1, _onComplete);
+                        $sprite.frame = start;
+                    } else if (end < start && $sprite.frame == end) {
+                        var _onComplete = function () {
+                            SLeasy.gotoSprite(selector, end, 0, 0, 1, 1, onComplete);
+                        }
+                        SLeasy.gotoSprite(selector, $sprite.frame, motionTime || 0.5, 0, 1, 1, _onComplete);
+                        $sprite.frame = end;
+                    } else {
+                        SLeasy.gotoSprite(selector, $sprite.frame, motionTime || 0.5, 0, 1, 1, onComplete);
+                    }
+                }
+
                 return spriteHtml[opt.engine || 'img']();
             }
         }
