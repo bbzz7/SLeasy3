@@ -160,7 +160,7 @@
             }
         }
         //yOffset
-        var alignMode = $config.alignMode;
+        var alignMode = transObj.alignMode || $config.alignMode;
         if (yOffset && (typeof transObj.y != 'undefined' && !$.isFunction(transObj.y)) && (typeof transObj.y == 'number' || transObj.y.lastIndexOf('px') != -1)) {
             transObj.y = parseFloat(transObj.y) + $scope.yOffset[alignMode];
         }
