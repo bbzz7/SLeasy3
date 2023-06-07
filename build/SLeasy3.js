@@ -2951,7 +2951,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     var $sprite = $(selector)[0],
                         $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0];
                     if (frame === undefined) {
-                        return $spriteImg.frame;
+                        return $spriteImg.frame || 0;
                     } else {
                         $spriteImg.frame = frame;
                         return SLeasy;
