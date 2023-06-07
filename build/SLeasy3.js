@@ -2120,7 +2120,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
 			background-image:' + sliderBg() + ';\
 			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:'+ (opt.bgSize || "cover") + ';\
+			background-size:' + (opt.bgSize || "cover") + ';\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
 			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
@@ -2855,7 +2855,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
                         k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
 
-                    if ($spriteImg.frame === undefined) $spriteImg.frame = 0;
+                    if ($spriteImg.frame === undefined) {
+                        $spriteImg.frame = 0
+                    } else {
+                        $spriteImg.frame = frame
+                    }
                     //设置sprite padding
                     if (paddingOrCrop) {
                         $(selector).css({
