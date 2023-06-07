@@ -99,7 +99,7 @@
     };
 
     //分享
-    jssdk.share = function (opt,toFriends) {
+    jssdk.share = function (opt, toFriends) {
         var $config = {
             title: '', // 分享标题
             desc: '', // 分享描述
@@ -165,7 +165,7 @@
         });
 
         //分享给朋友
-        if(toFriends){
+        if (toFriends) {
             $.extend($config, toFriends);
         }
         wx.onMenuShareAppMessage({
@@ -185,6 +185,25 @@
             }
         });
     };
+
+    //预览图片
+    jssdk.previewImage = function (opt) {
+        var _urls = [];
+        if (opt.urls) {
+            for (var i = 0; i < opt.urls.length; i++) {
+                _urls.push(opt.cdn + opt.urls[i] + (opt.mime || '.jpg'));
+            }
+        }
+        if (opt.range) {
+            for (var i = parseInt(opt.range[0]); i <= parseInt(opt.range[1]); i++) {
+                _urls.push(opt.cdn + [i] + (opt.mime || '.jpg'));
+            }
+        }
+        wx.previewImage({
+            current: _urls[opt.index || 0], // 当前显示图片的http链接
+            urls: _urls // 需要预览的图片http链接列表
+        });
+    }
 
     //选择图片
     jssdk.chooseImage = function (opt) {
@@ -262,7 +281,7 @@
     }
 
     //开始录音
-    jssdk.startRecord = function (){
+    jssdk.startRecord = function () {
         wx.startRecord();
     };
 
