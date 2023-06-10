@@ -839,7 +839,7 @@
                             if ($sprite.frame == end) {
                                 var onComplete = function () {
                                     _currentLoopCount++;
-                                    console.log(_currentLoopCount + ':' + _loopCount)
+                                    // console.log(_currentLoopCount + ':' + _loopCount)
                                     if (_currentLoopCount < _loopCount || _loopCount == -1) {
                                         SLeasy.gotoSprite(selector, start, 0, paddingOrCrop);
                                     } else {
