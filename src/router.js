@@ -60,7 +60,6 @@
         //设置全局执行函数
         router.configure(cfg);
         $config.routerMode && $config.autoStart ? router.init('/0/html') : router.init();
-
     }
 
 })(
