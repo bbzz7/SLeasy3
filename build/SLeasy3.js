@@ -3096,6 +3096,7 @@ module.exports = (function () {
                     } else {
                         SLeasy.gotoSprite(selector, $sprite.frame, motionTime || 0.5, 0, 1, 1, onComplete);
                     }
+                    SLeasy.spriteFrame(selector, $sprite.frame);
                 }
 
                 return spriteHtml[opt.engine || 'img']();
