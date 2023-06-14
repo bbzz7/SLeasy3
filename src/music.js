@@ -35,25 +35,6 @@
             });
         }
 
-        //auto playHack
-        $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
-        if ($config.musicAutoPlay && typeof $config.musicUrl == 'string') {
-            //hack部分机型无法自动播放的bug
-            document.addEventListener("WeixinJSBridgeReady", function () {
-                //howler
-                if (typeof $config.musicUrl == 'object') {
-                    if ($scope.bgmID) {
-                        $scope.audios['bgm'].play($scope.bgmID);
-                    } else {
-                        $scope.bgmID = $scope.audios['bgm'].play();
-                    }
-                    console.log('howl BGM music play~')
-                } else {
-                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
-                }
-            }, false);
-        }
-
         if (typeof $config.musicUrl == 'object') {
             $config.musicUrl.src = SLeasy.path($config.host, $config.musicUrl.src);
             $scope.audios['bgm'] = new Howl($config.musicUrl);
@@ -73,12 +54,6 @@
                 });
             });
         } else if ($config.musicUrl) {
-            //=============微信webview背景音乐及视频行内播放======================================
-            if ("wView" in window) {
-                window.wView.allowsInlineMediaPlayback = "YES";
-                window.wView.mediaPlaybackRequiresUserAction = "NO";
-            }
-
             var mediaTypes = {
                 mp3: 'audio/mpeg',
                 ogg: 'audio/ogg',
@@ -89,7 +64,25 @@
 			<source src="' + SLeasy.path($config.host, $config.musicUrl) + '" type="' + mediaTypes[$config.musicUrl.split('.')[1]] + '">\
 			</audio>';
         }
-        return musicHtml;
+        $('body').append(musicHtml);
+        //auto playHack
+        $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
+        if ($config.musicAutoPlay && typeof $config.musicUrl == 'string') {
+            //hack部分机型无法自动播放的bug
+            document.addEventListener("WeixinJSBridgeReady", function () {
+                //howler
+                if (typeof $config.musicUrl == 'object') {
+                    if ($scope.bgmID) {
+                        $scope.audios['bgm'].play($scope.bgmID);
+                    } else {
+                        $scope.bgmID = $scope.audios['bgm'].play();
+                    }
+                    console.log('howl BGM music play~')
+                } else {
+                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+                }
+            }, false);
+        }
     }
 
 

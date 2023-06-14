@@ -19,11 +19,9 @@
             $config.loading.type = 'loading';
             loadingHtml = SLeasy.slider($config.loading);
             //音乐初始化
-            musicHtml = SLeasy.music.init();
-            $scope.sliderBox.html($scope.sliderBox.html() + loadingHtml + musicHtml);
+            $scope.sliderBox.html($scope.sliderBox.html() + loadingHtml);
             SLeasy.float();//浮动元素初始化
             $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
-
             SLeasy.fixPosition([$config.loading]);
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
@@ -65,11 +63,8 @@
                 return tmpHtml;
             }
 
-            //音乐初始化
-            musicHtml = SLeasy.music.init();
-
             //框架初始化($scope.sliderBox.html()包含了loading结构代码)
-            $scope.sliderBox.append(sliderHtml + detailHtml + musicHtml);
+            $scope.sliderBox.append(sliderHtml + detailHtml);
             //微博下iphone-inline-video
             SLeasy.enableInlineVideo();
             //在可以的环境下自动播放-暂停，以缓存video
@@ -131,7 +126,6 @@
             document.addEventListener("WeixinJSBridgeReady", function () {
                 $config.on['weixin'];
             }, false);
-
             SLeasy.eventBind('global');//事件绑定
             SLeasy.router();//路由初始化
 
