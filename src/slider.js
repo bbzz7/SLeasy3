@@ -697,8 +697,17 @@
                         return '<div\
 				        id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				        class="' + (opt.class || '') + ' SLeasy_sprite SLeasy_' + (subName[opt.type] || opt.type) + ' toDiv"\
-				        style="-webkit-overflow-scrolling:touch;overflow-scrolling:touch;position:' + $config.positionMode + ';display:' + (display || (opt.set && opt.set.display) || 'none') + ';width:' + (opt.sprite[1] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;height:' + (opt.sprite[2] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;overflow:hidden">\
-				<div class="SLeasy_spriteSheet"><img src="' + SLeasy.path($config.host, opt.sprite[0]) + '"></div>\
+				        style="-webkit-overflow-scrolling:touch;overflow-scrolling:touch;position:' + $config.positionMode + ';display:' + (display || (opt.set && opt.set.display) || 'none') + ';width:' + (opt.sprite[1] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;height:' + (opt.sprite[2] - (opt.sprite[3] || 0)) * $scope.viewScale + 'px;overflow:hidden">' + (function () {
+                            if ($.isArray(opt.sprite[0])) {
+                                var _html = '<div class="SLeasy_spriteSheet" style="width: max-content">';
+                                for (var i = 0; i < opt.sprite[0].length; i++) {
+                                    _html += '<div class="SLeasy_spriteElement" style="'+(opt.float ? 'float:left' : '')+'"><img src="' + SLeasy.path($config.host, opt.sprite[0][i]) + '"></div>'
+                                }
+                                return _html;
+                            } else {
+                                return '<div class="SLeasy_spriteSheet"><img src="' + SLeasy.path($config.host, opt.sprite[0]) + '">'
+                            }
+                        })() + '</div>\
 				        </div>';
                     }
                 }

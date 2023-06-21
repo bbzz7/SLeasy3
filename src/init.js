@@ -86,7 +86,7 @@
                 });
             }
         }
-        if($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
+        if ($config.checkNavBar) SLeasy.checkNavBar();//检测微信底部导航条/强制刷新
         //loading资源加载
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
@@ -177,6 +177,15 @@
             }
             for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
                 $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
+                if ($config.sliders[i].subMotion[k].sprite) {
+                    if ($.isArray($config.sliders[i].subMotion[k].sprite[0])) {
+                        for (var n = 0; n < $config.sliders[i].subMotion[k].sprite[0].length; n++) {
+                            totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].sprite[0][n]))
+                        }
+                    } else {
+                        totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].sprite[0]))
+                    }
+                }
                 //ae序列帧
                 var ae = $config.sliders[i].subMotion[k].ae;
                 if (ae) {
@@ -208,6 +217,15 @@
             }
             for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
                 $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
+                if ($config.details[i].subMotion[k].sprite) {
+                    if ($.isArray($config.details[i].subMotion[k].sprite[0])) {
+                        for (var n = 0; n < $config.details[i].subMotion[k].sprite[0].length; n++) {
+                            totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].sprite[0][n]))
+                        }
+                    } else {
+                        totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].sprite[0]))
+                    }
+                }
                 //ae序列帧
                 var ae = $config.details[i].subMotion[k].ae;
                 if (ae) {
