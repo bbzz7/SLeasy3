@@ -117,6 +117,10 @@
                 subShow.onComplete = subMotion.onComplete;//打平onCompelte
                 // console.log(subShow);
             }
+            if (typeof subMotion.onStart == 'function') {
+                subShow.onStart = subMotion.onStart;//打平onCompelte
+                // console.log(subShow);
+            }
             // console.warn('totalTime:::' + totalTime);
             // console.warn('startTime:::::::' + startTime);
             // console.warn('----------------------------------');
