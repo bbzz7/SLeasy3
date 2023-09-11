@@ -82,10 +82,10 @@
                 console.log('howl BGM music play~')
             } else {
                 document.addEventListener("WeixinJSBridgeReady", function () {
-                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+                    $("#SLeasy_music").length && SLeasy.music.play();
                 }, false);
                 window.WeixinJSBridge && window.WeixinJSBridge.invoke('getNetworkType', {}, function () {
-                    $("#SLeasy_music").length && $("#SLeasy_music")[0].play();
+                    $("#SLeasy_music").length && SLeasy.music.play();
                 }, false);
             }
         }
