@@ -1630,7 +1630,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             }
         } else {
             var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
-            TweenMax.set(el, {backgroundImage: bgUrl});
+            gsap.set(el, {backgroundImage: bgUrl});
         }
         return SLeasy;
     }
