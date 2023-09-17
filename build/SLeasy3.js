@@ -893,6 +893,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
     }
 
+    //check xiaohongshu
+    SLeasy.isXiaoHongShu = SLeasy.isXHS = function () {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/discover/i) == 'discover') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //weChat share
     SLeasy.share = function (opt) {
         var imgHtml = '<img src="' + opt.imgUrl + '" width="300" height="300" style="position:absolute;top:-9999px">',
@@ -1602,13 +1612,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             var bg = $(el).css('backgroundImage').replace('url("', '').replace('")', '').replace('url(', '').replace(')', '');
             return bg;
         }
+        var mt = '';
         if (type) {
             var types = {
                 'jpg': 'data:image/jpeg;base64,',
                 'png': 'data:image/png;base64,',
                 'gif': 'data:image/gif;base64,',
             }
-            var mt = types[type] || '';
+            mt = types[type] || '';
         }
         if (isImgSrc) {
             if (url) {
