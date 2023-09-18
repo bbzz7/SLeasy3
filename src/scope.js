@@ -837,7 +837,7 @@
             }
         } else {
             var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
-            gsap.set(el, {backgroundImage: bgUrl});
+            $(el).css({backgroundImage: bgUrl});
         }
         return SLeasy;
     }

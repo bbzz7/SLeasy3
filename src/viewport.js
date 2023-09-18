@@ -8,7 +8,7 @@
         //重置body
         $("body").css({"padding": 0, "margin": "0 0"});
         $('meta[name="viewport"]').remove();
-        $("head").prepend('<meta content="yes" name="mobile-web-app-capable"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no, email=no,adress=no"/><meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover">');
+        $("head").prepend('<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no, email=no,adress=no"/><meta id="SLeasy_viewport" name="viewport" content="width=device-width, initial-scale=1.0,user-scalable=no,viewport-fit=cover,minimal-ui">');
         //初始化横竖屏状态
         $scope.isLandscape = device.landscape();
         $scope.isDesktop = device.desktop();
