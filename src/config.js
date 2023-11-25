@@ -28,6 +28,8 @@
         rotateMode: false,//旋转模式
         alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
+        floatZIndex: 10,//浮动元素默认zIndex
+        detailZIndex: 10,//详情幻灯默认zIndex
         preload: true,//是否对素材预加载
         autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
