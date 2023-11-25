@@ -18,7 +18,7 @@
                 if (!$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0])) {
                     SLeasy.goSlider(0)
                 } else {
-                    SLeasy.goSlider($scope.router.getRoute()[0]);
+                    !$scope.loadingReady && SLeasy.goSlider($scope.router.getRoute()[0]);
                 }
                 $scope.initReady = true;
             }, 0)
@@ -46,7 +46,7 @@
                     console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~');
                     //重新set float元素以获得正确的尺寸
                     $('.SLeasy_floatElement').each(function (index, element) {
-                        T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+                        T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
                     });
                     $('.SLeasy_loadingElement').each(function (index, element) {
                         T.set($(this), $config.loading.subMotion[index].set);
@@ -57,7 +57,7 @@
                     if (!$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0])) {
                         SLeasy.goSlider(0)
                     } else {
-                        SLeasy.goSlider($scope.router.getRoute()[0]);
+                        !$scope.loadingReady && SLeasy.goSlider($scope.router.getRoute()[0]);
                     }
                     $scope.initReady = true;
                 }
