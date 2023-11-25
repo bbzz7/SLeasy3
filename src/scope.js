@@ -90,6 +90,17 @@
         }
     }
 
+    //check wexin miniprogram
+    SLeasy.isWmp = function (noDevTools) {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
+        if (ua.match(/MicroMessenger/i) == 'micromessenger' && ua.match(/miniprogram/i) == 'miniprogram') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     //check weibo
     SLeasy.isWeibo = function () {
         var ua = window.navigator.userAgent.toLowerCase();
