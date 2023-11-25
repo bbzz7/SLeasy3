@@ -35,7 +35,7 @@
                     detail.onComplete && detail.onComplete();
                 }
             }),
-            _set = $.extend({zIndex: 1}, detail.set) || {};
+            _set = $.extend({zIndex: $config.detailZIndex || 10}, detail.set) || {};
 
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
