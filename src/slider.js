@@ -42,11 +42,13 @@
 			background-size:' + (opt.bgSize || "cover") + ';\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
-			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+			overflow-y:' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+			overflow-x:' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
 			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
 			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
 			-webkit-overflow-scrolling:touch;\
 			overflow-scrolling: touch;\
+			z-index:' + (opt.type == 'detail' ? 10 : 'auto') + ';\
 			">';
 
         function sliderBg() {
@@ -701,7 +703,7 @@
                             if ($.isArray(opt.sprite[0])) {
                                 var _html = '<div class="SLeasy_spriteSheet" style="width: max-content">';
                                 for (var i = 0; i < opt.sprite[0].length; i++) {
-                                    _html += '<div class="SLeasy_spriteElement" style="'+(opt.float ? 'float:left' : '')+'"><img src="' + SLeasy.path($config.host, opt.sprite[0][i]) + '"></div>'
+                                    _html += '<div class="SLeasy_spriteElement" style="' + (opt.float ? 'float:left' : '') + '"><img src="' + SLeasy.path($config.host, opt.sprite[0][i]) + '"></div>'
                                 }
                                 return _html;
                             } else {
