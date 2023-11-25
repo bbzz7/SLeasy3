@@ -681,6 +681,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         rotateMode: false,//旋转模式
         alignMode: 'center',//幻灯背景对齐方式
         alignOffset: 0,//对齐偏移值
+        floatZIndex: 10,//浮动元素默认zIndex
+        detailZIndex: 10,//详情幻灯默认zIndex
         preload: true,//是否对素材预加载
         autoStart: true,//自动开始跳转默认幻灯
         autoRemoveChildren: true,//每张幻灯子动画全部完毕后，自动删除子动画tween
@@ -877,6 +879,17 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var ua = window.navigator.userAgent.toLowerCase();
         if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
         if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //check wexin miniprogram
+    SLeasy.isWmp = function (noDevTools) {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
+        if (ua.match(/MicroMessenger/i) == 'micromessenger' && ua.match(/miniprogram/i) == 'miniprogram') {
             return true;
         } else {
             return false;
@@ -2135,11 +2148,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 			background-size:' + (opt.bgSize || "cover") + ';\
 			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
 			background-color:' + (opt.bgColor || "transparent") + ';\
-			overflow:' + (opt.scroll ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+			overflow-y:' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+			overflow-x:' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
 			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
 			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
 			-webkit-overflow-scrolling:touch;\
 			overflow-scrolling: touch;\
+			z-index:' + (opt.type == 'detail' ? 10 : 'auto') + ';\
 			">';
 
         function sliderBg() {
@@ -2794,7 +2809,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             if ($.isArray(opt.sprite[0])) {
                                 var _html = '<div class="SLeasy_spriteSheet" style="width: max-content">';
                                 for (var i = 0; i < opt.sprite[0].length; i++) {
-                                    _html += '<div class="SLeasy_spriteElement" style="'+(opt.float ? 'float:left' : '')+'"><img src="' + SLeasy.path($config.host, opt.sprite[0][i]) + '"></div>'
+                                    _html += '<div class="SLeasy_spriteElement" style="' + (opt.float ? 'float:left' : '') + '"><img src="' + SLeasy.path($config.host, opt.sprite[0][i]) + '"></div>'
                                 }
                                 return _html;
                             } else {
@@ -3095,7 +3110,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 if (!$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0])) {
                     SLeasy.goSlider(0)
                 } else {
-                    SLeasy.goSlider($scope.router.getRoute()[0]);
+                    !$scope.loadingReady && SLeasy.goSlider($scope.router.getRoute()[0]);
                 }
                 $scope.initReady = true;
             }, 0)
@@ -3123,7 +3138,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     console.log('SLeasy初始化完毕!~~~~~~~~~~~~~~~~~~~~');
                     //重新set float元素以获得正确的尺寸
                     $('.SLeasy_floatElement').each(function (index, element) {
-                        T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+                        T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
                     });
                     $('.SLeasy_loadingElement').each(function (index, element) {
                         T.set($(this), $config.loading.subMotion[index].set);
@@ -3134,7 +3149,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     if (!$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0])) {
                         SLeasy.goSlider(0)
                     } else {
-                        SLeasy.goSlider($scope.router.getRoute()[0]);
+                        !$scope.loadingReady && SLeasy.goSlider($scope.router.getRoute()[0]);
                     }
                     $scope.initReady = true;
                 }
@@ -3954,22 +3969,22 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     SLeasy.touchScroll(true, false);
                     nextSlider.scroll(function (e) {
                         //console.log(e);
-                        var scrollTop = e.target.scrollTop,
-                            scrollTopMax = e.target.scrollTopMax || Math.floor(e.target.scrollHeight - $scope.fixHeight);
+                        var scrollTop = $config.motionDirection == 'upDown' ? e.target.scrollTop : e.target.scrollLeft,
+                            scrollTopMax = $config.motionDirection == 'upDown' ? Math.floor(e.target.scrollHeight - $scope.fixHeight) : Math.floor(e.target.scrollWidth - $scope.fixWidth);
                         //console.log(scrollTop + ':' + scrollTopMax);
                         //如果autoSwitch参数未设置（即默认状态），或者切换方向上的参数值为false，则自动切换幻灯页
                         if (scrollTop <= 0) {
                             $scope.isAtTop = true;
                             if (!$config.sliders[nextIndex].autoSwitch) return;
                             if ($config.sliders[nextIndex].autoSwitch || $config.sliders[nextIndex].autoSwitch[0]) {
-                                SLeasy.goSlider(nextIndex - 1);
+                                // SLeasy.goSlider(nextIndex - 1);
                                 $scope.isAtTop = false;
                             }
                         } else if (scrollTop >= scrollTopMax) {
                             $scope.isAtBottom = true;
                             if (!$config.sliders[nextIndex].autoSwitch) return;
                             if ($config.sliders[nextIndex].autoSwitch || ($config.sliders[nextIndex].autoSwitch[1])) {
-                                SLeasy.goSlider(nextIndex + 1);
+                                // SLeasy.goSlider(nextIndex + 1);
                                 $scope.isAtBottom = false;
                             }
                         } else {
@@ -4011,6 +4026,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 $scope.isAnim = 0;//重置运动状态
                 if ($config.sliders[nextIndex].onComplete) $config.sliders[nextIndex].onComplete();//单页onComplete回调
                 //console.log($scope.labelHash);
+                //隐藏自定义loading
+                if ($('.SLeasy_loading').length && !$('.SLeasy_loading').is(':hidden')) $('.SLeasy_loading').hide();
             },
         }, (customFX.show || motionFX.show));
         _set = customFX.set || motionFX.set;
@@ -4126,7 +4143,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     detail.onComplete && detail.onComplete();
                 }
             }),
-            _set = $.extend({zIndex: 1}, detail.set) || {};
+            _set = $.extend({zIndex: $config.detailZIndex || 10}, detail.set) || {};
 
         //force3D
         _in = $.extend({force3D: $config.force3D}, _in);
@@ -4398,7 +4415,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 // SLeasy3-float
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),//全局配置
-        $scope  = SLeasy.scope();//公有变量
+        $scope = SLeasy.scope();//公有变量
 
     //
     SLeasy.float = function () {
@@ -4406,7 +4423,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var html = SLeasy.subElement($config.floats, 'floats');
         $(html).appendTo($scope.sliderBox);
         $('.SLeasy_floatElement').each(function (index, element) {
-            T.set($(this), $.extend({zIndex: 10}, $config.floats[index].set));
+            T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
         });
     }
 
