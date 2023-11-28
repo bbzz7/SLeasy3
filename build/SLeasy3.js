@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.18 by 宇文互动 庄宇 2023-06-14 email:30755405@qq.com
+ SLeasy 3.9.19 by 宇文互动 庄宇 2023-11-26 email:30755405@qq.com
+ 3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加SLeasy.isWmp();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题；
  3.9.18(2023-06-14):重构SLeasy.music初始化逻辑;新增SLeasy.spriteNext()、jssdk.previewImage();img元素添加content选项;修复一些小bug;
  3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
  3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
@@ -1051,6 +1052,38 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return '';
     }
 
+    //获取url所有参数键值对，包含hash中的参数
+    SLeasy.getURLParams = function () {
+        var params = {};
+
+        // 创建一个URL对象
+        var urlObj = new URL(location.href);
+
+        // 获取URL中的查询参数
+        var searchParams = urlObj.searchParams;
+
+        // 遍历查询参数，保存到对象中
+        searchParams.forEach(function (value, key) {
+            params[key] = value;
+        });
+
+        // 获取URL中的哈希参数
+        var hashParams = urlObj.hash.substring(1); // 去掉开头的 #
+        if (hashParams) {
+            // 解析哈希参数
+            var hashParamsArray = hashParams.split('&');
+            hashParamsArray.forEach(function (param) {
+                var keyValue = param.split('=');
+                if (keyValue.length === 2) {
+                    var key = decodeURIComponent(keyValue[0]);
+                    var value = decodeURIComponent(keyValue[1]);
+                    params[key] = value;
+                }
+            });
+        }
+        return params;
+    }
+
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
         if (e.target.id == 'SLeasy_loading' || e.target.id == 'SLeasy_fixBox' || e.target.id == 'SLeasy_rotateTips' || $(e.target).hasClass('SLeasy_sliders') || $(e.target).hasClass('SLeasy_detail')) {
@@ -1646,6 +1679,26 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $(el).css({backgroundImage: bgUrl});
         }
         return SLeasy;
+    }
+
+    //加载图片
+    SLeasy.loadImg = function (url, successCallback, errorCallback) {
+        var img = new Image();
+
+        img.onload = function () {
+            // 图片成功加载
+            if (typeof successCallback === 'function') {
+                successCallback(img);
+            }
+        };
+
+        img.onerror = function () {
+            // 图片加载错误
+            if (typeof errorCallback === 'function') {
+                errorCallback();
+            }
+        };
+        img.src = url;
     }
 
     //解决div设置contenteditable为true时，获取焦点后光标位置放在最后

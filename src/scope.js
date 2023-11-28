@@ -256,6 +256,38 @@
         return '';
     }
 
+    //获取url所有参数键值对，包含hash中的参数
+    SLeasy.getURLParams = function () {
+        var params = {};
+
+        // 创建一个URL对象
+        var urlObj = new URL(location.href);
+
+        // 获取URL中的查询参数
+        var searchParams = urlObj.searchParams;
+
+        // 遍历查询参数，保存到对象中
+        searchParams.forEach(function (value, key) {
+            params[key] = value;
+        });
+
+        // 获取URL中的哈希参数
+        var hashParams = urlObj.hash.substring(1); // 去掉开头的 #
+        if (hashParams) {
+            // 解析哈希参数
+            var hashParamsArray = hashParams.split('&');
+            hashParamsArray.forEach(function (param) {
+                var keyValue = param.split('=');
+                if (keyValue.length === 2) {
+                    var key = decodeURIComponent(keyValue[0]);
+                    var value = decodeURIComponent(keyValue[1]);
+                    params[key] = value;
+                }
+            });
+        }
+        return params;
+    }
+
     //禁止触摸默认滚动
     function stopDefaultScroll(e) {
         if (e.target.id == 'SLeasy_loading' || e.target.id == 'SLeasy_fixBox' || e.target.id == 'SLeasy_rotateTips' || $(e.target).hasClass('SLeasy_sliders') || $(e.target).hasClass('SLeasy_detail')) {
@@ -851,6 +883,26 @@
             $(el).css({backgroundImage: bgUrl});
         }
         return SLeasy;
+    }
+
+    //加载图片
+    SLeasy.loadImg = function (url, successCallback, errorCallback) {
+        var img = new Image();
+
+        img.onload = function () {
+            // 图片成功加载
+            if (typeof successCallback === 'function') {
+                successCallback(img);
+            }
+        };
+
+        img.onerror = function () {
+            // 图片加载错误
+            if (typeof errorCallback === 'function') {
+                errorCallback();
+            }
+        };
+        img.src = url;
     }
 
     //解决div设置contenteditable为true时，获取焦点后光标位置放在最后
