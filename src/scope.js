@@ -770,20 +770,28 @@
     //insert
     SLeasy.insert = function (el, data) {
         var type = el.replace('.', '').replace('#', '');
-        var html = SLeasy.subElement(data, type, null, 'block');
-        $(html).appendTo(el);
-        SLeasy.imgToDiv($(el), $.Deferred());
-        $('.SLeasy_' + type).each(function (index, element) {
-            SLeasy.set($(this), data[index].set, true);
-            if (data[index].event) {
-                SLeasy.on(this, data[index].event, data[index].onEvent);
-            }
-            if (data[index].on) {
-                for (event in data[index].on) {
-                    SLeasy.on(this, event, data[index].on[event]);
+
+        function _imgToDiv() {
+            var dfd = new $.Deferred();
+            var html = SLeasy.subElement(data, type, null, 'block');
+            $(html).appendTo(el);
+            SLeasy.imgToDiv($(el), dfd);
+            return dfd;
+        }
+
+        _imgToDiv().done(function () {
+            $('.SLeasy_' + type).each(function (index, element) {
+                SLeasy.set($(this), data[index].set, true);
+                if (data[index].event) {
+                    SLeasy.on(this, data[index].event, data[index].onEvent);
                 }
-            }
-        });
+                if (data[index].on) {
+                    for (event in data[index].on) {
+                        SLeasy.on(this, event, data[index].on[event]);
+                    }
+                }
+            });
+        })
     }
 
     //旋转状态判断
