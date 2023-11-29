@@ -2,7 +2,7 @@
 ;(function (SLeasy, $, store) {
     //set/read Cache
     SLeasy.cache = function () {
-        console.log('arguments:' + arguments);
+        // console.log('arguments:' + arguments);
         var vars = arguments.length,
             args = arguments;
 
@@ -13,12 +13,12 @@
                 return value;
             },
             function () {
-                console.log('get cache~' + args[0]);
                 var value = $.cookie(args[0]) || store.get(args[0]);
+                console.log('⭕️ 获取缓存:', args[0] + ' => ' + value);
                 return value;
             },
             function () {
-                console.log('set cache~' + args[0] + ':' + args[1]);
+                console.log('⭕️ 设置缓存:' + args[0] + '=>' + args[1]);
                 $.cookie(args[0], args[1]);
                 store.set(args[0], args[1]);
             },

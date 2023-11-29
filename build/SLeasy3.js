@@ -1,6 +1,6 @@
 /*!
  SLeasy 3.9.19 by 宇文互动 庄宇 2023-11-26 email:30755405@qq.com
- 3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加SLeasy.isWmp()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;
+ 3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加SLeasy.isWmp()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
  3.9.18(2023-06-14):重构SLeasy.music初始化逻辑;新增SLeasy.spriteNext()、jssdk.previewImage();img元素添加content选项;修复一些小bug;
  3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
  3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
@@ -1575,7 +1575,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             return dfd;
         }
 
-        _imgToDiv().done(function () {
+        return _imgToDiv().done(function () {
             $('.SLeasy_' + type).each(function (index, element) {
                 SLeasy.set($(this), data[index].set, true);
                 if (data[index].event) {
@@ -1825,7 +1825,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 ;(function (SLeasy, $, store) {
     //set/read Cache
     SLeasy.cache = function () {
-        console.log('arguments:' + arguments);
+        // console.log('arguments:' + arguments);
         var vars = arguments.length,
             args = arguments;
 
@@ -1836,12 +1836,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 return value;
             },
             function () {
-                console.log('get cache~' + args[0]);
                 var value = $.cookie(args[0]) || store.get(args[0]);
+                console.log('⭕️ 获取缓存:', args[0] + ' => ' + value);
                 return value;
             },
             function () {
-                console.log('set cache~' + args[0] + ':' + args[1]);
+                console.log('⭕️ 设置缓存:' + args[0] + '=>' + args[1]);
                 $.cookie(args[0], args[1]);
                 store.set(args[0], args[1]);
             },
@@ -1992,9 +1992,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $scope.SLeasyHeight = '100vh';
             //
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-            console.warn('viewScale:' + $scope.viewScale);
-            console.warn('sliderBoxHeight:' + sliderBoxHeight);
-            console.warn('boxHeight:' + boxHeight);
+            console.log('viewScale:', $scope.viewScale);
+            console.log('sliderBoxHeight:', sliderBoxHeight);
+            console.log('boxHeight:', boxHeight);
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;
@@ -3443,7 +3443,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //subMotion,参数:为单个slider/detail配置对象数据
     SLeasy.subMotion = function (subMotionArr, type, motionTime) {
-        console.log('subMotion~~~');
+        console.log('subMotion子元素动画预备~');
         if (!subMotionArr || !subMotionArr.length) return;
 
         //不同类型幻灯对应的子元素关键字标识
@@ -3878,7 +3878,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     SLeasy.nextIndex = function (index) {
         //如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
         var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
-        console.log(index);
+        console.log('当前幻灯索引:', index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total = totalIndex + 1,//幻灯总数
             nextIndex;
@@ -3963,7 +3963,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         ;
 
         //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
-        console.log($scope.sliderIndex + ':' + nextIndex);
+        console.log('幻灯预备切换:',$scope.sliderIndex + ' --> ' + nextIndex);
 
 
         //自定义切换效果
@@ -4018,12 +4018,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         } else {
             $scope.isSameSlider = false;
         }
-        _show = $.extend({//show FX
+        _show = $.extend({
+            //show FX
             onStart: function () {
                 var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
-                console.log($scope.sliderIndex + ':' + nextIndex);
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
@@ -4054,7 +4054,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     })
                 } else {
                     SLeasy.touchScroll(false, true);
-                    console.log('can swipe~!')
+                    console.log('手势swipe解冻~')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
 
@@ -4079,9 +4079,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.log(duration)
-                console.log(motionTime)
-                console.log($scope.isSliderEdge)
+                console.log('自定义切换时长:',duration)
+                console.log('子元素动画起始时间:',motionTime)
+                console.log('幻灯切换索引是否超过边界:',$scope.isSliderEdge)
             },
             onComplete: function () {
                 $scope.isAnim = 0;//重置运动状态
@@ -5282,10 +5282,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
         var cfg = {
             on: function () {
-                console.log('router action~~~');
+                console.log('路由启动~');
             },
             notfound: function () {
-                console.warn('no router match~~~');
+                console.warn('无路由匹配~');
                 $config.routerNotFound && $config.routerNotFound();
             }
         }
@@ -5344,7 +5344,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if ($config.VConsole) {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
-        console.log($config);
+        console.log('config',$config);
         if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {
             SLeasy.viewport();//设置视口
         }
@@ -5394,7 +5394,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
             console.log('loading end ----------------------------------------------');
-            console.log($scope.totalLoad);
+            console.log('加载完成的图片:',$scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
@@ -5423,7 +5423,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if (!$.isEmptyObject($loading) && !$scope.loadingSourceReady) {
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
-                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
+                // console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {
@@ -5557,7 +5557,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $scope.totalLoad = totalArr;
             return totalArr;//是否进行预加载
         } else {
-            console.log(totalArr);
+            console.log('需加载的图片:',totalArr);
             $scope.totalLoad = totalArr;
             return totalArr;
         }

@@ -48,10 +48,10 @@
         }
         var cfg = {
             on: function () {
-                console.log('router action~~~');
+                console.log('路由启动~');
             },
             notfound: function () {
-                console.warn('no router match~~~');
+                console.warn('无路由匹配~');
                 $config.routerNotFound && $config.routerNotFound();
             }
         }

@@ -6,7 +6,7 @@
 
     //subMotion,参数:为单个slider/detail配置对象数据
     SLeasy.subMotion = function (subMotionArr, type, motionTime) {
-        console.log('subMotion~~~');
+        console.log('subMotion子元素动画预备~');
         if (!subMotionArr || !subMotionArr.length) return;
 
         //不同类型幻灯对应的子元素关键字标识

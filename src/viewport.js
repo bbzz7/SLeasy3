@@ -105,9 +105,9 @@
             $scope.SLeasyHeight = '100vh';
             //
             var sliderBoxHeight = sliderBoxHeight * $scope.viewScale || $config.height * $scope.viewScale;
-            console.warn('viewScale:' + $scope.viewScale);
-            console.warn('sliderBoxHeight:' + sliderBoxHeight);
-            console.warn('boxHeight:' + boxHeight);
+            console.log('viewScale:', $scope.viewScale);
+            console.log('sliderBoxHeight:', sliderBoxHeight);
+            console.log('boxHeight:', boxHeight);
             $scope.fixWidth = boxWidth > $config.width * $scope.viewScale ? $config.width * $scope.viewScale : boxWidth;
             $scope.fixHeight = boxHeight > sliderBoxHeight ? sliderBoxHeight : boxHeight;
             $scope.fixMargin = boxHeight > sliderBoxHeight ? (boxHeight - sliderBoxHeight) / 2 : 0;

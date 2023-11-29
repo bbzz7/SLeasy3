@@ -779,7 +779,7 @@
             return dfd;
         }
 
-        _imgToDiv().done(function () {
+        return _imgToDiv().done(function () {
             $('.SLeasy_' + type).each(function (index, element) {
                 SLeasy.set($(this), data[index].set, true);
                 if (data[index].event) {

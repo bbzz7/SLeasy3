@@ -18,7 +18,7 @@
     SLeasy.nextIndex = function (index) {
         //如果是label标签，并且不包含‘—=’或者‘+=’,则获取标签对应的索引值
         var index = (typeof index == 'number' || index.indexOf('-=') != -1 || index.indexOf('+=') != -1) ? index : SLeasy.label(index);
-        console.log(index);
+        console.log('当前幻灯索引:', index);
         var totalIndex = $scope.sliders.length - 1,//最大索引值
             total = totalIndex + 1,//幻灯总数
             nextIndex;
@@ -103,7 +103,7 @@
         ;
 
         //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
-        console.log($scope.sliderIndex + ':' + nextIndex);
+        console.log('幻灯预备切换:',$scope.sliderIndex + ' --> ' + nextIndex);
 
 
         //自定义切换效果
@@ -158,12 +158,12 @@
         } else {
             $scope.isSameSlider = false;
         }
-        _show = $.extend({//show FX
+        _show = $.extend({
+            //show FX
             onStart: function () {
                 var currentSlider = $scope.sliders.eq($scope.sliderIndex),//当前幻灯
                     currentSubMotion = currentSlider.find($scope.subMotion);//当前幻灯子元素
                 var nextSlider = $scope.sliders.eq(nextIndex);//下一幻灯
-                console.log($scope.sliderIndex + ':' + nextIndex);
 
                 //如果下一页是scroll模式
                 if ($config.sliders[nextIndex].scroll || $config.scrollMagicMode) {
@@ -194,7 +194,7 @@
                     })
                 } else {
                     SLeasy.touchScroll(false, true);
-                    console.log('can swipe~!')
+                    console.log('手势swipe解冻~')
                 }
                 if ($config.sliders[nextIndex].onStart) $config.sliders[nextIndex].onStart();//单页onStart回调
 
@@ -219,9 +219,9 @@
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.log(duration)
-                console.log(motionTime)
-                console.log($scope.isSliderEdge)
+                console.log('自定义切换时长:',duration)
+                console.log('子元素动画起始时间:',motionTime)
+                console.log('幻灯切换索引是否超过边界:',$scope.isSliderEdge)
             },
             onComplete: function () {
                 $scope.isAnim = 0;//重置运动状态

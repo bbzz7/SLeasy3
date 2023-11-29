@@ -41,7 +41,7 @@
         if ($config.VConsole) {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
-        console.log($config);
+        console.log('config',$config);
         if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {
             SLeasy.viewport();//设置视口
         }
@@ -91,7 +91,7 @@
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
             console.log('loading end ----------------------------------------------');
-            console.log($scope.totalLoad);
+            console.log('加载完成的图片:',$scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
@@ -120,7 +120,7 @@
         if (!$.isEmptyObject($loading) && !$scope.loadingSourceReady) {
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
-                console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
+                // console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {
@@ -254,7 +254,7 @@
             $scope.totalLoad = totalArr;
             return totalArr;//是否进行预加载
         } else {
-            console.log(totalArr);
+            console.log('需加载的图片:',totalArr);
             $scope.totalLoad = totalArr;
             return totalArr;
         }
