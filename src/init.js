@@ -39,7 +39,8 @@
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         if ($config.VConsole) {
-            var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
+            $scope.vConsole = window.VConsole && new VConsole();
+            $scope.vConsole.hideSwitch();
         }
         console.log('config',$config);
         if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {

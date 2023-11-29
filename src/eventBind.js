@@ -16,6 +16,17 @@
             sliderBox = new H(document.getElementById(($scope.rotateMode == 'auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
+            //VConsole
+            if ($('#__vconsole').length) {
+                sliderBox.get('tap').set({
+                    pointers: SLeasy.isHttp() && device.mobile() ? $config.VConsole[0] || 2 : 1,
+                    taps: $config.VConsole[1] || 2
+                });
+                sliderBox.on('tap', function () {
+                    $scope.vConsole.show();
+                })
+            }
+
             //禁止触摸默认行为
             SLeasy.touchScroll(false, true);
 

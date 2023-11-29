@@ -4333,6 +4333,17 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             sliderBox = new H(document.getElementById(($scope.rotateMode == 'auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
+            //VConsole
+            if ($('#__vconsole').length) {
+                sliderBox.get('tap').set({
+                    pointers: SLeasy.isHttp() && device.mobile() ? $config.VConsole[0] || 2 : 1,
+                    taps: $config.VConsole[1] || 2
+                });
+                sliderBox.on('tap', function () {
+                    $scope.vConsole.show();
+                })
+            }
+
             //禁止触摸默认行为
             SLeasy.touchScroll(false, true);
 
@@ -5342,7 +5353,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         if ($config.VConsole) {
-            var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
+            $scope.vConsole = window.VConsole && new VConsole();
+            $scope.vConsole.hideSwitch();
         }
         console.log('config',$config);
         if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {
