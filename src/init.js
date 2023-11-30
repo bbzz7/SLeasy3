@@ -32,15 +32,13 @@
 
         if (!$config.debugMode) {
             //劫持console.log输出
-            $scope.log = console.log;
             console.log = function () {
                 return false;
             }
         } else {
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
-        if ($config.VConsole) {
-            console.log = $scope.log;
+        if ($config.VConsole && SLeasy.isHttp()) {
             $scope.vConsole = window.VConsole && new VConsole();
             $scope.vConsole.hideSwitch();
         }
