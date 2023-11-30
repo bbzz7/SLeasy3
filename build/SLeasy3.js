@@ -5346,6 +5346,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         if (!$config.debugMode) {
             //劫持console.log输出
+            $scope.log = console.log;
             console.log = function () {
                 return false;
             }
@@ -5353,10 +5354,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             var vConsole = SLeasy.isHttp() && window.VConsole && new VConsole();
         }
         if ($config.VConsole) {
+            console.log = $scope.log;
             $scope.vConsole = window.VConsole && new VConsole();
             $scope.vConsole.hideSwitch();
         }
-        console.log('config',$config);
+        console.log('config', $config);
         if ($.isEmptyObject($config.loading) || (!$.isEmptyObject($config.loading) && !$scope.loadingReady)) {
             SLeasy.viewport();//设置视口
         }
@@ -5406,7 +5408,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var loadType = (!$.isEmptyObject($config.loading) && !$scope.loadingReady) ? 'multi' : $config.loader.loadType;
         SLeasy.loader.load(SLeasy.getLoadArr($config), loadType).done(function () {//资源加载
             console.log('loading end ----------------------------------------------');
-            console.log('加载完成的图片:',$scope.totalLoad);
+            console.log('加载完成的图片:', $scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
@@ -5569,7 +5571,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $scope.totalLoad = totalArr;
             return totalArr;//是否进行预加载
         } else {
-            console.log('需加载的图片:',totalArr);
+            console.log('需加载的图片:', totalArr);
             $scope.totalLoad = totalArr;
             return totalArr;
         }
