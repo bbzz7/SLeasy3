@@ -30,7 +30,7 @@
             $defaultStyle.html($defaultStyle.html() + debugStyle);
         }
 
-        if (!$config.debugMode) {
+        if (!$config.debugMode && !$config.VConsole) {
             //劫持console.log输出
             console.log = function () {
                 return false;
