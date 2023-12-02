@@ -143,6 +143,15 @@
         }
     }
 
+    //check localhost
+    SLeasy.isLocalHost = function (url) {
+        if (url) {
+            return (url.indexOf('http://127.0.0.1') != -1 || url.indexOf('http://localhost') != -1) ? true : false;
+        } else {
+            return (location.href.indexOf('http://127.0.0.1') != -1 || location.href.indexOf('http://localhost') != -1) ? true : false;
+        }
+    }
+
     //SLeasy 检测函数,检测支持见:https://github.com/matthewhudson/device.js
     SLeasy.is = function (key, callback) {
         console.log(key);
@@ -153,6 +162,8 @@
             res = SLeasy.isWeibo();
         } else if (key == 'http') {
             res = SLeasy.isHttp();
+        } else if (key == 'localhost') {
+            res = SLeasy.isLocalHost();
         } else {
             res = device[key]();
         }
@@ -233,7 +244,7 @@
     SLeasy.path = function (host, url, addTimeStamp) {
         if (!url) return '';
         var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
-        if (SLeasy.isHttp(url)) {
+        if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
         } else if (url.search(/^\/\//) == -1) {
             return host + url + (addTimeStamp === false ? '' : timeStamp);
@@ -894,7 +905,8 @@
     }
 
     //加载图片
-    SLeasy.loadImg = function (url, successCallback, errorCallback) {
+    SLeasy.loadImg = SLeasy.loadImage = function (url, successCallback, errorCallback) {
+        var dfd = new $.Deferred();
         var img = new Image();
 
         img.onload = function () {
@@ -902,15 +914,18 @@
             if (typeof successCallback === 'function') {
                 successCallback(img);
             }
+            dfd.resolve(img);
         };
 
-        img.onerror = function () {
+        img.onerror = function (e) {
             // 图片加载错误
             if (typeof errorCallback === 'function') {
-                errorCallback();
+                errorCallback(e);
             }
+            dfd.reject(e);
         };
-        img.src = url;
+        img.src = SLeasy.path($config.host, url);
+        return dfd;
     }
 
     //解决div设置contenteditable为true时，获取焦点后光标位置放在最后
