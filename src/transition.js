@@ -103,7 +103,8 @@
         ;
 
         //如果当前幻灯索引小于下一页索引,则按预设效果切换，反之，反转切换效果
-        console.log('幻灯预备切换:',$scope.sliderIndex + ' --> ' + nextIndex);
+        console.log('幻灯预备切换:', $scope.sliderIndex + ' --> ' + nextIndex);
+        $scope.preSlider = $scope.sliderIndex;
 
 
         //自定义切换效果
@@ -219,9 +220,9 @@
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.log('自定义切换时长:',duration)
-                console.log('子元素动画起始时间:',motionTime)
-                console.log('幻灯切换索引是否超过边界:',$scope.isSliderEdge)
+                console.log('自定义切换时长:', duration)
+                console.log('子元素动画起始时间:', motionTime)
+                console.log('幻灯切换索引是否超过边界:', $scope.isSliderEdge)
             },
             onComplete: function () {
                 $scope.isAnim = 0;//重置运动状态
