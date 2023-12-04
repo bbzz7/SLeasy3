@@ -158,6 +158,7 @@
                         }
                         // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
+                            $scope.loadingTotalTime = new Date().getTime() - stime;
                             console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
                             if ($scope.loadingReady || (!hasCustomLoading)) {
                                 callback ? callback() : $config.on['loaded'](); //预加载完毕回调
@@ -200,6 +201,7 @@
                         }
                         // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
+                            $scope.loadingTotalTime = new Date().getTime() - stime;
                             console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                             if ($scope.loadingReady || (!hasCustomLoading)) {
                                 callback ? callback() : $config.on['loaded'](); //预加载完毕回调

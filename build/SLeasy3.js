@@ -1,6 +1,6 @@
 /*!
  SLeasy 3.9.19 by 宇文互动 庄宇 2023-11-26 email:30755405@qq.com
- 3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加SLeasy.isWmp()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
+ 3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加SLeasy.isWmp()/SLeasy.isLocalHost()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
  3.9.18(2023-06-14):重构SLeasy.music初始化逻辑;新增SLeasy.spriteNext()、jssdk.previewImage();img元素添加content选项;修复一些小bug;
  3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
  3.9.16(2021-11-25):jssdk添加关闭当前网页窗口api;更新shake摇一摇事件的ios授权逻辑;input添加password参数;所有幻灯无子元素时，更新跳转首页的逻辑;
@@ -5153,6 +5153,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         }
                         // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
+                            $scope.loadingTotalTime = new Date().getTime() - stime;
                             console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】')
                             if ($scope.loadingReady || (!hasCustomLoading)) {
                                 callback ? callback() : $config.on['loaded'](); //预加载完毕回调
@@ -5195,6 +5196,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         }
                         // dfd.notify(SLeasy.loader.percent);
                         if (SLeasy.loader.percent >= 100) {
+                            $scope.loadingTotalTime = new Date().getTime() - stime;
                             console.log('加载共::>>>>>【' + (new Date().getTime() - stime) / 1000 + '秒】');
                             if ($scope.loadingReady || (!hasCustomLoading)) {
                                 callback ? callback() : $config.on['loaded'](); //预加载完毕回调
