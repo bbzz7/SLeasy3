@@ -173,6 +173,7 @@ function deploy(isMinify) {
     return async function () {
         //抽取、合并、压缩
         await new Promise(function (resolve) {
+            console.log('① js抽取、合并、压缩执行中...')
             gulp.src('*.html') // 输入源文件的路径
                 .pipe($.useref())
                 .pipe($.if('*.js', $.concat('SLeasy3.js'))) // 合并所有js文件到一个文件（可选）
@@ -181,15 +182,19 @@ function deploy(isMinify) {
                 .pipe(gulp.dest(LocalPath + '@publish/')) // 输出到目标目录
                 .on('end', resolve)
         })
+
         //移动js
         await new Promise(function (resolve) {
+            console.log('② js抽复制执行中...')
             gulp.src('@publish/*.js')
                 .pipe(gulp.dest('@publish/js/'))
                 .on('end', resolve)
         })
+
         //复制js
         await new Promise(function (resolve) {
             if (isMinify) {
+                console.log('③ app、copyright合并、压缩、复制执行中...')
                 gulp.src(['js/copyRight.js', 'js/app.js'])
                     .pipe($.uglify({
                         output: {
@@ -201,6 +206,7 @@ function deploy(isMinify) {
                     .pipe(gulp.dest('@publish/js/'))
                     .on('end', resolve)
             } else {
+                console.log('③ app、copyright合并、复制执行中...')
                 gulp.src(['js/copyRight.js', 'js/app.js'])
                     .pipe($.concat('app.js'))
                     .pipe(gulp.dest('@publish/js/'))
@@ -209,6 +215,7 @@ function deploy(isMinify) {
         })
         //复制images
         await new Promise(function (resolve) {
+            console.log('④ images下文件复制执行中...')
             gulp.src('images/**/*')
                 .pipe(gulp.dest('@publish/images/'))
                 .on('end', resolve)

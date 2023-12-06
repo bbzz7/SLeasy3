@@ -732,7 +732,7 @@
 
                     console.log(duration + '===' + $sprite.w + '/' + $sprite.h + '===' + j + '/' + k + '===' + frameCount);
 
-                    $spriteImg.frame = 0;
+                    $spriteImg.frame = $spriteImg.frame || 0;
                     //设置sprite padding
                     if (opt && opt.paddingOrCrop) {
                         $(selector).css({
@@ -747,7 +747,7 @@
                         {
                             ease: SteppedEase.config(frameCount),
                             roundProps: "frame",
-                            frame: frameCount,
+                            frame: (opt && opt.end) || frameCount,
                             repeat: opt && opt.repeat,
                             onUpdate: function () {
                                 TweenMax.set($spriteImg, {
