@@ -2915,7 +2915,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                     console.log(duration + '===' + $sprite.w + '/' + $sprite.h + '===' + j + '/' + k + '===' + frameCount);
 
-                    $spriteImg.frame = 0;
+                    $spriteImg.frame = $spriteImg.frame || 0;
                     //设置sprite padding
                     if (opt && opt.paddingOrCrop) {
                         $(selector).css({
@@ -2930,7 +2930,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                         {
                             ease: SteppedEase.config(frameCount),
                             roundProps: "frame",
-                            frame: frameCount,
+                            frame: (opt && opt.end) || frameCount,
                             repeat: opt && opt.repeat,
                             onUpdate: function () {
                                 TweenMax.set($spriteImg, {
@@ -5430,7 +5430,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                $(".SLeasy_loading").fadeIn(300, function () {
+                $(".SLeasy_loading").delay(150).fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
                         SLeasy.exloadCache();//exLoad Cache

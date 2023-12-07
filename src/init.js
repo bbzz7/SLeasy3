@@ -97,7 +97,7 @@
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                $(".SLeasy_loading").fadeIn(300, function () {
+                $(".SLeasy_loading").delay(150).fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
                         SLeasy.exloadCache();//exLoad Cache
