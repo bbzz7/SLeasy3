@@ -175,11 +175,12 @@ function deploy(isMinify) {
         //抽取、合并、压缩
         await new Promise(function (resolve) {
             console.log('① js抽取、合并、压缩执行中...')
+            var timeStamp = new Date().getTime();
             gulp.src('*.html') // 输入源文件的路径
+                .pipe($.replace(/(app\.js)/g, 'app.js?' + timeStamp))
                 .pipe($.useref())
-                .pipe($.if('*.js', $.concat('SLeasy3.js'))) // 合并所有js文件到一个文件（可选）
-                .pipe($.if('*.js', $.uglify()))         // 压缩 JavaScript 文件（可选）
-                .pipe($.if('*.js', $.rename({suffix: '.min'}))) // 重命名文件（可选）
+                .pipe($.if('*.js', $.uglify()))// 压缩 JavaScript 文件（可选）
+                .pipe($.replace(/(SLeasy3.min\.js)/g, 'SLeasy3.min.js?' + timeStamp))
                 .pipe(gulp.dest(LocalPath + '@publish/')) // 输出到目标目录
                 .on('end', resolve)
         })
