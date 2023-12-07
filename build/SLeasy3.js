@@ -4179,6 +4179,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         $scope.sliderIndex = nextIndex;
     }
 
+    //go pre
+    SLeasy.goPre = function (index, duration, fx) {
+        SLeasy.goSlider($scope.preSlider, duration, fx);
+    }
 })(
     window.SLeasy = window.SLeasy || {},
     jQuery,
