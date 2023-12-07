@@ -97,7 +97,7 @@
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                $(".SLeasy_loading").delay(150).fadeIn(300, function () {
+                $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
                         SLeasy.exloadCache();//exLoad Cache
@@ -122,6 +122,7 @@
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
                 // console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
+                $loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img))
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {

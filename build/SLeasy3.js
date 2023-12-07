@@ -1,6 +1,6 @@
 /*!
  SLeasy 3.9.20 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
- 3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;
+ 3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;添加SLeasy.goPre();
  3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加$scope.loadingTotalTime/SLeasy.isWmp()/SLeasy.isLocalHost()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
  3.9.18(2023-06-14):重构SLeasy.music初始化逻辑;新增SLeasy.spriteNext()、jssdk.previewImage();img元素添加content选项;修复一些小bug;
  3.9.17(2022-07-25):新增SLeasy.percent,SLeasy.userSelect函数;添加hold、holdup事件;一些小优化;
@@ -4180,7 +4180,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //go pre
-    SLeasy.goPre = function (index, duration, fx) {
+    SLeasy.goPre = function (opt, duration, fx) {
         SLeasy.goSlider($scope.preSlider, duration, fx);
     }
 })(
@@ -5434,7 +5434,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
                 SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
-                $(".SLeasy_loading").delay(150).fadeIn(300, function () {
+                $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();
                     SLeasy.init($config).done(function () {
                         SLeasy.exloadCache();//exLoad Cache
@@ -5459,6 +5459,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
             for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
                 // console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
+                $loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img))
                 //ae序列帧
                 var ae = $loading.subMotion[l].ae;
                 if (ae) {

@@ -304,7 +304,7 @@
     }
 
     //go pre
-    SLeasy.goPre = function (index, duration, fx) {
+    SLeasy.goPre = function (opt, duration, fx) {
         SLeasy.goSlider($scope.preSlider, duration, fx);
     }
 })(
