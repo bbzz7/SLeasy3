@@ -180,7 +180,7 @@ function deploy(isMinify) {
                 .pipe($.replace(/(app\.js)/g, 'app.js?' + timeStamp))
                 .pipe($.useref())
                 .pipe($.if('*.js', $.uglify()))// 压缩 JavaScript 文件（可选）
-                .pipe($.replace(/(SLeasy3.min\.js)/g, 'SLeasy3.min.js?' + timeStamp))
+                .pipe($.replace(/(js\/SLeasy3.min\.js)/g, cdn + 'js/SLeasy3.min.js?' + timeStamp))
                 .pipe(gulp.dest(LocalPath + '@publish/')) // 输出到目标目录
                 .on('end', resolve)
         })
