@@ -177,10 +177,10 @@ function deploy(isMinify) {
             console.log('① js抽取、合并、压缩执行中...')
             var timeStamp = new Date().getTime();
             gulp.src('*.html') // 输入源文件的路径
-                .pipe($.replace(/(app\.js)/g, 'app.js?' + timeStamp))
+                .pipe($.replace(/(app\.js")/g, 'app.js?' + timeStamp + '" crossorigin="anonymous"'))
                 .pipe($.useref())
                 .pipe($.if('*.js', $.uglify()))// 压缩 JavaScript 文件（可选）
-                .pipe($.replace(/(js\/SLeasy3.min\.js)/g, cdn + 'js/SLeasy3.min.js?' + timeStamp))
+                .pipe($.replace(/(js\/SLeasy3.min\.js")/g, cdn + 'js/SLeasy3.min.js?' + timeStamp + '" crossorigin="anonymous"'))
                 .pipe(gulp.dest(LocalPath + '@publish/')) // 输出到目标目录
                 .on('end', resolve)
         })
