@@ -243,7 +243,13 @@
     //资源路径拼接
     SLeasy.path = function (host, url, addTimeStamp) {
         if (!url) return '';
-        var timeStamp = $config && $config.timeStamp ? '?' + $config.timeStamp : '';
+        var timeStamp = ($config && $config.timeStamp ? $config.timeStamp : '');
+        //从app.js?12345678上获取时间戳
+        if (!timeStamp && $('script[src*="app.js"]').length && $('script[src*="app.js"]').attr('src')) {
+            timeStamp = $('script[src*="app.js"]').attr('src').split('?')[1];
+        }
+        timeStamp = '?' + timeStamp;
+        //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
         } else if (url.search(/^\/\//) == -1) {
@@ -268,11 +274,11 @@
     }
 
     //获取url所有参数键值对，包含hash中的参数
-    SLeasy.getURLParams = function () {
+    SLeasy.getURLParams = function (url) {
         var params = {};
 
         // 创建一个URL对象
-        var urlObj = new URL(location.href);
+        var urlObj = new URL(url || location.href);
 
         // 获取URL中的查询参数
         var searchParams = urlObj.searchParams;
