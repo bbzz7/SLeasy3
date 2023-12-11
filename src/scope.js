@@ -31,7 +31,7 @@
         isDetailMotion: 0,//当前详情页子动画完成状态
 
         timeline: null,//子动画时间线
-        fixPropsArr: ['x', 'y', 'width', 'height', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
+        fixPropsArr: ['x', 'y', 'width', 'height','maxWidth', 'maxHeight', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
