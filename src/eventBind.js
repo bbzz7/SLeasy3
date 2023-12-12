@@ -17,7 +17,7 @@
             sliderBox.get('swipe').set({velocity: 0.2, direction: Hammer.DIRECTION_ALL});
 
             //VConsole
-            if ($('#__vconsole').length) {
+            if ($config.VConsole && $('#__vconsole').length) {
                 sliderBox.get('tap').set({
                     pointers: SLeasy.isHttp() && device.mobile() ? $config.VConsole[0] || 2 : 1,
                     taps: $config.VConsole[1] || 2
