@@ -1042,10 +1042,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if (!url) return '';
         var timeStamp = ($config && $config.timeStamp ? $config.timeStamp : '');
         //从app.js?12345678上获取时间戳
-        if (!timeStamp && $('script[src*="app.js"]').length && $('script[src*="app.js"]').attr('src')) {
-            timeStamp = $('script[src*="app.js"]').attr('src').split('?')[1];
+        if (!timeStamp && $('script[src*="app.js"]').length) {
+            timeStamp = $('script[src*="app.js"]').attr('src').split('?')[1] || '';
         }
-        timeStamp = '?' + timeStamp;
+        timeStamp = timeStamp ? ('?' + timeStamp) : '';
         //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
@@ -3123,49 +3123,92 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         //sub element html
         var html = '';
 
-        //subMotion element
-        for (var i = 0; i < subArr.length; i++) {
-            //console.log(index);
-            var subMotion = subArr[i];
-            $.extend(subMotion, {index: (sliderIndex || 0) + '_' + i});//合并slider初始化索引及当前子元素初始化索引，以便生成唯一id
+        function appendToDiv(inputStr, appendString) {
+            // 查找 '</div>' 的位置
+            var index = inputStr.indexOf('</div>');
 
-            //subMotion label hash
-            if (typeof subMotion.label != 'undefined') {
-                $scope.labelHash[subMotion.label] = '#SLeasy_' + (subName[type] || type) + '_' + subMotion.index;
+            // 如果找到了 '</div>'，则在其前面插入要拼接的字符串
+            if (index !== -1) {
+                var resultStr = inputStr.slice(0, index) + appendString + inputStr.slice(index);
+                // console.info('inputStr---------------------')
+                // console.log(inputStr)
+                // console.info('appendString---------------------')
+                // console.log(appendString)
+                // console.info('resultStr-----------------------')
+                // console.log(resultStr)
+                return resultStr;
+            } else {
+                // 如果没有找到 '</div>'，则返回原始字符串
+                return inputStr;
             }
-
-            //遍历子元素生成策略并执行
-            $.each(subElement, function (index, value) {
-                if (subMotion[index]) {
-                    var row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
-                    html += row;
-                    return;
-                }
-            });
-
-
-            if (subMotion['event']) {
-                var info = {
-                    id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                    event: subMotion.event,
-                    onEvent: subMotion.onEvent,
-                }
-                $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
-            }
-            if (subMotion['on']) {
-                for (event in subMotion['on']) {
-                    var info = {
-                        id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                        event: event,
-                        onEvent: subMotion['on'][event],
-                    }
-                    $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
-                }
-            }
-
         }
 
-        return html
+        //subMotion element
+        function subElementHtml(dataArr, type, sliderIndex, display) {
+            var subHtml = '';
+            if (dataArr && dataArr.length) {
+                for (var i = 0; i < dataArr.length; i++) {
+                    //console.log(index);
+                    var subMotion = dataArr[i];
+                    $.extend(subMotion, {index: (sliderIndex || 0) + '_' + i});//合并slider初始化索引及当前子元素初始化索引，以便生成唯一id
+
+                    //subMotion label hash
+                    if (typeof subMotion.label != 'undefined') {
+                        $scope.labelHash[subMotion.label] = '#SLeasy_' + (subName[type] || type) + '_' + subMotion.index;
+                    }
+
+                    //遍历子元素生成策略并执行
+                    var row='';
+                    $.each(subElement, function (index, value) {
+                        if (subMotion[index]) {
+                            row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
+                            return;
+                        }
+                    });
+
+                    //事件绑定
+                    if (subMotion['event']) {
+                        var info = {
+                            id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                            event: subMotion.event,
+                            onEvent: subMotion.onEvent,
+                        }
+                        $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                    }
+                    if (subMotion['on']) {
+                        for (event in subMotion['on']) {
+                            var info = {
+                                id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                                event: event,
+                                onEvent: subMotion['on'][event],
+                            }
+                            $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                        }
+                    }
+
+                    //子元素递归
+                    if (subMotion.subMotion && subMotion.subMotion.length) {
+                        // console.log('递归');
+                        var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
+                        // console.info('row---------------------')
+                        // console.log(row)
+                        // console.info('subSubHtml---------------------')
+                        // console.log(subSubHtml)
+                        subHtml += appendToDiv(row, subSubHtml);
+                        // console.log('appendToDiv(row, subSubHtml)-----------------');
+                        // console.log(appendToDiv(row, subSubHtml));
+                    } else {
+                        subHtml += row;
+                    }
+                }
+            }
+            // console.log('subHtml:', subHtml)
+            return subHtml;
+        }
+
+        html = subElementHtml(subArr, type, sliderIndex, display);
+        // console.log(html);
+        return html;
     }
 
 })(
@@ -3622,6 +3665,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             // console.log(subMotion.set)
             !subMotion.el && subMotion.set && T.set($dom, subMotion.set);
 
+            !subMotion.set && T.set($dom, set);//默认set
+
             //add label
             subMotion.label && tl.addLabel(subMotion.label);
 
@@ -3631,7 +3676,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             //add motion
             if (subMotion.el) {
                 subMotion.set && T.set($(subMotion.el), subMotion.set);
-                if (subMotion.to){//打平onCompelte
+                if (subMotion.to) {
+                    //打平onCompelte
                     if (typeof subMotion.onComplete == 'function') {
                         subMotion.to.onComplete = subMotion.onComplete;//打平onCompelte
                         // console.log(subShow);
@@ -3659,6 +3705,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
             //add pause to
             subMotion.pauseTo && tl.addPause();
+
+            //子元素递归
+            if (subMotion.subMotion && subMotion.subMotion.length) {
+                SLeasy.subMotion(subMotion.subMotion, type, totalTime)
+            }
         }
 
         //relative模式处理
@@ -4102,7 +4153,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.log('自定义切换时长:', duration)
+                console.log('自定义切换时长:', duration || null)
                 console.log('子元素动画起始时间:', motionTime)
                 console.log('幻灯切换索引是否超过边界:', $scope.isSliderEdge)
             },
@@ -5454,30 +5505,51 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         return dfd.promise();
     }
 
-
     //获取预加载图片url
     SLeasy.getLoadArr = function ($config) {
         var totalArr = [];
+
+        function pushSubMotion(dataArr) {
+            if (dataArr && dataArr.length) {
+                for (var i = 0; i < dataArr.length; i++) {
+                    dataArr[i].img && totalArr.push(SLeasy.path($config.host, dataArr[i].img));
+                    if (dataArr[i].sprite) {
+                        if ($.isArray(dataArr[i].sprite[0])) {
+                            for (var j = 0; j < dataArr[i].sprite[0].length; j++) {
+                                totalArr.push(SLeasy.path($config.host, dataArr[i].sprite[0][j]))
+                            }
+                        } else {
+                            totalArr.push(SLeasy.path($config.host, dataArr[i].sprite[0]))
+                        }
+                    }
+                    //ae序列帧
+                    var ae = dataArr[i].ae;
+                    if (ae) {
+                        for (var n = 0; n < ae.layer.length; n++) {
+                            var layerOpt = ae.layer[n];
+                            if (layerOpt[6] === false) {
+                                console.log('skip:' + ae.layer[n]);
+                                continue;
+                            }
+                            console.log(layerOpt);
+                            var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
+                            // console.log(bitmapArr);
+                            totalArr = totalArr.concat(bitmapArr);
+                        }
+                    }
+                    //子元素递归
+                    if (dataArr[i].subMotion && dataArr[i].subMotion.length) {
+                        pushSubMotion(dataArr[i].subMotion);
+                    }
+                }
+            }
+        }
 
         //loading
         var $loading = $config.loading;
         if (!$.isEmptyObject($loading) && !$scope.loadingSourceReady) {
             $loading.bg && totalArr.push(SLeasy.path($config.host, $config.loading.bg));
-            for (var l = 0; l < ($loading.subMotion && $loading.subMotion.length); l++) {
-                // console.log($loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img)));
-                $loading.subMotion[l].img && totalArr.push(SLeasy.path($config.host, $loading.subMotion[l].img))
-                //ae序列帧
-                var ae = $loading.subMotion[l].ae;
-                if (ae) {
-                    for (var n = 0; n < ae.layer.length; n++) {
-                        var layerOpt = ae.layer[n];
-                        console.log(layerOpt);
-                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                        // console.log(bitmapArr);
-                        totalArr = totalArr.concat(bitmapArr);
-                    }
-                }
-            }
+            pushSubMotion($loading.subMotion);
             $scope.loadingSourceReady = true;
             $scope.totalLoad = totalArr;
             return totalArr;
@@ -5514,39 +5586,15 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg));
                 } else {
                     if ($config.sliders[i].bg) {
-                        for (var j = 0; j < $config.sliders[i].bg.length; j++) {//多重背景
+                        //多重背景
+                        for (var j = 0; j < $config.sliders[i].bg.length; j++) {
                             $config.sliders[i].bg[j] && totalArr.push(SLeasy.path($config.host, $config.sliders[i].bg[j]));
                         }
                     }
                 }
             }
-            for (var k = 0; k < ($config.sliders[i].subMotion && $config.sliders[i].subMotion.length); k++) {
-                $config.sliders[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].img));
-                if ($config.sliders[i].subMotion[k].sprite) {
-                    if ($.isArray($config.sliders[i].subMotion[k].sprite[0])) {
-                        for (var n = 0; n < $config.sliders[i].subMotion[k].sprite[0].length; n++) {
-                            totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].sprite[0][n]))
-                        }
-                    } else {
-                        totalArr.push(SLeasy.path($config.host, $config.sliders[i].subMotion[k].sprite[0]))
-                    }
-                }
-                //ae序列帧
-                var ae = $config.sliders[i].subMotion[k].ae;
-                if (ae) {
-                    for (var n = 0; n < ae.layer.length; n++) {
-                        var layerOpt = ae.layer[n];
-                        if (layerOpt[6] === false) {
-                            console.log('skip:' + ae.layer[n]);
-                            continue;
-                        }
-                        console.log(layerOpt);
-                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                        // console.log(bitmapArr);
-                        totalArr = totalArr.concat(bitmapArr);
-                    }
-                }
-            }
+            //子元素
+            pushSubMotion($config.sliders[i].subMotion)
         }
 
         //详情页背景+子动画元素
@@ -5560,33 +5608,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     }
                 }
             }
-            for (var k = 0; k < ($config.details[i].subMotion && $config.details[i].subMotion.length); k++) {
-                $config.details[i].subMotion[k].img && totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].img));
-                if ($config.details[i].subMotion[k].sprite) {
-                    if ($.isArray($config.details[i].subMotion[k].sprite[0])) {
-                        for (var n = 0; n < $config.details[i].subMotion[k].sprite[0].length; n++) {
-                            totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].sprite[0][n]))
-                        }
-                    } else {
-                        totalArr.push(SLeasy.path($config.host, $config.details[i].subMotion[k].sprite[0]))
-                    }
-                }
-                //ae序列帧
-                var ae = $config.details[i].subMotion[k].ae;
-                if (ae) {
-                    for (var n = 0; n < ae.layer.length; n++) {
-                        var layerOpt = ae.layer[n];
-                        if (layerOpt[6] === false) {
-                            console.log('skip:' + ae.layer[n]);
-                            continue;
-                        }
-                        console.log(layerOpt);
-                        var bitmapArr = SLeasy.addBitmaps(null, layerOpt[1], layerOpt[2], layerOpt[3], layerOpt[4], layerOpt[5]);
-                        // console.log(bitmapArr);
-                        totalArr = totalArr.concat(bitmapArr);
-                    }
-                }
-            }
+            //子元素
+            pushSubMotion($config.details[i].subMotion)
         }
 
         //额外加载项
