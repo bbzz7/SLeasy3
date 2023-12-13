@@ -935,22 +935,18 @@
         var html = '';
 
         function appendToDiv(inputStr, appendString) {
-            // 查找 '</div>' 的位置
-            var index = inputStr.indexOf('</div>');
-
-            // 如果找到了 '</div>'，则在其前面插入要拼接的字符串
-            if (index !== -1) {
-                var resultStr = inputStr.slice(0, index) + appendString + inputStr.slice(index);
-                // console.info('inputStr---------------------')
-                // console.log(inputStr)
-                // console.info('appendString---------------------')
-                // console.log(appendString)
-                // console.info('resultStr-----------------------')
-                // console.log(resultStr)
-                return resultStr;
+            // 如果输入字符串已经以 '</div>' 结尾，直接将要拼接的字符串追加到末尾
+            if (inputStr.lastIndexOf('</div>') === inputStr.length - 6) {
+                return inputStr + appendString;
             } else {
-                // 如果没有找到 '</div>'，则返回原始字符串
-                return inputStr;
+                // 否则，查找 '</div>' 的位置，然后在其前面插入要拼接的字符串
+                var index = inputStr.indexOf('</div>');
+                if (index !== -1) {
+                    return inputStr.slice(0, index) + appendString + inputStr.slice(index);
+                } else {
+                    // 如果没有找到 '</div>'，则返回原始字符串
+                    return inputStr;
+                }
             }
         }
 

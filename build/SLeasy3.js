@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.20 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ SLeasy 3.9.21 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ 3.9.21(2023-12-13):更新添加分组系统-subMotion自动递归;SLeasy.path()自动获取app.js的时间戳;
  3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;添加SLeasy.goPre();
  3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加$scope.loadingTotalTime/SLeasy.isWmp()/SLeasy.isLocalHost()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
  3.9.18(2023-06-14):重构SLeasy.music初始化逻辑;新增SLeasy.spriteNext()、jssdk.previewImage();img元素添加content选项;修复一些小bug;
@@ -3124,22 +3125,18 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         var html = '';
 
         function appendToDiv(inputStr, appendString) {
-            // 查找 '</div>' 的位置
-            var index = inputStr.indexOf('</div>');
-
-            // 如果找到了 '</div>'，则在其前面插入要拼接的字符串
-            if (index !== -1) {
-                var resultStr = inputStr.slice(0, index) + appendString + inputStr.slice(index);
-                // console.info('inputStr---------------------')
-                // console.log(inputStr)
-                // console.info('appendString---------------------')
-                // console.log(appendString)
-                // console.info('resultStr-----------------------')
-                // console.log(resultStr)
-                return resultStr;
+            // 如果输入字符串已经以 '</div>' 结尾，直接将要拼接的字符串追加到末尾
+            if (inputStr.lastIndexOf('</div>') === inputStr.length - 6) {
+                return inputStr + appendString;
             } else {
-                // 如果没有找到 '</div>'，则返回原始字符串
-                return inputStr;
+                // 否则，查找 '</div>' 的位置，然后在其前面插入要拼接的字符串
+                var index = inputStr.indexOf('</div>');
+                if (index !== -1) {
+                    return inputStr.slice(0, index) + appendString + inputStr.slice(index);
+                } else {
+                    // 如果没有找到 '</div>'，则返回原始字符串
+                    return inputStr;
+                }
             }
         }
 
