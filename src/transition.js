@@ -220,7 +220,7 @@
 
                 // alert(motionTime)
                 SLeasy.subMotion(subMotionArr, 'sliders', motionTime);
-                console.log('自定义切换时长:', duration)
+                console.log('自定义切换时长:', duration || null)
                 console.log('子元素动画起始时间:', motionTime)
                 console.log('幻灯切换索引是否超过边界:', $scope.isSliderEdge)
             },

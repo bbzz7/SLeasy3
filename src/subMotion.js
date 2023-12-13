@@ -163,6 +163,8 @@
             // console.log(subMotion.set)
             !subMotion.el && subMotion.set && T.set($dom, subMotion.set);
 
+            !subMotion.set && T.set($dom, set);//默认set
+
             //add label
             subMotion.label && tl.addLabel(subMotion.label);
 
@@ -172,7 +174,8 @@
             //add motion
             if (subMotion.el) {
                 subMotion.set && T.set($(subMotion.el), subMotion.set);
-                if (subMotion.to){//打平onCompelte
+                if (subMotion.to) {
+                    //打平onCompelte
                     if (typeof subMotion.onComplete == 'function') {
                         subMotion.to.onComplete = subMotion.onComplete;//打平onCompelte
                         // console.log(subShow);
@@ -200,6 +203,11 @@
 
             //add pause to
             subMotion.pauseTo && tl.addPause();
+
+            //子元素递归
+            if (subMotion.subMotion && subMotion.subMotion.length) {
+                SLeasy.subMotion(subMotion.subMotion, type, totalTime)
+            }
         }
 
         //relative模式处理

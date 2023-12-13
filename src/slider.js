@@ -934,49 +934,92 @@
         //sub element html
         var html = '';
 
-        //subMotion element
-        for (var i = 0; i < subArr.length; i++) {
-            //console.log(index);
-            var subMotion = subArr[i];
-            $.extend(subMotion, {index: (sliderIndex || 0) + '_' + i});//合并slider初始化索引及当前子元素初始化索引，以便生成唯一id
+        function appendToDiv(inputStr, appendString) {
+            // 查找 '</div>' 的位置
+            var index = inputStr.indexOf('</div>');
 
-            //subMotion label hash
-            if (typeof subMotion.label != 'undefined') {
-                $scope.labelHash[subMotion.label] = '#SLeasy_' + (subName[type] || type) + '_' + subMotion.index;
+            // 如果找到了 '</div>'，则在其前面插入要拼接的字符串
+            if (index !== -1) {
+                var resultStr = inputStr.slice(0, index) + appendString + inputStr.slice(index);
+                // console.info('inputStr---------------------')
+                // console.log(inputStr)
+                // console.info('appendString---------------------')
+                // console.log(appendString)
+                // console.info('resultStr-----------------------')
+                // console.log(resultStr)
+                return resultStr;
+            } else {
+                // 如果没有找到 '</div>'，则返回原始字符串
+                return inputStr;
             }
-
-            //遍历子元素生成策略并执行
-            $.each(subElement, function (index, value) {
-                if (subMotion[index]) {
-                    var row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
-                    html += row;
-                    return;
-                }
-            });
-
-
-            if (subMotion['event']) {
-                var info = {
-                    id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                    event: subMotion.event,
-                    onEvent: subMotion.onEvent,
-                }
-                $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
-            }
-            if (subMotion['on']) {
-                for (event in subMotion['on']) {
-                    var info = {
-                        id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
-                        event: event,
-                        onEvent: subMotion['on'][event],
-                    }
-                    $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
-                }
-            }
-
         }
 
-        return html
+        //subMotion element
+        function subElementHtml(dataArr, type, sliderIndex, display) {
+            var subHtml = '';
+            if (dataArr && dataArr.length) {
+                for (var i = 0; i < dataArr.length; i++) {
+                    //console.log(index);
+                    var subMotion = dataArr[i];
+                    $.extend(subMotion, {index: (sliderIndex || 0) + '_' + i});//合并slider初始化索引及当前子元素初始化索引，以便生成唯一id
+
+                    //subMotion label hash
+                    if (typeof subMotion.label != 'undefined') {
+                        $scope.labelHash[subMotion.label] = '#SLeasy_' + (subName[type] || type) + '_' + subMotion.index;
+                    }
+
+                    //遍历子元素生成策略并执行
+                    var row='';
+                    $.each(subElement, function (index, value) {
+                        if (subMotion[index]) {
+                            row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
+                            return;
+                        }
+                    });
+
+                    //事件绑定
+                    if (subMotion['event']) {
+                        var info = {
+                            id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                            event: subMotion.event,
+                            onEvent: subMotion.onEvent,
+                        }
+                        $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                    }
+                    if (subMotion['on']) {
+                        for (event in subMotion['on']) {
+                            var info = {
+                                id: 'SLeasy_' + (subName[type] || type) + '_' + subMotion.index,
+                                event: event,
+                                onEvent: subMotion['on'][event],
+                            }
+                            $scope.eventArr.push(info);//需绑定事件的子元素相关信息入栈
+                        }
+                    }
+
+                    //子元素递归
+                    if (subMotion.subMotion && subMotion.subMotion.length) {
+                        // console.log('递归');
+                        var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
+                        // console.info('row---------------------')
+                        // console.log(row)
+                        // console.info('subSubHtml---------------------')
+                        // console.log(subSubHtml)
+                        subHtml += appendToDiv(row, subSubHtml);
+                        // console.log('appendToDiv(row, subSubHtml)-----------------');
+                        // console.log(appendToDiv(row, subSubHtml));
+                    } else {
+                        subHtml += row;
+                    }
+                }
+            }
+            // console.log('subHtml:', subHtml)
+            return subHtml;
+        }
+
+        html = subElementHtml(subArr, type, sliderIndex, display);
+        // console.log(html);
+        return html;
     }
 
 })(
