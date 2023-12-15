@@ -31,25 +31,25 @@
 
         //slider
         var html = '\
-			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
-			style="\
-			width:100%;\
-			max-width:' + $scope.maxWidth + 'px;\
-			max-height:' + $scope.maxHeight + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
-			background-image:' + sliderBg() + ';\
-			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:' + (opt.bgSize || "cover") + ';\
-			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
-			background-color:' + (opt.bgColor || "transparent") + ';\
-			overflow-y:' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			overflow-x:' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
-			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
-			-webkit-overflow-scrolling:touch;\
-			overflow-scrolling: touch;\
-			z-index:' + (opt.type == 'detail' ? 10 : 'auto') + ';\
-			">';
+ <div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
+ style="\
+ width: 100%;\
+ max-width: ' + $scope.maxWidth + 'px;\
+ max-height: ' + $scope.maxHeight + 'px;\
+ height: ' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
+ background-image: ' + sliderBg() + ';\
+ background-repeat: ' + (opt.bgRepeat || "no-repeat") + ';\
+ background-size: ' + (opt.bgSize || "cover") + ';\
+ background-position: ' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
+ background-color: ' + (opt.bgColor || "transparent") + ';\
+ overflow-y: ' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+ overflow-x: ' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+ position: ' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
+ display: ' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
+ -webkit-overflow-scrolling: touch;\
+ overflow-scrolling: touch;\
+ z-index: ' + (opt.type == 'detail' ? 10 : 'auto') + ';\
+ ">';
 
         function sliderBg() {
             if (!opt.bg) return 'none';
@@ -965,7 +965,7 @@
                     }
 
                     //遍历子元素生成策略并执行
-                    var row='';
+                    var row = '';
                     $.each(subElement, function (index, value) {
                         if (subMotion[index]) {
                             row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值

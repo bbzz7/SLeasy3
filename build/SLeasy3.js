@@ -2221,25 +2221,25 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         //slider
         var html = '\
-			<div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
-			style="\
-			width:100%;\
-			max-width:' + $scope.maxWidth + 'px;\
-			max-height:' + $scope.maxHeight + 'px;\
-			height:' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
-			background-image:' + sliderBg() + ';\
-			background-repeat:' + (opt.bgRepeat || "no-repeat") + ';\
-			background-size:' + (opt.bgSize || "cover") + ';\
-			background-position:' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
-			background-color:' + (opt.bgColor || "transparent") + ';\
-			overflow-y:' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			overflow-x:' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
-			position:' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
-			display:' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
-			-webkit-overflow-scrolling:touch;\
-			overflow-scrolling: touch;\
-			z-index:' + (opt.type == 'detail' ? 10 : 'auto') + ';\
-			">';
+ <div class="SLeasy_' + (opt.type || 'sliders') + ' ' + (opt.class || '') + '"\
+ style="\
+ width: 100%;\
+ max-width: ' + $scope.maxWidth + 'px;\
+ max-height: ' + $scope.maxHeight + 'px;\
+ height: ' + ($config.positionMode == "absolute" || opt.type != 'sliders' ? ($config.scrollMagicMode && opt.height ? (opt.height * $scope.viewScale + 'px') : '100%') : '') + ';\
+ background-image: ' + sliderBg() + ';\
+ background-repeat: ' + (opt.bgRepeat || "no-repeat") + ';\
+ background-size: ' + (opt.bgSize || "cover") + ';\
+ background-position: ' + ($config.scrollMagicMode && opt.index != 0 ? 'center center' : bgAlign[(opt.alignMode || $config.alignMode)]) + ';\
+ background-color: ' + (opt.bgColor || "transparent") + ';\
+ overflow-y: ' + (opt.scroll && $config.motionDirection == "upDown" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+ overflow-x: ' + (opt.scroll && $config.motionDirection == "leftRight" ? "auto" : ($config.positionMode == "absolute" ? "hidden" : "visible")) + ';\
+ position: ' + ($config.scrollMagicMode ? 'static' : 'absolute') + '; \
+ display: ' + ($config.scrollMagicMode ? 'block' : (opt.display || 'none')) + ';\
+ -webkit-overflow-scrolling: touch;\
+ overflow-scrolling: touch;\
+ z-index: ' + (opt.type == 'detail' ? 10 : 'auto') + ';\
+ ">';
 
         function sliderBg() {
             if (!opt.bg) return 'none';
@@ -3155,7 +3155,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     }
 
                     //遍历子元素生成策略并执行
-                    var row='';
+                    var row = '';
                     $.each(subElement, function (index, value) {
                         if (subMotion[index]) {
                             row = subElement[index]($.extend(subMotion, {type: type, sliderIndex: sliderIndex}));//并入子动画所属页面的类型值
@@ -3509,11 +3509,13 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
+    $scope.timelines = {};
 
 
     //subMotion,参数:为单个slider/detail配置对象数据
-    SLeasy.subMotion = function (subMotionArr, type, motionTime) {
+    SLeasy.subMotion = function (subMotionArr, type, motionTime, timeLineName) {
         console.log('subMotion子元素动画预备~');
+        console.log(timeLineName);
         if (!subMotionArr || !subMotionArr.length) return;
 
         //不同类型幻灯对应的子元素关键字标识
@@ -3543,9 +3545,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
 
         //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
-        if (type && type != 'sliders') {
+        if (timeLineName) {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
-            $scope[type + 'Timeline'] = tl;
+            $scope.timelines[timeLineName] = tl;
+        } else if (type && type != 'sliders') {
+            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
+            $scope.timelines[type] = tl;
             // console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
@@ -3713,7 +3718,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
             //子元素递归
             if (subMotion.subMotion && subMotion.subMotion.length) {
-                SLeasy.subMotion(subMotion.subMotion, type, totalTime)
+                var tlName = subMotion.class ? subMotion.class.split(' ')[0] : null;
+                SLeasy.subMotion(subMotion.subMotion, type, totalTime, tlName);
             }
         }
 
@@ -3729,7 +3735,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
         //play
         tl.play();
-        // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},
@@ -5494,7 +5500,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             console.log('加载完成的图片:', $scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
+                SLeasy.subMotion($config.loading.subMotion, 'loading', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();

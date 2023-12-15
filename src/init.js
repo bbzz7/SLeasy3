@@ -95,7 +95,7 @@
             console.log('加载完成的图片:', $scope.totalLoad);
             SLeasy.boot(dfd);
             if (!$.isEmptyObject($config.loading) && !$scope.initReady) {
-                SLeasy.subMotion($config.loading.subMotion, 'loadingElement', 0);
+                SLeasy.subMotion($config.loading.subMotion, 'loading', 0);
                 $config.loading.onComplete && $config.loading.onComplete();
                 $(".SLeasy_loading").fadeIn(300, function () {
                     $config.loading.onStartLoad && $config.loading.onStartLoad();

@@ -2,11 +2,13 @@
 ;(function (SLeasy, $, T) {
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
+    $scope.timelines = {};
 
 
     //subMotion,参数:为单个slider/detail配置对象数据
-    SLeasy.subMotion = function (subMotionArr, type, motionTime) {
+    SLeasy.subMotion = function (subMotionArr, type, motionTime, timeLineName) {
         console.log('subMotion子元素动画预备~');
+        console.log(timeLineName);
         if (!subMotionArr || !subMotionArr.length) return;
 
         //不同类型幻灯对应的子元素关键字标识
@@ -36,9 +38,12 @@
 
 
         //根据不同类型（幻灯或详情页），初始化timeLine及设置子动画开始、完成状态
-        if (type && type != 'sliders') {
+        if (timeLineName) {
             var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
-            $scope[type + 'Timeline'] = tl;
+            $scope.timelines[timeLineName] = tl;
+        } else if (type && type != 'sliders') {
+            var tl = new TimelineMax({autoRemoveChildren: $config.autoRemoveChildren, paused: true});
+            $scope.timelines[type] = tl;
             // console.warn(type + 'Timeline')
             $scope.isDetailMotion = 0;//详情页子动画开始、完成状态
         } else {
@@ -206,7 +211,8 @@
 
             //子元素递归
             if (subMotion.subMotion && subMotion.subMotion.length) {
-                SLeasy.subMotion(subMotion.subMotion, type, totalTime)
+                var tlName = subMotion.class ? subMotion.class.split(' ')[0] : null;
+                SLeasy.subMotion(subMotion.subMotion, type, totalTime, tlName);
             }
         }
 
@@ -222,7 +228,7 @@
 
         //play
         tl.play();
-        // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},
