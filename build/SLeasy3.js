@@ -3127,7 +3127,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         function appendToDiv(inputStr, appendString) {
             // 如果输入字符串已经以 '</div>' 结尾，直接将要拼接的字符串追加到末尾
             if (inputStr.lastIndexOf('</div>') === inputStr.length - 6) {
-                return inputStr + appendString;
+                return inputStr.slice(0, -6) + appendString + '</div>';
             } else {
                 // 否则，查找 '</div>' 的位置，然后在其前面插入要拼接的字符串
                 var index = inputStr.indexOf('</div>');
@@ -3185,15 +3185,15 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                     //子元素递归
                     if (subMotion.subMotion && subMotion.subMotion.length) {
-                        // console.log('递归');
+                        console.log('递归');
                         var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
-                        // console.info('row---------------------')
-                        // console.log(row)
-                        // console.info('subSubHtml---------------------')
-                        // console.log(subSubHtml)
+                        console.info('row---------------------')
+                        console.log(row)
+                        console.info('subSubHtml---------------------')
+                        console.log(subSubHtml)
                         subHtml += appendToDiv(row, subSubHtml);
-                        // console.log('appendToDiv(row, subSubHtml)-----------------');
-                        // console.log(appendToDiv(row, subSubHtml));
+                        console.log('appendToDiv(row, subSubHtml)-----------------');
+                        console.log(appendToDiv(row, subSubHtml));
                     } else {
                         subHtml += row;
                     }
@@ -3204,7 +3204,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         }
 
         html = subElementHtml(subArr, type, sliderIndex, display);
-        // console.log(html);
+        console.log(html);
         return html;
     }
 
