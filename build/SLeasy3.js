@@ -3348,8 +3348,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         $scope.originX = $config.width / 2;
         $scope.originY = $config.height / 2;
 
-        for (var i = 0; i < sliders.length; i++) {
-            var subMotions = sliders[i].subMotion;//当前幻灯子动画数组
+        function fixSubMotionProps(subMotions) {
             for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
                 //处理shadownBt的情况
                 if (subMotions[j].shadownBt) {
@@ -3389,7 +3388,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     if (subSet.x >= 0 || subSet.x <= 0) subSet.x += xOffset[alignMode];
                     if (subTo.x >= 0 || subTo.x <= 0) subTo.x += xOffset[alignMode];
                 }
+
+                //子元素递归
+                if (subMotions[j].subMotion && subMotions[j].subMotion.length) {
+                    fixSubMotionProps(subMotions[j].subMotion)
+                }
             }
+        }
+
+        for (var i = 0; i < sliders.length; i++) {
+            fixSubMotionProps(sliders[i].subMotion);//当前幻灯子动画数组
         }
     }
 
