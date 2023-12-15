@@ -3348,7 +3348,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         $scope.originX = $config.width / 2;
         $scope.originY = $config.height / 2;
 
-        function fixSubMotionProps(subMotions) {
+        function fixSubMotionProps(subMotions,recursiveMode) {
             for (var j = 0; j < (subMotions && subMotions.length || 0); j++) {
                 //处理shadownBt的情况
                 if (subMotions[j].shadownBt) {
@@ -3374,7 +3374,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 subMotions[j].to = SLeasy.fixProps(subTo);
 
                 //scrollMagic模式下除首屏外，其他不修正 -------------------------------------
-                if ((!$config.scrollMagicMode || i == 0) && $scope.rotateMode != 'auto') {
+                if ((!$config.scrollMagicMode || i == 0) && $scope.rotateMode != 'auto' && !recursiveMode) {
                     //根据幻灯对齐方式参数，进行y轴自适应修正
                     var alignMode = subMotions[j].alignMode || sliders[i].alignMode || $config.alignMode;
                     //y
@@ -3391,7 +3391,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                 //子元素递归
                 if (subMotions[j].subMotion && subMotions[j].subMotion.length) {
-                    fixSubMotionProps(subMotions[j].subMotion)
+                    fixSubMotionProps(subMotions[j].subMotion,true)
                 }
             }
         }
