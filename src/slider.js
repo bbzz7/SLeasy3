@@ -995,15 +995,15 @@
 
                     //子元素递归
                     if (subMotion.subMotion && subMotion.subMotion.length) {
-                        console.log('递归');
+                        // console.log('递归');
                         var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
-                        console.info('row---------------------')
-                        console.log(row)
-                        console.info('subSubHtml---------------------')
-                        console.log(subSubHtml)
+                        // console.info('row---------------------')
+                        // console.log(row)
+                        // console.info('subSubHtml---------------------')
+                        // console.log(subSubHtml)
                         subHtml += appendToDiv(row, subSubHtml);
-                        console.log('appendToDiv(row, subSubHtml)-----------------');
-                        console.log(appendToDiv(row, subSubHtml));
+                        // console.log('appendToDiv(row, subSubHtml)-----------------');
+                        // console.log(appendToDiv(row, subSubHtml));
                     } else {
                         subHtml += row;
                     }
@@ -1014,7 +1014,7 @@
         }
 
         html = subElementHtml(subArr, type, sliderIndex, display);
-        console.log(html);
+        // console.log(html);
         return html;
     }
 
