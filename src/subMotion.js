@@ -228,7 +228,7 @@
 
         //play
         tl.play();
-        console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
+        // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;')
     }
 })(
     window.SLeasy = window.SLeasy || {},
