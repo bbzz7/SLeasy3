@@ -3188,7 +3188,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     //子元素递归
                     if (subMotion.subMotion && subMotion.subMotion.length) {
                         // console.log('递归');
-                        var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
+                        var subSubHtml = subElementHtml(subMotion.subMotion, type, (sliderIndex || 0) + '_' + i, 'block');
                         // console.info('row---------------------')
                         // console.log(row)
                         // console.info('subSubHtml---------------------')
@@ -3265,9 +3265,19 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     $('.SLeasy_floatElement').each(function (index, element) {
                         T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
                     });
-                    $('.SLeasy_loadingElement').each(function (index, element) {
-                        T.set($(this), $config.loading.subMotion[index].set);
-                    });
+                    setLoadingElement($config.loading.subMotion);
+                    function setLoadingElement(data) {
+                        if (data && data.length) {
+                            for (var i = 0; i < data.length; i++) {
+                                var $dom=$('#SLeasy_loadingElement_'+data[i].index)
+                                if($dom.length && data[i].set) T.set($dom, data[i].set);
+                                if (data[i].subMotion) {
+                                    setLoadingElement(data[i].subMotion);
+                                }
+                            }
+                        }
+                    }
+
                     dfd && dfd.resolve();//初始化完毕
                     //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
                     $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});

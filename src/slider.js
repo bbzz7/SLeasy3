@@ -996,7 +996,7 @@
                     //子元素递归
                     if (subMotion.subMotion && subMotion.subMotion.length) {
                         // console.log('递归');
-                        var subSubHtml = subElementHtml(subMotion.subMotion, type, sliderIndex + '_' + i, 'block');
+                        var subSubHtml = subElementHtml(subMotion.subMotion, type, (sliderIndex || 0) + '_' + i, 'block');
                         // console.info('row---------------------')
                         // console.log(row)
                         // console.info('subSubHtml---------------------')
