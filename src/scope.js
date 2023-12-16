@@ -252,7 +252,9 @@
         //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
-        } else if (url.search(/^\/\//) == -1) {
+        } else if(url.search(/^\/\//) !== -1){
+            return url;
+        } else if (url.search(/^file:/) == -1) {
             return host + url + (addTimeStamp === false ? '' : timeStamp);
         } else {
             return url.replace(/^\/\//, '');
