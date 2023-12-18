@@ -2919,7 +2919,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
                     var j = Math.round(parseFloat(spriteImgDetailStyle.width) / $sprite.w),
                         k = Math.round(parseFloat(spriteImgDetailStyle.height) / $sprite.h);
-                    var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && opt.start ? opt.start : 0));
+                    var frameCount = Math.abs((opt && opt.end ? opt.end : j * k) - (opt && typeof opt.start != 'undefined' ? opt.start : ($spriteImg.frame || 0)));
                     var duration = frameCount / (opt && opt.fps || 25);
 
                     console.log(duration + '===' + $sprite.w + '/' + $sprite.h + '===' + j + '/' + k + '===' + frameCount);
@@ -2934,7 +2934,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     }
                     TweenMax.fromTo($spriteImg, duration,
                         {
-                            frame: (opt && opt.start) || 0
+                            frame: (opt && typeof opt.start != 'undefined') ? opt.start : ($spriteImg.frame || 0)
                         },
                         {
                             ease: SteppedEase.config(frameCount),
@@ -2957,6 +2957,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             onStart: (opt && opt.onStart) || null,
                             onComplete: (opt && opt.onComplete) || null
                         });
+                    return SLeasy;
+                }
+
+                //stopSprite
+                SLeasy.stopSprite = function (selector) {
+                    var $sprite = $(selector)[0],
+                        $spriteImg = $(selector).find('.SLeasy_spriteSheet')[0]
+                    TweenMax.killTweensOf($spriteImg);
                     return SLeasy;
                 }
 
@@ -3121,7 +3129,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 return spriteHtml[opt.engine || 'img']();
             }
         }
-
 
         //sub element html
         var html = '';
