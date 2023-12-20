@@ -31,7 +31,7 @@
         isDetailMotion: 0,//当前详情页子动画完成状态
 
         timeline: null,//子动画时间线
-        fixPropsArr: ['x', 'y', 'width', 'height','minWidth', 'minHeight','maxWidth', 'maxHeight', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
+        fixPropsArr: ['x', 'y', 'width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
@@ -80,7 +80,7 @@
     }
 
     //check weChat
-    SLeasy.isWechat = SLeasy.isWeixin = function (noDevTools) {
+    SLeasy.isWechat = SLeasy.isWeixin = SLeasy.isWX = function (noDevTools) {
         var ua = window.navigator.userAgent.toLowerCase();
         if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
         if (ua.match(/MicroMessenger/i) == 'micromessenger') {
@@ -102,7 +102,7 @@
     }
 
     //check weibo
-    SLeasy.isWeibo = function () {
+    SLeasy.isWeibo = SLeasy.isWB = function () {
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/weibo/i) == 'weibo') {
             return true;
@@ -115,6 +115,16 @@
     SLeasy.isXiaoHongShu = SLeasy.isXHS = function () {
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/discover/i) == 'discover') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //check 钉钉
+    SLeasy.isDingding = SLeasy.isDD = function () {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/dingtalk/i) == 'dingtalk') {
             return true;
         } else {
             return false;
@@ -252,7 +262,7 @@
         //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
-        } else if(url.search(/^\/\//) !== -1){
+        } else if (url.search(/^\/\//) !== -1) {
             return url;
         } else if (url.search(/^file:/) == -1) {
             return host + url + (addTimeStamp === false ? '' : timeStamp);

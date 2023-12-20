@@ -829,7 +829,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         isDetailMotion: 0,//当前详情页子动画完成状态
 
         timeline: null,//子动画时间线
-        fixPropsArr: ['x', 'y', 'width', 'height','minWidth', 'minHeight','maxWidth', 'maxHeight', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
+        fixPropsArr: ['x', 'y', 'width', 'height', 'minWidth', 'minHeight', 'maxWidth', 'maxHeight', 'left', 'right', 'top', 'bottom', 'lineHeight', 'marginLeft', 'marginRight', 'marginTop', 'marginBottom', 'paddingLeft', 'paddingRight', 'paddingTop', 'paddingBottom', 'fontSize', 'clip', 'backgroundPositionX', 'backgroundPositionY', 'letterSpacing', 'borderRadius'],//需要修正的属性
         FXDirection: 'upDown',//幻灯切换效果方向
         clearProps: 'x,y,scale,rotationX,rotationY,rotationZ,transform,transformPerspective,webkitTransformOrigin,WebkitTransformOrigin,transformOrigin,zIndex',//动画完成之后需要清除的属性值
 
@@ -878,7 +878,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //check weChat
-    SLeasy.isWechat = SLeasy.isWeixin = function (noDevTools) {
+    SLeasy.isWechat = SLeasy.isWeixin = SLeasy.isWX = function (noDevTools) {
         var ua = window.navigator.userAgent.toLowerCase();
         if (noDevTools && ua.match(/wechatdevtools/i) == 'wechatdevtools') return false;
         if (ua.match(/MicroMessenger/i) == 'micromessenger') {
@@ -900,7 +900,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //check weibo
-    SLeasy.isWeibo = function () {
+    SLeasy.isWeibo = SLeasy.isWB = function () {
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/weibo/i) == 'weibo') {
             return true;
@@ -913,6 +913,16 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     SLeasy.isXiaoHongShu = SLeasy.isXHS = function () {
         var ua = window.navigator.userAgent.toLowerCase();
         if (ua.match(/discover/i) == 'discover') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    //check 钉钉
+    SLeasy.isDingding = SLeasy.isDD = function () {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/dingtalk/i) == 'dingtalk') {
             return true;
         } else {
             return false;
@@ -1050,7 +1060,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
-        } else if(url.search(/^\/\//) !== -1){
+        } else if (url.search(/^\/\//) !== -1) {
             return url;
         } else if (url.search(/^file:/) == -1) {
             return host + url + (addTimeStamp === false ? '' : timeStamp);
@@ -2090,7 +2100,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             setTimeout(function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
-
             //刷新是否旋转状态
             SLeasy.isRotated();
 
@@ -2177,6 +2186,15 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
             //横竖屏回调
             if ($config.on['resize']) $config.on['resize'](oMode);
+        }
+
+        //窗口resize事件，对应钉钉这种可以大小变化的webview
+        if($config.reloadMode || SLeasy.isDingding()){
+            $(window).resize(function (){
+                setTimeout(function (){
+                    location.reload();
+                },300);
+            })
         }
 
         //scroll

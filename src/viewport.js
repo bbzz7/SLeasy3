@@ -178,7 +178,6 @@
             setTimeout(function () {
                 $config.reloadMode && window.location.reload();
             }, 250);
-
             //刷新是否旋转状态
             SLeasy.isRotated();
 
@@ -265,6 +264,15 @@
 
             //横竖屏回调
             if ($config.on['resize']) $config.on['resize'](oMode);
+        }
+
+        //窗口resize事件，对应钉钉这种可以大小变化的webview
+        if($config.reloadMode || SLeasy.isDingding()){
+            $(window).resize(function (){
+                setTimeout(function (){
+                    location.reload();
+                },300);
+            })
         }
 
         //scroll
