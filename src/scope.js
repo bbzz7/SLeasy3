@@ -255,10 +255,11 @@
         if (!url) return '';
         var timeStamp = ($config && $config.timeStamp ? $config.timeStamp : '');
         //从app.js?12345678上获取时间戳
-        if (!timeStamp && $('script[src*="app.js"]').length) {
+        if (timeStamp!==false && !timeStamp && $('script[src*="app.js"]').length) {
             timeStamp = $('script[src*="app.js"]').attr('src').split('?')[1] || '';
         }
         timeStamp = timeStamp ? ('?' + timeStamp) : '';
+        if (timeStamp) SLeasy.timeStamp = $scope.timeStamp = timeStamp;
         //
         if (SLeasy.isHttp(url) || SLeasy.isLocalHost(url)) {
             return url + (addTimeStamp === false ? '' : timeStamp);
