@@ -3291,7 +3291,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     $('.SLeasy_floatElement').each(function (index, element) {
                         T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
                     });
-                    setLoadingElement($config.loading.subMotion);
+                    // setLoadingElement($config.loading.subMotion);//todo 自定loading是否需要再次set???
                     function setLoadingElement(data) {
                         if (data && data.length) {
                             for (var i = 0; i < data.length; i++) {
@@ -3303,7 +3303,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                             }
                         }
                     }
-
                     dfd && dfd.resolve();//初始化完毕
                     //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
                     $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
