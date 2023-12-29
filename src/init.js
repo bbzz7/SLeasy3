@@ -1,5 +1,5 @@
 // SLeasy3-init
-;(function (SLeasy, $) {
+;(function (SLeasy, $,H) {
     var $scope = SLeasy.scope();
 
     //init
@@ -47,9 +47,6 @@
             SLeasy.viewport();//设置视口
         }
 
-        //背景音乐
-        SLeasy.music.init();
-
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode == 'auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
@@ -68,6 +65,10 @@
             "position": "relative",
             "margin": $scope.fixMargin + "px auto",
         });
+
+        //背景音乐
+        SLeasy.music.init();
+
         //rotateMode
         if ($config.rotateMode) {
             var margin = $scope.isLandscape ? $scope.fixMarginW : $scope.fixMargin;
@@ -236,5 +237,6 @@
 
 })(
     window.SLeasy = window.SLeasy || {},
-    jQuery
+    jQuery,
+    Hammer
 );

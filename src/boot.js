@@ -21,7 +21,6 @@
             //音乐初始化
             $scope.sliderBox.html($scope.sliderBox.html() + loadingHtml);
             SLeasy.float();//浮动元素初始化
-            $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
             SLeasy.fixPosition([$config.loading]);
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
@@ -77,7 +76,6 @@
             SLeasy.loader.hidden();//隐藏loading
             $.isEmptyObject($config.loading) && SLeasy.float();//浮动元素初始化
             SLeasy.arrow.init($config.arrowColor);//箭头初始化
-            $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
 
             SLeasy.fixPosition($config.sliders);//全部幻灯子动画自适应坐标值修正转换
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换

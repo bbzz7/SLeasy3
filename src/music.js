@@ -7,6 +7,7 @@
 
     //music
     SLeasy.music.init = function (opt) {
+        $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
         var musicHtml = '';
         if ($scope.audioInit) return '';//返回空html串
         $scope.audioInit = true;
@@ -196,6 +197,12 @@
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 
+        //
+        T.set($("#SLeasy_musicBt"), {
+            backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
+            ease: Power4.easeOut
+        });
+
         //事件
         H($("#SLeasy_musicBt")[0]).on('tap', function () {
             if (!$scope.isMusic) {
@@ -205,7 +212,6 @@
             }
         });
     }
-
 
 })(
     window.SLeasy = window.SLeasy || {},

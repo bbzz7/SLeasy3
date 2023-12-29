@@ -4640,6 +4640,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //music
     SLeasy.music.init = function (opt) {
+        $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
         var musicHtml = '';
         if ($scope.audioInit) return '';//返回空html串
         $scope.audioInit = true;
@@ -4829,6 +4830,12 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 			</div>')
             .appendTo($('#' + $config.id).length ? '#' + $config.id : '#SLeasy').css("cursor", "pointer");
 
+        //
+        T.set($("#SLeasy_musicBt"), {
+            backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
+            ease: Power4.easeOut
+        });
+
         //事件
         H($("#SLeasy_musicBt")[0]).on('tap', function () {
             if (!$scope.isMusic) {
@@ -4838,7 +4845,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             }
         });
     }
-
 
 })(
     window.SLeasy = window.SLeasy || {},
@@ -4933,7 +4939,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             //音乐初始化
             $scope.sliderBox.html($scope.sliderBox.html() + loadingHtml);
             SLeasy.float();//浮动元素初始化
-            $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
             SLeasy.fixPosition([$config.loading]);
             //img to div
             SLeasy.imgToDiv($scope.sliderBox, dfd);
@@ -4989,7 +4994,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             SLeasy.loader.hidden();//隐藏loading
             $.isEmptyObject($config.loading) && SLeasy.float();//浮动元素初始化
             SLeasy.arrow.init($config.arrowColor);//箭头初始化
-            $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
 
             SLeasy.fixPosition($config.sliders);//全部幻灯子动画自适应坐标值修正转换
             SLeasy.fixPosition($config.details);//全部详情页子动画自适应坐标值修正转换
@@ -5441,7 +5445,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     jQuery
 );
 // SLeasy3-init
-;(function (SLeasy, $) {
+;(function (SLeasy, $,H) {
     var $scope = SLeasy.scope();
 
     //init
@@ -5489,9 +5493,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             SLeasy.viewport();//设置视口
         }
 
-        //背景音乐
-        SLeasy.music.init();
-
         //SLeasy容器初始化
         $scope.sliderBox = $('#' + $config.id).length ? $('#' + $config.id) : $('<div id="SLeasy"></div>').appendTo($scope.rotateMode == 'auto' ? '#SLeasy_fixBox' : 'body'), $config.id = 'SLeasy';//slide容器dom引用缓存
         $scope.sliderBox.css({
@@ -5510,6 +5511,10 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             "position": "relative",
             "margin": $scope.fixMargin + "px auto",
         });
+
+        //背景音乐
+        SLeasy.music.init();
+
         //rotateMode
         if ($config.rotateMode) {
             var margin = $scope.isLandscape ? $scope.fixMarginW : $scope.fixMargin;
@@ -5678,5 +5683,6 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
 })(
     window.SLeasy = window.SLeasy || {},
-    jQuery
+    jQuery,
+    Hammer
 );
