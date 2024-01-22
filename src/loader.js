@@ -142,6 +142,9 @@
                     // img.crossOrigin = "Anonymous";
                     img.src = loadArr[loaded + i];
                     // console.log(':::::load开始加载：' + img.src);
+                    img.onerror=function (){
+                        console.error(':::' + i + '::加载失败：' + img.src);
+                    }
                     img.onload = function () {
                         console.log(':::' + (loaded + i) + '::加载完毕：' + img.src);
                         loaded++;
@@ -186,6 +189,9 @@
                     // img.crossOrigin = "Anonymous";
                     img.src = loadArr[i];
                     console.log(':::::multiLoad开始加载：' + img.src);
+                    img.onerror=function (){
+                        console.error(':::' + i + '::加载失败：' + img.src);
+                    }
                     img.onload = function () {
                         console.log(':::' + i + '::加载完毕：' + img.src);
                         loaded++;
