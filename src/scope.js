@@ -878,7 +878,7 @@
             if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
             dom.style.cursor = "pointer";//鼠标手势
 
-            if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+            if ('click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                 $(dom).off(e).on(e, callback);
             } else if (e == 'hold') {//长按事件
                 HDom.get('press').set({time: 1000});
