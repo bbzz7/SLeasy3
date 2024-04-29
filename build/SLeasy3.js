@@ -1053,7 +1053,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if (!url) return '';
         var timeStamp = ($config && $config.timeStamp ? $config.timeStamp : '');
         //从app.js?12345678上获取时间戳
-        if (timeStamp!==false && !timeStamp && $('script[src*="app.js"]').length) {
+        if (timeStamp !== false && !timeStamp && $('script[src*="app.js"]').length) {
             timeStamp = $('script[src*="app.js"]').attr('src').split('?')[1] || '';
         }
         timeStamp = timeStamp ? ('?' + timeStamp) : '';
@@ -1596,20 +1596,21 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     }
 
     //insert
-    SLeasy.insert = function (el, data) {
+    SLeasy.insert = function (el, data, noFix) {
         var type = el.replace('.', '').replace('#', '');
 
         function _imgToDiv() {
             var dfd = new $.Deferred();
             var html = SLeasy.subElement(data, type, null, 'block');
             $(html).appendTo(el);
+            $scope.loadingReady = true;
             SLeasy.imgToDiv($(el), dfd);
             return dfd;
         }
 
         return _imgToDiv().done(function () {
             $('.SLeasy_' + type).each(function (index, element) {
-                SLeasy.set($(this), data[index].set, true);
+                SLeasy.set($(this), data[index].set, noFix===false ? false : true);
                 if (data[index].event) {
                     SLeasy.on(this, data[index].event, data[index].onEvent);
                 }
@@ -1710,12 +1711,14 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         if (isImgSrc) {
             if (url) {
                 var bgUrl = isBase64 ? mt + url : SLeasy.path($config.host, url);
+                if (url === 'none') bgUrl = '#';
                 $(el).attr('src', bgUrl);
             } else {
                 $(el).removeAttr("src");
             }
         } else {
             var bgUrl = 'url(' + (isBase64 ? mt + url : SLeasy.path($config.host, url)) + ')';
+            if (url === 'none') bgUrl = 'none';
             $(el).css({backgroundImage: bgUrl});
         }
         return SLeasy;
