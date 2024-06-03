@@ -7,6 +7,7 @@
 
     //music
     SLeasy.music.init = function (opt) {
+
         $config.musicBt[0] && SLeasy.music.bt();//背景音乐按钮初始化
         var musicHtml = '';
         if ($scope.audioInit) return '';//返回空html串
@@ -15,16 +16,38 @@
         //webAudio初始化
         if (Object.keys($config.audios).length && $config.audioType == 'webAudio') {
             $.each($config.audios, function (index, audio) {
-                setTimeout(function () {
+                //setTimeout(function () {
                     if (typeof audio == 'string') {
                         $scope.audios[index] = new Howl({src: SLeasy.path($config.host, audio)});
                     } else {
                         audio.src = SLeasy.path($config.host, audio.src);
                         $scope.audios[index] = new Howl(audio);
                     }
-                }, index * 50);
+                //}, index * 50);
             });
-            console.log($scope.$audios);
+            console.dir($scope.audios.bgm)
+            //bgm
+            if ($scope.audios['bgm']) {
+                //onplay
+                $scope.audios['bgm'].on('play', function () {
+                    $scope.isMusic = 1;
+                    SLeasy.music.isPlaying = true;
+                    if ($("#SLeasy_musicBt").length) T.set($("#SLeasy_musicBt"), {
+                        backgroundPosition: 'center 0px',
+                        ease: Power4.easeOut
+                    });
+                });
+                //onpause
+                $scope.audios['bgm'].on('pause', function () {
+                    $scope.isMusic = 0;
+                    SLeasy.music.isPlaying = false;
+                    T.set($("#SLeasy_musicBt"), {
+                        backgroundPosition: 'center -' + $config.musicBt[3] * $scope.viewScale + 'px',
+                        ease: Power4.easeOut
+                    });
+                })
+            }
+            console.log($scope.audios);
         } else if (Object.keys($config.audios).length && $config.audioType == 'audio') {
             $.each($config.audios, function (index, audio) {
                 if (typeof audio == 'string') {
@@ -66,7 +89,6 @@
 			</audio>';
         }
         $('body').append(musicHtml);
-        console.log($('body').html())
         //auto playHack
         $config.musicTouchPlay && document.addEventListener('touchend', SLeasy.music.play, false);
         if ($config.musicAutoPlay) {
@@ -91,7 +113,6 @@
                 }, false);
             }
         }
-
     }
 
 
@@ -113,10 +134,13 @@
         if (typeof $config.musicUrl == 'object') {
             if ($config.musicMuteMode == 'global') Howler.mute(false);
             if ($scope.bgmID) {
-                $scope.audios['bgm'].play($scope.bgmID);
+                $scope.audios['bgm'].play();
             } else {
                 $scope.bgmID = $scope.audios['bgm'].play();
             }
+            console.info('$scope.bgmID', $scope.bgmID);
+            //
+            return;
         }
 
         //audio
@@ -146,10 +170,12 @@
         //howler
         if (window.Howl && $scope.audios['bgm'] instanceof Howl) {
             if ($config.musicMuteMode == 'global') Howler.mute(true);
-            return $scope.audios['bgm'].pause($scope.bgmID);
+            $scope.audios['bgm'].pause();
+            return;
         } else {
-            $scope.bgmID = true;
+            $scope.bgmID = false;
         }
+        console.info('$scope.bgmID', $scope.bgmID);
         //audio
         $("#SLeasy_music").length && $("#SLeasy_music")[0].pause();
         //兼容安卓
