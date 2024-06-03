@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.21 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ SLeasy 3.9.22 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ 3.9.22(2024-06-03):更新默认背景音乐及音乐按钮支持webaudio;添加SLeasy.initMedias();
  3.9.21(2023-12-13):更新添加分组系统-subMotion自动递归;SLeasy.path()自动获取app.js的时间戳;
  3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;添加SLeasy.goPre();
  3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加$scope.loadingTotalTime/SLeasy.isWmp()/SLeasy.isLocalHost()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
