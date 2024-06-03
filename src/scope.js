@@ -509,12 +509,13 @@
 
     //闪烁元素
     SLeasy.blink = function (el, time, alpha, repeatDealy, count) {
+        SLeasy.kill(el);
         TweenMax.to(el, time >= 100 ? time / 1000 : time, {
             autoAlpha: alpha,
             ease: Power0.easeOut,
             yoyo: true,
             repeat: count || -1,
-            repeatDelay: repeatDealy || 0,
+            repeatDelay: (repeatDealy >= 100 ? repeatDealy / 1000 : repeatDealy) || 0,
         });
         return SLeasy;
     }
@@ -525,7 +526,7 @@
             $(this).off();
             var $media = $(this)[0];
             console.log($media);
-            $media.muted = (muted == false ? false : true);
+            $media.muted = (muted === false ? false : true);
             if (device.ios() && SLeasy.isWeibo()) $media.muted = false;//微博静音bug
             $media.play();
             if (device.android() && SLeasy.isWechat() && SLeasy.isHttp()) {
@@ -536,8 +537,8 @@
                     console.log($media.paused)
                     if ($media.paused) return;
                     $media.pause();
-                    $media.muted = false;
                     $media.currentTime = 0;
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -547,8 +548,8 @@
                     console.log($media.paused)
                     if ($media.paused) return;
                     $media.pause();
-                    $media.muted = false;
                     $media.currentTime = 0;
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -558,8 +559,8 @@
                     if (videoReady) return;
                     videoReady = true;
                     $media.pause();
-                    $media.muted = false;
                     $media.currentTime = 0;
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -567,8 +568,8 @@
                     if (videoReady) return;
                     videoReady = true;
                     $media.pause();
-                    $media.muted = false;
                     $media.currentTime = 0;
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -576,8 +577,8 @@
                 $(this).one('playing', function () {
                     $media.muted = false;
                     $media.pause();
-                    $media.muted = false;
                     $media.currentTime = 0;
+                    $media.muted = false;
                     console.log('🎵：media paused~!');
                     callback && callback($media);
                 });
@@ -608,6 +609,25 @@
             // })
         });
         return SLeasy;
+    }
+
+    //初始化media队列
+    SLeasy.initMedias = function (els, callback, muted) {
+        var i = 0;
+
+        function _initMedia(el, toMuted) {
+            SLeasy.initMedia(els[i], function () {
+                i = i + 1;
+                if (els[i]) {
+                    _initMedia(els[i], toMuted);
+                } else {
+                    callback && callback();
+                }
+            }, toMuted)
+        }
+
+        //
+        _initMedia(els[i], (muted || false));
     }
 
     //获取meida
@@ -812,7 +832,7 @@
 
         return _imgToDiv().done(function () {
             $('.SLeasy_' + type).each(function (index, element) {
-                SLeasy.set($(this), data[index].set, noFix===false ? false : true);
+                SLeasy.set($(this), data[index].set, noFix === false ? false : true);
                 if (data[index].event) {
                     SLeasy.on(this, data[index].event, data[index].onEvent);
                 }
@@ -880,7 +900,9 @@
             dom.style.cursor = "pointer";//鼠标手势
 
             if ('click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
-                $(dom).off(e).on(e, callback);
+                $(dom).off(e).on(e, function (ev){
+                    callback(index, dom, ev);
+                });
             } else if (e == 'hold') {//长按事件
                 HDom.get('press').set({time: 1000});
                 HDom.off('press').on('press', function (ev) {
