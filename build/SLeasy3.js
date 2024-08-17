@@ -1,5 +1,6 @@
 /*!
- SLeasy 3.9.21 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ SLeasy 3.9.22 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
+ 3.9.22(2024-06-03):更新默认背景音乐及音乐按钮支持webaudio;添加SLeasy.initMedias();
  3.9.21(2023-12-13):更新添加分组系统-subMotion自动递归;SLeasy.path()自动获取app.js的时间戳;
  3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;添加SLeasy.goPre();
  3.9.19(2023-11-26):添加floatZIndex、detailZIndex配置参数;添加$scope.loadingTotalTime/SLeasy.isWmp()/SLeasy.isLocalHost()/SLeasy.getURLParams();完善scroll模式下，水平滑动的场景;修复自定义loading时，自动跳转幻灯首页的问题;更新优化SLeasy.insert(),使其支持set中的所有属性;
@@ -4479,6 +4480,8 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
 
     //event bind
     SLeasy.eventBind = function (globalBinding) {
+        var originEvents = 'click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend';
+
         if (globalBinding) {
             //全局 -------------------------
             sliderBox = new H(document.getElementById(($scope.rotateMode == 'auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
@@ -4545,10 +4548,11 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     e = el.event,
                     callback = el.onEvent.bind(SLeasy);
 
+                $(dom).data('HDom', HDom);//存储HDom-hammer对象
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
 
-                if ('click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                if (originEvents.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
                 } else if (e.indexOf('holdup') == 0) {//长按释放事件
                     var time = parseInt(e.replace('holdup', '')) || 1000;
@@ -4587,8 +4591,9 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     e = el.event,
                     callback = el.onEvent;
 
+                $(dom).data('HDom', HDom);//存储HDom-hammer对象
                 dom.style.cursor = "pointer";//鼠标手势
-                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                if (originEvents.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
@@ -4604,7 +4609,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         //loading幻灯
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
-                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                if (originEvents.indexOf(e) != -1) {
                     $('.SLeasy_loading').off(e).on(e, callback);
                 } else {
                     var HDom = new H($('.SLeasy_loading')[0]);
@@ -4618,7 +4623,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
         for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
-                    if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                    if (originEvents.indexOf(e) != -1) {
                         $('.SLeasy_sliders').eq(i).off(e).on(e, callback);
                     } else {
                         var HDom = new H($('.SLeasy_sliders')[i]);

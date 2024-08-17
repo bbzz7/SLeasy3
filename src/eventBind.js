@@ -11,6 +11,8 @@
 
     //event bind
     SLeasy.eventBind = function (globalBinding) {
+        var originEvents = 'click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend';
+
         if (globalBinding) {
             //全局 -------------------------
             sliderBox = new H(document.getElementById(($scope.rotateMode == 'auto' && 'SLeasy_fixBox') || $config.id || 'SLeasy'));
@@ -77,10 +79,11 @@
                     e = el.event,
                     callback = el.onEvent.bind(SLeasy);
 
+                $(dom).data('HDom', HDom);//存储HDom-hammer对象
                 if ($config.debugMode) $(dom).addClass('SLeasy_shadownBt');
                 dom.style.cursor = "pointer";//鼠标手势
 
-                if ('click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                if (originEvents.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
                 } else if (e.indexOf('holdup') == 0) {//长按释放事件
                     var time = parseInt(e.replace('holdup', '')) || 1000;
@@ -119,8 +122,9 @@
                     e = el.event,
                     callback = el.onEvent;
 
+                $(dom).data('HDom', HDom);//存储HDom-hammer对象
                 dom.style.cursor = "pointer";//鼠标手势
-                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
+                if (originEvents.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
                     $(dom).off(e).on(e, callback);
                 } else if (e == 'hold') {//长按事件
                     HDom.get('press').set({time: 1000});
@@ -136,7 +140,7 @@
         //loading幻灯
         if ($('.SLeasy_loading ').length && $config.loading.on) {
             $.each($config.loading.on, function (e, callback) {
-                if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                if (originEvents.indexOf(e) != -1) {
                     $('.SLeasy_loading').off(e).on(e, callback);
                 } else {
                     var HDom = new H($('.SLeasy_loading')[0]);
@@ -150,7 +154,7 @@
         for (var i = 0; i < $('.SLeasy_sliders').length; i++) {
             if ($config.sliders[i].on) {
                 $.each($config.sliders[i].on, function (e, callback) {
-                    if ('click touchstart touchmove touchend'.indexOf(e) != -1) {
+                    if (originEvents.indexOf(e) != -1) {
                         $('.SLeasy_sliders').eq(i).off(e).on(e, callback);
                     } else {
                         var HDom = new H($('.SLeasy_sliders')[i]);
