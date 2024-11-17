@@ -29,7 +29,7 @@
                 })
             }
 
-            //禁止触摸默认行为
+            //禁止触摸默认行为f
             SLeasy.touchScroll(false, true);
 
             if ($config.stageMode == 'scroll') {

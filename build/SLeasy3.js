@@ -1626,21 +1626,51 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             $(html).appendTo(el);
             $scope.loadingReady = true;
             SLeasy.imgToDiv($(el), dfd);
+            // console.info(data)
             return dfd;
         }
 
         return _imgToDiv().done(function () {
-            $('.SLeasy_' + type).each(function (index, element) {
-                SLeasy.set($(this), data[index].set, noFix === false ? false : true);
-                if (data[index].event) {
-                    SLeasy.on(this, data[index].event, data[index].onEvent);
-                }
-                if (data[index].on) {
-                    for (event in data[index].on) {
-                        SLeasy.on(this, event, data[index].on[event]);
+            function setEl(elData) {
+                for (var i = 0; i < elData.length; i++) {
+                    var el = elData[i];
+                    var $dom = $('#SLeasy_' + type + '_' + el.index);//当前子动画元素dom
+                    //处理shadownBt的情况
+                    if (el.shadownBt) {
+                        var bt = el.shadownBt;
+                        el.set = $.extend((typeof bt[3] == 'number' ? {
+                            x: bt[2],
+                            y: bt[3]
+                        } : {x: bt[2]}), el.set);
+                    }
+                    SLeasy.set($dom, el.set, noFix === false ? false : true);
+                    if (el.event) {
+                        SLeasy.on($dom[0], el.event, el.onEvent);
+                    }
+                    if (el.on) {
+                        for (event in el.on) {
+                            SLeasy.on($dom[0], event, el.on[event]);
+                        }
+                    }
+                    //子元素递归
+                    if (el.subMotion && el.subMotion.length) {
+                        setEl(el.subMotion);
                     }
                 }
-            });
+            }
+
+            setEl(data);
+            // $('.SLeasy_' + type).each(function (index, element) {
+            //     SLeasy.set($(this), data[index].set, noFix === false ? false : true);
+            //     if (data[index].event) {
+            //         SLeasy.on(this, data[index].event, data[index].onEvent);
+            //     }
+            //     if (data[index].on) {
+            //         for (event in data[index].on) {
+            //             SLeasy.on(this, event, data[index].on[event]);
+            //         }
+            //     }
+            // });
         })
     }
 
@@ -1699,19 +1729,19 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             dom.style.cursor = "pointer";//鼠标手势
 
             if ('click dblclick mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave contextmenu touchstart touchmove touchend'.indexOf(e) != -1) {//点击事件,方便某些广告监测代码
-                $(dom).off(e).on(e, function (ev){
-                    callback(index, dom, ev);
+                $(dom).off(e).on(e, function (ev) {
+                    callback(ev, index, dom);
                 });
             } else if (e == 'hold') {//长按事件
                 HDom.get('press').set({time: 1000});
                 HDom.off('press').on('press', function (ev) {
-                    callback(index, dom, ev);
+                    callback(ev, index, dom);
                 });
             } else {
                 HDom.get('pan').set({direction: Hammer.DIRECTION_ALL});
                 HDom.get('swipe').set({direction: Hammer.DIRECTION_ALL});
                 HDom.off(e).on(e, function (ev) {
-                    callback(index, dom, ev);
+                    callback(ev, index, dom);
                 });//事件绑定
             }
         })
@@ -4498,7 +4528,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 })
             }
 
-            //禁止触摸默认行为
+            //禁止触摸默认行为f
             SLeasy.touchScroll(false, true);
 
             if ($config.stageMode == 'scroll') {
