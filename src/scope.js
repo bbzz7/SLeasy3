@@ -826,7 +826,7 @@
             var html = SLeasy.subElement(data, type, null, 'block');
             $(html).appendTo(el);
             $scope.loadingReady = true;
-            SLeasy.imgToDiv($(el), dfd);
+            SLeasy.imgToDiv($(el), dfd, true);
             // console.info(data)
             return dfd;
         }
@@ -859,19 +859,7 @@
                     }
                 }
             }
-
             setEl(data);
-            // $('.SLeasy_' + type).each(function (index, element) {
-            //     SLeasy.set($(this), data[index].set, noFix === false ? false : true);
-            //     if (data[index].event) {
-            //         SLeasy.on(this, data[index].event, data[index].onEvent);
-            //     }
-            //     if (data[index].on) {
-            //         for (event in data[index].on) {
-            //             SLeasy.on(this, event, data[index].on[event]);
-            //         }
-            //     }
-            // });
         })
     }
 

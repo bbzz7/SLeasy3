@@ -1,6 +1,6 @@
 /*!
- SLeasy 3.9.23 by 宇文互动 庄宇 2023-12-05 email:30755405@qq.com
- 3.9.23(2024-11-17):SLeasy.inset()支持递归;
+ SLeasy 3.9.23 by 宇文互动 庄宇 2024-11-17 email:30755405@qq.com
+ 3.9.23(2024-11-17):SLeasy.insert()支持递归;
  3.9.22(2024-06-03):更新默认背景音乐及音乐按钮支持webaudio;添加SLeasy.initMedias();
  3.9.21(2023-12-13):更新添加分组系统-subMotion自动递归;SLeasy.path()自动获取app.js的时间戳;
  3.9.20(2023-12-05):更新gulpfile生产部署deploy、deploy-noMin任务;整合添加vconsole;添加SLeasy.goPre();
@@ -1623,7 +1623,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
             var html = SLeasy.subElement(data, type, null, 'block');
             $(html).appendTo(el);
             $scope.loadingReady = true;
-            SLeasy.imgToDiv($(el), dfd);
+            SLeasy.imgToDiv($(el), dfd, true);
             // console.info(data)
             return dfd;
         }
@@ -1656,19 +1656,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     }
                 }
             }
-
             setEl(data);
-            // $('.SLeasy_' + type).each(function (index, element) {
-            //     SLeasy.set($(this), data[index].set, noFix === false ? false : true);
-            //     if (data[index].event) {
-            //         SLeasy.on(this, data[index].event, data[index].onEvent);
-            //     }
-            //     if (data[index].on) {
-            //         for (event in data[index].on) {
-            //             SLeasy.on(this, event, data[index].on[event]);
-            //         }
-            //     }
-            // });
         })
     }
 
@@ -2413,9 +2401,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_text SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
-				' + opt.text + '\
-				</div>';
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">' + opt.text + '</div>';
             },
             //a ---------------------------------------------------------
             "a": function (opt) {
@@ -3300,7 +3286,7 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
     var $config = SLeasy.config(),
         $scope = SLeasy.scope();
 
-    SLeasy.imgToDiv = function ($myDom, dfd) {
+    SLeasy.imgToDiv = function ($myDom, dfd, isInsertFunc) {
         var $dom = $myDom || $scope.sliderBox;
         var transformTotal = $myDom ? $myDom.find('.toDiv img').length : $scope.sliderBox.find('.toDiv img').length,
             transformedCount = 0;
@@ -3345,19 +3331,22 @@ var enableInlineVideo=function(){"use strict";/*! npm.im/intervalometer */
                     $('.SLeasy_floatElement').each(function (index, element) {
                         T.set($(this), $.extend({zIndex: $config.floatZIndex || 10}, $config.floats[index].set));
                     });
+
                     // setLoadingElement($config.loading.subMotion);//todo 自定loading是否需要再次set???
                     function setLoadingElement(data) {
                         if (data && data.length) {
                             for (var i = 0; i < data.length; i++) {
-                                var $dom=$('#SLeasy_loadingElement_'+data[i].index)
-                                if($dom.length && data[i].set) T.set($dom, data[i].set);
+                                var $dom = $('#SLeasy_loadingElement_' + data[i].index)
+                                if ($dom.length && data[i].set) T.set($dom, data[i].set);
                                 if (data[i].subMotion) {
                                     setLoadingElement(data[i].subMotion);
                                 }
                             }
                         }
                     }
+
                     dfd && dfd.resolve();//初始化完毕
+                    if(isInsertFunc) return;
                     //如果幻灯设置了自动开始，而且没有开启自动路由，且url没有路由哈希参数，则默认显示第一页
                     $.isEmptyObject($config.loading) && TweenMax.set($('.SLeasy_sliders').eq(0), {autoAlpha: 0});
                     if (!$scope.loadingReady && (!$config.routerMode && !$scope.router.getRoute()[0])) {

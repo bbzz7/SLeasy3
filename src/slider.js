@@ -148,9 +148,7 @@
                 return '<div\
 				id="SLeasy_' + (subName[opt.type] || opt.type) + '_' + opt.index + '"\
 				class="' + (opt.class || '') + ' SLeasy_text SLeasy_' + (subName[opt.type] || opt.type) + '"\
-				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">\
-				' + opt.text + '\
-				</div>';
+				style="position:' + $config.positionMode + '; display:' + (display || (opt.set && opt.set.display) || 'none') + ';">' + opt.text + '</div>';
             },
             //a ---------------------------------------------------------
             "a": function (opt) {
